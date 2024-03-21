@@ -17,7 +17,6 @@
     "format": "prettier --config ./.prettierrc -w 'src/**/*.{tsx,ts}' && git update-index --again",
     "pretest": "yarn lint:fix",
     "test": "jest --colors --passWithNoTests",
-    "posttest": "npx http-server coverage/lcov-report",
     "test:watch": "yarn test --collectCoverage=false --watch",
     "prepare": "husky install",
     "cz": "cz"
@@ -27,9 +26,16 @@
     "@chakra-ui/react": "^2.4.9",
     "@emotion/react": "^11.8.1",
     "@emotion/styled": "^11.8.1",
+    "@spacemesh/ed25519-bip32": "^0.1.0",
+    "@spacemesh/sm-codec": "^0.4.1",
+    "bech32": "^2.0.0",
+    "bip39": "^3.1.0",
     "framer-motion": "^8.5.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-query": "^3.39.3",
+    "react-router-dom": "^6.22.3",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@babel/core": "^7.17.5",
@@ -56,6 +62,7 @@
     "husky": "^8.0.3",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^29.4.0",
+    "jest-environment-jsdom": "^29.7.0",
     "prettier": "^2.5.1",
     "rollup": "^3.10.1",
     "ts-jest": "^29.0.5",

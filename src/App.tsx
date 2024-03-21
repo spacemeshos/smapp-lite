@@ -1,25 +1,22 @@
-import { useState } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import { Box, Button, Flex, Link, Spinner, Text } from '@chakra-ui/react';
+import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 
-import ThemeToggleButton from './components/ThemeToggleButton';
+import SplashScreen from './screens/SplashScreen';
+import theme from './theme';
 
 function App(): JSX.Element {
   return (
-    <Box>
-      <Flex
-        as="header"
-        direction="column"
-        alignItems="center"
-        justifyContent="center"
-        h="100vh"
-        fontSize="3xl"
-      >
-        <Spinner speed="1s" size="xl" mb={4} />
-        <Text fontSize="sm">Spacemesh Wallet is loading...</Text>
-      </Flex>
-      <ThemeToggleButton pos="fixed" bottom="2" right="2" />
-    </Box>
+    <ChakraProvider theme={theme}>
+      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+      <Router>
+        <Routes>
+          <Route path="/" element={<SplashScreen />} />
+          {/* Добавьте дополнительные маршруты здесь */}
+        </Routes>
+      </Router>
+    </ChakraProvider>
   );
 }
 

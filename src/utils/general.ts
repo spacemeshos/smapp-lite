@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { CreateStyled } from '@emotion/styled';
 
 export const transientOptions: Parameters<CreateStyled>[1] = {
