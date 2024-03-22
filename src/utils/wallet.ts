@@ -1,5 +1,6 @@
+import * as bip39 from '@scure/bip39';
+import { wordlist } from '@scure/bip39/wordlists/english';
 import { StdPublicKeys, TemplateRegistry } from '@spacemesh/sm-codec';
-import * as bip39 from 'bip39';
 
 import {
   Account,
@@ -10,6 +11,7 @@ import {
   WalletSecrets,
   WalletSecretsEncrypted,
 } from '../types/wallet';
+
 import {
   constructAesGcmIv,
   decrypt,
@@ -19,7 +21,6 @@ import {
   pbkdf2Key,
 } from './aes-gcm';
 import { generateAddress } from './bech32';
-
 import Bip32KeyDerivation from './bip32';
 import { getISODate } from './datetime';
 import { fromHexString, toHexString } from './hexString';
@@ -47,11 +48,14 @@ export const createWallet = (
   name?: string
 ): Wallet => {
   const timestamp = getISODate();
-  const mnemonic = existingMnemonic || bip39.generateMnemonic(24);
+  const mnemonic = existingMnemonic || bip39.generateMnemonic(wordlist, 256);
 
   const crypto: WalletSecrets = {
     mnemonic,
-    accounts: [createKeyPair('Account 0', mnemonic, 0)],
+    accounts: [
+      createKeyPair('Account 0', mnemonic, 0),
+      createKeyPair('Account 1', mnemonic, 1),
+    ],
     contacts: [],
   };
   const meta: WalletMeta = {

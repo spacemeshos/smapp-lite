@@ -17,4 +17,5 @@ module.exports = {
   },
   verbose: true,
   testTimeout: 30000,
+  setupFiles: ['./setup.jest.ts'],
 };
