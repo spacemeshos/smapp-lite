@@ -43,12 +43,14 @@ export const createKeyPair = (
   };
 };
 
+export const generateMnemonic = () => bip39.generateMnemonic(wordlist, 256);
+
 export const createWallet = (
   existingMnemonic?: string,
   name?: string
 ): Wallet => {
   const timestamp = getISODate();
-  const mnemonic = existingMnemonic || bip39.generateMnemonic(wordlist, 256);
+  const mnemonic = existingMnemonic || generateMnemonic();
 
   const crypto: WalletSecrets = {
     mnemonic,

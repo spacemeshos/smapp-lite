@@ -7,8 +7,11 @@ import {
 
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 
+import IdleAlert from './components/IdleAlert';
 import WalletScreen from './screens/WalletScreen';
-import WelcomeScreen from './screens/WelcomeScreen';
+import CreateWalletScreen from './screens/welcome/CreateWalletScreen';
+import WelcomeScreen from './screens/welcome/WelcomeScreen';
+import WelcomeWrapper from './screens/welcome/Wrapper';
 import useWallet from './store/useWallet';
 import theme from './theme';
 
@@ -18,7 +21,7 @@ function App(): JSX.Element {
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <WelcomeScreen />,
+      element: <WelcomeWrapper />,
       loader: async () => {
         if (hasWallet()) {
           if (isWalletUnlocked()) {
@@ -28,6 +31,16 @@ function App(): JSX.Element {
         }
         return null;
       },
+      children: [
+        {
+          path: '/',
+          element: <WelcomeScreen />,
+        },
+        {
+          path: 'create',
+          element: <CreateWalletScreen />,
+        },
+      ],
     },
     {
       path: '/unlock',
@@ -60,6 +73,7 @@ function App(): JSX.Element {
   return (
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+      <IdleAlert />
       <RouterProvider router={router} />
     </ChakraProvider>
   );

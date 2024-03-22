@@ -12,7 +12,12 @@ import {
   removeFromLocalStorage,
   saveToLocalStorage,
 } from '../utils/localStorage';
-import { createWallet, decryptWallet, encryptWallet } from '../utils/wallet';
+import {
+  createWallet,
+  decryptWallet,
+  encryptWallet,
+  generateMnemonic,
+} from '../utils/wallet';
 
 type WalletData = {
   meta: WalletMeta;
@@ -25,6 +30,7 @@ type WalletState = {
 };
 
 type WalletActions = {
+  generateMnemonic: () => string;
   createWallet: (
     password: string,
     existingMnemonic?: string,
@@ -50,6 +56,7 @@ const extractData = (wallet: Wallet): WalletData => ({
 
 const useWallet = create<WalletState & WalletActions>((set, get) => ({
   wallet: null,
+  generateMnemonic: () => generateMnemonic(),
   createWallet: async (password: string, existingMnemonic, name) => {
     const wallet = createWallet(existingMnemonic, name);
     const crypto = await encryptWallet(wallet.crypto, password);

@@ -52,6 +52,8 @@
 
 --
 
+Z. [X] Lock wallet when idle for some time
+
 Y. [ ] Update wallet format to allow adding view-only accounts only by address, not publicKey
 
 X. [ ] Publish changed @spacemesh/ed25519-bip32
