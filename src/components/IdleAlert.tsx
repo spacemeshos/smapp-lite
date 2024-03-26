@@ -10,6 +10,7 @@ import {
 import { useIdle } from '@uidotdev/usehooks';
 
 import useWallet from '../store/useWallet';
+import { noop } from '../utils/func';
 
 const IDLE_TIME_SECONDS = 120;
 const IDLE_ALERT_SECONDS = 30;
@@ -60,7 +61,7 @@ function IdleAlert(): JSX.Element {
   }, [shouldLockWallet, lockWallet]);
 
   return (
-    <Modal isOpen={showModal} onClose={() => {}}>
+    <Modal isOpen={showModal} onClose={noop}>
       <ModalOverlay>
         <ModalContent>
           <ModalHeader fontSize="lg" fontWeight="bold">

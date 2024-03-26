@@ -18,9 +18,9 @@ import isJest from './isJest';
       (await import('@spacemesh/ed25519-bip32/web/index_bg.wasm?url')).default;
     const buf = await (await fetch(wasmUrl)).arrayBuffer();
     await init(buf);
+    // eslint-disable-next-line no-console
+    console.log('BIP32 is ready!');
   }
-  // eslint-disable-next-line no-console
-  console.log('BIP32 is ready!');
 })();
 
 export default class Bip32KeyDerivation {

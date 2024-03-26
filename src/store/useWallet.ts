@@ -69,7 +69,6 @@ const useWallet = create<WalletState & WalletActions>((set, get) => ({
     set({
       wallet: extractData(wallet),
     });
-    console.log('!');
   },
   unlockWallet: async (password) => {
     const file = loadFromLocalStorage<null | WalletFile>(WALLET_STORE_KEY);

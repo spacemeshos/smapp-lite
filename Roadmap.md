@@ -1,9 +1,9 @@
 # Roadmap
 
-1. [ ] Create wallet
-   1. [ ] Show mnemonics
-   2. [ ] Ask to confirm
-   3. [ ] Ask display name and password
+1. [X] Create wallet
+   1. [X] Show mnemonics
+   2. [X] Ask to confirm
+   3. [X] Ask display name and password
 
 2. [ ] Recover from mnemonics
    1. [ ] Ask mnemonics
@@ -62,3 +62,5 @@ X. [ ] Publish changed @spacemesh/ed25519-bip32
    2. [ ] Open PR
    3. [ ] Publish to NPM
    4. [ ] Update smapp-lite/package.json
+
+W. [ ] Transitions on route change

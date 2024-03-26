@@ -5,13 +5,17 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 
-import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
+import { ChakraProvider, ColorModeScript, Container } from '@chakra-ui/react';
 
 import IdleAlert from './components/IdleAlert';
+import CreateMnemonicScreen from './screens/createWallet/CreateMnemonicScreen';
+import CreateWalletWrapper from './screens/createWallet/CreateWalletWrapper';
+import SetPasswordScreen from './screens/createWallet/SetPasswordScreen';
+import VerifyMnemonicScreen from './screens/createWallet/VerifyMnemonicScreen';
+// eslint-disable-next-line max-len
 import WalletScreen from './screens/WalletScreen';
-import CreateWalletScreen from './screens/welcome/CreateWalletScreen';
 import WelcomeScreen from './screens/welcome/WelcomeScreen';
-import WelcomeWrapper from './screens/welcome/Wrapper';
+import WelcomeWrapper from './screens/welcome/WelcomeWrapper';
 import useWallet from './store/useWallet';
 import theme from './theme';
 
@@ -33,12 +37,26 @@ function App(): JSX.Element {
       },
       children: [
         {
-          path: '/',
+          index: true,
           element: <WelcomeScreen />,
         },
         {
           path: 'create',
-          element: <CreateWalletScreen />,
+          element: <CreateWalletWrapper />,
+          children: [
+            {
+              index: true,
+              element: <CreateMnemonicScreen />,
+            },
+            {
+              path: 'verify-mnemonic',
+              element: <VerifyMnemonicScreen />,
+            },
+            {
+              path: 'set-password',
+              element: <SetPasswordScreen />,
+            },
+          ],
         },
       ],
     },
@@ -74,7 +92,9 @@ function App(): JSX.Element {
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <IdleAlert />
-      <RouterProvider router={router} />
+      <Container alignItems="center" minH="100vh" p={4}>
+        <RouterProvider router={router} />
+      </Container>
     </ChakraProvider>
   );
 }

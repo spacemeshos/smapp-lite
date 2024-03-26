@@ -29,13 +29,18 @@
     "@scure/bip39": "^1.2.2",
     "@spacemesh/ed25519-bip32": "/Users/brusher/Work/spacemeshos/ed25519_bip32_wasm/lib",
     "@spacemesh/sm-codec": "^0.4.1",
+    "@tabler/icons-react": "^3.1.0",
     "@uidotdev/usehooks": "^2.4.1",
     "bech32": "^2.0.0",
     "framer-motion": "^8.5.2",
     "react": "^18.2.0",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.51.1",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.22.3",
+    "remeda": "^1.56.0",
     "zustand": "^4.5.2"
   },
   "devDependencies": {

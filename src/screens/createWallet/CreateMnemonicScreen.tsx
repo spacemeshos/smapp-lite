@@ -7,16 +7,21 @@ import {
   Card,
   CardBody,
   CardFooter,
+  CardHeader,
   SimpleGrid,
   Text,
 } from '@chakra-ui/react';
 import { useCopyToClipboard } from '@uidotdev/usehooks';
 
+import BackButton from '../../components/BackButton';
 import useWallet from '../../store/useWallet';
 
-function CreateWalletScreen(): JSX.Element {
-  const { generateMnemonic, createWallet } = useWallet();
-  const [mnemonic, setMnemonic] = useState(generateMnemonic());
+import { useWalletCreation } from './WalletCreationContext';
+
+function CreateMnemonicScreen(): JSX.Element {
+  const { generateMnemonic } = useWallet();
+  const ctx = useWalletCreation();
+  const [mnemonic, setMnemonic] = useState(ctx.mnemonic || generateMnemonic());
   const [isCopied, setIsCopied] = useState(false);
   const [, copy] = useCopyToClipboard();
   const navigate = useNavigate();
@@ -37,11 +42,20 @@ function CreateWalletScreen(): JSX.Element {
 
   return (
     <>
+      <BackButton />
       <Text fontSize="lg" mb={4}>
         Create a new wallet
       </Text>
-      <Button onClick={regenerateMnemonic}>Generate new mnemonics</Button>
+      <Button onClick={regenerateMnemonic} pt={2} pb={2} pl={4} pr={4}>
+        Generate new mnemonics
+      </Button>
       <Card fontSize="sm" margin={[4, null]} borderRadius="xl">
+        <CardHeader pb={0}>
+          <Text color="orange.500" textAlign="center">
+            Please, save the mnemonic to the safe place and do not share with
+            anyone.
+          </Text>
+        </CardHeader>
         <CardBody>
           <SimpleGrid columns={[2, null, 3]} spacing="10px">
             {mnemonic.split(' ').map((word, idx) => (
@@ -75,10 +89,13 @@ function CreateWalletScreen(): JSX.Element {
         </CardFooter>
       </Card>
       <Button
+        pt={2}
+        pb={2}
+        pl={4}
+        pr={4}
         onClick={() => {
-          createWallet('qwe', mnemonic);
-          navigate('/wallet', { state: { mnemonic } });
-          // navigate('/create/verify-mnemonic', { state: { mnemonic } });
+          ctx.setMnemonic(mnemonic);
+          navigate('/create/verify-mnemonic');
         }}
       >
         Next step
@@ -87,4 +104,4 @@ function CreateWalletScreen(): JSX.Element {
   );
 }
 
-export default CreateWalletScreen;
+export default CreateMnemonicScreen;
