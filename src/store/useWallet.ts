@@ -36,7 +36,7 @@ type WalletActions = {
     existingMnemonic?: string,
     name?: string
   ) => void;
-  unlockWallet: (password: string) => void;
+  unlockWallet: (password: string) => Promise<boolean>;
   lockWallet: () => void;
   wipeWallet: () => void;
   hasWallet: () => boolean;
@@ -78,13 +78,18 @@ const useWallet = create<WalletState & WalletActions>((set, get) => ({
       );
     }
 
-    const secrets = await decryptWallet(file.crypto, password);
-    set({
-      wallet: extractData({
-        meta: file.meta,
-        crypto: secrets,
-      }),
-    });
+    try {
+      const secrets = await decryptWallet(file.crypto, password);
+      set({
+        wallet: extractData({
+          meta: file.meta,
+          crypto: secrets,
+        }),
+      });
+      return true;
+    } catch (err) {
+      return false;
+    }
   },
   lockWallet: () => set({ wallet: null }),
   wipeWallet: () => {

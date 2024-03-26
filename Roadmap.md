@@ -15,8 +15,8 @@
 
 --
 
-4. [ ] Unlock screen
-   1. [ ] Password input + button -> Unlock
+4. [X] Unlock screen
+   1. [X] Password input + button -> Unlock
    2. [ ] Show wipe link -> Alert -> wipe -> create wallet
 
 --

@@ -12,6 +12,7 @@ import CreateMnemonicScreen from './screens/createWallet/CreateMnemonicScreen';
 import CreateWalletWrapper from './screens/createWallet/CreateWalletWrapper';
 import SetPasswordScreen from './screens/createWallet/SetPasswordScreen';
 import VerifyMnemonicScreen from './screens/createWallet/VerifyMnemonicScreen';
+import UnlockScreen from './screens/UnlockScreen';
 // eslint-disable-next-line max-len
 import WalletScreen from './screens/WalletScreen';
 import WelcomeScreen from './screens/welcome/WelcomeScreen';
@@ -62,7 +63,7 @@ function App(): JSX.Element {
     },
     {
       path: '/unlock',
-      element: <div>UNLOCK</div>,
+      element: <UnlockScreen />,
       loader: async () => {
         if (!hasWallet()) {
           throw redirect('/');
