@@ -11,6 +11,7 @@ import { useIdle } from '@uidotdev/usehooks';
 
 import useWallet from '../store/useWallet';
 import { noop } from '../utils/func';
+import useWindowFocus from '../utils/useWindowFocus';
 
 const IDLE_TIME_SECONDS = 120;
 const IDLE_ALERT_SECONDS = 30;
@@ -18,25 +19,26 @@ const IDLE_ALERT_SECONDS = 30;
 function IdleAlert(): JSX.Element {
   const { lockWallet, isWalletUnlocked } = useWallet();
   const isIdle = useIdle(IDLE_TIME_SECONDS * 1000);
+  const isFocused = useWindowFocus();
   const [showModal, setShowModal] = useState(false);
   const [countdown, setCountdown] = useState(IDLE_ALERT_SECONDS);
   const [shouldLockWallet, setShouldLockWallet] = useState(false);
 
   // Handle showing/hiding modal
   useEffect(() => {
-    if (isIdle && isWalletUnlocked()) {
+    if ((isIdle || !isFocused) && isWalletUnlocked()) {
       setShowModal(true);
       setCountdown(IDLE_ALERT_SECONDS);
       setShouldLockWallet(false);
     } else {
       setShowModal(false);
     }
-  }, [isIdle, isWalletUnlocked]);
+  }, [isIdle, isFocused, isWalletUnlocked]);
 
   // Countdown timer
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let timer: any;
+    let timer: ReturnType<typeof setInterval>;
     if (showModal) {
       timer = setInterval(() => {
         setCountdown((prevCount) => {
