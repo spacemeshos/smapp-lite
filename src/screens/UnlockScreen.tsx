@@ -39,7 +39,6 @@ function UnlockScreen(): JSX.Element {
 
   return (
     <Flex
-      as="header"
       direction="column"
       alignItems="center"
       justifyContent="center"
