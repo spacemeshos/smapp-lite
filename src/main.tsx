@@ -11,3 +11,11 @@ root.render(
     <App />
   </React.StrictMode>
 );
+
+// Including service workers...
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js').catch((error) => {
+    // eslint-disable-next-line no-console
+    console.error('Service Worker error:', error);
+  });
+}
