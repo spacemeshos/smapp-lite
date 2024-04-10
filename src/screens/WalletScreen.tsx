@@ -1,12 +1,39 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { useMemo } from 'react';
+
+import {
+  Box,
+  Button,
+  Flex,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItemOption,
+  MenuList,
+  MenuOptionGroup,
+  Text,
+} from '@chakra-ui/react';
+import { IconRefresh } from '@tabler/icons-react';
 
 import LockWallet from '../components/LockWallet';
 import MainMenu from '../components/MainMenu';
 import NetworkSelection from '../components/NetworksSeletion';
+import useNetworks from '../store/useNetworks';
 import useWallet from '../store/useWallet';
+import { Account } from '../types/wallet';
+import { getAbbreviatedAddress } from '../utils/address';
+
+const renderAccountName = (acc: Account): string =>
+  acc.displayName
+    ? `${acc.displayName} (${getAbbreviatedAddress(acc.address)})`
+    : acc.address;
 
 function WalletScreen(): JSX.Element {
-  const { wallet } = useWallet();
+  const { listAccounts, currentAccount, selectAccount } = useWallet();
+  const { getCurrentHRP } = useNetworks();
+
+  const hrp = getCurrentHRP();
+  const accounts = useMemo(() => listAccounts(hrp), [listAccounts, hrp]);
+
   return (
     <Box>
       <Flex
@@ -28,14 +55,58 @@ function WalletScreen(): JSX.Element {
             <LockWallet />
           </Box>
         </Flex>
-        <Text fontSize="md" mb={4}>
-          Wallet
-        </Text>
-        {wallet?.keychain.map((kp) => (
-          <Text key={kp.path} fontSize="sm">
-            {kp.publicKey}
+        <Box
+          mt={2}
+          p={4}
+          w="100%"
+          fontSize="sm"
+          bgColor="blackAlpha.400"
+          borderRadius={8}
+        >
+          <Menu>
+            <MenuButton
+              as={Button}
+              variant="outline"
+              ml={2}
+              mb={2}
+              textTransform="uppercase"
+              fontSize="xx-small"
+              float="right"
+            >
+              Switch
+            </MenuButton>
+            <MenuList minWidth={240}>
+              <MenuOptionGroup
+                type="radio"
+                value={String(currentAccount)}
+                onChange={(val) =>
+                  typeof val === 'string' && selectAccount(parseInt(val, 10))
+                }
+              >
+                {accounts.map((acc, idx) => (
+                  <MenuItemOption key={acc.address} value={String(idx)}>
+                    {renderAccountName(acc)}
+                  </MenuItemOption>
+                ))}
+              </MenuOptionGroup>
+            </MenuList>
+          </Menu>
+
+          <Text fontWeight="bold" color="green.300">
+            {accounts[currentAccount]?.displayName || 'Unknown account'}
           </Text>
-        ))}
+          <Text>{accounts[currentAccount]?.address}</Text>
+          <Text fontSize="3xl" mt={4}>
+            302.1232 SMH
+            <IconButton
+              ml={2}
+              size="sm"
+              variant="outline"
+              icon={<IconRefresh width={18} />}
+              aria-label="Refresh balance"
+            />
+          </Text>
+        </Box>
       </Flex>
     </Box>
   );

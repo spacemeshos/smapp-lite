@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 import {
+  Account,
   Contact,
   KeyPair,
   Wallet,
@@ -15,6 +16,7 @@ import {
 import {
   createWallet,
   decryptWallet,
+  deriveAccount,
   encryptWallet,
   generateMnemonic,
 } from '../utils/wallet';
@@ -26,6 +28,7 @@ type WalletData = {
 };
 
 type WalletState = {
+  currentAccount: number;
   wallet: null | WalletData;
 };
 
@@ -39,11 +42,13 @@ type WalletActions = {
   unlockWallet: (password: string) => Promise<boolean>;
   lockWallet: () => void;
   wipeWallet: () => void;
+  selectAccount: (index: number) => void;
 };
 
 type WalletSelectors = {
   hasWallet: () => boolean;
   isWalletUnlocked: () => boolean;
+  listAccounts: (hrp?: string) => Account[];
 };
 
 const WALLET_STORE_KEY = 'wallet-file';
@@ -59,7 +64,9 @@ const extractData = (wallet: Wallet): WalletData => ({
 
 const useWallet = create<WalletState & WalletActions & WalletSelectors>(
   (set, get) => ({
+    currentAccount: 0,
     wallet: null,
+    // Actions
     generateMnemonic: () => generateMnemonic(),
     createWallet: async (password: string, existingMnemonic, name) => {
       const wallet = createWallet(existingMnemonic, name);
@@ -100,6 +107,17 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
       removeFromLocalStorage(WALLET_STORE_KEY);
       set({ wallet: null });
     },
+    selectAccount: (index) => {
+      const state = get();
+      if (
+        !state.wallet?.keychain?.length ||
+        state.wallet?.keychain.length <= index
+      ) {
+        throw new Error('Account index out of bounds');
+      }
+      set({ currentAccount: index });
+    },
+    // Selectors
     hasWallet: () => {
       const file = loadFromLocalStorage<null | WalletFile>(WALLET_STORE_KEY);
       return !!(file && file.crypto);
@@ -107,6 +125,10 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
     isWalletUnlocked: () => {
       const state = get();
       return !!state.wallet;
+    },
+    listAccounts: (hrp = 'sm') => {
+      const keychain = get().wallet?.keychain ?? [];
+      return keychain.map((keypair) => deriveAccount(hrp, keypair));
     },
   })
 );

@@ -112,14 +112,22 @@ export const deriveAccount = (
   templateKey = StdPublicKeys.SingleSig
 ): Account => {
   const tpl = TemplateRegistry.get(templateKey, 0);
-  // TODO: Support other templates
-  const principal = tpl.principal({
+
+  if (templateKey !== StdPublicKeys.SingleSig) {
+    // TODO: Support other templates
+    throw new Error('Only SingleSig template is supported');
+  }
+
+  const spawnArguments = {
     PublicKey: fromHexString(keypair.publicKey),
-  });
+  };
+  const principal = tpl.principal(spawnArguments);
   const address = generateAddress(principal, hrp);
   return {
     displayName: keypair.displayName,
     address,
+    templateAddress: templateKey,
+    spawnArguments,
   };
 };
 

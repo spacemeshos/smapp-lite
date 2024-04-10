@@ -8,9 +8,11 @@ export interface KeyPair {
   secretKey: string;
 }
 
-export interface Account {
+export interface Account<T = Record<string, unknown>> {
   displayName: string;
   address: string;
+  templateAddress: string;
+  spawnArguments: T;
 }
 
 export interface Contact {
