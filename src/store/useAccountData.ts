@@ -1,9 +1,11 @@
 import { create } from 'zustand';
 
+import { fetchBalanceByAddress } from '../api';
 import { Account, AccountStates } from '../types/account';
 import { Bech32Address, HexString } from '../types/common';
 import { Reward } from '../types/reward';
 import { Transaction } from '../types/tx';
+import useNetworks from './useNetworks';
 
 type AccountDataState = {
   states: Record<Bech32Address, AccountStates>;
@@ -31,7 +33,21 @@ const useAccountData = create<AccountDataStore>((set, get) => ({
   rewards: {},
   transactions: [],
   // Actions
-  fetchAccountState: (address) => {},
+  fetchAccountState: async (address) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { getCurrentRPC } = useNetworks();
+    const rpc = getCurrentRPC();
+    if (!rpc) {
+      throw new Error('Cannot fetch account state without an RPC endpoint');
+    }
+
+    set({
+      states: {
+        ...get().states,
+        [address]: await fetchBalanceByAddress(rpc, address),
+      },
+    });
+  },
   fetchRewards: (address) => {},
   fetchTransactionsByAddress: (address) => {},
   fetchTransactionsById: (txId) => {},

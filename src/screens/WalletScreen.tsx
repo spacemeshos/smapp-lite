@@ -17,6 +17,7 @@ import { IconRefresh } from '@tabler/icons-react';
 import LockWallet from '../components/LockWallet';
 import MainMenu from '../components/MainMenu';
 import NetworkSelection from '../components/NetworksSeletion';
+import useAccountData from '../store/useAccountData';
 import useNetworks from '../store/useNetworks';
 import useWallet from '../store/useWallet';
 import { Account } from '../types/wallet';
@@ -30,6 +31,7 @@ const renderAccountName = (acc: Account): string =>
 function WalletScreen(): JSX.Element {
   const { listAccounts, currentAccount, selectAccount } = useWallet();
   const { getCurrentHRP } = useNetworks();
+  const { states } = useAccountData();
 
   const hrp = getCurrentHRP();
   const accounts = useMemo(() => listAccounts(hrp), [listAccounts, hrp]);
@@ -97,7 +99,7 @@ function WalletScreen(): JSX.Element {
           </Text>
           <Text>{accounts[currentAccount]?.address}</Text>
           <Text fontSize="3xl" mt={4}>
-            302.1232 SMH
+            {states[accounts[currentAccount]?.address]?.current?.balance} SMH
             <IconButton
               ml={2}
               size="sm"

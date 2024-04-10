@@ -13,9 +13,10 @@ root.render(
 );
 
 // Including service workers...
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js').catch((error) => {
-    // eslint-disable-next-line no-console
-    console.error('Service Worker error:', error);
-  });
-}
+// TODO: Turn it on once API will use GET method!
+// if ('serviceWorker' in navigator) {
+//   navigator.serviceWorker.register('/service-worker.js').catch((error) => {
+//     // eslint-disable-next-line no-console
+//     console.error('Service Worker error:', error);
+//   });
+// }

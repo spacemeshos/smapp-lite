@@ -16,6 +16,7 @@ type NetworkActions = {
 type NetworkSelectors = {
   getCurrentNetwork: () => Network | null;
   getCurrentHRP: () => string;
+  getCurrentRPC: () => string | null;
 };
 
 const NETWORKS_STORE_KEY = 'networks';
@@ -55,6 +56,10 @@ const useNetworks = create(
       getCurrentHRP: () => {
         const net = get().getCurrentNetwork();
         return net ? net.hrp : 'sm';
+      },
+      getCurrentRPC: () => {
+        const net = get().getCurrentNetwork();
+        return net ? net.jsonRPC : null;
       },
     }),
     {
