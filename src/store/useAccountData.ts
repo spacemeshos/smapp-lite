@@ -6,8 +6,6 @@ import { Bech32Address, HexString } from '../types/common';
 import { Reward } from '../types/reward';
 import { Transaction } from '../types/tx';
 
-import useNetworks from './useNetworks';
-
 type AccountDataState = {
   states: Record<Bech32Address, AccountStates>;
   rewards: Record<Bech32Address, Reward[]>;
@@ -15,10 +13,11 @@ type AccountDataState = {
 };
 
 type AccountDataActions = {
-  fetchAccountState: (address: Bech32Address) => void;
-  fetchRewards: (address: Bech32Address) => void;
-  fetchTransactionsByAddress: (address: Bech32Address) => void;
-  fetchTransactionsById: (txId: HexString) => void;
+  fetchAccountState: (rpc: string) => (address: Bech32Address) => void;
+  fetchRewards: (rpc: string) => (address: Bech32Address) => void;
+  fetchTransactionsByAddress: (rpc: string) => (address: Bech32Address) => void;
+  fetchTransactionsById: (rpc: string) => (txId: HexString) => void;
+  reset: () => void;
 };
 
 type AccountDataSelectors = {
@@ -34,14 +33,8 @@ const useAccountData = create<AccountDataStore>((set, get) => ({
   rewards: {},
   transactions: [],
   // Actions
-  fetchAccountState: async (address) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { getCurrentRPC } = useNetworks();
-    const rpc = getCurrentRPC();
-    if (!rpc) {
-      throw new Error('Cannot fetch account state without an RPC endpoint');
-    }
-
+  fetchAccountState: (rpc) => async (address) => {
+    console.log('fetchAccountState', address);
     set({
       states: {
         ...get().states,
@@ -49,9 +42,16 @@ const useAccountData = create<AccountDataStore>((set, get) => ({
       },
     });
   },
-  fetchRewards: (address) => {},
-  fetchTransactionsByAddress: (address) => {},
-  fetchTransactionsById: (txId) => {},
+  fetchRewards: (rpc) => (address) => {},
+  fetchTransactionsByAddress: (rpc) => (address) => {},
+  fetchTransactionsById: (rpc) => (txId) => {},
+  reset: () => {
+    set({
+      states: {},
+      rewards: {},
+      transactions: [],
+    });
+  },
   // Selectors
   getAccount: (address) => undefined,
 }));

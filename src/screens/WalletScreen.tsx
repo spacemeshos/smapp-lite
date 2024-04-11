@@ -18,6 +18,8 @@ import LockWallet from '../components/LockWallet';
 import MainMenu from '../components/MainMenu';
 import NetworkSelection from '../components/NetworksSeletion';
 import useAccountData from '../store/useAccountData';
+import useAccountHandlers from '../store/useAccountHandlers';
+import useDataRefresher from '../store/useDataRefresher';
 import useNetworks from '../store/useNetworks';
 import useWallet from '../store/useWallet';
 import { Account } from '../types/wallet';
@@ -32,9 +34,12 @@ function WalletScreen(): JSX.Element {
   const { listAccounts, currentAccount, selectAccount } = useWallet();
   const { getCurrentHRP } = useNetworks();
   const { states } = useAccountData();
+  const { fetchAccountState } = useAccountHandlers();
 
   const hrp = getCurrentHRP();
   const accounts = useMemo(() => listAccounts(hrp), [listAccounts, hrp]);
+
+  useDataRefresher();
 
   return (
     <Box>
@@ -100,13 +105,18 @@ function WalletScreen(): JSX.Element {
           <Text>{accounts[currentAccount]?.address}</Text>
           <Text fontSize="3xl" mt={4}>
             {states[accounts[currentAccount]?.address]?.current?.balance} SMH
-            <IconButton
-              ml={2}
-              size="sm"
-              variant="outline"
-              icon={<IconRefresh width={18} />}
-              aria-label="Refresh balance"
-            />
+            {accounts[currentAccount] && (
+              <IconButton
+                ml={2}
+                size="sm"
+                variant="outline"
+                icon={<IconRefresh width={18} />}
+                aria-label="Refresh balance"
+                onClick={() =>
+                  fetchAccountState(accounts[currentAccount].address)
+                }
+              />
+            )}
           </Text>
         </Box>
       </Flex>

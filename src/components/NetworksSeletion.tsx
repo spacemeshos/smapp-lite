@@ -38,7 +38,10 @@ function NetworkSelection(): JSX.Element {
             }
           >
             {networks.map((val, idx) => (
-              <MenuItemOption value={String(idx)} key={val.jsonRPC}>
+              <MenuItemOption
+                value={String(idx)}
+                key={`${val.name}_${val.jsonRPC}`}
+              >
                 {val.name}
               </MenuItemOption>
             ))}

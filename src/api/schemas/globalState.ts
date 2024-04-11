@@ -6,7 +6,7 @@ import {
   IdSchema,
   LayerNumberSchema,
 } from './common';
-import { BigIntValueSchema } from './strNumber';
+import { BigIntStringSchema, BigIntValueSchema } from './strNumber';
 
 export const AccountRewardSchema = z.object({
   layer: LayerNumberSchema,
@@ -18,7 +18,7 @@ export const AccountRewardSchema = z.object({
 });
 
 export const AccountStateSchema = z.object({
-  counter: BigIntValueSchema,
+  counter: BigIntStringSchema,
   balance: BigIntValueSchema,
 });
 

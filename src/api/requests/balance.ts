@@ -24,11 +24,11 @@ export const fetchBalanceByAddress = async (
       const acc = x.accountItem[0].accountWrapper;
       return {
         current: {
-          nonce: acc.stateCurrent.counter.value,
+          nonce: acc.stateCurrent.counter,
           balance: acc.stateCurrent.balance.value,
         },
         projected: {
-          nonce: acc.stateProjected.counter.value,
+          nonce: acc.stateProjected.counter,
           balance: acc.stateProjected.balance.value,
         },
       };

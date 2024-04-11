@@ -4,7 +4,7 @@ function fetchJSON(url: string, options?: RequestInit) {
       return r.json();
     }
     throw new Error(`Cannot fetch JSON data from ${url}. Got ${r.status}`);
-});
+  });
 }
 
 export default fetchJSON;

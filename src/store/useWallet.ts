@@ -49,6 +49,7 @@ type WalletSelectors = {
   hasWallet: () => boolean;
   isWalletUnlocked: () => boolean;
   listAccounts: (hrp?: string) => Account[];
+  getCurrentAccount: (hrp?: string) => Account | null;
 };
 
 const WALLET_STORE_KEY = 'wallet-file';
@@ -129,6 +130,11 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
     listAccounts: (hrp = 'sm') => {
       const keychain = get().wallet?.keychain ?? [];
       return keychain.map((keypair) => deriveAccount(hrp, keypair));
+    },
+    getCurrentAccount: (hrp = 'sm') => {
+      const state = get();
+      const keypair = state.wallet?.keychain[state.currentAccount];
+      return keypair ? deriveAccount(hrp, keypair) : null;
     },
   })
 );
