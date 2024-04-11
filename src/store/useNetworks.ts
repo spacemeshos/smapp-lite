@@ -34,6 +34,9 @@ const useNetworks = create(
           networks: [...state.networks, net],
         };
         set(newState);
+        if (state.selectedIndex === null) {
+          set({ selectedIndex: 0 });
+        }
       },
       switchNetwork: (idx: number) => {
         const state = get();

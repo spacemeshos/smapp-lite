@@ -1,10 +1,11 @@
 import { create } from 'zustand';
 
-import { fetchBalanceByAddress } from '../api';
+import { fetchBalanceByAddress } from '../api/requests/balance';
 import { Account, AccountStates } from '../types/account';
 import { Bech32Address, HexString } from '../types/common';
 import { Reward } from '../types/reward';
 import { Transaction } from '../types/tx';
+
 import useNetworks from './useNetworks';
 
 type AccountDataState = {
