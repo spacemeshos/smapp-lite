@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
+import { O } from '@mobily/ts-belt';
+
 import { Network } from '../types/networks';
 
 type NetworkState = {
@@ -14,9 +16,7 @@ type NetworkActions = {
 };
 
 type NetworkSelectors = {
-  getCurrentNetwork: () => Network | null;
-  getCurrentHRP: () => string;
-  getCurrentRPC: () => string | null;
+  getCurrentNetwork: () => O.Option<Network>;
 };
 
 const NETWORKS_STORE_KEY = 'networks';
@@ -55,14 +55,6 @@ const useNetworks = create(
           state.selectedIndex < state.networks.length
           ? state.networks[state.selectedIndex]
           : null;
-      },
-      getCurrentHRP: () => {
-        const net = get().getCurrentNetwork();
-        return net ? net.hrp : 'sm';
-      },
-      getCurrentRPC: () => {
-        const net = get().getCurrentNetwork();
-        return net ? net.jsonRPC : null;
       },
     }),
     {

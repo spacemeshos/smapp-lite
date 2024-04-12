@@ -9,9 +9,9 @@ import {
 } from '@chakra-ui/react';
 import { useIdle } from '@uidotdev/usehooks';
 
+import useWindowFocus from '../hooks/useWindowFocus';
 import useWallet from '../store/useWallet';
 import { noop } from '../utils/func';
-import useWindowFocus from '../utils/useWindowFocus';
 
 const IDLE_TIME_SECONDS = 120;
 const IDLE_ALERT_SECONDS = 30;

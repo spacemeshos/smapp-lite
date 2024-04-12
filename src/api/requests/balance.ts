@@ -21,7 +21,19 @@ export const fetchBalanceByAddress = async (
     .then((r) => r.json())
     .then(BalanceResponseSchema.parse)
     .then((x) => {
-      const acc = x.accountItem[0].accountWrapper;
+      const acc = x.accountItem[0]?.accountWrapper;
+      if (!acc) {
+        return {
+          current: {
+            nonce: '0',
+            balance: '0',
+          },
+          projected: {
+            nonce: '0',
+            balance: '0',
+          },
+        };
+      }
       return {
         current: {
           nonce: acc.stateCurrent.counter,

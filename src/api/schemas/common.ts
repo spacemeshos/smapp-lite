@@ -5,7 +5,7 @@ import { isValid } from '../../utils/base64';
 import { Bech32AddressSchema } from './address';
 import { BigIntStringSchema } from './strNumber';
 
-export const LayerNumberSchema = z.object({
+export const NumberSchema = z.object({
   number: z.number(),
 });
 

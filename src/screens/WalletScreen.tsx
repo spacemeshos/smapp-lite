@@ -1,45 +1,41 @@
-import { useMemo } from 'react';
-
-import {
-  Box,
-  Button,
-  Flex,
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuItemOption,
-  MenuList,
-  MenuOptionGroup,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Flex, IconButton, Text } from '@chakra-ui/react';
+import { O, pipe } from '@mobily/ts-belt';
 import { IconRefresh } from '@tabler/icons-react';
 
+import AccountSelection from '../components/AccountSelection';
 import LockWallet from '../components/LockWallet';
 import MainMenu from '../components/MainMenu';
 import NetworkSelection from '../components/NetworksSeletion';
+import NodeStatusBadge from '../components/NodeStatusBadge';
+import useAccountHandlers from '../hooks/useAccountHandlers';
+import useDataRefresher from '../hooks/useDataRefresher';
 import useAccountData from '../store/useAccountData';
-import useAccountHandlers from '../store/useAccountHandlers';
-import useDataRefresher from '../store/useDataRefresher';
 import useNetworks from '../store/useNetworks';
 import useWallet from '../store/useWallet';
-import { Account } from '../types/wallet';
-import { getAbbreviatedAddress } from '../utils/address';
-
-const renderAccountName = (acc: Account): string =>
-  acc.displayName
-    ? `${acc.displayName} (${getAbbreviatedAddress(acc.address)})`
-    : acc.address;
+import { DEFAULT_HRP } from '../utils/constants';
+import { formatSmidge } from '../utils/smh';
 
 function WalletScreen(): JSX.Element {
-  const { listAccounts, currentAccount, selectAccount } = useWallet();
-  const { getCurrentHRP } = useNetworks();
-  const { states } = useAccountData();
+  useDataRefresher();
+
+  const { getCurrentAccount } = useWallet();
+  const { getCurrentNetwork } = useNetworks();
+  const { getAccountData } = useAccountData();
   const { fetchAccountState } = useAccountHandlers();
 
-  const hrp = getCurrentHRP();
-  const accounts = useMemo(() => listAccounts(hrp), [listAccounts, hrp]);
+  const currentNetwork = getCurrentNetwork();
+  const hrp = O.mapWithDefault(currentNetwork, DEFAULT_HRP, (net) => net.hrp);
 
-  useDataRefresher();
+  const currentAccount = getCurrentAccount(hrp);
+  const accountData = pipe(
+    O.zip(currentNetwork, currentAccount),
+    O.flatMap(([net, acc]) => getAccountData(net.genesisID, acc.address))
+  );
+  const balance = O.mapWithDefault(
+    accountData,
+    '0',
+    (data) => data.state.current.balance
+  );
 
   return (
     <Box>
@@ -62,6 +58,9 @@ function WalletScreen(): JSX.Element {
             <LockWallet />
           </Box>
         </Flex>
+
+        <NodeStatusBadge />
+
         <Box
           mt={2}
           p={4}
@@ -70,54 +69,35 @@ function WalletScreen(): JSX.Element {
           bgColor="blackAlpha.400"
           borderRadius={8}
         >
-          <Menu>
-            <MenuButton
-              as={Button}
-              variant="outline"
-              ml={2}
-              mb={2}
-              textTransform="uppercase"
-              fontSize="xx-small"
-              float="right"
-            >
-              Switch
-            </MenuButton>
-            <MenuList minWidth={240}>
-              <MenuOptionGroup
-                type="radio"
-                value={String(currentAccount)}
-                onChange={(val) =>
-                  typeof val === 'string' && selectAccount(parseInt(val, 10))
-                }
-              >
-                {accounts.map((acc, idx) => (
-                  <MenuItemOption key={acc.address} value={String(idx)}>
-                    {renderAccountName(acc)}
-                  </MenuItemOption>
-                ))}
-              </MenuOptionGroup>
-            </MenuList>
-          </Menu>
+          <AccountSelection />
 
           <Text fontWeight="bold" color="green.300">
-            {accounts[currentAccount]?.displayName || 'Unknown account'}
-          </Text>
-          <Text>{accounts[currentAccount]?.address}</Text>
-          <Text fontSize="3xl" mt={4}>
-            {states[accounts[currentAccount]?.address]?.current?.balance} SMH
-            {accounts[currentAccount] && (
-              <IconButton
-                ml={2}
-                size="sm"
-                variant="outline"
-                icon={<IconRefresh width={18} />}
-                aria-label="Refresh balance"
-                onClick={() =>
-                  fetchAccountState(accounts[currentAccount].address)
-                }
-              />
+            {O.mapWithDefault(
+              currentAccount,
+              'No account',
+              (acc) => acc.displayName
             )}
           </Text>
+          {O.mapWithDefault(
+            currentAccount,
+            <Text color="yellow">Please switch account to view balance.</Text>,
+            (account) => (
+              <>
+                <Text>{account.address}</Text>
+                <Text fontSize="3xl" mt={4}>
+                  {formatSmidge(balance)}
+                  <IconButton
+                    ml={2}
+                    size="sm"
+                    variant="outline"
+                    icon={<IconRefresh width={18} />}
+                    aria-label="Refresh balance"
+                    onClick={() => fetchAccountState(account.address)}
+                  />
+                </Text>
+              </>
+            )
+          )}
         </Box>
       </Flex>
     </Box>

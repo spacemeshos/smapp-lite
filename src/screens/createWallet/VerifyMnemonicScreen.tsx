@@ -2,7 +2,6 @@ import { PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useNavigate } from 'react-router-dom';
-import { omit } from 'remeda';
 
 import {
   Box,
@@ -14,6 +13,7 @@ import {
   Tag,
   Text,
 } from '@chakra-ui/react';
+import { D } from '@mobily/ts-belt';
 
 import BackButton from '../../components/BackButton';
 import getRandomIndexes from '../../utils/getRandomIndexes';
@@ -58,7 +58,7 @@ function VerifyMnemonicScreen(): JSX.Element {
       if (from === 'bank') return;
       // Back to bank
       setSlots((prev) => ({
-        ...omit(prev, [from]),
+        ...D.deleteKey(prev, from),
       }));
       setWordsInBank((prev) => [...prev, wordIndex]);
     } else {
@@ -67,7 +67,7 @@ function VerifyMnemonicScreen(): JSX.Element {
         const existingWord = prev[slotIndex];
         const fromExisting = existingWord ? { [from]: existingWord } : {};
         return {
-          ...(from === 'bank' ? prev : omit(prev, [from])),
+          ...(from === 'bank' ? prev : D.deleteKey(prev, from)),
           ...fromExisting,
           [slotIndex]: wordIndex,
         };

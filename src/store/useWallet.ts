@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 
+import { O } from '@mobily/ts-belt';
+
 import {
   Account,
   Contact,
@@ -8,6 +10,7 @@ import {
   WalletFile,
   WalletMeta,
 } from '../types/wallet';
+import { DEFAULT_HRP } from '../utils/constants';
 import {
   loadFromLocalStorage,
   removeFromLocalStorage,
@@ -28,7 +31,7 @@ type WalletData = {
 };
 
 type WalletState = {
-  currentAccount: number;
+  selectedAccount: number;
   wallet: null | WalletData;
 };
 
@@ -49,7 +52,7 @@ type WalletSelectors = {
   hasWallet: () => boolean;
   isWalletUnlocked: () => boolean;
   listAccounts: (hrp?: string) => Account[];
-  getCurrentAccount: (hrp?: string) => Account | null;
+  getCurrentAccount: (hrp?: string) => O.Option<Account>;
 };
 
 const WALLET_STORE_KEY = 'wallet-file';
@@ -65,7 +68,7 @@ const extractData = (wallet: Wallet): WalletData => ({
 
 const useWallet = create<WalletState & WalletActions & WalletSelectors>(
   (set, get) => ({
-    currentAccount: 0,
+    selectedAccount: 0,
     wallet: null,
     // Actions
     generateMnemonic: () => generateMnemonic(),
@@ -116,7 +119,7 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
       ) {
         throw new Error('Account index out of bounds');
       }
-      set({ currentAccount: index });
+      set({ selectedAccount: index });
     },
     // Selectors
     hasWallet: () => {
@@ -127,14 +130,14 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
       const state = get();
       return !!state.wallet;
     },
-    listAccounts: (hrp = 'sm') => {
+    listAccounts: (hrp = DEFAULT_HRP) => {
       const keychain = get().wallet?.keychain ?? [];
       return keychain.map((keypair) => deriveAccount(hrp, keypair));
     },
-    getCurrentAccount: (hrp = 'sm') => {
+    getCurrentAccount: (hrp = DEFAULT_HRP) => {
       const state = get();
-      const keypair = state.wallet?.keychain[state.currentAccount];
-      return keypair ? deriveAccount(hrp, keypair) : null;
+      const keypair = state.wallet?.keychain[state.selectedAccount];
+      return O.fromNullable(keypair ? deriveAccount(hrp, keypair) : null);
     },
   })
 );

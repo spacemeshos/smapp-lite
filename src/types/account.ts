@@ -1,6 +1,6 @@
 import { Bech32Address, BigIntString } from './common';
 import { Reward } from './reward';
-import { TransactionID } from './tx';
+import { Transaction } from './tx';
 
 export type AccountState = {
   balance: BigIntString;
@@ -15,7 +15,7 @@ export type AccountStates = {
 export type Account = {
   address: Bech32Address;
   rewards: Reward[];
-  transactions: TransactionID[];
+  transactions: Transaction[];
   state: {
     current: AccountState;
     projected: AccountState;

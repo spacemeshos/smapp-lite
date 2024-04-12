@@ -8,3 +8,11 @@ export type Network = {
   genesisTime: number;
   genesisID: HexString;
 };
+
+export type NodeStatus = {
+  connectedPeers: number;
+  isSynced: boolean;
+  syncedLayer: number;
+  topLayer: number;
+  verifiedLayer: number;
+};

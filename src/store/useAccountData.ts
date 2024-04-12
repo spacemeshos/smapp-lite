@@ -1,59 +1,99 @@
 import { create } from 'zustand';
 
-import { fetchBalanceByAddress } from '../api/requests/balance';
+import { D, O, pipe } from '@mobily/ts-belt';
+
 import { Account, AccountStates } from '../types/account';
 import { Bech32Address, HexString } from '../types/common';
 import { Reward } from '../types/reward';
-import { Transaction } from '../types/tx';
+import { Transaction, TransactionID } from '../types/tx';
+import { DEFAULT_ACCOUNT_STATES } from '../utils/constants';
 
 type AccountDataState = {
+  networks: Record<HexString, NetworkState>;
+};
+
+type NetworkState = {
   states: Record<Bech32Address, AccountStates>;
   rewards: Record<Bech32Address, Reward[]>;
+  txIds: Record<Bech32Address, TransactionID[]>;
   transactions: Transaction[];
 };
 
 type AccountDataActions = {
-  fetchAccountState: (rpc: string) => (address: Bech32Address) => void;
-  fetchRewards: (rpc: string) => (address: Bech32Address) => void;
-  fetchTransactionsByAddress: (rpc: string) => (address: Bech32Address) => void;
-  fetchTransactionsById: (rpc: string) => (txId: HexString) => void;
+  setAccountState: (
+    genesisID: HexString,
+    address: Bech32Address,
+    states: AccountStates
+  ) => void;
   reset: () => void;
 };
 
 type AccountDataSelectors = {
-  getAccount: (address: Bech32Address) => Account | undefined;
+  getAccountData: (
+    genesisID: HexString,
+    address: Bech32Address
+  ) => O.Option<Account>;
 };
 
 type AccountDataStore = AccountDataState &
   AccountDataActions &
   AccountDataSelectors;
 
-const useAccountData = create<AccountDataStore>((set, get) => ({
+// Defaults
+
+const DEFAULT_NETWROK_STATE: NetworkState = {
   states: {},
   rewards: {},
+  txIds: {},
   transactions: [],
+};
+
+// Getters
+
+const getAccountState = (net: NetworkState, address: Bech32Address) =>
+  net.states?.[address] || DEFAULT_ACCOUNT_STATES;
+
+const getAccountRewards = (net: NetworkState, address: Bech32Address) =>
+  net.rewards?.[address] || [];
+
+const getAccountTransactions = (net: NetworkState, address: Bech32Address) =>
+  net.transactions.filter((tx) => net.txIds?.[address]?.includes(tx.id));
+
+// Store
+
+const useAccountData = create<AccountDataStore>((set, get) => ({
+  networks: {},
   // Actions
-  fetchAccountState: (rpc) => async (address) => {
-    console.log('fetchAccountState', address);
+  setAccountState: async (genesisID, address, states) => {
     set({
-      states: {
-        ...get().states,
-        [address]: await fetchBalanceByAddress(rpc, address),
+      networks: {
+        ...get().networks,
+        [genesisID]: {
+          ...DEFAULT_NETWROK_STATE,
+          ...get().networks[genesisID],
+          states: {
+            ...get().networks[genesisID]?.states,
+            [address]: states,
+          },
+        },
       },
     });
   },
-  fetchRewards: (rpc) => (address) => {},
-  fetchTransactionsByAddress: (rpc) => (address) => {},
-  fetchTransactionsById: (rpc) => (txId) => {},
   reset: () => {
-    set({
-      states: {},
-      rewards: {},
-      transactions: [],
-    });
+    set({ networks: {} });
   },
   // Selectors
-  getAccount: (address) => undefined,
+  getAccountData: (genesisID, address) =>
+    pipe(
+      get().networks?.[genesisID],
+      O.fromNullable,
+      O.map((state) => ({
+        address,
+        state: getAccountState(state, address),
+        rewards: getAccountRewards(state, address),
+        transactions: getAccountTransactions(state, address),
+      }))
+    ),
 }));
 
 export default useAccountData;

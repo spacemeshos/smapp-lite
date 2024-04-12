@@ -1855,6 +1855,11 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
+"@mobily/ts-belt@^3.13.1":
+  version "3.13.1"
+  resolved "https://registry.yarnpkg.com/@mobily/ts-belt/-/ts-belt-3.13.1.tgz#8f8ce2a2eca41d88c2ca70c84d0f47d0f7f5cd5f"
+  integrity sha512-K5KqIhPI/EoCTbA6CGbrenM9s41OouyK8A03fGJJcla/zKucsgLbz8HNbeseoLarRPgyWJsUyCYqFhI7t3Ra9Q==
+
 "@motionone/animation@^10.15.1":
   version "10.15.1"
   resolved "https://registry.yarnpkg.com/@motionone/animation/-/animation-10.15.1.tgz#4a85596c31cbc5100ae8eb8b34c459fb0ccf6807"
@@ -6031,6 +6036,11 @@ react-router@6.22.3:
   dependencies:
     "@remix-run/router" "1.15.3"
 
+react-singleton-hook@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/react-singleton-hook/-/react-singleton-hook-4.0.1.tgz#98082b37be06b22845ced85eb11e02bacc3b2580"
+  integrity sha512-fWuk8VxcZPChrkQasDLM8pgd/7kyi+Cr/5FfCiD99FicjEru+JmtEZNnN4lJ8Z7KbqAST5CYPlpz6lmNsZFGNw==
+
 react-style-singleton@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/react-style-singleton/-/react-style-singleton-2.2.1.tgz#f99e420492b2d8f34d38308ff660b60d0b1205b4"
@@ -6113,11 +6123,6 @@ regexpp@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/regexpp/-/regexpp-3.2.0.tgz#0425a2768d8f23bad70ca4b90461fa2f1213e1b2"
   integrity sha512-pq2bWo9mVD43nbts2wGv17XLiNLya+GklZ8kaDLV2Z08gDCsGpnKn9BFMepvWuHCbyVvY7J5o5+BVvoQbmlJLg==
-
-remeda@^1.56.0:
-  version "1.56.0"
-  resolved "https://registry.yarnpkg.com/remeda/-/remeda-1.56.0.tgz#9eb5aa68df43cf7accb5730b49af38d9b65aca2c"
-  integrity sha512-ZGebbddlHYNIc4P6o6B/LRiUIZyuFvO9/aKxKpzzFjJxb9maUmYk5E72VpvAooh5uFw0rSbfygIV3rc49NW2xg==
 
 remove-accents@0.5.0:
   version "0.5.0"

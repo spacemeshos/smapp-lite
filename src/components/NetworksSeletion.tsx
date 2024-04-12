@@ -10,9 +10,16 @@ import {
   Spacer,
   useDisclosure,
 } from '@chakra-ui/react';
-import { IconChevronDown, IconWorldSearch } from '@tabler/icons-react';
+import { O } from '@mobily/ts-belt';
+import {
+  IconChevronDown,
+  IconCircleDotted,
+  IconCircleFilled,
+  IconWorldSearch,
+} from '@tabler/icons-react';
 
 import useNetworks from '../store/useNetworks';
+import useNetworkStatus from '../store/useNetworkStatus';
 
 import AddNetworkDrawer from './AddNetworkDrawer';
 
@@ -21,13 +28,25 @@ function NetworkSelection(): JSX.Element {
   const { selectedIndex, getCurrentNetwork, switchNetwork, networks } =
     useNetworks();
   const currentNetwork = getCurrentNetwork();
+  const { status } = useNetworkStatus();
 
   return (
     <>
       <AddNetworkDrawer isOpen={isOpen} onClose={onClose} />
       <Menu>
-        <MenuButton as={Button} rightIcon={<IconChevronDown />} fontSize="sm">
-          {currentNetwork === null ? 'No network' : currentNetwork.name}
+        <MenuButton
+          as={Button}
+          leftIcon={
+            status?.isSynced ? (
+              <IconCircleFilled size={14} color="green" />
+            ) : (
+              <IconCircleDotted size={14} color="orange" />
+            )
+          }
+          rightIcon={<IconChevronDown />}
+          fontSize="sm"
+        >
+          {O.mapWithDefault(currentNetwork, 'No network', (net) => net.name)}
         </MenuButton>
         <MenuList>
           <MenuOptionGroup

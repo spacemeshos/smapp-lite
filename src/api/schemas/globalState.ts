@@ -1,16 +1,11 @@
 import * as z from 'zod';
 
-import {
-  AddressSchema,
-  AmountSchema,
-  IdSchema,
-  LayerNumberSchema,
-} from './common';
+import { AddressSchema, AmountSchema, IdSchema, NumberSchema } from './common';
 import { BigIntStringSchema, BigIntValueSchema } from './strNumber';
 
 export const AccountRewardSchema = z.object({
-  layer: LayerNumberSchema,
-  layerComputed: LayerNumberSchema,
+  layer: NumberSchema,
+  layerComputed: NumberSchema,
   total: AmountSchema,
   layerReward: AmountSchema,
   coinbase: AddressSchema,
