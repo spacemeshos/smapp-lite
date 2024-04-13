@@ -17,12 +17,15 @@
 
 4. [X] Unlock screen
    1. [X] Password input + button -> Unlock
-   2. [ ] Show wipe link -> Alert -> wipe -> create wallet
+   2. [X] Show wipe link -> Alert -> wipe -> create wallet
 
 --
 
 5. [ ] Wallet
-   1. [ ] Overview screen
+   1. [X] Overview screen
+      1. [X] Balance
+      2. [X] Network/API status
+      3. [ ] Transactions/Rewards overview
    2. [ ] Transactions
       1. [ ] List
       2. [ ] Details
@@ -64,3 +67,5 @@ X. [ ] Publish changed @spacemesh/ed25519-bip32
    4. [ ] Update smapp-lite/package.json
 
 W. [ ] Transitions on route change
+
+Q. [X] Auto-fetch data on switching account / network
