@@ -1,3 +1,4 @@
+import fileDownload from 'js-file-download';
 import { create } from 'zustand';
 
 import { O } from '@mobily/ts-belt';
@@ -48,6 +49,7 @@ type WalletActions = {
   lockWallet: () => void;
   wipeWallet: () => void;
   selectAccount: (index: number) => void;
+  exportWalletFile: () => void;
 };
 
 type WalletSelectors = {
@@ -131,6 +133,17 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
         throw new Error('Account index out of bounds');
       }
       set({ selectedAccount: index });
+    },
+    exportWalletFile: () => {
+      const file = loadFromLocalStorage<null | WalletFile>(WALLET_STORE_KEY);
+      if (!file) {
+        throw new Error('No wallet to export');
+      }
+      return fileDownload(
+        JSON.stringify(file),
+        'wallet.json',
+        'application/json'
+      );
     },
     // Selectors
     hasWallet: () => {

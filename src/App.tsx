@@ -20,6 +20,7 @@ import WelcomeWrapper from './screens/welcome/WelcomeWrapper';
 import useWallet from './store/useWallet';
 import theme from './theme';
 import ImportScreen from './screens/welcome/ImportScreen';
+import RecoverMnemonicScreen from './screens/createWallet/RecoverMnemonicScreen';
 
 function App(): JSX.Element {
   const { hasWallet, isWalletUnlocked } = useWallet();
@@ -53,6 +54,10 @@ function App(): JSX.Element {
             {
               path: 'verify-mnemonic',
               element: <VerifyMnemonicScreen />,
+            },
+            {
+              path: 'recover',
+              element: <RecoverMnemonicScreen />,
             },
             {
               path: 'set-password',

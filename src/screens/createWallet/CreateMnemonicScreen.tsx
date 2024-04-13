@@ -43,13 +43,13 @@ function CreateMnemonicScreen(): JSX.Element {
   return (
     <>
       <BackButton />
-      <Text fontSize="lg" mb={4}>
+      <Text fontSize="xl" mb={4}>
         Create a new wallet
       </Text>
       <Button onClick={regenerateMnemonic} pt={2} pb={2} pl={4} pr={4}>
         Generate new mnemonics
       </Button>
-      <Card fontSize="sm" margin={[4, null]} borderRadius="xl">
+      <Card fontSize="sm" margin={[4, null]} borderRadius="xl" w="100%">
         <CardHeader pb={0}>
           <Text color="orange.500" textAlign="center">
             Please, save the mnemonic to the safe place and do not share with

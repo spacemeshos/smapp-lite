@@ -5,13 +5,13 @@
    2. [X] Ask to confirm
    3. [X] Ask display name and password
 
-2. [ ] Recover from mnemonics
-   1. [ ] Ask mnemonics
-   2. [ ] Ask display name and password
+2. [X] Recover from mnemonics
+   1. [X] Ask mnemonics
+   2. [X] Ask password
 
 3. [X] Import wallet file
    1. [X] FileReader
-   2. [X] Ask password
+   2. [X ] Ask password
 
 --
 
@@ -47,11 +47,14 @@
    1. [ ] Network settings
       - RPC
       - Remote node status
+      1. [X] Add network
+      2. [ ] Edit/view network (?)
+      3. [ ] Delete network
    2. [ ] Change password
 
 7. [ ] Backup wallet
    1. [ ] Show mnemonics
-   2. [ ] Export wallet file
+   2. [X] Export wallet file
 
 --
 

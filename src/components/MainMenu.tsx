@@ -9,10 +9,13 @@ import {
 } from '@chakra-ui/react';
 import { IconMenu2 } from '@tabler/icons-react';
 
+import useWallet from '../store/useWallet';
+
 import WipeOutAlert from './WipeOutAlert';
 
 function MainMenu(): JSX.Element {
   const wipeAlert = useDisclosure();
+  const { exportWalletFile } = useWallet();
 
   return (
     <>
@@ -26,6 +29,7 @@ function MainMenu(): JSX.Element {
         <MenuList>
           <MenuItem>Manage accounts</MenuItem>
           <MenuItem>Backup mnemonic</MenuItem>
+          <MenuItem onClick={exportWalletFile}>Export wallet file</MenuItem>
           <MenuDivider />
           <MenuItem>Manage networks</MenuItem>
           <MenuDivider />

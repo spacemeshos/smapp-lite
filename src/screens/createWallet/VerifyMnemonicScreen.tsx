@@ -90,7 +90,7 @@ function VerifyMnemonicScreen(): JSX.Element {
         able to recover later if needed.
       </Text>
       <DndProvider backend={HTML5Backend}>
-        <Card fontSize="sm" margin={[4, null]} borderRadius="xl">
+        <Card fontSize="sm" margin={[4, null]} borderRadius="xl" w="100%">
           <CardHeader pb={0}>
             <Text mb={2}>Please, place the missed words on their places:</Text>
             {wordsInBank.map((wordIndex) => (
