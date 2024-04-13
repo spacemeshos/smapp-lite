@@ -1,3 +1,4 @@
+import parse from 'parse-duration';
 import { z } from 'zod';
 
 import { isValid } from '../../utils/base64';
@@ -22,3 +23,7 @@ export const IdSchema = z.object({
 });
 
 export const Base64Schema = z.string().refine(isValid);
+
+export const DurationSchema = z
+  .string()
+  .refine((x) => typeof parse(x) === 'number');

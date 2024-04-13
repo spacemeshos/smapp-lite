@@ -99,6 +99,13 @@ function WalletScreen(): JSX.Element {
             )
           )}
         </Box>
+
+        <Box>
+          <Flex justifyContent="center" mt={4}>
+            {/* TODO */}
+          </Flex>
+        </Box>
+
       </Flex>
     </Box>
   );

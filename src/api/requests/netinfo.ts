@@ -1,21 +1,22 @@
+import parse from 'parse-duration';
+
 import { fromBase64 } from '../../utils/base64';
 import fetchJSON from '../../utils/fetchJSON';
 import { toHexString } from '../../utils/hexString';
-import {
-  GenesisIDResponseSchema,
-  GenesisTimeResponseSchema,
-} from '../schemas/mesh';
+import { NetworkInfoResponseSchema } from '../schemas/network';
 import { NodeStatusSchema } from '../schemas/node';
 
-export const fetchGenesisTime = (rpc: string) =>
-  fetchJSON(`${rpc}/v1/mesh/genesistime`, { method: 'POST' })
-    .then(GenesisTimeResponseSchema.parse)
-    .then((x) => parseInt(x.unixtime.value, 10));
-
-export const fetchGenesisId = (rpc: string) =>
-  fetchJSON(`${rpc}/v1/mesh/genesisid`, { method: 'POST' })
-    .then(GenesisIDResponseSchema.parse)
-    .then((x) => toHexString(fromBase64(x.genesisId), true));
+export const fetchNetworkInfo = (rpc: string) =>
+  fetchJSON(`${rpc}/spacemesh.v2alpha1.NetworkService/Info`, {
+    method: 'POST',
+  })
+    .then(NetworkInfoResponseSchema.parse)
+    .then((res) => ({
+      ...res,
+      genesisId: toHexString(fromBase64(res.genesisId)),
+      genesisTime: new Date(res.genesisTime).getTime(),
+      layerDuration: (parse(res.layerDuration) || 0) / 1000,
+    }));
 
 export const fetchNodeStatus = (rpc: string) =>
   fetchJSON(`${rpc}/v1/node/status`, { method: 'POST' })
@@ -27,14 +28,3 @@ export const fetchNodeStatus = (rpc: string) =>
       topLayer: status.topLayer.number,
       verifiedLayer: status.verifiedLayer.number,
     }));
-
-export const fetchNetInfo = async (rpc: string) => {
-  // TODO: Fetch v1/node/info when api will be available
-  const genesisTime = await fetchGenesisTime(rpc);
-  const genesisID = await fetchGenesisId(rpc);
-
-  return {
-    genesisTime,
-    genesisID,
-  };
-};

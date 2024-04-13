@@ -1,11 +1,13 @@
 import { Badge, Box, Card, CardBody, Divider } from '@chakra-ui/react';
 
+import useNetworks from '../store/useNetworks';
 import useNetworkStatus from '../store/useNetworkStatus';
 
 function NodeStatusBadge(): JSX.Element | null {
+  const { hasCurrentNetwork } = useNetworks();
   const { status, error } = useNetworkStatus();
 
-  if (status?.isSynced) return null;
+  if (!hasCurrentNetwork() || status?.isSynced) return null;
 
   if (!status) {
     return (

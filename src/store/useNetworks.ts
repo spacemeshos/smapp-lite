@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { O } from '@mobily/ts-belt';
+import { O, D, A, pipe } from '@mobily/ts-belt';
 
 import { Network } from '../types/networks';
 
@@ -16,6 +16,7 @@ type NetworkActions = {
 };
 
 type NetworkSelectors = {
+  hasCurrentNetwork: () => boolean;
   getCurrentNetwork: () => O.Option<Network>;
 };
 
@@ -50,12 +51,13 @@ const useNetworks = create(
       // Selectors
       getCurrentNetwork: () => {
         const state = get();
-        return state.selectedIndex !== null &&
-          state.selectedIndex >= 0 &&
-          state.selectedIndex < state.networks.length
-          ? state.networks[state.selectedIndex]
-          : null;
+        return pipe(
+          state.selectedIndex,
+          O.fromNullable,
+          O.flatMap((idx) => A.get(state.networks, idx))
+        );
       },
+      hasCurrentNetwork: () => O.isSome(get().getCurrentNetwork()),
     }),
     {
       name: NETWORKS_STORE_KEY,

@@ -7,6 +7,8 @@ export type Network = {
   explorerUrl: string;
   genesisTime: number;
   genesisID: HexString;
+  layerDuration: number;
+  layersPerEpoch: number;
 };
 
 export type NodeStatus = {
