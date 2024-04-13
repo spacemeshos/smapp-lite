@@ -9,9 +9,9 @@
    1. [ ] Ask mnemonics
    2. [ ] Ask display name and password
 
-3. [ ] Import wallet file
-   1. [ ] FileReader
-   2. [ ] Ask password
+3. [X] Import wallet file
+   1. [X] FileReader
+   2. [X] Ask password
 
 --
 

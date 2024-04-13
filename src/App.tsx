@@ -19,6 +19,7 @@ import WelcomeScreen from './screens/welcome/WelcomeScreen';
 import WelcomeWrapper from './screens/welcome/WelcomeWrapper';
 import useWallet from './store/useWallet';
 import theme from './theme';
+import ImportScreen from './screens/welcome/ImportScreen';
 
 function App(): JSX.Element {
   const { hasWallet, isWalletUnlocked } = useWallet();
@@ -68,6 +69,16 @@ function App(): JSX.Element {
         if (!hasWallet()) {
           throw redirect('/');
         }
+        if (isWalletUnlocked()) {
+          throw redirect('/wallet');
+        }
+        return null;
+      },
+    },
+    {
+      path: '/import',
+      element: <ImportScreen />,
+      loader: async () => {
         if (isWalletUnlocked()) {
           throw redirect('/wallet');
         }

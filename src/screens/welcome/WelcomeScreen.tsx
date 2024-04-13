@@ -7,19 +7,22 @@ import logo from '../../assets/logo_white.svg';
 function WelcomeScreen(): JSX.Element {
   return (
     <>
-      <Image src={logo} />
-      <Text fontSize="md" mb={4}>
-        Spacemesh Wallet
-      </Text>
-      <Button as={Link} to="/create">
+      <Image src={logo} width={200} mb={8} />
+
+      <Button as={Link} to="/create" width="100%" mb={4} size="lg">
         Create new wallet
       </Button>
-      <Button as={Link} to="/recover">
+      <Button as={Link} to="/recover" width="100%" mb={4} size="lg">
         Recover from mnemonics
       </Button>
-      <Button as={Link} to="/import">
+      <Button as={Link} to="/import" width="100%" mb={4} size="lg">
         Import wallet file
       </Button>
+
+      <Text fontSize="sm" width={290} textAlign="center">
+        Application stores wallet file encrypted with AES-GCM on your local
+        machine.
+      </Text>
     </>
   );
 }

@@ -42,7 +42,9 @@ type WalletActions = {
     existingMnemonic?: string,
     name?: string
   ) => void;
+  openWallet: (wallet: WalletFile, password: string) => Promise<boolean>;
   unlockWallet: (password: string) => Promise<boolean>;
+  importWallet: (wallet: WalletFile, password: string) => Promise<boolean>;
   lockWallet: () => void;
   wipeWallet: () => void;
   selectAccount: (index: number) => void;
@@ -85,19 +87,12 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
         wallet: extractData(wallet),
       });
     },
-    unlockWallet: async (password) => {
-      const file = loadFromLocalStorage<null | WalletFile>(WALLET_STORE_KEY);
-      if (!file || !file.crypto) {
-        throw new Error(
-          'Cannot unlock wallet: No wallet stored in local storage'
-        );
-      }
-
+    openWallet: async (wallet: WalletFile, password: string) => {
       try {
-        const secrets = await decryptWallet(file.crypto, password);
+        const secrets = await decryptWallet(wallet.crypto, password);
         set({
           wallet: extractData({
-            meta: file.meta,
+            meta: wallet.meta,
             crypto: secrets,
           }),
         });
@@ -105,6 +100,22 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
       } catch (err) {
         return false;
       }
+    },
+    unlockWallet: async (password) => {
+      const file = loadFromLocalStorage<null | WalletFile>(WALLET_STORE_KEY);
+      if (!file || !file.crypto) {
+        throw new Error(
+          'Cannot unlock wallet: No wallet stored in local storage'
+        );
+      }
+      return get().importWallet(file, password);
+    },
+    importWallet: async (wallet: WalletFile, password: string) => {
+      const success = await get().openWallet(wallet, password);
+      if (success) {
+        saveToLocalStorage(WALLET_STORE_KEY, wallet);
+      }
+      return success;
     },
     lockWallet: () => set({ wallet: null }),
     wipeWallet: () => {
