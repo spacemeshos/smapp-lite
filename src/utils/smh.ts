@@ -10,8 +10,9 @@ export enum CoinUnits {
 export const toSMH = (smidge: bigint): string => {
   const integer = smidge / BigInt(10) ** BigInt(9);
   const fractional = smidge % BigInt(10) ** BigInt(9);
+  const sign = fractional < 0n ? -1n : 1n;
   return fractional !== 0n
-    ? `${String(integer)}.${String(fractional).slice(0, 3)}`
+    ? `${String(integer)}.${String(sign * fractional).slice(0, 3)}`
     : String(integer);
 };
 

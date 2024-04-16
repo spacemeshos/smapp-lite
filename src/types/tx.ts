@@ -1,5 +1,7 @@
 import { SpawnPayload, SpendPayload } from '@spacemesh/sm-codec';
 
+import { TransactionState } from '../api/schemas/tx';
+
 import { Bech32Address, BigIntString, HexString } from './common';
 
 export type TransactionID = HexString;
@@ -21,7 +23,9 @@ export type Transaction<T = Record<string, unknown>> = {
     name: string;
     methodName: string;
   };
+  layer: number;
   parsed: T;
+  state: TransactionState;
 };
 
 export type ParsedSpawnTransaction = Transaction<SpawnPayload['Arguments']>;

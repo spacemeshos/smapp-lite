@@ -1,12 +1,13 @@
 import { create } from 'zustand';
 
-import { D, O, pipe } from '@mobily/ts-belt';
+import { O, pipe } from '@mobily/ts-belt';
 
 import { Account, AccountStates } from '../types/account';
 import { Bech32Address, HexString } from '../types/common';
 import { Reward } from '../types/reward';
 import { Transaction, TransactionID } from '../types/tx';
 import { DEFAULT_ACCOUNT_STATES } from '../utils/constants';
+import { collectTxIdsByAddress } from '../utils/tx';
 
 type AccountDataState = {
   networks: Record<HexString, NetworkState>;
@@ -16,7 +17,7 @@ type NetworkState = {
   states: Record<Bech32Address, AccountStates>;
   rewards: Record<Bech32Address, Reward[]>;
   txIds: Record<Bech32Address, TransactionID[]>;
-  transactions: Transaction[];
+  transactions: Record<TransactionID, Transaction>;
 };
 
 type AccountDataActions = {
@@ -25,6 +26,7 @@ type AccountDataActions = {
     address: Bech32Address,
     states: AccountStates
   ) => void;
+  setTransactions: (genesisID: HexString, txs: Transaction[]) => void;
   reset: () => void;
 };
 
@@ -45,7 +47,7 @@ const DEFAULT_NETWROK_STATE: NetworkState = {
   states: {},
   rewards: {},
   txIds: {},
-  transactions: [],
+  transactions: {},
 };
 
 // Getters
@@ -57,14 +59,16 @@ const getAccountRewards = (net: NetworkState, address: Bech32Address) =>
   net.rewards?.[address] || [];
 
 const getAccountTransactions = (net: NetworkState, address: Bech32Address) =>
-  net.transactions.filter((tx) => net.txIds?.[address]?.includes(tx.id));
+  (net.txIds?.[address] || [])
+    .map((txId) => net.transactions?.[txId])
+    .filter(Boolean) as Transaction[];
 
 // Store
 
 const useAccountData = create<AccountDataStore>((set, get) => ({
   networks: {},
   // Actions
-  setAccountState: async (genesisID, address, states) => {
+  setAccountState: (genesisID, address, states) => {
     set({
       networks: {
         ...get().networks,
@@ -75,6 +79,25 @@ const useAccountData = create<AccountDataStore>((set, get) => ({
             ...get().networks[genesisID]?.states,
             [address]: states,
           },
+        },
+      },
+    });
+  },
+  setTransactions: (genesisID, txs) => {
+    set({
+      networks: {
+        ...get().networks,
+        [genesisID]: {
+          ...DEFAULT_NETWROK_STATE,
+          ...get().networks[genesisID],
+          transactions: {
+            ...get().networks[genesisID]?.transactions,
+            ...txs.reduce((acc, tx) => ({ ...acc, [tx.id]: tx }), {}),
+          },
+          txIds: collectTxIdsByAddress(
+            get().networks[genesisID]?.txIds || {},
+            txs
+          ),
         },
       },
     });

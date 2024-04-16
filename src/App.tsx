@@ -10,17 +10,18 @@ import { ChakraProvider, ColorModeScript, Container } from '@chakra-ui/react';
 import IdleAlert from './components/IdleAlert';
 import CreateMnemonicScreen from './screens/createWallet/CreateMnemonicScreen';
 import CreateWalletWrapper from './screens/createWallet/CreateWalletWrapper';
+// eslint-disable-next-line max-len
+import RecoverMnemonicScreen from './screens/createWallet/RecoverMnemonicScreen';
 import SetPasswordScreen from './screens/createWallet/SetPasswordScreen';
 import VerifyMnemonicScreen from './screens/createWallet/VerifyMnemonicScreen';
 import UnlockScreen from './screens/UnlockScreen';
 // eslint-disable-next-line max-len
 import WalletScreen from './screens/WalletScreen';
+import ImportScreen from './screens/welcome/ImportScreen';
 import WelcomeScreen from './screens/welcome/WelcomeScreen';
 import WelcomeWrapper from './screens/welcome/WelcomeWrapper';
 import useWallet from './store/useWallet';
 import theme from './theme';
-import ImportScreen from './screens/welcome/ImportScreen';
-import RecoverMnemonicScreen from './screens/createWallet/RecoverMnemonicScreen';
 
 function App(): JSX.Element {
   const { hasWallet, isWalletUnlocked } = useWallet();
@@ -109,7 +110,13 @@ function App(): JSX.Element {
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <IdleAlert />
-      <Container alignItems="center" minH="100vh" p={4}>
+      <Container
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        minH="100vh"
+        p={4}
+      >
         <RouterProvider router={router} />
       </Container>
     </ChakraProvider>

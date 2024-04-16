@@ -58,7 +58,7 @@ function AddNetworkDrawer({ isOpen, onClose }: Props): JSX.Element {
       explorerUrl: data.explorer,
       hrp: data.hrp,
       genesisID: data.genesisID,
-      genesisTime: new Date(data.genesisTime).getSeconds(),
+      genesisTime: new Date(data.genesisTime).getTime(),
       layerDuration: parseInt(data.layerDuration, 10),
       layersPerEpoch: parseInt(data.layersPerEpoch, 10),
     });

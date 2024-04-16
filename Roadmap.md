@@ -25,23 +25,26 @@
    1. [X] Overview screen
       1. [X] Balance
       2. [X] Network/API status
-      3. [ ] Transactions/Rewards overview
-   2. [ ] Transactions
-      1. [ ] List
-      2. [ ] Details
+      3. [X] Transactions/Rewards overview
+   2. [X] Transactions
+      1. [X] List
+      2. [X] Details
    3. [ ] Rewards
       1. [ ] List
       2. [ ] Details
    4. [ ] Manage accounts
       1. [ ] Create new
-      2. [ ] Switch
-      3. [ ] Rename
-      4. [ ] Delete
-      5. [ ] View only accounts (see Y)
-   5. [ ] Spawn account
-   6. [ ] Send transaction
-   7. [ ] Sign message
-   8. [ ] Verify signed message
+      2. [ ] Rename
+      3. [ ] Delete
+      4. [ ] View only accounts (see Y)
+   5. [ ] Manage keys
+      1. [ ] Create new
+      2. [ ] Delete (?)
+      3. [ ] Ledger Support
+   6. [ ] Spawn account
+   7. [ ] Send transaction
+   8. [ ] Sign message
+   9. [ ] Verify signed message
 
 6. [ ] Settings
    1. [ ] Network settings
@@ -72,3 +75,9 @@ X. [ ] Publish changed @spacemesh/ed25519-bip32
 W. [ ] Transitions on route change
 
 Q. [X] Auto-fetch data on switching account / network
+
+--
+
+## Node side
+
+[ ]  Allow CORS

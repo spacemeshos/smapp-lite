@@ -3,7 +3,17 @@ import { useForm } from 'react-hook-form';
 import { Form, useNavigate } from 'react-router-dom';
 
 import { CheckCircleIcon, WarningIcon } from '@chakra-ui/icons';
-import { Button, Card, CardBody, Flex, FormControl, FormErrorMessage, FormLabel, Input, Text } from '@chakra-ui/react';
+import {
+  Button,
+  Card,
+  CardBody,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Text,
+} from '@chakra-ui/react';
 
 import BackButton from '../../components/BackButton';
 import PasswordInput from '../../components/PasswordInput';

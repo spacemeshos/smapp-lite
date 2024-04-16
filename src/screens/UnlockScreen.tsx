@@ -42,7 +42,7 @@ function UnlockScreen(): JSX.Element {
       direction="column"
       alignItems="center"
       justifyContent="center"
-      h="100vh"
+      flexGrow={1}
       fontSize="3xl"
     >
       <Text fontSize="xl" mb={4}>

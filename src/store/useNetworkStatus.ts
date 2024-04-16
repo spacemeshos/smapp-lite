@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { singletonHook } from 'react-singleton-hook'
+import { singletonHook } from 'react-singleton-hook';
 import { create } from 'zustand';
 
 import { O } from '@mobily/ts-belt';

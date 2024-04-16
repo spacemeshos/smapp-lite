@@ -3,7 +3,8 @@ export type ExplorerDataType =
   | 'accounts'
   | 'blocks'
   | 'rewards'
-  | 'layers';
+  | 'layers'
+  | 'epochs';
 
 const getExplorerUrl = (base: string, type: ExplorerDataType, id: string) => {
   const path = `/${type}/${id}`;

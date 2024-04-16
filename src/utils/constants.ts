@@ -14,3 +14,5 @@ export const DEFAULT_ACCOUNT_STATES: AccountStates = {
     nonce: '0',
   },
 };
+
+export const DEFAULT_EXPLORER_URL = 'https://explorer.spacemesh.io';

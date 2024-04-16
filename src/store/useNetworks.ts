@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { O, D, A, pipe } from '@mobily/ts-belt';
+import { A, O, pipe } from '@mobily/ts-belt';
 
 import { Network } from '../types/networks';
 

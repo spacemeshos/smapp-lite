@@ -13,7 +13,7 @@ import { O } from '@mobily/ts-belt';
 import useNetworks from '../store/useNetworks';
 import useWallet from '../store/useWallet';
 import { Account } from '../types/wallet';
-import { getAbbreviatedAddress } from '../utils/address';
+import { getAbbreviatedAddress } from '../utils/abbr';
 import { DEFAULT_HRP } from '../utils/constants';
 
 const renderAccountName = (acc: Account): string =>

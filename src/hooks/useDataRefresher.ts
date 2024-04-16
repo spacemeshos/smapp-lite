@@ -8,7 +8,7 @@ import useAccountHandlers from './useAccountHandlers';
 // This hook is used to automatically re-fetch all the required
 // data once the account or network changes.
 const useDataRefresher = () => {
-  const { fetchAccountState } = useAccountHandlers();
+  const { fetchAccountState, fetchTransactions } = useAccountHandlers();
   const { getCurrentAccount } = useWallet();
   const { getCurrentNetwork } = useNetworks();
 
@@ -21,11 +21,12 @@ const useDataRefresher = () => {
   useEffect(() => {
     if (address && rpc) {
       fetchAccountState(address);
+      fetchTransactions(address);
       // TODO: Update other data
       // TODO: Call it after being idle/blurred for a while
       //       e.g. blurred more than for 5 minutes
     }
-  }, [address, rpc, fetchAccountState]);
+  }, [address, rpc, fetchAccountState, fetchTransactions]);
 };
 
 export default useDataRefresher;
