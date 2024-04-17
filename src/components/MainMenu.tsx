@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import {
   IconButton,
   Menu,
@@ -9,13 +11,24 @@ import {
 } from '@chakra-ui/react';
 import { IconMenu2 } from '@tabler/icons-react';
 
+import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
 
+import MnemonicsModal from './MnemonicsModal';
 import WipeOutAlert from './WipeOutAlert';
 
 function MainMenu(): JSX.Element {
+  const { exportWalletFile, showMnemonics } = useWallet();
+  const { withPassword } = usePassword();
+
   const wipeAlert = useDisclosure();
-  const { exportWalletFile } = useWallet();
+
+  const mnemonicsModal = useDisclosure();
+  const [mnemonics, setMnemonics] = useState('');
+  const onMnemonicsClose = () => {
+    setMnemonics('');
+    mnemonicsModal.onClose();
+  };
 
   return (
     <>
@@ -28,7 +41,21 @@ function MainMenu(): JSX.Element {
         />
         <MenuList>
           <MenuItem>Manage accounts</MenuItem>
-          <MenuItem>Backup mnemonic</MenuItem>
+          <MenuItem
+            onClick={async () => {
+              setMnemonics(
+                (await withPassword(
+                  showMnemonics,
+                  'Show mnemonics',
+                  // eslint-disable-next-line max-len
+                  'Please enter your password to read mnemonics from the secret part of your wallet:'
+                )) ?? ''
+              );
+              mnemonicsModal.onOpen();
+            }}
+          >
+            Backup mnemonic
+          </MenuItem>
           <MenuItem onClick={exportWalletFile}>Export wallet file</MenuItem>
           <MenuDivider />
           <MenuItem>Manage networks</MenuItem>
@@ -39,6 +66,11 @@ function MainMenu(): JSX.Element {
         </MenuList>
       </Menu>
       <WipeOutAlert disclosure={wipeAlert} />
+      <MnemonicsModal
+        isOpen={mnemonicsModal.isOpen}
+        onClose={onMnemonicsClose}
+        mnemonics={mnemonics}
+      />
     </>
   );
 }

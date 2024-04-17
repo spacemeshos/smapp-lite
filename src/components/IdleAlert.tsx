@@ -10,6 +10,7 @@ import {
 import { useIdle } from '@uidotdev/usehooks';
 
 import useWindowFocus from '../hooks/useWindowFocus';
+import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
 import { noop } from '../utils/func';
 
@@ -18,6 +19,7 @@ const IDLE_ALERT_SECONDS = 30;
 
 function IdleAlert(): JSX.Element {
   const { lockWallet, isWalletUnlocked } = useWallet();
+  const { resetPassword } = usePassword();
   const isIdle = useIdle(IDLE_TIME_SECONDS * 1000);
   const isFocused = useWindowFocus();
   const [showModal, setShowModal] = useState(false);
@@ -59,8 +61,9 @@ function IdleAlert(): JSX.Element {
   useEffect(() => {
     if (shouldLockWallet) {
       lockWallet();
+      resetPassword();
     }
-  }, [shouldLockWallet, lockWallet]);
+  }, [shouldLockWallet, lockWallet, resetPassword]);
 
   return (
     <Modal isOpen={showModal} onClose={noop}>

@@ -31,6 +31,7 @@ import LockWallet from '../components/LockWallet';
 import MainMenu from '../components/MainMenu';
 import NetworkSelection from '../components/NetworksSeletion';
 import NodeStatusBadge from '../components/NodeStatusBadge';
+import PasswordAlert from '../components/PasswordAlert';
 import TxDetails from '../components/TxDetails';
 import TxListItem from '../components/TxListItem';
 import useAccountHandlers from '../hooks/useAccountHandlers';
@@ -217,6 +218,7 @@ function WalletScreen(): JSX.Element {
           />
         </>
       ))}
+      <PasswordAlert />
     </Flex>
   );
 }

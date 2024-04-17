@@ -50,6 +50,9 @@ type WalletActions = {
   wipeWallet: () => void;
   selectAccount: (index: number) => void;
   exportWalletFile: () => void;
+  // Operations with secrets
+  unlockSecrets: (password: string) => Promise<Wallet>;
+  showMnemonics: (password: string) => Promise<string>;
 };
 
 type WalletSelectors = {
@@ -144,6 +147,23 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
         'wallet.json',
         'application/json'
       );
+    },
+    // Operations with secrets
+    unlockSecrets: async (password) => {
+      const wallet = loadFromLocalStorage<null | WalletFile>(WALLET_STORE_KEY);
+      if (!wallet || !wallet.crypto) {
+        throw new Error(
+          'Cannot unlock wallet: No wallet stored in local storage'
+        );
+      }
+      return {
+        meta: wallet.meta,
+        crypto: await decryptWallet(wallet.crypto, password),
+      };
+    },
+    showMnemonics: async (password) => {
+      const wallet = await get().unlockSecrets(password);
+      return wallet.crypto.mnemonic;
     },
     // Selectors
     hasWallet: () => {
