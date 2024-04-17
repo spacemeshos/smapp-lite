@@ -4,11 +4,14 @@ import { Box, Flex } from '@chakra-ui/react';
 
 function WelcomeWrapper(): JSX.Element {
   return (
-    <Box>
-      <Flex direction="column" alignItems="center" justifyContent="center">
-        <Outlet />
-      </Flex>
-    </Box>
+    <Flex
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+      w="100%"
+    >
+      <Outlet />
+    </Flex>
   );
 }
 

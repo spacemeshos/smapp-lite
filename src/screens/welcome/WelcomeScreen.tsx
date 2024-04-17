@@ -9,13 +9,13 @@ function WelcomeScreen(): JSX.Element {
     <>
       <Image src={logo} width={200} mb={8} />
 
-      <Button as={Link} to="/create" width="100%" mb={4} size="lg">
+      <Button as={Link} to="/create" width={280} mb={4} size="lg">
         Create new wallet
       </Button>
-      <Button as={Link} to="/create/recover" width="100%" mb={4} size="lg">
+      <Button as={Link} to="/create/recover" width={280} mb={4} size="lg">
         Recover from mnemonics
       </Button>
-      <Button as={Link} to="/import" width="100%" mb={4} size="lg">
+      <Button as={Link} to="/import" width={280} mb={4} size="lg">
         Import wallet file
       </Button>
 
