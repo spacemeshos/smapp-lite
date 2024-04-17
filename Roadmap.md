@@ -29,9 +29,8 @@
    2. [X] Transactions
       1. [X] List
       2. [X] Details
-   3. [ ] Rewards
-      1. [ ] List
-      2. [ ] Details
+   3. [X] Rewards
+      1. [X] List
    4. [ ] Manage accounts
       1. [ ] Create new
       2. [ ] Rename
@@ -55,8 +54,8 @@
       3. [ ] Delete network
    2. [ ] Change password
 
-7. [ ] Backup wallet
-   1. [ ] Show mnemonics
+7. [X] Backup wallet
+   1. [X] Show mnemonics
    2. [X] Export wallet file
 
 --
@@ -74,7 +73,11 @@ X. [ ] Publish changed @spacemesh/ed25519-bip32
 
 W. [ ] Transitions on route change
 
+V. [ ] Add VirtualScroll on WalletScreen
+
 Q. [X] Auto-fetch data on switching account / network
+
+
 
 --
 

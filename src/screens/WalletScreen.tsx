@@ -6,6 +6,7 @@ import {
   ButtonGroup,
   Flex,
   IconButton,
+  Link,
   ListItem,
   OrderedList,
   Tab,
@@ -42,6 +43,7 @@ import useWallet from '../store/useWallet';
 import { Transaction } from '../types/tx';
 import { DEFAULT_HRP } from '../utils/constants';
 import { formatSmidge } from '../utils/smh';
+import RewardListItem from '../components/RewardListItem';
 
 function WalletScreen(): JSX.Element {
   useDataRefresher();
@@ -172,7 +174,19 @@ function WalletScreen(): JSX.Element {
             bgColor="blackAlpha.400"
             borderRadius={6}
             colorScheme="green"
+            position="relative"
           >
+            <Box
+              borderBottomRadius={6}
+              bgGradient="linear(to-b, rgba(0,0,0,0), blackAlpha.400)"
+              w="100%"
+              h="100px"
+              position="absolute"
+              bottom={0}
+              left={0}
+              right={0}
+              userSelect="none"
+            />
             <TabList h={14}>
               <Tab>Transactions</Tab>
               <Tab>Rewards</Tab>
@@ -205,7 +219,32 @@ function WalletScreen(): JSX.Element {
                   />
                 ))}
               </TabPanel>
-              <TabPanel>Rewards....</TabPanel>
+              <TabPanel>
+                {account.rewards.length === 0 && (
+                  <Text color="grey">
+                    No rewards for this account.
+                    <br />
+                    Check out{' '}
+                    <Link
+                      as="a"
+                      href="https://docs.spacemesh.io/docs/start"
+                      target="_blank"
+                    >
+                      Smesher&apos;s guide
+                    </Link>{' '}
+                    if you want to start smeshing.
+                  </Text>
+                )}
+                {account.rewards.reverse().map((reward) => (
+                  <RewardListItem
+                    key={`${reward.smesher}_${reward.layerPaid}`}
+                    reward={reward}
+                    genesisTime={network.genesisTime}
+                    layerDurationSec={network.layerDuration}
+                    layersPerEpoch={network.layersPerEpoch}
+                  />
+                ))}
+              </TabPanel>
             </TabPanels>
           </Tabs>
           <TxDetails

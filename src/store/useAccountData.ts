@@ -27,6 +27,7 @@ type AccountDataActions = {
     states: AccountStates
   ) => void;
   setTransactions: (genesisID: HexString, txs: Transaction[]) => void;
+  setRewards: (genesisID: HexString, address: Bech32Address, rewards: Reward[]) => void;
   reset: () => void;
 };
 
@@ -98,6 +99,21 @@ const useAccountData = create<AccountDataStore>((set, get) => ({
             get().networks[genesisID]?.txIds || {},
             txs
           ),
+        },
+      },
+    });
+  },
+  setRewards: (genesisID, address, rewards) => {
+    set({
+      networks: {
+        ...get().networks,
+        [genesisID]: {
+          ...DEFAULT_NETWROK_STATE,
+          ...get().networks[genesisID],
+          rewards: {
+            ...get().networks[genesisID]?.rewards,
+            [address]: rewards,
+          },
         },
       },
     });

@@ -5,7 +5,6 @@ import { BigIntStringSchema, BigIntValueSchema } from './strNumber';
 
 export const AccountRewardSchema = z.object({
   layer: NumberSchema,
-  layerComputed: NumberSchema,
   total: AmountSchema,
   layerReward: AmountSchema,
   coinbase: AddressSchema,
