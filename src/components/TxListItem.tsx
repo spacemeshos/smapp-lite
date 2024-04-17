@@ -4,7 +4,7 @@ import { Box, Card, CardBody, Flex, Text } from '@chakra-ui/react';
 import { Bech32Address } from '../types/common';
 import { Transaction } from '../types/tx';
 import { getAbbreviatedTxID } from '../utils/abbr';
-import { formatDateAsISO, formatTimestamp } from '../utils/datetime';
+import { formatTimestamp } from '../utils/datetime';
 import { epochByLayer, timestampByLayer } from '../utils/layers';
 import { formatSmidge } from '../utils/smh';
 import { getStatusColor, getTxBalance } from '../utils/tx';

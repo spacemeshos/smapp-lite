@@ -4,7 +4,6 @@ import { CheckCircleIcon, CopyIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
-  Divider,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -26,8 +25,10 @@ import { useCopyToClipboard } from '@uidotdev/usehooks';
 import useNetworks from '../store/useNetworks';
 import { Transaction } from '../types/tx';
 import { DEFAULT_EXPLORER_URL } from '../utils/constants';
+import { formatTimestamp } from '../utils/datetime';
 import getExplorerUrl, { ExplorerDataType } from '../utils/getExplorerUrl';
 import { toHexString } from '../utils/hexString';
+import { epochByLayer, timestampByLayer } from '../utils/layers';
 import { formatSmidge } from '../utils/smh';
 import {
   formatTxState,
@@ -36,8 +37,6 @@ import {
   isSelfSpawnTransaction,
   isSpendTransaction,
 } from '../utils/tx';
-import { formatTimestamp } from '../utils/datetime';
-import { epochByLayer, timestampByLayer } from '../utils/layers';
 
 type RowProps =
   | {
