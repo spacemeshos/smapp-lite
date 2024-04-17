@@ -30,7 +30,7 @@ function TxListItem({
 
   return (
     <Card
-      m={2}
+      mb={2}
       bgColor="whiteAlpha.100"
       _hover={{ cursor: 'pointer', bgColor: 'whiteAlpha.300' }}
       onClick={() => onClick(tx)}

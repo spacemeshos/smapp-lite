@@ -6,12 +6,8 @@ import {
   ButtonGroup,
   Flex,
   IconButton,
-  Link,
-  ListItem,
-  OrderedList,
   Tab,
   TabList,
-  TabPanel,
   TabPanels,
   Tabs,
   Text,
@@ -33,8 +29,9 @@ import MainMenu from '../components/MainMenu';
 import NetworkSelection from '../components/NetworksSeletion';
 import NodeStatusBadge from '../components/NodeStatusBadge';
 import PasswordAlert from '../components/PasswordAlert';
+import RewardsList from '../components/RewardsList';
 import TxDetails from '../components/TxDetails';
-import TxListItem from '../components/TxListItem';
+import TxList from '../components/TxList';
 import useAccountHandlers from '../hooks/useAccountHandlers';
 import useDataRefresher from '../hooks/useDataRefresher';
 import useAccountData from '../store/useAccountData';
@@ -43,7 +40,6 @@ import useWallet from '../store/useWallet';
 import { Transaction } from '../types/tx';
 import { DEFAULT_HRP } from '../utils/constants';
 import { formatSmidge } from '../utils/smh';
-import RewardListItem from '../components/RewardListItem';
 
 function WalletScreen(): JSX.Element {
   useDataRefresher();
@@ -191,60 +187,18 @@ function WalletScreen(): JSX.Element {
               <Tab>Transactions</Tab>
               <Tab>Rewards</Tab>
             </TabList>
-            <TabPanels height={1} flexGrow={1} overflow="auto">
-              <TabPanel>
-                {account.transactions.length === 0 && (
-                  <>
-                    <Text color="grey">
-                      No transactions yet.
-                      <br />
-                      <br />
-                      To send transactions you need to:
-                    </Text>
-                    <OrderedList color="grey">
-                      <ListItem>have some tokens on the balance,</ListItem>
-                      <ListItem>initiate a spawn transaction first.</ListItem>
-                    </OrderedList>
-                  </>
-                )}
-                {account.transactions.reverse().map((tx) => (
-                  <TxListItem
-                    key={tx.id}
-                    tx={tx}
-                    host={account.address}
-                    onClick={openTxDetails}
-                    genesisTime={network.genesisTime}
-                    layerDurationSec={network.layerDuration}
-                    layersPerEpoch={network.layersPerEpoch}
-                  />
-                ))}
-              </TabPanel>
-              <TabPanel>
-                {account.rewards.length === 0 && (
-                  <Text color="grey">
-                    No rewards for this account.
-                    <br />
-                    Check out{' '}
-                    <Link
-                      as="a"
-                      href="https://docs.spacemesh.io/docs/start"
-                      target="_blank"
-                    >
-                      Smesher&apos;s guide
-                    </Link>{' '}
-                    if you want to start smeshing.
-                  </Text>
-                )}
-                {account.rewards.reverse().map((reward) => (
-                  <RewardListItem
-                    key={`${reward.smesher}_${reward.layerPaid}`}
-                    reward={reward}
-                    genesisTime={network.genesisTime}
-                    layerDurationSec={network.layerDuration}
-                    layersPerEpoch={network.layersPerEpoch}
-                  />
-                ))}
-              </TabPanel>
+            <TabPanels display="flex" flex={1} flexDir="column">
+              <TxList
+                txs={account.transactions}
+                account={account}
+                network={network}
+                openTxDetails={openTxDetails}
+              />
+              <RewardsList
+                rewards={account.rewards}
+                account={account}
+                network={network}
+              />
             </TabPanels>
           </Tabs>
           <TxDetails

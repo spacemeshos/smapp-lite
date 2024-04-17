@@ -1,9 +1,9 @@
-import { Bech32Address, BigIntString, HexString } from './common';
+import { Bech32Address, HexString } from './common';
 
 export type Reward = {
   layerPaid: number;
-  rewardForLayer: BigIntString;
-  rewardForFees: BigIntString;
+  rewardForLayer: bigint;
+  rewardForFees: bigint;
   coinbase: Bech32Address;
   smesher: HexString;
 };

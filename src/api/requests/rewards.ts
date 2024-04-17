@@ -24,10 +24,10 @@ export const fetchRewardsByAddress = async (
       x.accountItem.map(
         ({ reward }): Reward => ({
           layerPaid: reward.layer.number,
-          rewardForLayer: reward.layerReward.value,
+          rewardForLayer: BigInt(reward.layerReward.value),
           rewardForFees: BigInt(
             BigInt(reward.total.value) - BigInt(reward.layerReward.value)
-          ).toString(),
+          ),
           coinbase: reward.coinbase.address,
           smesher: reward.smesher.id,
         })

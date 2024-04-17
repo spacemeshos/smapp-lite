@@ -31,6 +31,7 @@
     "@spacemesh/ed25519-bip32": "/Users/brusher/Work/spacemeshos/ed25519_bip32_wasm/lib",
     "@spacemesh/sm-codec": "^0.5.0",
     "@tabler/icons-react": "^3.1.0",
+    "@tanstack/react-virtual": "^3.3.0",
     "@uidotdev/usehooks": "^2.4.1",
     "bech32": "^2.0.0",
     "eventemitter3": "^5.0.1",

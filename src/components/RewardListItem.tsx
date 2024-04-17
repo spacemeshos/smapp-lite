@@ -1,4 +1,13 @@
-import { Box, Card, CardBody, Flex, IconButton, Stat, StatHelpText, StatLabel, StatNumber, Text } from '@chakra-ui/react';
+import {
+  Card,
+  CardBody,
+  Flex,
+  IconButton,
+  Stat,
+  StatLabel,
+  StatNumber,
+  Text,
+} from '@chakra-ui/react';
 import { O } from '@mobily/ts-belt';
 import { IconWorldSearch } from '@tabler/icons-react';
 
@@ -31,9 +40,13 @@ function RewardListItem({
   );
 
   return (
-    <Card m={2} bgColor="whiteAlpha.100" _hover={{ bgColor: 'whiteAlpha.300' }}>
+    <Card
+      mb={2}
+      bgColor="whiteAlpha.100"
+      _hover={{ bgColor: 'whiteAlpha.300' }}
+    >
       <CardBody p={2}>
-        <Flex mb={2}>
+        <Flex mb={1}>
           <Text flex={1} fontSize="sm" color="gray">
             {formatTimestamp(
               timestampByLayer(genesisTime, layerDurationSec, reward.layerPaid)
@@ -54,20 +67,20 @@ function RewardListItem({
 
         <Flex alignItems="baseline">
           <Stat flex={2}>
-            <StatLabel>Reward</StatLabel>
-            <StatNumber color="green">
+            <StatLabel fontSize="xx-small">Reward</StatLabel>
+            <StatNumber fontSize="sm" color="green">
               {formatSmidge(reward.rewardForLayer + reward.rewardForFees)}
             </StatNumber>
           </Stat>
-          <Stat colorScheme="gray" flex={1}>
+          <Stat color="gray" flex={1}>
             <StatLabel fontSize="xx-small">For layer</StatLabel>
-            <StatNumber fontSize="sm" mt="6px">
+            <StatNumber fontSize="sm">
               {formatSmidge(reward.rewardForLayer)}
             </StatNumber>
           </Stat>
-          <Stat colorScheme="gray" flex={1}>
+          <Stat color="gray" flex={1}>
             <StatLabel fontSize="xx-small">For fees</StatLabel>
-            <StatNumber fontSize="sm" mt="6px">
+            <StatNumber fontSize="sm">
               {formatSmidge(reward.rewardForFees)}
             </StatNumber>
           </Stat>

@@ -11,7 +11,7 @@
 
 3. [X] Import wallet file
    1. [X] FileReader
-   2. [X ] Ask password
+   2. [X] Ask password
 
 --
 
@@ -40,13 +40,25 @@
       1. [ ] Create new
       2. [ ] Delete (?)
       3. [ ] Ledger Support
-   6. [ ] Spawn account
-   7. [ ] Send transaction
-   8. [ ] Sign message
-   9. [ ] Verify signed message
+   6. [ ] Send transaction
+      1. [ ] Single signature
+         // Just sign with selected account
+      2. [ ] Multiple Signatures
+         1. [ ] Sign with selected account
+         2. [ ] Sign with another account in the wallet
+         3. [ ] Parse transaction and signatures (that sent by other party) and sign
+      3. [ ] Support all TX kinds
+         1. [ ] SingleSig.Spawn
+         2. [ ] SingleSig.Spend
+         3. [ ] MultiSig.Spawn
+         4. [ ] MultiSig.Spend
+         5. [ ] Vesting.Drain
+         6. [ ] Vault.Spawn
+   7. [ ] Sign message
+   8. [ ] Verify signed message
 
 6. [ ] Settings
-   1. [ ] Network settings
+   1. [X] Network settings
       - RPC
       - Remote node status
       1. [X] Add network
@@ -62,7 +74,7 @@
 
 Z. [X] Lock wallet when idle for some time
 
-Y. [ ] Update wallet format to allow adding view-only accounts only by address, not publicKey
+Y. [ ] Update wallet format to allow adding other account types, view-only accounts, etc
 
 X. [ ] Publish changed @spacemesh/ed25519-bip32
    0. [ ] Make it work well for smapp-lite
@@ -71,16 +83,17 @@ X. [ ] Publish changed @spacemesh/ed25519-bip32
    3. [ ] Publish to NPM
    4. [ ] Update smapp-lite/package.json
 
-W. [ ] Transitions on route change
+W. [ ] Add VirtualScroll on WalletScreen
 
-V. [ ] Add VirtualScroll on WalletScreen
-
-Q. [X] Auto-fetch data on switching account / network
+V. [X] Auto-fetch data on switching account / network
 
 
 
 --
 
-## Node side
+## Node/infra side
 
 [ ]  Allow CORS
+[ ] Reward ID — we need to have possibility to get same ID as in Explorer
+[ ] APIv2: RewardsService/List is not available ATM
+[ ] APIv2: TransactionService

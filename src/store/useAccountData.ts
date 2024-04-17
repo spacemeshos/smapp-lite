@@ -27,7 +27,11 @@ type AccountDataActions = {
     states: AccountStates
   ) => void;
   setTransactions: (genesisID: HexString, txs: Transaction[]) => void;
-  setRewards: (genesisID: HexString, address: Bech32Address, rewards: Reward[]) => void;
+  setRewards: (
+    genesisID: HexString,
+    address: Bech32Address,
+    rewards: Reward[]
+  ) => void;
   reset: () => void;
 };
 
