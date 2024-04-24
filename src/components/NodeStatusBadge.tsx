@@ -1,4 +1,4 @@
-import { Badge, Box, Card, CardBody, Divider } from '@chakra-ui/react';
+import { Badge, Box, Card, CardBody } from '@chakra-ui/react';
 
 import useNetworks from '../store/useNetworks';
 import useNetworkStatus from '../store/useNetworkStatus';
@@ -8,20 +8,6 @@ function NodeStatusBadge(): JSX.Element | null {
   const { status, error } = useNetworkStatus();
 
   if (!hasCurrentNetwork() || status?.isSynced) return null;
-
-  if (!status) {
-    return (
-      <Card
-        variant="outline"
-        borderColor="grey"
-        fontSize="sm"
-        width="100%"
-        mt={2}
-      >
-        <CardBody>Please wait, connecting to the network...</CardBody>
-      </Card>
-    );
-  }
 
   if (error) {
     return (
@@ -34,9 +20,23 @@ function NodeStatusBadge(): JSX.Element | null {
       >
         <CardBody>
           Error: {error.message}
-          <Divider />
+          <br />
           Please choose another public RPC.
         </CardBody>
+      </Card>
+    );
+  }
+
+  if (!status) {
+    return (
+      <Card
+        variant="outline"
+        borderColor="grey"
+        fontSize="sm"
+        width="100%"
+        mt={2}
+      >
+        <CardBody>Please wait, connecting to the network...</CardBody>
       </Card>
     );
   }
