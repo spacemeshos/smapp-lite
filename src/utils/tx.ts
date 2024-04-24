@@ -2,6 +2,7 @@ import { bech32 } from 'bech32';
 
 import { D } from '@mobily/ts-belt';
 
+import { TransactionState } from '../api/schemas/tx';
 import { Bech32Address } from '../types/common';
 import {
   ParsedSpawnTransaction,
@@ -11,8 +12,6 @@ import {
 } from '../types/tx';
 
 import { MethodName, TemplateName } from './templateNames';
-import { Transaction } from '@spacemesh/sm-codec';
-import { TransactionState } from '../api/schemas/tx';
 
 export enum TxType {
   Self,

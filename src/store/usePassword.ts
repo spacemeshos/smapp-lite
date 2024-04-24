@@ -1,6 +1,11 @@
 import EventEmitter from 'eventemitter3';
 import { useState } from 'react';
-import { Control, FieldErrors, useForm, UseFormRegisterReturn } from 'react-hook-form';
+import {
+  Control,
+  FieldErrors,
+  useForm,
+  UseFormRegisterReturn,
+} from 'react-hook-form';
 import { singletonHook } from 'react-singleton-hook';
 import { create } from 'zustand';
 

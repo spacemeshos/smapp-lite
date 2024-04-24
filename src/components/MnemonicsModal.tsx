@@ -12,7 +12,6 @@ import {
   Portal,
   Text,
   Textarea,
-  UseDisclosureReturn,
 } from '@chakra-ui/react';
 import { useCopyToClipboard } from '@uidotdev/usehooks';
 
