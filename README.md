@@ -13,6 +13,13 @@
    yarn dev
    ```
 
+3. If you also need to run a CORS proxy to communicate with your local node:
+   ```bash
+   yarn cors | yarn dev
+   ```
+   It will run the cors-anywhere on `http://localhost:8080`.
+   Use URL like this for your JSON API: `http://localhost:8080/127.0.0.1:9095`
+
 ### Lint commands
 
 - Run eslint

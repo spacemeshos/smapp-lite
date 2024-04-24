@@ -87,7 +87,11 @@ W. [ ] Add VirtualScroll on WalletScreen
 
 V. [X] Auto-fetch data on switching account / network
 
+U. [ ] Add cache (service worker) for static resources (to allow working offline)
 
+T. [ ] Add cache for API requests (if possible to replace POST with GET on API side)
+
+S. [ ] Auto-fetch transactions and rewards periodically
 
 --
 
