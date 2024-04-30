@@ -2006,8 +2006,10 @@
   dependencies:
     "@sinonjs/commons" "^2.0.0"
 
-"@spacemesh/ed25519-bip32@file:../ed25519_bip32_wasm/lib":
-  version "0.1.0"
+"@spacemesh/ed25519-bip32@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@spacemesh/ed25519-bip32/-/ed25519-bip32-0.2.1.tgz#f622616060fb477b1fbc5d1292ff21993927a3b2"
+  integrity sha512-wwB9FHotFBc1IqYLNZRXt9jZIm7K4gWap4EaotEGeoRLvVJNR/J63TXZBEsHhPrMOWTC2yAcxi6GC47bxsYOhA==
 
 "@spacemesh/sm-codec@^0.5.0":
   version "0.5.0"
