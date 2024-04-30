@@ -3,13 +3,6 @@ import { derive_key } from '@spacemesh/ed25519-bip32';
 
 import isJest from './isJest';
 
-// (async () => {
-//   const buf = await (await fetch(wasmUrl)).arrayBuffer();
-//   await init(buf);
-//   // eslint-disable-next-line no-console
-//   console.log('BIP32 is ready!');
-// })();
-
 (async function initBip32() {
   if (typeof window !== 'undefined' && !isJest()) {
     // Web
