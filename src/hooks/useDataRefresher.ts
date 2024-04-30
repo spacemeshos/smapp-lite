@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import useNetworks from '../store/useNetworks';
 import useWallet from '../store/useWallet';
+import { Bech32Address } from '../types/common';
 
 import useAccountHandlers from './useAccountHandlers';
 
@@ -12,6 +13,7 @@ const useDataRefresher = () => {
     useAccountHandlers();
   const { getCurrentAccount } = useWallet();
   const { getCurrentNetwork } = useNetworks();
+  const [isLoading, setIsLoading] = useState(false);
 
   const currentAccount = getCurrentAccount();
   const currentNetwork = getCurrentNetwork();
@@ -19,16 +21,39 @@ const useDataRefresher = () => {
   const address = currentAccount?.address;
   const rpc = currentNetwork?.jsonRPC;
 
+  const doRequests = useMemo(
+    () => (addr: Bech32Address) => {
+      setIsLoading(true);
+      return Promise.all([
+        fetchAccountState(addr),
+        fetchTransactions(addr),
+        fetchRewards(addr),
+      ])
+        .catch((err) => {
+          // eslint-disable-next-line no-console
+          console.error('Cannot refresh data: ', err);
+        })
+        .then(() => {
+          setIsLoading(false);
+        });
+    },
+    [fetchAccountState, fetchTransactions, fetchRewards]
+  );
+
   useEffect(() => {
     if (address && rpc) {
-      fetchAccountState(address);
-      fetchTransactions(address);
-      fetchRewards(address);
-      // TODO: Update other data
-      // TODO: Call it after being idle/blurred for a while
-      //       e.g. blurred more than for 5 minutes
+      doRequests(address);
     }
-  }, [address, rpc, fetchAccountState, fetchTransactions, fetchRewards]);
+  }, [address, rpc, doRequests]);
+
+  return {
+    isLoading,
+    refreshData: () => {
+      if (address && rpc) {
+        doRequests(address);
+      }
+    },
+  };
 };
 
 export default useDataRefresher;

@@ -6,6 +6,7 @@ import {
   ButtonGroup,
   Flex,
   IconButton,
+  Spinner,
   Tab,
   TabList,
   TabPanels,
@@ -32,7 +33,6 @@ import PasswordAlert from '../components/PasswordAlert';
 import RewardsList from '../components/RewardsList';
 import TxDetails from '../components/TxDetails';
 import TxList from '../components/TxList';
-import useAccountHandlers from '../hooks/useAccountHandlers';
 import useDataRefresher from '../hooks/useDataRefresher';
 import useAccountData from '../store/useAccountData';
 import useNetworks from '../store/useNetworks';
@@ -42,12 +42,11 @@ import { DEFAULT_HRP } from '../utils/constants';
 import { formatSmidge } from '../utils/smh';
 
 function WalletScreen(): JSX.Element {
-  useDataRefresher();
+  const { isLoading, refreshData } = useDataRefresher();
 
   const { getCurrentAccount } = useWallet();
   const { getCurrentNetwork } = useNetworks();
   const { getAccountData } = useAccountData();
-  const { fetchAccountState } = useAccountHandlers();
   const currentNetwork = getCurrentNetwork();
 
   const txDisclosure = useDisclosure();
@@ -127,9 +126,16 @@ function WalletScreen(): JSX.Element {
                   ml={2}
                   size="sm"
                   variant="outline"
-                  icon={<IconRefresh width={18} />}
+                  disabled={isLoading}
+                  icon={
+                    isLoading ? (
+                      <Spinner size="sm" />
+                    ) : (
+                      <IconRefresh width={18} />
+                    )
+                  }
                   aria-label="Refresh balance"
-                  onClick={() => fetchAccountState(account.address)}
+                  onClick={() => refreshData()}
                 />
               </Text>
             </>
