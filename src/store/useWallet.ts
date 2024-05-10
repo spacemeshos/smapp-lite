@@ -2,9 +2,11 @@ import fileDownload from 'js-file-download';
 import { create } from 'zustand';
 
 import { O } from '@mobily/ts-belt';
+import { StdTemplateKeys, TemeplateArgumentsMap } from '@spacemesh/sm-codec';
 
 import {
   Account,
+  AccountWithAddress,
   Contact,
   KeyPair,
   Wallet,
@@ -18,16 +20,18 @@ import {
   saveToLocalStorage,
 } from '../utils/localStorage';
 import {
+  computeAddress,
   createWallet,
   decryptWallet,
-  deriveAccount,
   encryptWallet,
   generateMnemonic,
 } from '../utils/wallet';
+import { isLegacySecrets, migrateSecrets } from '../utils/wallet.legacy';
 
 type WalletData = {
   meta: WalletMeta;
   keychain: Omit<KeyPair, 'secretKey'>[];
+  accounts: Account[];
   contacts: Contact[];
 };
 
@@ -45,7 +49,6 @@ type WalletActions = {
   ) => void;
   openWallet: (wallet: WalletFile, password: string) => Promise<boolean>;
   unlockWallet: (password: string) => Promise<boolean>;
-  importWallet: (wallet: WalletFile, password: string) => Promise<boolean>;
   lockWallet: () => void;
   wipeWallet: () => void;
   selectAccount: (index: number) => void;
@@ -58,18 +61,19 @@ type WalletActions = {
 type WalletSelectors = {
   hasWallet: () => boolean;
   isWalletUnlocked: () => boolean;
-  listAccounts: (hrp?: string) => Account[];
-  getCurrentAccount: (hrp?: string) => O.Option<Account>;
+  listAccounts: (hrp?: string) => AccountWithAddress[];
+  getCurrentAccount: (hrp?: string) => O.Option<AccountWithAddress>;
 };
 
 const WALLET_STORE_KEY = 'wallet-file';
 
 const extractData = (wallet: Wallet): WalletData => ({
   meta: wallet.meta,
-  keychain: wallet.crypto.accounts.map(
+  keychain: wallet.crypto.keys.map(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     ({ secretKey, ...safeKeyPair }) => safeKeyPair
   ),
+  accounts: wallet.crypto.accounts,
   contacts: wallet.crypto.contacts,
 });
 
@@ -95,11 +99,20 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
     openWallet: async (wallet: WalletFile, password: string) => {
       try {
         const secrets = await decryptWallet(wallet.crypto, password);
+        const migratedSecrets = migrateSecrets(secrets);
         set({
           wallet: extractData({
             meta: wallet.meta,
-            crypto: secrets,
+            crypto: migratedSecrets,
           }),
+        });
+        const secretsToStore = isLegacySecrets(secrets)
+          ? await encryptWallet(migratedSecrets, password)
+          : wallet.crypto;
+
+        saveToLocalStorage(WALLET_STORE_KEY, {
+          meta: wallet.meta,
+          crypto: secretsToStore,
         });
         return true;
       } catch (err) {
@@ -113,14 +126,7 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
           'Cannot unlock wallet: No wallet stored in local storage'
         );
       }
-      return get().importWallet(file, password);
-    },
-    importWallet: async (wallet: WalletFile, password: string) => {
-      const success = await get().openWallet(wallet, password);
-      if (success) {
-        saveToLocalStorage(WALLET_STORE_KEY, wallet);
-      }
-      return success;
+      return get().openWallet(file, password);
     },
     lockWallet: () => set({ wallet: null }),
     wipeWallet: () => {
@@ -175,13 +181,20 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
       return !!state.wallet;
     },
     listAccounts: (hrp = DEFAULT_HRP) => {
-      const keychain = get().wallet?.keychain ?? [];
-      return keychain.map((keypair) => deriveAccount(hrp, keypair));
+      const accounts = get().wallet?.accounts ?? <Account[]>[];
+      return accounts.map((acc) => ({
+        ...acc,
+        address: computeAddress(
+          hrp,
+          acc.templateAddress as StdTemplateKeys,
+          acc.spawnArguments as TemeplateArgumentsMap[StdTemplateKeys][0]
+        ),
+      }));
     },
     getCurrentAccount: (hrp = DEFAULT_HRP) => {
       const state = get();
-      const keypair = state.wallet?.keychain[state.selectedAccount];
-      return O.fromNullable(keypair ? deriveAccount(hrp, keypair) : null);
+      const acc = state.listAccounts(hrp)[state.selectedAccount];
+      return O.fromNullable(acc);
     },
   })
 );

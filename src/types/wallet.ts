@@ -1,19 +1,28 @@
-import { HexString } from './common';
+import { Bech32Address, HexString } from './common';
 
-export interface KeyPair {
+export type KeyMeta = {
   displayName: string;
   created: string;
+};
+
+export type KeyPair = {
   path: string;
   publicKey: string;
-  secretKey: string;
-}
+  secretKey?: string;
+} & KeyMeta;
+
+export type ForeignKey = KeyPair & { secretKey: never };
+export type FullKey = Required<KeyPair>;
 
 export interface Account<T = Record<string, unknown>> {
   displayName: string;
-  address: string;
   templateAddress: string;
   spawnArguments: T;
 }
+
+export type AccountWithAddress<T = Record<string, unknown>> = Account<T> & {
+  address: Bech32Address;
+};
 
 export interface Contact {
   address: string;
@@ -25,9 +34,16 @@ export interface WalletMeta {
   created: string;
 }
 
-export interface WalletSecrets {
+export interface WalletSecretsLegacy {
   mnemonic: string;
   accounts: KeyPair[];
+  contacts: Contact[];
+}
+
+export interface WalletSecrets {
+  mnemonic: string;
+  keys: KeyPair[];
+  accounts: Account[];
   contacts: Contact[];
 }
 

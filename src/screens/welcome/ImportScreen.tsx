@@ -36,7 +36,7 @@ function ImportScreen(): JSX.Element {
     register,
     handleSubmit,
   } = useForm<FormValues>();
-  const { importWallet } = useWallet();
+  const { openWallet } = useWallet();
   const navigate = useNavigate();
 
   const readFile = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,7 +75,7 @@ function ImportScreen(): JSX.Element {
       setError('root', { type: 'manual', message: 'No wallet file loaded' });
       return;
     }
-    const success = await importWallet(walletFileContent, password);
+    const success = await openWallet(walletFileContent, password);
     if (!success) {
       setError('password', { type: 'value', message: 'Invalid password' });
       return;

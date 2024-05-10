@@ -1,9 +1,13 @@
 import * as bip39 from '@scure/bip39';
 import { wordlist } from '@scure/bip39/wordlists/english';
-import { StdPublicKeys, TemplateRegistry } from '@spacemesh/sm-codec';
-
 import {
-  Account,
+  StdTemplateKeys,
+  StdTemplates,
+  TemeplateArgumentsMap,
+} from '@spacemesh/sm-codec';
+
+import { Bech32Address } from '../types/common';
+import {
   Contact,
   KeyPair,
   Wallet,
@@ -24,6 +28,11 @@ import { generateAddress } from './bech32';
 import Bip32KeyDerivation from './bip32';
 import { getISODate } from './datetime';
 import { fromHexString, toHexString } from './hexString';
+import {
+  MultiSigSpawnArguments,
+  SingleSigSpawnArguments,
+  TemplateKey,
+} from './templates';
 
 export const createKeyPair = (
   displayName: string,
@@ -52,11 +61,18 @@ export const createWallet = (
   const timestamp = getISODate();
   const mnemonic = existingMnemonic || generateMnemonic();
 
+  const firstKey = createKeyPair('Account 0', mnemonic, 0);
   const crypto: WalletSecrets = {
     mnemonic,
+    keys: [firstKey],
     accounts: [
-      createKeyPair('Account 0', mnemonic, 0),
-      createKeyPair('Account 1', mnemonic, 1),
+      {
+        displayName: 'Main Account',
+        templateAddress: TemplateKey.SingleSig,
+        spawnArguments: {
+          PublicKey: firstKey.publicKey,
+        },
+      },
     ],
     contacts: [],
   };
@@ -75,11 +91,12 @@ export const addKeyPair = (wallet: Wallet, keypair: KeyPair): Wallet => ({
   ...wallet,
   crypto: {
     ...wallet.crypto,
-    accounts: [...wallet.crypto.accounts, keypair],
+    keys: [...wallet.crypto.keys, keypair],
   },
 });
 
 // TODO: editKeyPair, removeKeyPair
+// TODO: addAccount, editAccount, removeAccount
 
 export const generateNewKeyPair = (wallet: Wallet, name?: string): Wallet => {
   const index = wallet.crypto.accounts.length;
@@ -106,29 +123,42 @@ export const addContact = (wallet: Wallet, contact: Contact): Wallet => ({
 //
 // Derive Account from KeyPair
 //
-export const deriveAccount = (
-  hrp: string,
-  keypair: Omit<KeyPair, 'secretKey'>,
-  templateKey = StdPublicKeys.SingleSig
-): Account => {
-  const tpl = TemplateRegistry.get(templateKey, 0);
 
-  if (templateKey !== StdPublicKeys.SingleSig) {
-    // TODO: Support other templates
-    throw new Error('Only SingleSig template is supported');
+const transformSpawnArgs = <TK extends StdTemplateKeys>(
+  spawnArguments: TemeplateArgumentsMap[TK][0],
+  templateKey: TK,
+  args: TemeplateArgumentsMap[TK][0]
+): TemeplateArgumentsMap[TK][0] => {
+  switch (templateKey) {
+    case TemplateKey.SingleSig:
+      return {
+        PublicKey: fromHexString(
+          (args as unknown as SingleSigSpawnArguments).PublicKey
+        ),
+      };
+    case TemplateKey.MultiSig:
+      return {
+        ...args,
+        PublicKeys: (args as unknown as MultiSigSpawnArguments).PublicKeys.map(
+          fromHexString
+        ),
+      };
+    default:
+      return args;
   }
+};
 
-  const spawnArguments = {
-    PublicKey: fromHexString(keypair.publicKey),
-  };
-  const principal = tpl.principal(spawnArguments);
-  const address = generateAddress(principal, hrp);
-  return {
-    displayName: keypair.displayName,
-    address,
-    templateAddress: templateKey,
-    spawnArguments,
-  };
+export const computeAddress = <TK extends StdTemplateKeys>(
+  hrp: string,
+  templateKey: TK,
+  spawnArguments: TemeplateArgumentsMap[TK][0]
+): Bech32Address => {
+  const tpl = StdTemplates[templateKey].methods[0];
+  const args = transformSpawnArgs(spawnArguments, templateKey, spawnArguments);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const principal = tpl.principal(args);
+  return generateAddress(principal, hrp);
 };
 
 //

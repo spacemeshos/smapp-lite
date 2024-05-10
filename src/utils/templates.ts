@@ -1,10 +1,10 @@
 import { bech32 } from 'bech32';
 
-import { Bech32Address } from '../types/common';
+import { Bech32Address, HexString } from '../types/common';
 
 import { toHexString } from './hexString';
 
-export enum TemplateAddresses {
+export enum TemplateKey {
   SingleSig = '000000000000000000000000000000000000000000000001',
   MultiSig = '000000000000000000000000000000000000000000000002',
   Vesting = '000000000000000000000000000000000000000000000003',
@@ -19,16 +19,29 @@ export enum TemplateName {
   Vault = 'Vault',
 }
 
+export type SingleSigSpawnArguments = {
+  PublicKey: HexString;
+};
+
+export type MultiSigSpawnArguments = {
+  Required: number;
+  PublicKeys: HexString[];
+};
+
+//
+// Utils
+//
+
 export const getTemplateName = (address: Bech32Address): TemplateName => {
   const pk = toHexString(bech32.fromWords(bech32.decode(address).words));
   switch (pk) {
-    case TemplateAddresses.SingleSig:
+    case TemplateKey.SingleSig:
       return TemplateName.SingleSig;
-    case TemplateAddresses.MultiSig:
+    case TemplateKey.MultiSig:
       return TemplateName.MultiSig;
-    case TemplateAddresses.Vesting:
+    case TemplateKey.Vesting:
       return TemplateName.Vesting;
-    case TemplateAddresses.Vault:
+    case TemplateKey.Vault:
       return TemplateName.Vault;
     default:
       return TemplateName.Unknown;
