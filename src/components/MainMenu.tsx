@@ -43,15 +43,16 @@ function MainMenu(): JSX.Element {
           <MenuItem>Manage accounts</MenuItem>
           <MenuItem
             onClick={async () => {
-              setMnemonics(
-                (await withPassword(
-                  showMnemonics,
-                  'Show mnemonics',
-                  // eslint-disable-next-line max-len
-                  'Please enter your password to read mnemonics from the secret part of your wallet:'
-                )) ?? ''
+              const words = await withPassword(
+                showMnemonics,
+                'Show mnemonics',
+                // eslint-disable-next-line max-len
+                'Please enter your password to read mnemonics from the secret part of your wallet:'
               );
-              mnemonicsModal.onOpen();
+              if (words) {
+                setMnemonics(words);
+                mnemonicsModal.onOpen();
+              }
             }}
           >
             Backup mnemonic
