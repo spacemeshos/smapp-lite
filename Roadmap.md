@@ -74,16 +74,16 @@
 
 Z. [X] Lock wallet when idle for some time
 
-Y. [ ] Update wallet format to allow adding other account types, view-only accounts, etc
+Y. [X] Update wallet format to allow adding other account types, view-only accounts, etc
 
-X. [ ] Publish changed @spacemesh/ed25519-bip32
-   0. [ ] Make it work well for smapp-lite
-   1. [ ] Make it works without breaking change...
-   2. [ ] Open PR
-   3. [ ] Publish to NPM
-   4. [ ] Update smapp-lite/package.json
+X. [X] Publish changed @spacemesh/ed25519-bip32
+   0. [X] Make it work well for smapp-lite
+   1. [X] Make it works without breaking change...
+   2. [ ] Open PR (to sdk repo)
+   3. [X] Publish to NPM
+   4. [X] Update smapp-lite/package.json
 
-W. [ ] Add VirtualScroll on WalletScreen
+W. [X] Add VirtualScroll on WalletScreen
 
 V. [X] Auto-fetch data on switching account / network
 
@@ -97,7 +97,7 @@ S. [ ] Auto-fetch transactions and rewards periodically
 
 ## Node/infra side
 
-[ ]  Allow CORS
+[ ] Allow CORS
 [ ] Reward ID — we need to have possibility to get same ID as in Explorer
 [ ] APIv2: RewardsService/List is not available ATM
 [ ] APIv2: TransactionService

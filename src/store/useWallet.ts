@@ -7,8 +7,9 @@ import { StdTemplateKeys, TemeplateArgumentsMap } from '@spacemesh/sm-codec';
 import {
   Account,
   AccountWithAddress,
+  AnyKey,
   Contact,
-  KeyPair,
+  SafeKey,
   Wallet,
   WalletFile,
   WalletMeta,
@@ -30,7 +31,7 @@ import { isLegacySecrets, migrateSecrets } from '../utils/wallet.legacy';
 
 type WalletData = {
   meta: WalletMeta;
-  keychain: Omit<KeyPair, 'secretKey'>[];
+  keychain: SafeKey[];
   accounts: Account[];
   contacts: Contact[];
 };
@@ -61,6 +62,8 @@ type WalletActions = {
 type WalletSelectors = {
   hasWallet: () => boolean;
   isWalletUnlocked: () => boolean;
+  listKeys: () => SafeKey[];
+  listSecretKeys: (password: string) => Promise<AnyKey[]>;
   listAccounts: (hrp?: string) => AccountWithAddress[];
   getCurrentAccount: (hrp?: string) => O.Option<AccountWithAddress>;
 };
@@ -179,6 +182,11 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
     isWalletUnlocked: () => {
       const state = get();
       return !!state.wallet;
+    },
+    listKeys: () => get().wallet?.keychain ?? [],
+    listSecretKeys: async (password: string) => {
+      const secrets = await get().unlockSecrets(password);
+      return secrets.crypto.keys;
     },
     listAccounts: (hrp = DEFAULT_HRP) => {
       const accounts = get().wallet?.accounts ?? <Account[]>[];

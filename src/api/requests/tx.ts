@@ -9,7 +9,7 @@ import { Bech32Address } from '../../types/common';
 import { Transaction } from '../../types/tx';
 import { fromBase64 } from '../../utils/base64';
 import { toHexString } from '../../utils/hexString';
-import { getMethodName, getTemplateName } from '../../utils/templates';
+import { getMethodName, getTemplateNameByAddress } from '../../utils/templates';
 import {
   MeshTransactionsResponseSchema,
   TransactionResponse,
@@ -107,7 +107,7 @@ export const fetchTransactionsByAddress = async (
         template: {
           address: tx.template.address,
           method: tx.method,
-          name: getTemplateName(tx.template.address),
+          name: getTemplateNameByAddress(tx.template.address),
           methodName: getMethodName(tx.method),
         },
         layer: tx.layer,

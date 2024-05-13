@@ -9,4 +9,4 @@ export type BigIntString = string;
 // Guards
 
 export const isHexString = (str: string): str is HexString =>
-  /^0x[0-9a-fA-F]+$/.test(str);
+  /^(0x)?[0-9a-fA-F]+$/.test(str);

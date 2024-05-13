@@ -5,14 +5,22 @@ export type KeyMeta = {
   created: string;
 };
 
+export enum KeyOrigin {
+  Unknown = 0,
+  Ledger = 1,
+}
+
 export type KeyPair = {
   path: string;
   publicKey: string;
   secretKey?: string;
 } & KeyMeta;
 
-export type ForeignKey = KeyPair & { secretKey: never };
-export type FullKey = Required<KeyPair>;
+export type SafeKey = Omit<KeyPair, 'secretKey'>;
+
+export type ForeignKey = SafeKey & { origin: KeyOrigin };
+export type LocalKey = Required<KeyPair>;
+export type AnyKey = SafeKey | ForeignKey | LocalKey;
 
 export interface Account<T = Record<string, unknown>> {
   displayName: string;

@@ -32,9 +32,8 @@ export type MultiSigSpawnArguments = {
 // Utils
 //
 
-export const getTemplateName = (address: Bech32Address): TemplateName => {
-  const pk = toHexString(bech32.fromWords(bech32.decode(address).words));
-  switch (pk) {
+export const getTemplateNameByKey = (key: HexString): TemplateName => {
+  switch (key) {
     case TemplateKey.SingleSig:
       return TemplateName.SingleSig;
     case TemplateKey.MultiSig:
@@ -46,6 +45,13 @@ export const getTemplateName = (address: Bech32Address): TemplateName => {
     default:
       return TemplateName.Unknown;
   }
+};
+
+export const getTemplateNameByAddress = (
+  address: Bech32Address
+): TemplateName => {
+  const pk = toHexString(bech32.fromWords(bech32.decode(address).words));
+  return getTemplateNameByKey(pk);
 };
 
 export enum MethodName {
