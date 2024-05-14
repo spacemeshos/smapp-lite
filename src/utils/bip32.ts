@@ -26,12 +26,22 @@ export default class Bip32KeyDerivation {
     return `m/${Bip32KeyDerivation.BIP_PROPOSAL}'/${Bip32KeyDerivation.COIN_TYPE}'/0'/0'/${index}'`;
   }
 
+  static isValidPath(path: string) {
+    return new RegExp(
+      // eslint-disable-next-line max-len
+      `^m/${Bip32KeyDerivation.BIP_PROPOSAL}'/${Bip32KeyDerivation.COIN_TYPE}'/\\d{0,3}'/\\d{0,3}'/\\d{0,3}'$`
+    ).test(path);
+  }
+
+  static getPublicKeyFromSecret = (secretKey: Uint8Array): Uint8Array =>
+    secretKey.slice(32);
+
   static deriveFromPath = (
     path: string,
     seed: Uint8Array
   ): { secretKey: Uint8Array; publicKey: Uint8Array } => {
     const p0 = derive_key(seed, path);
-    const publicKey = p0.slice(32);
+    const publicKey = Bip32KeyDerivation.getPublicKeyFromSecret(p0);
     const secretKey = p0;
     const pair = {
       publicKey,

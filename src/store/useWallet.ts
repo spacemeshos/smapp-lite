@@ -2,19 +2,28 @@ import fileDownload from 'js-file-download';
 import { create } from 'zustand';
 
 import { O } from '@mobily/ts-belt';
+import * as bip39 from '@scure/bip39';
 import { StdTemplateKeys, TemeplateArgumentsMap } from '@spacemesh/sm-codec';
 
+import { HexString } from '../types/common';
 import {
   Account,
   AccountWithAddress,
   AnyKey,
   Contact,
+  ForeignKey,
+  KeyPairType,
+  LocalKey,
   SafeKey,
   Wallet,
   WalletFile,
   WalletMeta,
 } from '../types/wallet';
+import Bip32KeyDerivation from '../utils/bip32';
 import { DEFAULT_HRP } from '../utils/constants';
+import { getISODate } from '../utils/datetime';
+import { toHexString } from '../utils/hexString';
+import { ensafeKeyPair, getKeyPairType, isLocalKey } from '../utils/keys';
 import {
   loadFromLocalStorage,
   removeFromLocalStorage,
@@ -31,7 +40,7 @@ import { isLegacySecrets, migrateSecrets } from '../utils/wallet.legacy';
 
 type WalletData = {
   meta: WalletMeta;
-  keychain: SafeKey[];
+  keychain: (SafeKey & { type: KeyPairType })[];
   accounts: Account[];
   contacts: Contact[];
 };
@@ -55,14 +64,29 @@ type WalletActions = {
   selectAccount: (index: number) => void;
   exportWalletFile: () => void;
   // Operations with secrets
-  unlockSecrets: (password: string) => Promise<Wallet>;
+  loadWalletWithSecrets: (password: string) => Promise<Wallet>;
   showMnemonics: (password: string) => Promise<string>;
+  addKeyPair: (keypair: AnyKey, password: string) => void;
+  createKeyPair: (
+    displayName: string,
+    path: string,
+    password: string
+  ) => Promise<SafeKey>;
+  importKeyPair: (
+    displayName: string,
+    secretKey: HexString,
+    password: string
+  ) => Promise<SafeKey>;
+  revealSecretKey: (
+    publicKey: HexString,
+    password: string
+  ) => Promise<HexString>;
 };
 
 type WalletSelectors = {
   hasWallet: () => boolean;
   isWalletUnlocked: () => boolean;
-  listKeys: () => SafeKey[];
+  listKeys: () => (SafeKey | ForeignKey)[];
   listSecretKeys: (password: string) => Promise<AnyKey[]>;
   listAccounts: (hrp?: string) => AccountWithAddress[];
   getCurrentAccount: (hrp?: string) => O.Option<AccountWithAddress>;
@@ -72,10 +96,10 @@ const WALLET_STORE_KEY = 'wallet-file';
 
 const extractData = (wallet: Wallet): WalletData => ({
   meta: wallet.meta,
-  keychain: wallet.crypto.keys.map(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    ({ secretKey, ...safeKeyPair }) => safeKeyPair
-  ),
+  keychain: wallet.crypto.keys.map((k) => ({
+    ...ensafeKeyPair(k),
+    type: getKeyPairType(k),
+  })),
   accounts: wallet.crypto.accounts,
   contacts: wallet.crypto.contacts,
 });
@@ -158,7 +182,7 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
       );
     },
     // Operations with secrets
-    unlockSecrets: async (password) => {
+    loadWalletWithSecrets: async (password) => {
       const wallet = loadFromLocalStorage<null | WalletFile>(WALLET_STORE_KEY);
       if (!wallet || !wallet.crypto) {
         throw new Error(
@@ -171,8 +195,65 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
       };
     },
     showMnemonics: async (password) => {
-      const wallet = await get().unlockSecrets(password);
+      const wallet = await get().loadWalletWithSecrets(password);
       return wallet.crypto.mnemonic;
+    },
+    addKeyPair: async (keypair, password) => {
+      const wallet = await get().loadWalletWithSecrets(password);
+      // Preparing secret part of the wallet
+      const newSecrets = {
+        ...wallet.crypto,
+        keys: [...wallet.crypto.keys, keypair],
+      };
+      // Updating App state
+      set({
+        wallet: extractData({
+          meta: wallet.meta,
+          crypto: newSecrets,
+        }),
+      });
+      // Saving a wallet file in the storage
+      saveToLocalStorage(WALLET_STORE_KEY, {
+        ...wallet,
+        crypto: await encryptWallet(newSecrets, password),
+      });
+    },
+    createKeyPair: async (displayName, path, password) => {
+      const wallet = await get().loadWalletWithSecrets(password);
+      // Creating new key pair
+      const seed = await bip39.mnemonicToSeedSync(wallet.crypto.mnemonic);
+      const keys = Bip32KeyDerivation.deriveFromPath(path, seed);
+      const kp: LocalKey = {
+        displayName,
+        created: getISODate(),
+        path,
+        publicKey: toHexString(keys.publicKey),
+        secretKey: toHexString(keys.secretKey),
+      };
+      await get().addKeyPair(kp, password);
+      return ensafeKeyPair(kp);
+    },
+    importKeyPair: async (displayName, secretKey, password) => {
+      const trimmed = secretKey.replace(/^0x/, '');
+      const kp: LocalKey = {
+        displayName,
+        created: getISODate(),
+        publicKey: trimmed.slice(64),
+        secretKey: trimmed,
+      };
+      await get().addKeyPair(kp, password);
+      return ensafeKeyPair(kp);
+    },
+    revealSecretKey: async (publicKey, password) => {
+      const wallet = await get().loadWalletWithSecrets(password);
+      const kp = wallet.crypto.keys.find((k) => k.publicKey === publicKey);
+      if (!kp) {
+        throw new Error(`Cannot find a key pair by public key "${publicKey}"`);
+      }
+      if (!isLocalKey(kp)) {
+        throw new Error('Cannot reveal secret key for a foreign key');
+      }
+      return kp.secretKey;
     },
     // Selectors
     hasWallet: () => {
@@ -185,7 +266,7 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
     },
     listKeys: () => get().wallet?.keychain ?? [],
     listSecretKeys: async (password: string) => {
-      const secrets = await get().unlockSecrets(password);
+      const secrets = await get().loadWalletWithSecrets(password);
       return secrets.crypto.keys;
     },
     listAccounts: (hrp = DEFAULT_HRP) => {

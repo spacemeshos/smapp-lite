@@ -1,20 +1,12 @@
 import { Form, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  Button,
-  Card,
-  CardBody,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Text,
-  Textarea,
-} from '@chakra-ui/react';
+import { Button, Card, CardBody, Text } from '@chakra-ui/react';
 import { validateMnemonic } from '@scure/bip39';
 import { wordlist } from '@scure/bip39/wordlists/english';
 
 import BackButton from '../../components/BackButton';
+import FormTextarea from '../../components/FormTextarea';
 
 import { useWalletCreation } from './WalletCreationContext';
 
@@ -28,7 +20,7 @@ function RecoverMnemonicScreen(): JSX.Element {
   const {
     control,
     register,
-    formState: { errors },
+    formState: { errors, isSubmitted },
     handleSubmit,
   } = useForm<FormValues>();
 
@@ -46,33 +38,24 @@ function RecoverMnemonicScreen(): JSX.Element {
       <Card fontSize="sm" borderRadius="xl" w="100%">
         <CardBody>
           <Form control={control}>
-            <FormControl
-              isRequired
-              isInvalid={!!errors.mnemonic?.message}
-              mb={4}
-            >
-              <FormLabel>
-                Please put your 12-word or 24-word mnemonic:
-              </FormLabel>
-              <Textarea
-                {...register('mnemonic', {
-                  required: true,
-                  validate: (value) => {
-                    const words = value.split(' ');
-                    if (words.length !== 12 && words.length !== 24) {
-                      return 'Invalid mnemonic length';
-                    }
-                    if (!validateMnemonic(value, wordlist)) {
-                      return 'Invalid mnemonic words';
-                    }
-                    return undefined;
-                  },
-                })}
-              />
-              {errors.mnemonic?.message && (
-                <FormErrorMessage>{errors.mnemonic.message}</FormErrorMessage>
-              )}
-            </FormControl>
+            <FormTextarea
+              label="Please put your 12-word or 24-word mnemonic:"
+              register={register('mnemonic', {
+                required: true,
+                validate: (value) => {
+                  const words = value.split(' ');
+                  if (words.length !== 12 && words.length !== 24) {
+                    return 'Invalid mnemonic length';
+                  }
+                  if (!validateMnemonic(value, wordlist)) {
+                    return 'Invalid mnemonic words';
+                  }
+                  return undefined;
+                },
+              })}
+              errors={errors}
+              isSubmitted={isSubmitted}
+            />
 
             <Button
               type="submit"

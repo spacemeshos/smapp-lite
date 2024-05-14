@@ -1,7 +1,4 @@
-export const formatDateAsISO = (date: Date) =>
-  date.toISOString().replace(/:/g, '-');
-
-export const getISODate = () => formatDateAsISO(new Date());
+export const getISODate = () => new Date().toISOString();
 
 export const formatTimestamp = (timestamp: number) => {
   const date = new Date(timestamp);
@@ -11,4 +8,9 @@ export const formatTimestamp = (timestamp: number) => {
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
   return `${year}-${month}-${day} ${hours}:${minutes}`;
+};
+
+export const formatISODate = (iso: string) => {
+  const time = new Date(iso).getTime();
+  return Number.isNaN(time) ? iso : formatTimestamp(time);
 };

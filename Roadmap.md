@@ -36,10 +36,12 @@
       2. [ ] Rename
       3. [ ] Delete
       4. [ ] View only accounts (see Y)
-   5. [ ] Manage keys
-      1. [ ] Create new
-      2. [ ] Delete (?)
-      3. [ ] Ledger Support
+   5. [X] Manage keys
+      1. [X] Create new
+      2. [X] Import secret key
+      3. [ ] Import from Ledger
+      4. [ ] Delete (?)
+      5. [X] Export secret key
    6. [ ] Send transaction
       1. [ ] Single signature
          // Just sign with selected account

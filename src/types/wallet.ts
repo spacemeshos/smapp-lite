@@ -11,16 +11,22 @@ export enum KeyOrigin {
 }
 
 export type KeyPair = {
-  path: string;
   publicKey: string;
+  path?: string;
   secretKey?: string;
 } & KeyMeta;
 
 export type SafeKey = Omit<KeyPair, 'secretKey'>;
 
 export type ForeignKey = SafeKey & { origin: KeyOrigin };
-export type LocalKey = Required<KeyPair>;
+export type LocalKey = KeyPair & { secretKey: string };
 export type AnyKey = SafeKey | ForeignKey | LocalKey;
+
+// Only for App state
+export enum KeyPairType {
+  Software = 'Software',
+  Hardware = 'Hardware',
+}
 
 export interface Account<T = Record<string, unknown>> {
   displayName: string;
