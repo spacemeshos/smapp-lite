@@ -28,6 +28,14 @@ export type MultiSigSpawnArguments = {
   PublicKeys: HexString[];
 };
 
+export type VaultSpawnArguments = {
+  Owner: HexString;
+  TotalAmount: bigint;
+  InitialUnlockAmount: bigint;
+  VestingStart: number;
+  VestingEnd: number;
+};
+
 //
 // Utils
 //
