@@ -27,6 +27,7 @@ export enum KeyPairType {
   Software = 'Software',
   Hardware = 'Hardware',
 }
+export type SafeKeyWithType = SafeKey & { type: KeyPairType };
 
 export interface Account<T = Record<string, unknown>> {
   displayName: string;

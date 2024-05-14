@@ -12,9 +12,9 @@ import {
   AnyKey,
   Contact,
   ForeignKey,
-  KeyPairType,
   LocalKey,
   SafeKey,
+  SafeKeyWithType,
   Wallet,
   WalletFile,
   WalletMeta,
@@ -40,7 +40,7 @@ import { isLegacySecrets, migrateSecrets } from '../utils/wallet.legacy';
 
 type WalletData = {
   meta: WalletMeta;
-  keychain: (SafeKey & { type: KeyPairType })[];
+  keychain: SafeKeyWithType[];
   accounts: Account[];
   contacts: Contact[];
 };
