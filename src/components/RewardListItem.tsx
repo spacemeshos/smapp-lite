@@ -18,6 +18,7 @@ import { formatTimestamp } from '../utils/datetime';
 import getExplorerUrl from '../utils/getExplorerUrl';
 import { epochByLayer, timestampByLayer } from '../utils/layers';
 import { formatSmidge } from '../utils/smh';
+import ExplorerButton from './ExplorerButton';
 
 type RewardListItemProps = {
   reward: Reward;
@@ -32,13 +33,6 @@ function RewardListItem({
   layerDurationSec,
   layersPerEpoch,
 }: RewardListItemProps): JSX.Element {
-  const { getCurrentNetwork } = useNetworks();
-  const explorerUrl = O.mapWithDefault(
-    getCurrentNetwork(),
-    DEFAULT_EXPLORER_URL,
-    (net) => net.explorerUrl
-  );
-
   return (
     <Card
       mb={2}
@@ -54,15 +48,7 @@ function RewardListItem({
             (Layer {reward.layerPaid} in Epoch{' '}
             {epochByLayer(layersPerEpoch, reward.layerPaid)})
           </Text>
-          <IconButton
-            as="a"
-            aria-label="Open in explorer"
-            size="xs"
-            href={getExplorerUrl(explorerUrl, 'smeshers', reward.smesher)}
-            target="_blank"
-            icon={<IconWorldSearch size={14} />}
-            ml={1}
-          />
+          <ExplorerButton dataType="smeshers" value={reward.smesher} ml={1} />
         </Flex>
 
         <Flex alignItems="baseline">
