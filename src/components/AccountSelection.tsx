@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import {
   Button,
   Menu,
@@ -8,13 +6,13 @@ import {
   MenuList,
   MenuOptionGroup,
 } from '@chakra-ui/react';
-import { O } from '@mobily/ts-belt';
 
-import useNetworks from '../store/useNetworks';
+import { useCurrentHRP } from '../hooks/useNetworkSelectors';
+import { useAccountsList } from '../hooks/useWalletSelectors';
 import useWallet from '../store/useWallet';
 import { AccountWithAddress } from '../types/wallet';
 import { getAbbreviatedAddress } from '../utils/abbr';
-import { DEFAULT_HRP } from '../utils/constants';
+import { safeKeyForAccount } from '../utils/wallet';
 
 const renderAccountName = (acc: AccountWithAddress): string =>
   acc.displayName
@@ -22,12 +20,9 @@ const renderAccountName = (acc: AccountWithAddress): string =>
     : acc.address;
 
 function AccountSelection(): JSX.Element {
-  const { listAccounts, selectedAccount, selectAccount } = useWallet();
-  const { getCurrentNetwork } = useNetworks();
-  const currentNetwork = getCurrentNetwork();
-
-  const hrp = O.mapWithDefault(currentNetwork, DEFAULT_HRP, (net) => net.hrp);
-  const accounts = useMemo(() => listAccounts(hrp), [listAccounts, hrp]);
+  const { selectedAccount, selectAccount } = useWallet();
+  const hrp = useCurrentHRP();
+  const accounts = useAccountsList(hrp);
 
   return (
     <Menu>
@@ -51,7 +46,7 @@ function AccountSelection(): JSX.Element {
           }
         >
           {accounts.map((acc, idx) => (
-            <MenuItemOption key={acc.address} value={String(idx)}>
+            <MenuItemOption key={safeKeyForAccount(acc)} value={String(idx)}>
               {renderAccountName(acc)}
             </MenuItemOption>
           ))}

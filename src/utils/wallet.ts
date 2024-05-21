@@ -8,6 +8,7 @@ import {
 
 import { Bech32Address } from '../types/common';
 import {
+  AccountWithAddress,
   Contact,
   KeyPair,
   Wallet,
@@ -29,6 +30,8 @@ import Bip32KeyDerivation from './bip32';
 import { getISODate } from './datetime';
 import { fromHexString, toHexString } from './hexString';
 import {
+  AnySpawnArguments,
+  convertSpawnArgumentsForEncoding,
   MultiSigSpawnArguments,
   SingleSigSpawnArguments,
   TemplateKey,
@@ -61,7 +64,7 @@ export const createWallet = (
   const timestamp = getISODate();
   const mnemonic = existingMnemonic || generateMnemonic();
 
-  const firstKey = createKeyPair('Account 0', mnemonic, 0);
+  const firstKey = createKeyPair('Key 0', mnemonic, 0);
   const crypto: WalletSecrets = {
     mnemonic,
     keys: [firstKey],
@@ -124,37 +127,13 @@ export const addContact = (wallet: Wallet, contact: Contact): Wallet => ({
 // Derive Account from KeyPair
 //
 
-const transformSpawnArgs = <TK extends StdTemplateKeys>(
-  spawnArguments: TemeplateArgumentsMap[TK][0],
-  templateKey: TK,
-  args: TemeplateArgumentsMap[TK][0]
-): TemeplateArgumentsMap[TK][0] => {
-  switch (templateKey) {
-    case TemplateKey.SingleSig:
-      return {
-        PublicKey: fromHexString(
-          (args as unknown as SingleSigSpawnArguments).PublicKey
-        ),
-      };
-    case TemplateKey.MultiSig:
-      return {
-        ...args,
-        PublicKeys: (args as unknown as MultiSigSpawnArguments).PublicKeys.map(
-          fromHexString
-        ),
-      };
-    default:
-      return args;
-  }
-};
-
 export const computeAddress = <TK extends StdTemplateKeys>(
   hrp: string,
   templateKey: TK,
-  spawnArguments: TemeplateArgumentsMap[TK][0]
+  spawnArguments: AnySpawnArguments
 ): Bech32Address => {
   const tpl = StdTemplates[templateKey].methods[0];
-  const args = transformSpawnArgs(spawnArguments, templateKey, spawnArguments);
+  const args = convertSpawnArgumentsForEncoding(templateKey, spawnArguments);
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const principal = tpl.principal(args);
@@ -215,3 +194,6 @@ export const encryptWallet = async (
     },
   };
 };
+
+export const safeKeyForAccount = (acc: AccountWithAddress) =>
+  `${acc.address}_${acc.displayName.replace(/\s/g, '_')}`;

@@ -3,7 +3,7 @@ import { Box, Card, CardBody, Flex, Text } from '@chakra-ui/react';
 
 import { Bech32Address } from '../types/common';
 import { Transaction } from '../types/tx';
-import { getAbbreviatedTxID } from '../utils/abbr';
+import { getAbbreviatedHexString } from '../utils/abbr';
 import { formatTimestamp } from '../utils/datetime';
 import { epochByLayer, timestampByLayer } from '../utils/layers';
 import { formatSmidge } from '../utils/smh';
@@ -39,7 +39,7 @@ function TxListItem({
         <Flex>
           <Box flex={1}>
             <Text fontSize="sm" mb={1}>
-              {getAbbreviatedTxID(tx.id)}
+              {getAbbreviatedHexString(tx.id)}
             </Text>
             <Text>
               <CheckCircleIcon color={getStatusColor(tx.state)} mr={2} mb={1} />

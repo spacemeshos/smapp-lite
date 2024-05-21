@@ -1,15 +1,16 @@
 import { bech32 } from 'bech32';
 
+import {
+  StdPublicKeys,
+  StdTemplateKeys,
+  TemeplateArgumentsMap,
+} from '@spacemesh/sm-codec';
+
 import { Bech32Address, HexString } from '../types/common';
 
-import { toHexString } from './hexString';
+import { fromHexString, toHexString } from './hexString';
 
-export enum TemplateKey {
-  SingleSig = '000000000000000000000000000000000000000000000001',
-  MultiSig = '000000000000000000000000000000000000000000000002',
-  Vesting = '000000000000000000000000000000000000000000000003',
-  Vault = '000000000000000000000000000000000000000000000004',
-}
+export const TemplateKey = StdPublicKeys;
 
 export enum TemplateName {
   Unknown = 'Unknown Template',
@@ -30,12 +31,16 @@ export type MultiSigSpawnArguments = {
 
 export type VaultSpawnArguments = {
   Owner: HexString;
-  TotalAmount: bigint;
-  InitialUnlockAmount: bigint;
+  TotalAmount: number;
+  InitialUnlockAmount: number;
   VestingStart: number;
   VestingEnd: number;
 };
 
+export type AnySpawnArguments =
+  | SingleSigSpawnArguments
+  | MultiSigSpawnArguments
+  | VaultSpawnArguments;
 //
 // Utils
 //
@@ -77,3 +82,34 @@ export const MethodNamesMap: { [key: number]: MethodName } = {
 
 export const getMethodName = (methodSelector: number) =>
   MethodNamesMap[methodSelector] ?? MethodName.Unknown;
+
+export const convertSpawnArgumentsForEncoding = <T extends StdTemplateKeys>(
+  tpl: T,
+  spawnArgs: AnySpawnArguments
+): TemeplateArgumentsMap[T][0] => {
+  if (tpl === StdPublicKeys.SingleSig) {
+    const args = spawnArgs as SingleSigSpawnArguments;
+    return {
+      PublicKey: fromHexString(args.PublicKey),
+    };
+  }
+  if (tpl === StdPublicKeys.MultiSig || tpl === StdPublicKeys.Vesting) {
+    const args = spawnArgs as MultiSigSpawnArguments;
+    return {
+      Required: BigInt(args.Required),
+      PublicKeys: args.PublicKeys.map(fromHexString),
+    };
+  }
+  if (tpl === StdPublicKeys.Vault) {
+    const args = spawnArgs as VaultSpawnArguments;
+    return {
+      Owner: fromHexString(args.Owner),
+      TotalAmount: BigInt(args.TotalAmount),
+      InitialUnlockAmount: BigInt(args.InitialUnlockAmount),
+      VestingStart: BigInt(args.VestingStart),
+      VestingEnd: BigInt(args.VestingEnd),
+    };
+  }
+
+  throw new Error('Cannot convert spawn arguments: Unknown template key');
+};

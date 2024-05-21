@@ -11,7 +11,6 @@ import {
   AccountWithAddress,
   AnyKey,
   Contact,
-  ForeignKey,
   LocalKey,
   SafeKey,
   SafeKeyWithType,
@@ -29,6 +28,7 @@ import {
   removeFromLocalStorage,
   saveToLocalStorage,
 } from '../utils/localStorage';
+import { AnySpawnArguments } from '../utils/templates';
 import {
   computeAddress,
   createWallet,
@@ -81,15 +81,18 @@ type WalletActions = {
     publicKey: HexString,
     password: string
   ) => Promise<HexString>;
+  createAccount: <T extends AnySpawnArguments>(
+    displayName: string,
+    templateAddress: StdTemplateKeys,
+    spawnArguments: T,
+    password: string
+  ) => Promise<Account<T>>;
 };
 
 type WalletSelectors = {
   hasWallet: () => boolean;
   isWalletUnlocked: () => boolean;
-  listKeys: () => (SafeKey | ForeignKey)[];
   listSecretKeys: (password: string) => Promise<AnyKey[]>;
-  listAccounts: (hrp?: string) => AccountWithAddress[];
-  getCurrentAccount: (hrp?: string) => O.Option<AccountWithAddress>;
 };
 
 const WALLET_STORE_KEY = 'wallet-file';
@@ -163,8 +166,8 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
     selectAccount: (index) => {
       const state = get();
       if (
-        !state.wallet?.keychain?.length ||
-        state.wallet?.keychain.length <= index
+        !state.wallet?.accounts?.length ||
+        state.wallet?.accounts.length <= index
       ) {
         throw new Error('Account index out of bounds');
       }
@@ -255,6 +258,38 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
       }
       return kp.secretKey;
     },
+    createAccount: async (
+      displayName,
+      templateAddress,
+      spawnArguments,
+      password
+    ) => {
+      const acc = {
+        displayName,
+        templateAddress,
+        spawnArguments,
+      };
+      const wallet = await get().loadWalletWithSecrets(password);
+      // Preparing secret part of the wallet
+      const newSecrets = {
+        ...wallet.crypto,
+        accounts: [...wallet.crypto.accounts, acc],
+      };
+      // Updating App state
+      set({
+        wallet: extractData({
+          meta: wallet.meta,
+          crypto: newSecrets,
+        }),
+      });
+      // Saving a wallet file in the storage
+      saveToLocalStorage(WALLET_STORE_KEY, {
+        ...wallet,
+        crypto: await encryptWallet(newSecrets, password),
+      });
+
+      return acc;
+    },
     // Selectors
     hasWallet: () => {
       const file = loadFromLocalStorage<null | WalletFile>(WALLET_STORE_KEY);
@@ -264,26 +299,9 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
       const state = get();
       return !!state.wallet;
     },
-    listKeys: () => get().wallet?.keychain ?? [],
     listSecretKeys: async (password: string) => {
       const secrets = await get().loadWalletWithSecrets(password);
       return secrets.crypto.keys;
-    },
-    listAccounts: (hrp = DEFAULT_HRP) => {
-      const accounts = get().wallet?.accounts ?? <Account[]>[];
-      return accounts.map((acc) => ({
-        ...acc,
-        address: computeAddress(
-          hrp,
-          acc.templateAddress as StdTemplateKeys,
-          acc.spawnArguments as TemeplateArgumentsMap[StdTemplateKeys][0]
-        ),
-      }));
-    },
-    getCurrentAccount: (hrp = DEFAULT_HRP) => {
-      const state = get();
-      const acc = state.listAccounts(hrp)[state.selectedAccount];
-      return O.fromNullable(acc);
     },
   })
 );

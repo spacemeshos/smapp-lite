@@ -1,21 +1,22 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import useNetworks from '../store/useNetworks';
-import useWallet from '../store/useWallet';
 import { Bech32Address } from '../types/common';
 
 import useAccountHandlers from './useAccountHandlers';
+import { useCurrentHRP } from './useNetworkSelectors';
+import { useCurrentAccount } from './useWalletSelectors';
 
 // This hook is used to automatically re-fetch all the required
 // data once the account or network changes.
 const useDataRefresher = () => {
   const { fetchAccountState, fetchTransactions, fetchRewards } =
     useAccountHandlers();
-  const { getCurrentAccount } = useWallet();
   const { getCurrentNetwork } = useNetworks();
   const [isLoading, setIsLoading] = useState(false);
 
-  const currentAccount = getCurrentAccount();
+  const hrp = useCurrentHRP();
+  const currentAccount = useCurrentAccount(hrp);
   const currentNetwork = getCurrentNetwork();
 
   const address = currentAccount?.address;

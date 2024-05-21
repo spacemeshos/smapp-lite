@@ -32,7 +32,7 @@ function CreateKeyPairModal({
   isOpen,
   onClose,
 }: CreateKeyPairModalProps): JSX.Element {
-  const { createKeyPair, listKeys } = useWallet();
+  const { createKeyPair, wallet } = useWallet();
   const { withPassword } = usePassword();
   const {
     register,
@@ -91,7 +91,9 @@ function CreateKeyPairModal({
               label="Derivation Path"
               register={register('path', {
                 required: 'Derivation path is required',
-                value: Bip32KeyDerivation.createPath(listKeys().length),
+                value: Bip32KeyDerivation.createPath(
+                  (wallet?.keychain || []).length
+                ),
                 validate: (value) => {
                   const valid = Bip32KeyDerivation.isValidPath(value);
                   if (!valid) {

@@ -18,10 +18,14 @@ import {
   TabPanels,
   Tabs,
   Text,
+  ThemingProps,
   useDisclosure,
 } from '@chakra-ui/react';
+import { StdPublicKeys } from '@spacemesh/sm-codec';
 import {
+  IconDeviceDesktop,
   IconDeviceUsb,
+  IconEyeglass2,
   IconFileImport,
   IconKey,
   IconPlus,
@@ -29,30 +33,77 @@ import {
 
 import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
-import { KeyPairType, SafeKey } from '../types/wallet';
+import {
+  AccountWithAddress,
+  KeyPairType,
+  SafeKey,
+  SafeKeyWithType,
+} from '../types/wallet';
 import { BUTTON_ICON_SIZE } from '../utils/constants';
-import { getTemplateNameByKey } from '../utils/templates';
+import {
+  getTemplateNameByKey,
+  MultiSigSpawnArguments,
+  SingleSigSpawnArguments,
+  VaultSpawnArguments,
+} from '../utils/templates';
+import { safeKeyForAccount } from '../utils/wallet';
 
 import CopyButton from './CopyButton';
+import CreateAccountModal from './CreateAccountModal';
 import CreateKeyPairModal from './CreateKeyPairModal';
+import ExplorerButton from './ExplorerButton';
 import ImportKeyPairModal from './ImportKeyPairModal copy';
 import RevealSecretKeyModal from './RevealSecretKeyModal';
+import { useAccountsList } from '../hooks/useWalletSelectors';
+import { useCurrentHRP } from '../hooks/useNetworkSelectors';
 
 type KeyManagerProps = {
   isOpen: boolean;
   onClose: () => void;
 };
 
+const getTemplateColorByKey = (key: string): ThemingProps['colorScheme'] => {
+  switch (key) {
+    case StdPublicKeys.MultiSig:
+      return 'orange';
+    case StdPublicKeys.Vault:
+      return 'pink';
+    case StdPublicKeys.Vesting:
+      return 'purple';
+    case StdPublicKeys.SingleSig:
+    default:
+      return 'green';
+  }
+};
+
+const renderSingleKey = (key: SafeKeyWithType): JSX.Element =>
+  key.type === KeyPairType.Software ? (
+    <>
+      <IconDeviceDesktop size={10} />
+      <Text as="span" ml={1}>
+        Local Key
+      </Text>
+    </>
+  ) : (
+    <>
+      <IconDeviceUsb size={10} />
+      <Text as="span" ml={1}>
+        Hardware
+      </Text>
+    </>
+  );
+
 function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
   const [revealed, setRevealed] = useState({ displayName: '', secretKey: '' });
-  const { wallet, listAccounts, revealSecretKey } = useWallet();
+  const { wallet, revealSecretKey } = useWallet();
+  const hrp = useCurrentHRP();
+  const accounts = useAccountsList(hrp);
   const { withPassword } = usePassword();
 
   const createKeyPairModal = useDisclosure();
   const importKeyPairModal = useDisclosure();
   const revealSecretKeyModal = useDisclosure();
-
-  const accounts = listAccounts();
+  const createAccountModal = useDisclosure();
 
   const closeHandler = () => {
     onClose();
@@ -75,6 +126,29 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
         secretKey: sk,
       });
       revealSecretKeyModal.onOpen();
+    }
+  };
+
+  const getKeysByAccount = (acc: AccountWithAddress) => {
+    switch (acc.templateAddress) {
+      case StdPublicKeys.SingleSig: {
+        const pk = (acc.spawnArguments as SingleSigSpawnArguments).PublicKey;
+        return (wallet?.keychain ?? []).filter((k) => k.publicKey === pk);
+      }
+      case StdPublicKeys.MultiSig:
+      case StdPublicKeys.Vesting: {
+        const pks = (acc.spawnArguments as MultiSigSpawnArguments).PublicKeys;
+        return (wallet?.keychain ?? []).filter((k) =>
+          pks.includes(k.publicKey)
+        );
+      }
+      case StdPublicKeys.Vault: {
+        const pk = (acc.spawnArguments as VaultSpawnArguments).Owner;
+        return (wallet?.keychain ?? []).filter((k) => k.publicKey === pk);
+      }
+      default: {
+        throw new Error('Unknown account type');
+      }
     }
   };
 
@@ -110,23 +184,21 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                   fontSize="sm"
                 >
                   <TabPanel display="flex" flexDir="column">
-                    <Box mb={4}>
-                      <ButtonGroup size="sm" spacing={2}>
-                        <Button onClick={createKeyPairModal.onOpen}>
-                          <IconPlus size={BUTTON_ICON_SIZE} />
-                          <Text as="span" ml={1}>
-                            Create new key
-                          </Text>
-                        </Button>
-                        <Button onClick={importKeyPairModal.onOpen}>
-                          <IconFileImport size={BUTTON_ICON_SIZE} />
-                          <Text as="span" ml={1}>
-                            Import key
-                          </Text>
-                        </Button>
-                      </ButtonGroup>
-                    </Box>
-                    <Box flex={1} overflow="scroll">
+                    <ButtonGroup size="sm" spacing={2} mb={4}>
+                      <Button onClick={createKeyPairModal.onOpen}>
+                        <IconPlus size={BUTTON_ICON_SIZE} />
+                        <Text as="span" ml={1}>
+                          Create new key
+                        </Text>
+                      </Button>
+                      <Button onClick={importKeyPairModal.onOpen}>
+                        <IconFileImport size={BUTTON_ICON_SIZE} />
+                        <Text as="span" ml={1}>
+                          Import key
+                        </Text>
+                      </Button>
+                    </ButtonGroup>
+                    <Box flex={1}>
                       {(wallet?.keychain ?? []).map((key) => (
                         <Box
                           key={key.publicKey}
@@ -182,24 +254,97 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                       ))}
                     </Box>
                   </TabPanel>
-                  <TabPanel>
-                    {accounts.map((acc) => (
-                      <Box key={acc.address} mb={4}>
-                        <Text fontSize="xs">{acc.displayName}</Text>
-                        <Text mb={1}>
-                          {acc.address}
-                          <CopyButton value={acc.address} />
+                  <TabPanel display="flex" flexDir="column">
+                    <ButtonGroup size="sm" spacing={2} mb={4}>
+                      <Button onClick={createAccountModal.onOpen}>
+                        <IconPlus size={BUTTON_ICON_SIZE} />
+                        <Text as="span" ml={1}>
+                          Create new account
                         </Text>
+                      </Button>
+                    </ButtonGroup>
+                    <Box flex={1}>
+                      {accounts.map((acc) => {
+                        const keys = getKeysByAccount(acc);
+                        return (
+                          <Box
+                            key={safeKeyForAccount(acc)}
+                            mb={2}
+                            p={2}
+                            backgroundColor="blackAlpha.300"
+                            borderRadius="md"
+                          >
+                            <Text fontSize="md">
+                              <strong>{acc.displayName}</strong>
+                              <Badge
+                                fontWeight="normal"
+                                fontSize="xx-small"
+                                ml={1}
+                                colorScheme={getTemplateColorByKey(
+                                  acc.templateAddress
+                                )}
+                              >
+                                {getTemplateNameByKey(acc.templateAddress)}
+                              </Badge>
+                              <Badge
+                                display="inline-flex"
+                                alignItems="center"
+                                fontWeight="normal"
+                                fontSize="xx-small"
+                                ml={1}
+                                colorScheme="yellow"
+                              >
+                                {keys.length === 1 &&
+                                  keys[0] &&
+                                  renderSingleKey(keys[0])}
+                                {
+                                  /* eslint-disable max-len */
+                                  keys.length > 1 &&
+                                    `${keys.length} / ${
+                                      (
+                                        acc.spawnArguments as MultiSigSpawnArguments
+                                      ).Required
+                                    } keys`
+                                  /* eslint-enable max-len */
+                                }
+                                {keys.length === 0 && (
+                                  <>
+                                    <IconEyeglass2 size={10} />
+                                    <Text as="span" ml={1}>
+                                      View-only
+                                    </Text>
+                                  </>
+                                )}
+                              </Badge>
+                            </Text>
+                            <Text mb={4}>
+                              {acc.address}
+                              <CopyButton value={acc.address} />
+                              <ExplorerButton
+                                dataType="accounts"
+                                value={acc.address}
+                                ml={1}
+                              />
+                            </Text>
 
-                        <Text fontSize="xs">Template Type</Text>
-                        <Text>{getTemplateNameByKey(acc.templateAddress)}</Text>
-
-                        <Text fontSize="xs">Spawn Arguments</Text>
-                        <Text as="pre" fontSize="xs" overflow="scroll">
-                          {JSON.stringify(acc.spawnArguments, null, 2)}
-                        </Text>
-                      </Box>
-                    ))}
+                            <Box color="grey">
+                              {Object.entries(acc.spawnArguments).map(
+                                ([k, v]) => (
+                                  <Box
+                                    key={`${safeKeyForAccount(acc)}_${k}_wtf`}
+                                    mt={1}
+                                    fontSize="xx-small"
+                                    wordBreak="break-all"
+                                  >
+                                    {k}: {JSON.stringify(v)}
+                                  </Box>
+                                )
+                              )}
+                            </Box>
+                          </Box>
+                        );
+                      })}
+                    </Box>
                   </TabPanel>
                 </TabPanels>
               </Tabs>
@@ -221,6 +366,10 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
         secretKey={revealed.secretKey}
         isOpen={revealSecretKeyModal.isOpen}
         onClose={onRevealSecretModalCloseHandler}
+      />
+      <CreateAccountModal
+        isOpen={createAccountModal.isOpen}
+        onClose={createAccountModal.onClose}
       />
     </>
   );

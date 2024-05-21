@@ -17,12 +17,9 @@ import {
   Tooltip,
   UseDisclosureReturn,
 } from '@chakra-ui/react';
-import { O } from '@mobily/ts-belt';
 import { useCopyToClipboard } from '@uidotdev/usehooks';
 
-import useNetworks from '../store/useNetworks';
 import { Transaction } from '../types/tx';
-import { DEFAULT_EXPLORER_URL } from '../utils/constants';
 import { formatTimestamp } from '../utils/datetime';
 import { ExplorerDataType } from '../utils/getExplorerUrl';
 import { toHexString } from '../utils/hexString';
@@ -147,13 +144,6 @@ function TxDetails({
   layerDurationSec,
   layersPerEpoch,
 }: TxDetailsProps): JSX.Element | null {
-  const { getCurrentNetwork } = useNetworks();
-  const explorerUrl = O.mapWithDefault(
-    getCurrentNetwork(),
-    DEFAULT_EXPLORER_URL,
-    (net) => net.explorerUrl
-  );
-
   return (
     <Portal>
       <Drawer placement="right" isOpen={disclosure.isOpen} onClose={onClose}>
@@ -226,7 +216,7 @@ function TxDetails({
           </DrawerBody>
           <DrawerFooter>
             {tx === null ? null : (
-              <ExplorerButton full type="txs" value={tx.id} />
+              <ExplorerButton full dataType="txs" value={tx.id} />
             )}
           </DrawerFooter>
         </DrawerContent>

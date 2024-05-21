@@ -2,22 +2,17 @@ import {
   Card,
   CardBody,
   Flex,
-  IconButton,
   Stat,
   StatLabel,
   StatNumber,
   Text,
 } from '@chakra-ui/react';
-import { O } from '@mobily/ts-belt';
-import { IconWorldSearch } from '@tabler/icons-react';
 
-import useNetworks from '../store/useNetworks';
 import { Reward } from '../types/reward';
-import { DEFAULT_EXPLORER_URL } from '../utils/constants';
 import { formatTimestamp } from '../utils/datetime';
-import getExplorerUrl from '../utils/getExplorerUrl';
 import { epochByLayer, timestampByLayer } from '../utils/layers';
 import { formatSmidge } from '../utils/smh';
+
 import ExplorerButton from './ExplorerButton';
 
 type RewardListItemProps = {
@@ -48,7 +43,11 @@ function RewardListItem({
             (Layer {reward.layerPaid} in Epoch{' '}
             {epochByLayer(layersPerEpoch, reward.layerPaid)})
           </Text>
-          <ExplorerButton dataType="smeshers" value={reward.smesher} ml={1} />
+          <ExplorerButton
+            dataType="rewards"
+            value={`${reward.smesher}/${reward.layerPaid}`}
+            ml={1}
+          />
         </Flex>
 
         <Flex alignItems="baseline">

@@ -1,3 +1,5 @@
+import { AnySpawnArguments } from '../utils/templates';
+
 import { Bech32Address, HexString } from './common';
 
 export type KeyMeta = {
@@ -29,7 +31,7 @@ export enum KeyPairType {
 }
 export type SafeKeyWithType = SafeKey & { type: KeyPairType };
 
-export interface Account<T = Record<string, unknown>> {
+export interface Account<T = AnySpawnArguments> {
   displayName: string;
   templateAddress: string;
   spawnArguments: T;

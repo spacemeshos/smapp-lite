@@ -27,6 +27,7 @@
     "@chakra-ui/react": "^2.4.9",
     "@emotion/react": "^11.8.1",
     "@emotion/styled": "^11.8.1",
+    "@hookform/resolvers": "^3.4.0",
     "@mobily/ts-belt": "^3.13.1",
     "@scure/bip39": "^1.2.2",
     "@spacemesh/ed25519-bip32": "^0.2.1",
