@@ -135,6 +135,7 @@ const usePassword = (): UsePasswordReturnType => {
 
   const onClose = () => {
     eventEmitter.emit('close', true);
+    reset();
     _onClose();
   };
 
