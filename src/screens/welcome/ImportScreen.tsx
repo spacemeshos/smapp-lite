@@ -126,9 +126,7 @@ function ImportScreen(): JSX.Element {
             )}
             <FormControl isInvalid={!!errors.password?.message}>
               <FormLabel>Enter password:</FormLabel>
-              <PasswordInput
-                register={register('password', { required: true })}
-              />
+              <PasswordInput register={register('password')} />
               <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
             </FormControl>
             <Button
