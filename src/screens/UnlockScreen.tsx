@@ -51,7 +51,7 @@ function UnlockScreen(): JSX.Element {
       <Form control={control}>
         <FormControl isInvalid={!!errors.password?.message}>
           <FormLabel>Enter password:</FormLabel>
-          <PasswordInput register={register('password', { required: true })} />
+          <PasswordInput register={register('password')} />
           <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
         </FormControl>
         <Button type="submit" mt={4} onClick={() => submit()} size="lg">
