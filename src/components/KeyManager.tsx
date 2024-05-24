@@ -31,6 +31,8 @@ import {
   IconPlus,
 } from '@tabler/icons-react';
 
+import { useCurrentHRP } from '../hooks/useNetworkSelectors';
+import { useAccountsList } from '../hooks/useWalletSelectors';
 import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
 import {
@@ -54,8 +56,6 @@ import CreateKeyPairModal from './CreateKeyPairModal';
 import ExplorerButton from './ExplorerButton';
 import ImportKeyPairModal from './ImportKeyPairModal copy';
 import RevealSecretKeyModal from './RevealSecretKeyModal';
-import { useAccountsList } from '../hooks/useWalletSelectors';
-import { useCurrentHRP } from '../hooks/useNetworkSelectors';
 
 type KeyManagerProps = {
   isOpen: boolean;

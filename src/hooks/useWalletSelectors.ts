@@ -1,7 +1,7 @@
 import { O } from '@mobily/ts-belt';
 import { StdTemplateKeys } from '@spacemesh/sm-codec';
 
-import useWallet from '../store/useWallet'
+import useWallet from '../store/useWallet';
 import { Account, AccountWithAddress } from '../types/wallet';
 import { AnySpawnArguments } from '../utils/templates';
 import { computeAddress } from '../utils/wallet';

@@ -1,14 +1,12 @@
 import fileDownload from 'js-file-download';
 import { create } from 'zustand';
 
-import { O } from '@mobily/ts-belt';
 import * as bip39 from '@scure/bip39';
-import { StdTemplateKeys, TemeplateArgumentsMap } from '@spacemesh/sm-codec';
+import { StdTemplateKeys } from '@spacemesh/sm-codec';
 
 import { HexString } from '../types/common';
 import {
   Account,
-  AccountWithAddress,
   AnyKey,
   Contact,
   LocalKey,
@@ -19,7 +17,6 @@ import {
   WalletMeta,
 } from '../types/wallet';
 import Bip32KeyDerivation from '../utils/bip32';
-import { DEFAULT_HRP } from '../utils/constants';
 import { getISODate } from '../utils/datetime';
 import { toHexString } from '../utils/hexString';
 import { ensafeKeyPair, getKeyPairType, isLocalKey } from '../utils/keys';
@@ -30,7 +27,6 @@ import {
 } from '../utils/localStorage';
 import { AnySpawnArguments } from '../utils/templates';
 import {
-  computeAddress,
   createWallet,
   decryptWallet,
   encryptWallet,

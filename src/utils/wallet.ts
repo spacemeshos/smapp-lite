@@ -1,10 +1,6 @@
 import * as bip39 from '@scure/bip39';
 import { wordlist } from '@scure/bip39/wordlists/english';
-import {
-  StdTemplateKeys,
-  StdTemplates,
-  TemeplateArgumentsMap,
-} from '@spacemesh/sm-codec';
+import { StdTemplateKeys, StdTemplates } from '@spacemesh/sm-codec';
 
 import { Bech32Address } from '../types/common';
 import {
@@ -32,8 +28,6 @@ import { fromHexString, toHexString } from './hexString';
 import {
   AnySpawnArguments,
   convertSpawnArgumentsForEncoding,
-  MultiSigSpawnArguments,
-  SingleSigSpawnArguments,
   TemplateKey,
 } from './templates';
 
