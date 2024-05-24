@@ -1,15 +1,7 @@
 import * as z from 'zod';
 
-import { AddressSchema, AmountSchema, IdSchema, NumberSchema } from './common';
+import { AddressSchema } from './common';
 import { BigIntStringSchema, BigIntValueSchema } from './strNumber';
-
-export const AccountRewardSchema = z.object({
-  layer: NumberSchema,
-  total: AmountSchema,
-  layerReward: AmountSchema,
-  coinbase: AddressSchema,
-  smesher: IdSchema,
-});
 
 export const AccountStateSchema = z.object({
   counter: BigIntStringSchema,
@@ -31,13 +23,4 @@ export const BalanceResponseSchema = z.object({
       })
     )
     .min(1),
-});
-
-export const RewardsResponseSchema = z.object({
-  totalResults: z.number(),
-  accountItem: z.array(
-    z.object({
-      reward: AccountRewardSchema,
-    })
-  ),
 });
