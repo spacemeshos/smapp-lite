@@ -1,19 +1,45 @@
-import { HexString } from './common';
+import { AnySpawnArguments } from '../utils/templates';
 
-export interface KeyPair {
+import { Bech32Address, HexString } from './common';
+
+export type KeyMeta = {
   displayName: string;
   created: string;
-  path: string;
-  publicKey: string;
-  secretKey: string;
+};
+
+export enum KeyOrigin {
+  Unknown = 0,
+  Ledger = 1,
 }
 
-export interface Account<T = Record<string, unknown>> {
+export type KeyPair = {
+  publicKey: string;
+  path?: string;
+  secretKey?: string;
+} & KeyMeta;
+
+export type SafeKey = Omit<KeyPair, 'secretKey'>;
+
+export type ForeignKey = SafeKey & { origin: KeyOrigin };
+export type LocalKey = KeyPair & { secretKey: string };
+export type AnyKey = SafeKey | ForeignKey | LocalKey;
+
+// Only for App state
+export enum KeyPairType {
+  Software = 'Software',
+  Hardware = 'Hardware',
+}
+export type SafeKeyWithType = SafeKey & { type: KeyPairType };
+
+export interface Account<T = AnySpawnArguments> {
   displayName: string;
-  address: string;
   templateAddress: string;
   spawnArguments: T;
 }
+
+export type AccountWithAddress<T = Record<string, unknown>> = Account<T> & {
+  address: Bech32Address;
+};
 
 export interface Contact {
   address: string;
@@ -25,9 +51,16 @@ export interface WalletMeta {
   created: string;
 }
 
-export interface WalletSecrets {
+export interface WalletSecretsLegacy {
   mnemonic: string;
   accounts: KeyPair[];
+  contacts: Contact[];
+}
+
+export interface WalletSecrets {
+  mnemonic: string;
+  keys: KeyPair[];
+  accounts: Account[];
   contacts: Contact[];
 }
 

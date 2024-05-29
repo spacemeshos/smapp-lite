@@ -2,22 +2,18 @@ import {
   Card,
   CardBody,
   Flex,
-  IconButton,
   Stat,
   StatLabel,
   StatNumber,
   Text,
 } from '@chakra-ui/react';
-import { O } from '@mobily/ts-belt';
-import { IconWorldSearch } from '@tabler/icons-react';
 
-import useNetworks from '../store/useNetworks';
 import { Reward } from '../types/reward';
-import { DEFAULT_EXPLORER_URL } from '../utils/constants';
 import { formatTimestamp } from '../utils/datetime';
-import getExplorerUrl from '../utils/getExplorerUrl';
 import { epochByLayer, timestampByLayer } from '../utils/layers';
 import { formatSmidge } from '../utils/smh';
+
+import ExplorerButton from './ExplorerButton';
 
 type RewardListItemProps = {
   reward: Reward;
@@ -32,13 +28,6 @@ function RewardListItem({
   layerDurationSec,
   layersPerEpoch,
 }: RewardListItemProps): JSX.Element {
-  const { getCurrentNetwork } = useNetworks();
-  const explorerUrl = O.mapWithDefault(
-    getCurrentNetwork(),
-    DEFAULT_EXPLORER_URL,
-    (net) => net.explorerUrl
-  );
-
   return (
     <Card
       mb={2}
@@ -54,13 +43,9 @@ function RewardListItem({
             (Layer {reward.layerPaid} in Epoch{' '}
             {epochByLayer(layersPerEpoch, reward.layerPaid)})
           </Text>
-          <IconButton
-            as="a"
-            aria-label="Open in explorer"
-            size="xs"
-            href={getExplorerUrl(explorerUrl, 'smeshers', reward.smesher)}
-            target="_blank"
-            icon={<IconWorldSearch size={14} />}
+          <ExplorerButton
+            dataType="rewards"
+            value={`${reward.smesher}/${reward.layerPaid}`}
             ml={1}
           />
         </Flex>

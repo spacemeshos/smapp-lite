@@ -1539,6 +1539,11 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
+"@hookform/resolvers@^3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@hookform/resolvers/-/resolvers-3.4.0.tgz#4ca2c08a26118fc8b6a572da94fdd57750a79b62"
+  integrity sha512-+oAqK3okmoEDnvUkJ3N/mvNMeeMv5Apgy1jkoRmlaaAF4vBgcJs9tHvtXU7VE4DvPosvAUUkPOaNFunzt1dbgA==
+
 "@humanwhocodes/config-array@^0.11.8":
   version "0.11.8"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.8.tgz#03595ac2075a4dc0f191cc2131de14fbd7d410b9"
@@ -2011,10 +2016,10 @@
   resolved "https://registry.yarnpkg.com/@spacemesh/ed25519-bip32/-/ed25519-bip32-0.2.1.tgz#f622616060fb477b1fbc5d1292ff21993927a3b2"
   integrity sha512-wwB9FHotFBc1IqYLNZRXt9jZIm7K4gWap4EaotEGeoRLvVJNR/J63TXZBEsHhPrMOWTC2yAcxi6GC47bxsYOhA==
 
-"@spacemesh/sm-codec@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@spacemesh/sm-codec/-/sm-codec-0.5.0.tgz#ce0642af77df90720cc23b3451791bdeb844f8f0"
-  integrity sha512-pKs2vaX/0ikhXYJbkCuWddXc19i2fcZ7QHl90CGTQnURL3yryAtrNzs/bPVuWLb25piea4CPxuEYaiJzjbO0vw==
+"@spacemesh/sm-codec@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@spacemesh/sm-codec/-/sm-codec-0.6.0.tgz#2caf446938e0a3e0ecd70c5c77ef0218971054b3"
+  integrity sha512-EMatc8Qz4ABT1k5g2uV3mZWxueCm5A4Vr9CgqXluGKUKm3QdKXa5ChsPN7+mlWy4V+LI1O24068Jy8yAYKOaAA==
   dependencies:
     "@noble/hashes" "^1.2.0"
     scale-ts "^0.2.11"

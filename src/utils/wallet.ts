@@ -1,9 +1,10 @@
 import * as bip39 from '@scure/bip39';
 import { wordlist } from '@scure/bip39/wordlists/english';
-import { StdPublicKeys, TemplateRegistry } from '@spacemesh/sm-codec';
+import { StdTemplateKeys, StdTemplates } from '@spacemesh/sm-codec';
 
+import { Bech32Address } from '../types/common';
 import {
-  Account,
+  AccountWithAddress,
   Contact,
   KeyPair,
   Wallet,
@@ -24,6 +25,11 @@ import { generateAddress } from './bech32';
 import Bip32KeyDerivation from './bip32';
 import { getISODate } from './datetime';
 import { fromHexString, toHexString } from './hexString';
+import {
+  AnySpawnArguments,
+  convertSpawnArgumentsForEncoding,
+  TemplateKey,
+} from './templates';
 
 export const createKeyPair = (
   displayName: string,
@@ -52,11 +58,18 @@ export const createWallet = (
   const timestamp = getISODate();
   const mnemonic = existingMnemonic || generateMnemonic();
 
+  const firstKey = createKeyPair('Key 0', mnemonic, 0);
   const crypto: WalletSecrets = {
     mnemonic,
+    keys: [firstKey],
     accounts: [
-      createKeyPair('Account 0', mnemonic, 0),
-      createKeyPair('Account 1', mnemonic, 1),
+      {
+        displayName: 'Main Account',
+        templateAddress: TemplateKey.SingleSig,
+        spawnArguments: {
+          PublicKey: firstKey.publicKey,
+        },
+      },
     ],
     contacts: [],
   };
@@ -75,11 +88,12 @@ export const addKeyPair = (wallet: Wallet, keypair: KeyPair): Wallet => ({
   ...wallet,
   crypto: {
     ...wallet.crypto,
-    accounts: [...wallet.crypto.accounts, keypair],
+    keys: [...wallet.crypto.keys, keypair],
   },
 });
 
 // TODO: editKeyPair, removeKeyPair
+// TODO: addAccount, editAccount, removeAccount
 
 export const generateNewKeyPair = (wallet: Wallet, name?: string): Wallet => {
   const index = wallet.crypto.accounts.length;
@@ -106,29 +120,18 @@ export const addContact = (wallet: Wallet, contact: Contact): Wallet => ({
 //
 // Derive Account from KeyPair
 //
-export const deriveAccount = (
+
+export const computeAddress = <TK extends StdTemplateKeys>(
   hrp: string,
-  keypair: Omit<KeyPair, 'secretKey'>,
-  templateKey = StdPublicKeys.SingleSig
-): Account => {
-  const tpl = TemplateRegistry.get(templateKey, 0);
-
-  if (templateKey !== StdPublicKeys.SingleSig) {
-    // TODO: Support other templates
-    throw new Error('Only SingleSig template is supported');
-  }
-
-  const spawnArguments = {
-    PublicKey: fromHexString(keypair.publicKey),
-  };
-  const principal = tpl.principal(spawnArguments);
-  const address = generateAddress(principal, hrp);
-  return {
-    displayName: keypair.displayName,
-    address,
-    templateAddress: templateKey,
-    spawnArguments,
-  };
+  templateKey: TK,
+  spawnArguments: AnySpawnArguments
+): Bech32Address => {
+  const tpl = StdTemplates[templateKey].methods[0];
+  const args = convertSpawnArgumentsForEncoding(templateKey, spawnArguments);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const principal = tpl.principal(args);
+  return generateAddress(principal, hrp);
 };
 
 //
@@ -185,3 +188,6 @@ export const encryptWallet = async (
     },
   };
 };
+
+export const safeKeyForAccount = (acc: AccountWithAddress) =>
+  `${acc.address}_${acc.displayName.replace(/\s/g, '_')}`;

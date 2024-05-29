@@ -15,7 +15,6 @@ import {
   IconChevronDown,
   IconCircleDotted,
   IconCircleFilled,
-  IconWorldSearch,
 } from '@tabler/icons-react';
 
 import useNetworks from '../store/useNetworks';
@@ -72,16 +71,6 @@ function NetworkSelection(): JSX.Element {
           <MenuItem onClick={onOpen}>Add new network...</MenuItem>
         </MenuList>
       </Menu>
-      <Button
-        as="a"
-        href={currentNetwork?.explorerUrl}
-        target="_blank"
-        disabled={!currentNetwork}
-        cursor={!currentNetwork ? 'not-allowed' : 'pointer'}
-        ml={2}
-      >
-        <IconWorldSearch color={!currentNetwork ? 'grey' : undefined} />
-      </Button>
       <Spacer />
     </>
   );

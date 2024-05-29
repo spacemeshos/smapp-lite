@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { CheckCircleIcon, CopyIcon } from '@chakra-ui/icons';
 import {
   Box,
-  Button,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -18,15 +17,11 @@ import {
   Tooltip,
   UseDisclosureReturn,
 } from '@chakra-ui/react';
-import { O } from '@mobily/ts-belt';
-import { IconWorldSearch } from '@tabler/icons-react';
 import { useCopyToClipboard } from '@uidotdev/usehooks';
 
-import useNetworks from '../store/useNetworks';
 import { Transaction } from '../types/tx';
-import { DEFAULT_EXPLORER_URL } from '../utils/constants';
 import { formatTimestamp } from '../utils/datetime';
-import getExplorerUrl, { ExplorerDataType } from '../utils/getExplorerUrl';
+import { ExplorerDataType } from '../utils/getExplorerUrl';
 import { toHexString } from '../utils/hexString';
 import { epochByLayer, timestampByLayer } from '../utils/layers';
 import { formatSmidge } from '../utils/smh';
@@ -37,6 +32,8 @@ import {
   isSelfSpawnTransaction,
   isSpendTransaction,
 } from '../utils/tx';
+
+import ExplorerButton from './ExplorerButton';
 
 type RowProps =
   | {
@@ -55,13 +52,6 @@ type RowProps =
 function Row({ label, value, isCopyable, explorer }: RowProps) {
   const [isCopied, setIsCopied] = useState(false);
   const [, copy] = useCopyToClipboard();
-  const { getCurrentNetwork } = useNetworks();
-
-  const explorerUrl = O.mapWithDefault(
-    getCurrentNetwork(),
-    DEFAULT_EXPLORER_URL,
-    (net) => net.explorerUrl
-  );
 
   let timeout: ReturnType<typeof setTimeout>;
 
@@ -94,15 +84,7 @@ function Row({ label, value, isCopyable, explorer }: RowProps) {
           </Tooltip>
         )}
         {explorer && (
-          <IconButton
-            as="a"
-            aria-label="Open in explorer"
-            size="xs"
-            href={getExplorerUrl(explorerUrl, explorer, value)}
-            target="_blank"
-            icon={<IconWorldSearch size={14} />}
-            ml={1}
-          />
+          <ExplorerButton dataType={explorer} value={value} ml={1} />
         )}
       </Flex>
     </Box>
@@ -162,13 +144,6 @@ function TxDetails({
   layerDurationSec,
   layersPerEpoch,
 }: TxDetailsProps): JSX.Element | null {
-  const { getCurrentNetwork } = useNetworks();
-  const explorerUrl = O.mapWithDefault(
-    getCurrentNetwork(),
-    DEFAULT_EXPLORER_URL,
-    (net) => net.explorerUrl
-  );
-
   return (
     <Portal>
       <Drawer placement="right" isOpen={disclosure.isOpen} onClose={onClose}>
@@ -241,15 +216,7 @@ function TxDetails({
           </DrawerBody>
           <DrawerFooter>
             {tx === null ? null : (
-              <Button
-                as="a"
-                href={getExplorerUrl(explorerUrl, 'txs', tx.id)}
-                target="_blank"
-                leftIcon={<IconWorldSearch />}
-                w="100%"
-              >
-                Open in Explorer
-              </Button>
+              <ExplorerButton full dataType="txs" value={tx.id} />
             )}
           </DrawerFooter>
         </DrawerContent>

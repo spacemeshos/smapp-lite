@@ -2,14 +2,14 @@ import {
   SpawnTransaction,
   SpendTransaction,
   StdPublicKeys,
-  TemplateRegistry,
+  StdTemplates,
 } from '@spacemesh/sm-codec';
 
 import { Bech32Address } from '../../types/common';
 import { Transaction } from '../../types/tx';
 import { fromBase64 } from '../../utils/base64';
 import { toHexString } from '../../utils/hexString';
-import { getMethodName, getTemplateName } from '../../utils/templateNames';
+import { getMethodName, getTemplateNameByAddress } from '../../utils/templates';
 import {
   MeshTransactionsResponseSchema,
   TransactionResponse,
@@ -85,17 +85,14 @@ export const fetchTransactionsByAddress = async (
 
   return txs.map((tx) => {
     // TODO: Support other templates
-    const template = TemplateRegistry.get(
-      StdPublicKeys.SingleSig,
-      tx.method as 0 | 16
-    );
+    const template =
+      StdTemplates[StdPublicKeys.SingleSig].methods[tx.method as 0 | 16];
     try {
       const parsedRaw = template.decode(fromBase64(tx.raw));
-      const typed =
+      const parsed =
         tx.method === 0
           ? (parsedRaw as SpawnTransaction)
           : (parsedRaw as SpendTransaction);
-      const parsed = typed;
       return {
         id: toHexString(fromBase64(tx.id), true),
         principal: tx.principal.address,
@@ -110,7 +107,7 @@ export const fetchTransactionsByAddress = async (
         template: {
           address: tx.template.address,
           method: tx.method,
-          name: getTemplateName(tx.template.address),
+          name: getTemplateNameByAddress(tx.template.address),
           methodName: getMethodName(tx.method),
         },
         layer: tx.layer,

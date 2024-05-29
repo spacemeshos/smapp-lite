@@ -11,7 +11,7 @@ import {
   TransactionID,
 } from '../types/tx';
 
-import { MethodName, TemplateName } from './templateNames';
+import { MethodName, TemplateName } from './templates';
 
 export enum TxType {
   Self,

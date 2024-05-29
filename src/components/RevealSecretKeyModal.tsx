@@ -14,17 +14,21 @@ import {
 } from '@chakra-ui/react';
 import { useCopyToClipboard } from '@uidotdev/usehooks';
 
-type MnemonicsModalProps = {
-  mnemonics: string;
+import { HexString } from '../types/common';
+
+type RevealSecretKeyProps = {
+  displayName: string;
+  secretKey: HexString;
   isOpen: boolean;
   onClose: () => void;
 };
 
-function MnemonicsModal({
-  mnemonics,
+function RevealSecretKey({
+  displayName,
+  secretKey,
   isOpen,
   onClose,
-}: MnemonicsModalProps): JSX.Element {
+}: RevealSecretKeyProps): JSX.Element {
   const [isCopied, setIsCopied] = useState(false);
   const [, copy] = useCopyToClipboard();
 
@@ -43,25 +47,23 @@ function MnemonicsModal({
       <ModalOverlay />
       <ModalCloseButton />
       <ModalContent>
-        <ModalHeader>Backup mnemonics</ModalHeader>
+        <ModalHeader>Secret Key</ModalHeader>
         <ModalBody>
           <Text mb={4}>
-            Please keep your mnemonics secret and do not share with anyone. They
-            can be used to restore your wallet and access to your funds.
+            This is the secret key for account &quot;{displayName}&quot;.
           </Text>
-          <Textarea readOnly value={mnemonics} rows={4} resize="none" />
+          <Textarea readOnly value={secretKey} rows={4} resize="none" />
           <Text fontSize="xs" color="gray" mt={2}>
-            We recommend you to remember mnemonics and not store them on your
-            computer. Or write them down on a piece of paper and keep it in a
-            safe place.
+            Please keep it secret and do not share it to anyone, otherwise your
+            funds might be stolen.
           </Text>
         </ModalBody>
         <ModalFooter>
-          <Button isDisabled={isCopied} onClick={onCopyClick(mnemonics)} w={20}>
+          <Button isDisabled={isCopied} onClick={onCopyClick(secretKey)} w={20}>
             {isCopied ? 'Copied' : 'Copy'}
           </Button>
           <Button colorScheme="blue" onClick={onClose} ml={2}>
-            OK
+            Close
           </Button>
         </ModalFooter>
       </ModalContent>
@@ -69,4 +71,4 @@ function MnemonicsModal({
   );
 }
 
-export default MnemonicsModal;
+export default RevealSecretKey;

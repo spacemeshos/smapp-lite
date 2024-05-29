@@ -34,17 +34,16 @@ import RewardsList from '../components/RewardsList';
 import TxDetails from '../components/TxDetails';
 import TxList from '../components/TxList';
 import useDataRefresher from '../hooks/useDataRefresher';
+import { useCurrentHRP } from '../hooks/useNetworkSelectors';
+import { useCurrentAccount } from '../hooks/useWalletSelectors';
 import useAccountData from '../store/useAccountData';
 import useNetworks from '../store/useNetworks';
-import useWallet from '../store/useWallet';
 import { Transaction } from '../types/tx';
-import { DEFAULT_HRP } from '../utils/constants';
 import { formatSmidge } from '../utils/smh';
 
 function WalletScreen(): JSX.Element {
   const { isLoading, refreshData } = useDataRefresher();
 
-  const { getCurrentAccount } = useWallet();
   const { getCurrentNetwork } = useNetworks();
   const { getAccountData } = useAccountData();
   const currentNetwork = getCurrentNetwork();
@@ -60,8 +59,8 @@ function WalletScreen(): JSX.Element {
     txDisclosure.onClose();
   };
 
-  const hrp = O.mapWithDefault(currentNetwork, DEFAULT_HRP, (net) => net.hrp);
-  const currentAccount = getCurrentAccount(hrp);
+  const hrp = useCurrentHRP();
+  const currentAccount = useCurrentAccount(hrp);
 
   const accountData = pipe(
     O.zip(currentNetwork, currentAccount),

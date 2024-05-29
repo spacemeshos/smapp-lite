@@ -1,6 +1,7 @@
 import parse from 'parse-duration';
 import { z } from 'zod';
 
+import { isHexString } from '../../types/common';
 import { isValid } from '../../utils/base64';
 
 import { Bech32AddressSchema } from './address';
@@ -16,6 +17,11 @@ export const AmountSchema = z.object({
 
 export const AddressSchema = z.object({
   address: Bech32AddressSchema,
+});
+
+export const HexStringSchema = z.custom<string>((str) => {
+  if (typeof str !== 'string') return false;
+  return isHexString(str);
 });
 
 export const IdSchema = z.object({

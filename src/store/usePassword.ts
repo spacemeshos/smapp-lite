@@ -135,6 +135,7 @@ const usePassword = (): UsePasswordReturnType => {
 
   const onClose = () => {
     eventEmitter.emit('close', true);
+    reset();
     _onClose();
   };
 
@@ -190,7 +191,7 @@ const usePassword = (): UsePasswordReturnType => {
       onClose,
       onSubmit,
       register: {
-        password: register('password', { required: 'Password is required' }),
+        password: register('password'),
         remember: register('remember'),
       },
     },

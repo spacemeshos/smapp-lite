@@ -14,6 +14,7 @@ import { IconMenu2 } from '@tabler/icons-react';
 import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
 
+import KeyManager from './KeyManager';
 import MnemonicsModal from './MnemonicsModal';
 import WipeOutAlert from './WipeOutAlert';
 
@@ -24,6 +25,7 @@ function MainMenu(): JSX.Element {
   const wipeAlert = useDisclosure();
 
   const mnemonicsModal = useDisclosure();
+  const keyManagerDrawer = useDisclosure();
   const [mnemonics, setMnemonics] = useState('');
   const onMnemonicsClose = () => {
     setMnemonics('');
@@ -40,18 +42,21 @@ function MainMenu(): JSX.Element {
           fontSize="sm"
         />
         <MenuList>
-          <MenuItem>Manage accounts</MenuItem>
+          <MenuItem onClick={keyManagerDrawer.onOpen}>
+            Manage keys & accounts
+          </MenuItem>
           <MenuItem
             onClick={async () => {
-              setMnemonics(
-                (await withPassword(
-                  showMnemonics,
-                  'Show mnemonics',
-                  // eslint-disable-next-line max-len
-                  'Please enter your password to read mnemonics from the secret part of your wallet:'
-                )) ?? ''
+              const words = await withPassword(
+                showMnemonics,
+                'Show mnemonics',
+                // eslint-disable-next-line max-len
+                'Please enter your password to read mnemonics from the secret part of your wallet:'
               );
-              mnemonicsModal.onOpen();
+              if (words) {
+                setMnemonics(words);
+                mnemonicsModal.onOpen();
+              }
             }}
           >
             Backup mnemonic
@@ -70,6 +75,10 @@ function MainMenu(): JSX.Element {
         isOpen={mnemonicsModal.isOpen}
         onClose={onMnemonicsClose}
         mnemonics={mnemonics}
+      />
+      <KeyManager
+        isOpen={keyManagerDrawer.isOpen}
+        onClose={keyManagerDrawer.onClose}
       />
     </>
   );

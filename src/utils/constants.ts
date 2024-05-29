@@ -16,3 +16,7 @@ export const DEFAULT_ACCOUNT_STATES: AccountStates = {
 };
 
 export const DEFAULT_EXPLORER_URL = 'https://explorer.spacemesh.io';
+
+export const BUTTON_ICON_SIZE = 16;
+
+export const MAX_MULTISIG_AMOUNT = 10;

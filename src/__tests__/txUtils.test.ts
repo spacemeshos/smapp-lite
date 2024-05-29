@@ -1,7 +1,7 @@
 import { bech32 } from 'bech32';
 
 import { Transaction } from '../types/tx';
-import { MethodName, TemplateName } from '../utils/templateNames';
+import { MethodName, TemplateName } from '../utils/templates';
 import { collectTxIdsByAddress } from '../utils/tx';
 
 describe('collectTxIdsByAddress', () => {
