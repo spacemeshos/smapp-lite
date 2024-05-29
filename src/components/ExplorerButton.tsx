@@ -12,6 +12,7 @@ interface ExplorerButtonProps extends ButtonProps {
   full?: boolean;
   iconSize?: number;
   label?: string;
+  v2?: boolean;
 }
 
 function ExplorerButton({
@@ -20,6 +21,7 @@ function ExplorerButton({
   iconSize,
   label,
   full,
+  v2,
   ...buttonProps
 }: ExplorerButtonProps): JSX.Element {
   const { getCurrentNetwork } = useNetworks();
@@ -33,7 +35,7 @@ function ExplorerButton({
     return (
       <Button
         as="a"
-        href={getExplorerUrl(explorerUrl, dataType, value)}
+        href={getExplorerUrl(explorerUrl, dataType, value, v2)}
         target="_blank"
         leftIcon={<IconWorldSearch />}
         w="100%"
@@ -49,7 +51,7 @@ function ExplorerButton({
       as="a"
       aria-label="Open in explorer"
       size="xs"
-      href={getExplorerUrl(explorerUrl, dataType, value)}
+      href={getExplorerUrl(explorerUrl, dataType, value, v2)}
       target="_blank"
       icon={<IconWorldSearch size={iconSize} />}
       {...buttonProps}
@@ -58,6 +60,7 @@ function ExplorerButton({
 }
 
 ExplorerButton.defaultProps = {
+  v2: false,
   full: false,
   iconSize: 14,
   label: 'Open in Explorer',
