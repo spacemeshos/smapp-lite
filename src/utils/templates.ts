@@ -103,7 +103,7 @@ export const convertSpawnArgumentsForEncoding = <T extends StdTemplateKeys>(
   if (tpl === StdPublicKeys.Vault) {
     const args = spawnArgs as VaultSpawnArguments;
     return {
-      Owner: fromHexString(args.Owner),
+      Owner: Uint8Array.from(bech32.fromWords(bech32.decode(args.Owner).words)),
       TotalAmount: BigInt(args.TotalAmount),
       InitialUnlockAmount: BigInt(args.InitialUnlockAmount),
       VestingStart: BigInt(args.VestingStart),

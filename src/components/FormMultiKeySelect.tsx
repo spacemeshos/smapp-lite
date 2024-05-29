@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import {
   ArrayPath,
   Control,
@@ -6,7 +6,6 @@ import {
   FieldErrors,
   FieldValues,
   Path,
-  PathValue,
   useFieldArray,
   UseFormRegister,
   UseFormUnregister,
@@ -51,13 +50,6 @@ function FormMultiKeySelect<
     [append, keys]
   );
 
-  useEffect(() => {
-    register('required' as Path<T>, {
-      value: fields.length as PathValue<T, Path<T>>,
-    });
-    return () => unregister('required' as Path<T>);
-  }, [register, unregister, fields]);
-
   const rootError = errors[fieldName]?.message;
   return (
     <>
@@ -79,7 +71,7 @@ function FormMultiKeySelect<
         >
           <IconButton
             icon={<IconTrash size={BUTTON_ICON_SIZE} />}
-            isDisabled={index < 2}
+            isDisabled={index === 0}
             onClick={() => remove(index)}
             aria-label="Remove party"
             ml={2}

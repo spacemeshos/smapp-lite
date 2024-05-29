@@ -17,7 +17,7 @@
     "lint:fix": "yarn lint --fix",
     "format": "prettier --config ./.prettierrc -w 'src/**/*.{tsx,ts}' && git update-index --again",
     "pretest": "yarn lint:fix",
-    "test": "jest --colors --passWithNoTests",
+    "test": "jest --colors --passWithNoTests --maxWorkers=1",
     "test:watch": "yarn test --collectCoverage=false --watch",
     "prepare": "husky install",
     "cz": "cz"
@@ -31,7 +31,7 @@
     "@mobily/ts-belt": "^3.13.1",
     "@scure/bip39": "^1.2.2",
     "@spacemesh/ed25519-bip32": "^0.2.1",
-    "@spacemesh/sm-codec": "0.6.0",
+    "@spacemesh/sm-codec": "/Users/brusher/Work/spacemeshos/sm-codec",
     "@tabler/icons-react": "^3.1.0",
     "@tanstack/react-virtual": "^3.3.0",
     "@uidotdev/usehooks": "^2.4.1",

@@ -1918,7 +1918,7 @@
     hey-listen "^1.0.8"
     tslib "^2.3.1"
 
-"@noble/hashes@^1.2.0":
+"@noble/hashes@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.4.0.tgz#45814aa329f30e4fe0ba49426f49dfccdd066426"
   integrity sha512-V1JJ1WTRUqHHrOSh597hURcMqVKVGL/ea3kv0gSnEdsEZ0/+VyPghM1lMNGc00z7CIQorSvbKpuJkxvuHbvdbg==
@@ -2016,13 +2016,17 @@
   resolved "https://registry.yarnpkg.com/@spacemesh/ed25519-bip32/-/ed25519-bip32-0.2.1.tgz#f622616060fb477b1fbc5d1292ff21993927a3b2"
   integrity sha512-wwB9FHotFBc1IqYLNZRXt9jZIm7K4gWap4EaotEGeoRLvVJNR/J63TXZBEsHhPrMOWTC2yAcxi6GC47bxsYOhA==
 
-"@spacemesh/sm-codec@0.6.0":
+"@spacemesh/sm-codec@/Users/brusher/Work/spacemeshos/sm-codec":
   version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@spacemesh/sm-codec/-/sm-codec-0.6.0.tgz#2caf446938e0a3e0ecd70c5c77ef0218971054b3"
-  integrity sha512-EMatc8Qz4ABT1k5g2uV3mZWxueCm5A4Vr9CgqXluGKUKm3QdKXa5ChsPN7+mlWy4V+LI1O24068Jy8yAYKOaAA==
   dependencies:
-    "@noble/hashes" "^1.2.0"
-    scale-ts "^0.2.11"
+    "@noble/hashes" "^1.4.0"
+    scale-ts "^1.6.0"
+
+"@spacemesh/sm-codec@file:../sm-codec":
+  version "0.6.0"
+  dependencies:
+    "@noble/hashes" "^1.4.0"
+    scale-ts "^1.6.0"
 
 "@tabler/icons-react@^3.1.0":
   version "3.1.0"
@@ -6310,10 +6314,10 @@ saxes@^6.0.0:
   dependencies:
     xmlchars "^2.2.0"
 
-scale-ts@^0.2.11:
-  version "0.2.12"
-  resolved "https://registry.yarnpkg.com/scale-ts/-/scale-ts-0.2.12.tgz#02023b59655cb1f517088d5b6509d050e7108d66"
-  integrity sha512-hNGuU5Yhohmp4BjFrNEioDkPAOWe6aYRDUlBi9FTxxmp1wZ8SAkDxAf/IobinuSa+J0a9srZEP73dqmYeyYYXg==
+scale-ts@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/scale-ts/-/scale-ts-1.6.0.tgz#e9641093c5a9e50f964ddb1607139034e3e932e9"
+  integrity sha512-Ja5VCjNZR8TGKhUumy9clVVxcDpM+YFjAnkMuwQy68Hixio3VRRvWdE3g8T/yC+HXA0ZDQl2TGyUmtmbcVl40Q==
 
 scheduler@^0.23.0:
   version "0.23.0"
