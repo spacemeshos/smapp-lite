@@ -12,6 +12,10 @@ export type AccountStates = {
   projected: AccountState;
 };
 
+export type AccountStatesWithAddress = {
+  address: Bech32Address;
+} & AccountStates;
+
 export type Account = {
   address: Bech32Address;
   rewards: Reward[];

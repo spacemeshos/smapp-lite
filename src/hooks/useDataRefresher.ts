@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import useNetworks from '../store/useNetworks';
+import useWallet from '../store/useWallet';
 import { Bech32Address } from '../types/common';
 
 import useAccountHandlers from './useAccountHandlers';
 import { useCurrentHRP } from './useNetworkSelectors';
-import { useCurrentAccount } from './useWalletSelectors';
+import { useAccountsList } from './useWalletSelectors';
 
 // This hook is used to automatically re-fetch all the required
 // data once the account or network changes.
@@ -16,17 +17,21 @@ const useDataRefresher = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const hrp = useCurrentHRP();
-  const currentAccount = useCurrentAccount(hrp);
+  const accounts = useAccountsList(hrp);
+  const { selectedAccount } = useWallet();
   const currentNetwork = getCurrentNetwork();
-
-  const address = currentAccount?.address;
+  const addresses = useMemo(
+    () => accounts.map((acc) => acc.address),
+    [accounts]
+  );
+  const curAddress = accounts[selectedAccount]?.address;
   const rpc = currentNetwork?.jsonRPC;
 
   const doRequests = useMemo(
-    () => (addr: Bech32Address) => {
+    () => (addrs: Bech32Address[], addr: Bech32Address) => {
       setIsLoading(true);
       return Promise.all([
-        fetchAccountState(addr),
+        fetchAccountState(addrs),
         fetchTransactions(addr),
         fetchRewards(addr),
       ])
@@ -42,16 +47,16 @@ const useDataRefresher = () => {
   );
 
   useEffect(() => {
-    if (address && rpc) {
-      doRequests(address);
+    if (curAddress && rpc) {
+      doRequests(addresses, curAddress);
     }
-  }, [address, rpc, doRequests]);
+  }, [addresses, curAddress, rpc, doRequests]);
 
   return {
     isLoading,
     refreshData: () => {
-      if (address && rpc) {
-        doRequests(address);
+      if (curAddress && rpc) {
+        doRequests(addresses, curAddress);
       }
     },
   };

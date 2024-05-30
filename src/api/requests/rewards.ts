@@ -22,12 +22,14 @@ export const fetchRewardsChunk = (
     .then(RewardsListSchema.parse)
     .then(({ rewards }) =>
       rewards.map(
-        ({ v1 }): Reward => ({
-          layerPaid: v1.layer,
-          rewardForLayer: BigInt(v1.layerReward),
-          rewardForFees: BigInt(BigInt(v1.total) - BigInt(v1.layerReward)),
-          coinbase: v1.coinbase,
-          smesher: toHexString(fromBase64(v1.smesher)),
+        (reward): Reward => ({
+          layerPaid: reward.layer,
+          rewardForLayer: BigInt(reward.layerReward),
+          rewardForFees: BigInt(
+            BigInt(reward.total) - BigInt(reward.layerReward)
+          ),
+          coinbase: reward.coinbase,
+          smesher: toHexString(fromBase64(reward.smesher)),
         })
       )
     );

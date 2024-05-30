@@ -12,10 +12,6 @@ export const RewardSchema = z.object({
   smesher: Base64Schema,
 });
 
-export const RewardVersionedSchema = z.object({
-  v1: RewardSchema,
-});
-
 export const RewardsListSchema = z.object({
-  rewards: z.array(RewardVersionedSchema),
+  rewards: z.array(RewardSchema),
 });
