@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
-import { AddressSchema, NumberSchema } from './common';
+import { Bech32AddressSchema } from './address';
+import { Base64Schema } from './common';
 import { BigIntStringSchema } from './strNumber';
 
 // Common stuff
@@ -11,31 +12,40 @@ export const NestedTransactionIdSchema = z.object({ id: TransactionIdSchema });
 
 export const NonceSchema = z.object({
   counter: z.string(),
-  bitfield: z.number(),
+  bitfield: z.number().optional(),
 });
 
 export type Nonce = z.infer<typeof NonceSchema>;
-
-export const LimitsSchema = z.object({
-  min: z.number(),
-  max: z.number(),
-});
-
-export type Limits = z.infer<typeof LimitsSchema>;
 
 // Response objects
 
 export const TransactionSchema = z.object({
   id: TransactionIdSchema,
-  principal: AddressSchema,
-  template: AddressSchema,
+  principal: Bech32AddressSchema,
+  template: Bech32AddressSchema,
   method: z.number(),
   nonce: NonceSchema,
-  limits: LimitsSchema,
   maxGas: BigIntStringSchema,
   gasPrice: BigIntStringSchema,
   maxSpend: BigIntStringSchema,
   raw: z.string(),
+});
+
+export const TransactionResultStatusSchema = z.enum([
+  'TRANSACTION_STATUS_UNSPECIFIED',
+  'TRANSACTION_STATUS_SUCCESS',
+  'TRANSACTION_STATUS_FAILURE',
+  'TRANSACTION_STATUS_INVALID',
+]);
+
+export const TransactionResultSchema = z.object({
+  status: TransactionResultStatusSchema,
+  message: z.string(),
+  gasConsumed: BigIntStringSchema,
+  fee: BigIntStringSchema,
+  block: Base64Schema,
+  layer: z.number(),
+  touchedAddresses: z.array(Bech32AddressSchema),
 });
 
 export const TransactionStateEnumSchema = z.enum([
@@ -48,39 +58,23 @@ export const TransactionStateEnumSchema = z.enum([
   'TRANSACTION_STATE_PROCESSED',
 ]);
 
-export const TransactionStateSchema = z.object({
-  id: NestedTransactionIdSchema,
-  state: TransactionStateEnumSchema,
+export const TransactionResponseObjectSchema = z.object({
+  tx: TransactionSchema,
+  txResult: z.optional(TransactionResultSchema),
+  txState: z.optional(TransactionStateEnumSchema),
 });
 
 // Responses
 
-export const MeshTransactionsResponseSchema = z.object({
-  data: z.array(
-    z.object({
-      meshTransaction: z.object({
-        transaction: TransactionSchema,
-        layerId: NumberSchema,
-      }),
-    })
-  ),
-  totalResults: z.number(),
+export const TransactionResponseSchema = z.object({
+  transactions: z.array(TransactionResponseObjectSchema),
 });
-export type MeshTransactionsResponse = z.infer<
-  typeof MeshTransactionsResponseSchema
->;
-
-export const TransactionStatesResponseSchema = z.object({
-  transactionsState: z.array(TransactionStateSchema),
-  transactions: z.array(TransactionSchema),
-});
-export type TransactionStatesResponse = z.infer<
-  typeof TransactionStatesResponseSchema
->;
 
 // TS Types
 
-export type TransactionResponse = z.infer<typeof TransactionSchema>;
+export type TransactionResponseObject = z.infer<typeof TransactionSchema>;
+
+export type TransactionResponse = z.infer<typeof TransactionResponseSchema>;
 export type TransactionState = z.infer<typeof TransactionStateEnumSchema>;
 
 export type WithLayer = { layer: number };

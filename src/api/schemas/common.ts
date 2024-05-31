@@ -4,14 +4,8 @@ import { z } from 'zod';
 import { isHexString } from '../../types/common';
 import { isValid } from '../../utils/base64';
 
-import { Bech32AddressSchema } from './address';
-
 export const NumberSchema = z.object({
   number: z.number(),
-});
-
-export const AddressSchema = z.object({
-  address: Bech32AddressSchema,
 });
 
 export const HexStringSchema = z.custom<string>((str) => {
