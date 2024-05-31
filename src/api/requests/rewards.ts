@@ -4,6 +4,8 @@ import { fromBase64 } from '../../utils/base64';
 import { toHexString } from '../../utils/hexString';
 import { RewardsListSchema } from '../schemas/rewards';
 
+import getFetchAll from './getFetchAll';
+
 export const fetchRewardsChunk = (
   rpc: string,
   address: Bech32Address,
@@ -34,23 +36,4 @@ export const fetchRewardsChunk = (
       )
     );
 
-export const fetchRewardsByAddress = async (
-  rpc: string,
-  address: Bech32Address
-) => {
-  const fetchNextChunk = async (page: number): Promise<Reward[]> => {
-    const PER_PAGE = 100;
-    const res = await fetchRewardsChunk(
-      rpc,
-      address,
-      PER_PAGE,
-      page * PER_PAGE
-    );
-    if (res.length === 100) {
-      return [...res, ...(await fetchNextChunk(page + 1))];
-    }
-    return res;
-  };
-
-  return fetchNextChunk(0);
-};
+export const fetchRewardsByAddress = getFetchAll(fetchRewardsChunk, 100);
