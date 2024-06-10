@@ -234,8 +234,8 @@ function ConfirmationModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
-      <ModalCloseButton />
       <ModalContent>
+        <ModalCloseButton />
         <ModalHeader pb={0}>Verify transaction</ModalHeader>
         <ModalBody minH={0}>
           <PreviewDataRow label="Principal Address" value={principal} />

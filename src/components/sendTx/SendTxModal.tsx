@@ -641,8 +641,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             })}
           />
           <ModalOverlay />
-          <ModalCloseButton />
           <ModalContent>
+            <ModalCloseButton />
             <ModalHeader pb={0}>Send a transaction</ModalHeader>
             <ModalBody minH={0}>
               <FormSelect

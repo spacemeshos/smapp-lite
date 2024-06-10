@@ -326,8 +326,8 @@ function CreateAccountModal({
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <Form control={control}>
         <ModalOverlay />
-        <ModalCloseButton />
         <ModalContent>
+          <ModalCloseButton />
           <ModalHeader>Create a new Account</ModalHeader>
           <ModalBody minH={0}>
             <FormInput

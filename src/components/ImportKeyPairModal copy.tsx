@@ -61,8 +61,8 @@ function ImportKeyPairModal({
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <Form control={control}>
         <ModalOverlay />
-        <ModalCloseButton />
         <ModalContent>
+          <ModalCloseButton />
           <ModalHeader>Import the Key Pair</ModalHeader>
           <ModalBody>
             <Text mb={4}>
