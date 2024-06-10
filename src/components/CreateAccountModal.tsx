@@ -17,11 +17,15 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { StdPublicKeys } from '@spacemesh/sm-codec';
 
+import { Bech32AddressSchema } from '../api/schemas/address';
 import { HexStringSchema } from '../api/schemas/common';
+import { useCurrentHRP } from '../hooks/useNetworkSelectors';
+import { useAccountsList } from '../hooks/useWalletSelectors';
 import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
 import { AnySpawnArguments, getTemplateNameByKey } from '../utils/templates';
 
+import FormAddressSelect from './FormAddressSelect';
 import FormInput from './FormInput';
 import FormKeySelect from './FormKeySelect';
 import FormMultiKeySelect from './FormMultiKeySelect';
@@ -46,13 +50,13 @@ const MultiSigSchema = z.object({
   required: z.number().min(0).max(10),
   publicKeys: z
     .array(HexStringSchema)
-    .min(2, 'MultiSig account requires at least two parties'),
+    .min(1, 'MultiSig account requires at least two parties'),
 });
 
 const VaultSchema = z.object({
   displayName: DisplayNameSchema,
   templateAddress: z.literal(StdPublicKeys.Vault),
-  owner: HexStringSchema,
+  owner: Bech32AddressSchema,
   totalAmount: z.number().min(0),
   initialUnlockAmount: z.number().min(0),
   vestingStart: z.number().min(0),
@@ -65,7 +69,7 @@ const VestingSchema = z.object({
   required: z.number().min(0).max(10),
   publicKeys: z
     .array(HexStringSchema)
-    .min(2, 'Vesting account requires at least two parties'),
+    .min(1, 'Vesting account requires at least two parties'),
 });
 
 const FormSchema = z.discriminatedUnion('templateAddress', [
@@ -111,13 +115,13 @@ function CreateAccountModal({
 }: CreateAccountModalProps): JSX.Element {
   const { createAccount, wallet } = useWallet();
   const { withPassword } = usePassword();
+  const hrp = useCurrentHRP();
+  const accounts = useAccountsList(hrp);
   const keys = wallet?.keychain || [];
   const defaultValues = {
     displayName: '',
-    publicKeys: [
-      keys[0]?.publicKey || '0x1',
-      keys[1]?.publicKey || keys[0]?.publicKey || '0x2',
-    ],
+    required: 1,
+    publicKeys: [keys[0]?.publicKey || '0x1'],
   };
   const {
     watch,
@@ -164,9 +168,9 @@ function CreateAccountModal({
               The vault holds some funds for its owner and unlocks them due to
               pre-defined vesting schedule.
             </Text>
-            <FormKeySelect
+            <FormAddressSelect
               fieldName="owner"
-              keys={keys}
+              accounts={accounts}
               register={register}
               unregister={unregister}
               errors={errors}
@@ -194,7 +198,7 @@ function CreateAccountModal({
               isSubmitted={isSubmitted}
             />
             <FormInput
-              label="Vesting start (epoch)"
+              label="Vesting start (layer number)"
               inputProps={{ type: 'number' }}
               register={register('vestingStart', {
                 required: 'Please specify the epoch when the vesting starts',
@@ -204,7 +208,7 @@ function CreateAccountModal({
               isSubmitted={isSubmitted}
             />
             <FormInput
-              label="Vesting end (epoch)"
+              label="Vesting end (layer number)"
               inputProps={{ type: 'number' }}
               register={register('vestingEnd', {
                 required: 'Please specify the epoch when the vesting ends',
@@ -222,6 +226,25 @@ function CreateAccountModal({
             <Text fontSize="sm" mb={1}>
               It is used to drain vaults by companies?..
             </Text>
+            <FormInput
+              label="Required amount of signatures"
+              inputProps={{ type: 'number' }}
+              register={register('required', {
+                required: 'Please specify any number from 0 to 10',
+                valueAsNumber: true,
+                validate: (n) => {
+                  if (n < 1) {
+                    return 'Required amount must be grater than 0';
+                  }
+                  if (n > 10) {
+                    return 'Required amount must be less or equal to 10';
+                  }
+                  return true;
+                },
+              })}
+              errors={errors}
+              isSubmitted={isSubmitted}
+            />
             <FormMultiKeySelect
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
@@ -244,6 +267,25 @@ function CreateAccountModal({
               transaction. You need to know Public Keys of other parties to
               create a MultiSig account.
             </Text>
+            <FormInput
+              label="Required amount of signatures"
+              inputProps={{ type: 'number' }}
+              register={register('required', {
+                required: 'Please specify any number from 0 to 10',
+                valueAsNumber: true,
+                validate: (n) => {
+                  if (n < 1) {
+                    return 'Required amount must be grater than 0';
+                  }
+                  if (n > 10) {
+                    return 'Required amount must be less or equal to 10';
+                  }
+                  return true;
+                },
+              })}
+              errors={errors}
+              isSubmitted={isSubmitted}
+            />
             <FormMultiKeySelect
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
@@ -284,8 +326,8 @@ function CreateAccountModal({
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <Form control={control}>
         <ModalOverlay />
-        <ModalCloseButton />
         <ModalContent>
+          <ModalCloseButton />
           <ModalHeader>Create a new Account</ModalHeader>
           <ModalBody minH={0}>
             <FormInput

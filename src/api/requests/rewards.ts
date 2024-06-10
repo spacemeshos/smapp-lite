@@ -1,35 +1,39 @@
 import { Bech32Address } from '../../types/common';
 import { Reward } from '../../types/reward';
-import { RewardsResponseSchema } from '../schemas/globalState';
+import { fromBase64 } from '../../utils/base64';
+import { toHexString } from '../../utils/hexString';
+import { RewardsListSchema } from '../schemas/rewards';
 
-// eslint-disable-next-line import/prefer-default-export
-export const fetchRewardsByAddress = async (
+import getFetchAll from './getFetchAll';
+
+export const fetchRewardsChunk = (
   rpc: string,
-  address: Bech32Address
+  address: Bech32Address,
+  limit = 100,
+  offset = 0
 ) =>
-  fetch(`${rpc}/v1/globalstate/accountdataquery`, {
+  fetch(`${rpc}/spacemesh.v2alpha1.RewardService/List`, {
     method: 'POST',
     body: JSON.stringify({
-      filter: {
-        account_id: {
-          address,
-        },
-        account_data_flags: 2,
-      },
+      coinbase: address,
+      limit,
+      offset,
     }),
   })
     .then((r) => r.json())
-    .then(RewardsResponseSchema.parse)
-    .then((x) =>
-      x.accountItem.map(
-        ({ reward }): Reward => ({
-          layerPaid: reward.layer.number,
-          rewardForLayer: BigInt(reward.layerReward.value),
+    .then(RewardsListSchema.parse)
+    .then(({ rewards }) =>
+      rewards.map(
+        (reward): Reward => ({
+          layerPaid: reward.layer,
+          rewardForLayer: BigInt(reward.layerReward),
           rewardForFees: BigInt(
-            BigInt(reward.total.value) - BigInt(reward.layerReward.value)
+            BigInt(reward.total) - BigInt(reward.layerReward)
           ),
-          coinbase: reward.coinbase.address,
-          smesher: reward.smesher.id,
+          coinbase: reward.coinbase,
+          smesher: toHexString(fromBase64(reward.smesher)),
         })
       )
     );
+
+export const fetchRewardsByAddress = getFetchAll(fetchRewardsChunk, 100);

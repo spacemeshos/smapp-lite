@@ -7,6 +7,7 @@ import { Bech32Address, HexString } from '../types/common';
 import { Reward } from '../types/reward';
 import { Transaction, TransactionID } from '../types/tx';
 import { DEFAULT_ACCOUNT_STATES } from '../utils/constants';
+import { MethodSelectors } from '../utils/templates';
 import { collectTxIdsByAddress } from '../utils/tx';
 
 type AccountDataState = {
@@ -40,6 +41,7 @@ type AccountDataSelectors = {
     genesisID: HexString,
     address: Bech32Address
   ) => O.Option<Account>;
+  isSpawnedAccount: (genesisID: HexString, address: Bech32Address) => boolean;
 };
 
 type AccountDataStore = AccountDataState &
@@ -136,6 +138,17 @@ const useAccountData = create<AccountDataStore>((set, get) => ({
         rewards: getAccountRewards(state, address),
         transactions: getAccountTransactions(state, address),
       }))
+    ),
+  isSpawnedAccount: (genesisID, address) =>
+    pipe(
+      get().getAccountData(genesisID, address),
+      O.mapWithDefault(
+        false,
+        (acc) =>
+          !!acc.transactions.find(
+            (tx) => tx.template.method === MethodSelectors.SelfSpawn
+          )
+      )
     ),
 }));
 

@@ -37,12 +37,12 @@ export interface Account<T = AnySpawnArguments> {
   spawnArguments: T;
 }
 
-export type AccountWithAddress<T = Record<string, unknown>> = Account<T> & {
+export type AccountWithAddress<T = AnySpawnArguments> = Account<T> & {
   address: Bech32Address;
 };
 
 export interface Contact {
-  address: string;
+  address: Bech32Address;
   nickname: string;
 }
 

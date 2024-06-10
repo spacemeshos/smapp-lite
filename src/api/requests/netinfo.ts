@@ -4,7 +4,7 @@ import { fromBase64 } from '../../utils/base64';
 import fetchJSON from '../../utils/fetchJSON';
 import { toHexString } from '../../utils/hexString';
 import { NetworkInfoResponseSchema } from '../schemas/network';
-import { NodeStatusSchema } from '../schemas/node';
+import { NodeStatusSchema, NodeSyncStatus } from '../schemas/node';
 
 export const fetchNetworkInfo = (rpc: string) =>
   fetchJSON(`${rpc}/spacemesh.v2alpha1.NetworkService/Info`, {
@@ -19,12 +19,13 @@ export const fetchNetworkInfo = (rpc: string) =>
     }));
 
 export const fetchNodeStatus = (rpc: string) =>
-  fetchJSON(`${rpc}/v1/node/status`, { method: 'POST' })
+  fetchJSON(`${rpc}/spacemesh.v2alpha1.NodeService/Status`, { method: 'POST' })
     .then(NodeStatusSchema.parse)
-    .then(({ status }) => ({
+    .then((status) => ({
       connectedPeers: parseInt(status.connectedPeers, 10),
-      isSynced: status.isSynced,
-      syncedLayer: status.syncedLayer.number,
-      topLayer: status.topLayer.number,
-      verifiedLayer: status.verifiedLayer.number,
+      isSynced: status.status === NodeSyncStatus.SYNCED,
+      currentLayer: status.currentLayer,
+      appliedLayer: status.appliedLayer,
+      processedLayer: status.processedLayer,
+      latestLayer: status.latestLayer,
     }));

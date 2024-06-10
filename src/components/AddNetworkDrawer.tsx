@@ -91,6 +91,7 @@ function AddNetworkDrawer({ isOpen, onClose }: Props): JSX.Element {
             <FormInput
               label="JSON API URL"
               register={register('api', {
+                value: 'https://',
                 required: 'JSON API URL is required',
                 pattern: {
                   value: /^https?:\/\/.+/,

@@ -31,11 +31,11 @@
       2. [X] Details
    3. [X] Rewards
       1. [X] List
-   4. [ ] Manage accounts
-      1. [ ] Create new
+   4. [X] Manage accounts
+      1. [X] Create new
       2. [ ] Rename
       3. [ ] Delete
-      4. [ ] View only accounts (see Y)
+      4. [X] View only accounts (see Y)
    5. [X] Manage keys
       1. [X] Create new
       2. [X] Import secret key
@@ -43,15 +43,15 @@
       4. [ ] Delete (?)
       5. [X] Export secret key
    6. [ ] Send transaction
-      1. [ ] Single signature
+      1. [X] Single signature
          // Just sign with selected account
       2. [ ] Multiple Signatures
          1. [ ] Sign with selected account
          2. [ ] Sign with another account in the wallet
          3. [ ] Parse transaction and signatures (that sent by other party) and sign
       3. [ ] Support all TX kinds
-         1. [ ] SingleSig.Spawn
-         2. [ ] SingleSig.Spend
+         1. [X] SingleSig.Spawn
+         2. [X] SingleSig.Spend
          3. [ ] MultiSig.Spawn
          4. [ ] MultiSig.Spend
          5. [ ] Vesting.Drain
@@ -93,13 +93,4 @@ U. [ ] Add cache (service worker) for static resources (to allow working offline
 
 T. [ ] Add cache for API requests (if possible to replace POST with GET on API side)
 
-S. [ ] Auto-fetch transactions and rewards periodically
-
---
-
-## Node/infra side
-
-[ ] Allow CORS
-[ ] Reward ID — we need to have possibility to get same ID as in Explorer
-[ ] APIv2: RewardsService/List is not available ATM
-[ ] APIv2: TransactionService
+S. [X] Auto-fetch transactions and rewards periodically

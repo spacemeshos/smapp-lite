@@ -7,81 +7,53 @@ import {
 
 import { Bech32Address } from '../../types/common';
 import { Transaction } from '../../types/tx';
-import { fromBase64 } from '../../utils/base64';
+import { fromBase64, toBase64 } from '../../utils/base64';
 import { toHexString } from '../../utils/hexString';
 import { getMethodName, getTemplateNameByAddress } from '../../utils/templates';
 import {
-  MeshTransactionsResponseSchema,
-  TransactionResponse,
-  TransactionStatesResponse,
-  TransactionStatesResponseSchema,
+  EstimateGasResponseSchema,
+  SubmitTxResponseSchema,
+  TransactionResponseObject,
+  TransactionResponseSchema,
   WithLayer,
   WithState,
 } from '../schemas/tx';
 
-export const fetchMeshTxs = async (
+import getFetchAll from './getFetchAll';
+
+export const fetchTransactionsChunk = async (
   rpc: string,
-  address: Bech32Address
-): Promise<(TransactionResponse & WithLayer)[]> =>
-  fetch(`${rpc}/v1/mesh/accountmeshdataquery`, {
+  address: Bech32Address,
+  limit = 100,
+  offset = 0
+): Promise<(TransactionResponseObject & WithLayer & WithState)[]> =>
+  fetch(`${rpc}/spacemesh.v2alpha1.TransactionService/List`, {
     method: 'POST',
     body: JSON.stringify({
-      filter: {
-        account_id: {
-          address,
-        },
-        account_mesh_data_flags: 1,
-      },
+      principal: address,
+      include_state: true,
+      include_result: true,
+      limit,
+      offset,
     }),
   })
     .then((r) => r.json())
-    .then(MeshTransactionsResponseSchema.parse)
-    .then((x) =>
-      x.data.map((m) => ({
-        ...m.meshTransaction.transaction,
-        layer: m.meshTransaction.layerId.number,
+    .then(TransactionResponseSchema.parse)
+    .then(({ transactions }) =>
+      transactions.map((tx) => ({
+        ...tx.tx,
+        layer: tx.txResult?.layer || 0,
+        state: tx.txState ?? 'TRANSACTION_STATE_UNSPECIFIED',
       }))
     );
 
-export const fetchTxStates = async <T extends TransactionResponse>(
-  rpc: string,
-  txs: T[]
-): Promise<TransactionStatesResponse> => {
-  const txIds = txs.map((t) => ({ id: t.id }));
-  return fetch(`${rpc}/v1/transaction/transactionsstate`, {
-    method: 'POST',
-    body: JSON.stringify({
-      transaction_id: txIds,
-      include_transactions: false,
-    }),
-  })
-    .then((r) => r.json())
-    .then(TransactionStatesResponseSchema.parse);
-};
+export const fetchTransactions = getFetchAll(fetchTransactionsChunk, 100);
 
 export const fetchTransactionsByAddress = async (
   rpc: string,
   address: Bech32Address
 ) => {
-  const meshTxs = await fetchMeshTxs(rpc, address);
-  if (meshTxs.length === 0) {
-    return [];
-  }
-
-  const txStates = await fetchTxStates(rpc, meshTxs);
-
-  const txs: (TransactionResponse & WithLayer & WithState)[] = meshTxs.reduce(
-    (acc, next) => [
-      ...acc,
-      {
-        ...next,
-        state:
-          txStates.transactionsState.find((s) => s.id.id === next.id)?.state ??
-          'TRANSACTION_STATE_UNSPECIFIED',
-      },
-    ],
-    <(TransactionResponse & WithLayer & WithState)[]>[]
-  );
+  const txs = await fetchTransactions(rpc, address);
 
   return txs.map((tx) => {
     // TODO: Support other templates
@@ -95,19 +67,19 @@ export const fetchTransactionsByAddress = async (
           : (parsedRaw as SpendTransaction);
       return {
         id: toHexString(fromBase64(tx.id), true),
-        principal: tx.principal.address,
+        principal: tx.principal,
         nonce: {
           counter: tx.nonce.counter,
-          bitfield: tx.nonce.bitfield,
+          bitfield: tx.nonce.bitfield || 0,
         },
         gas: {
           maxGas: tx.maxGas,
           price: tx.gasPrice,
         },
         template: {
-          address: tx.template.address,
+          address: tx.template,
           method: tx.method,
-          name: getTemplateNameByAddress(tx.template.address),
+          name: getTemplateNameByAddress(tx.template),
           methodName: getMethodName(tx.method),
         },
         layer: tx.layer,
@@ -123,3 +95,25 @@ export const fetchTransactionsByAddress = async (
     }
   });
 };
+
+export const fetchEstimatedGas = async (rpc: string, encodedTx: Uint8Array) =>
+  fetch(`${rpc}/spacemesh.v2alpha1.TransactionService/EstimateGas`, {
+    method: 'POST',
+    body: JSON.stringify({
+      transaction: toBase64(encodedTx),
+    }),
+  })
+    .then((r) => r.json())
+    .then(EstimateGasResponseSchema.parse)
+    .then(({ recommendedMaxGas }) => recommendedMaxGas);
+
+export const fetchPublishTx = async (rpc: string, encodedTx: Uint8Array) =>
+  fetch(`${rpc}/spacemesh.v2alpha1.TransactionService/SubmitTransaction`, {
+    method: 'POST',
+    body: JSON.stringify({
+      transaction: toBase64(encodedTx),
+    }),
+  })
+    .then((r) => r.json())
+    .then(SubmitTxResponseSchema.parse)
+    .then(({ txId }) => txId);

@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { O } from '@mobily/ts-belt';
 import { StdTemplateKeys } from '@spacemesh/sm-codec';
 
@@ -8,15 +10,18 @@ import { computeAddress } from '../utils/wallet';
 
 export const useAccountsList = (hrp: string): AccountWithAddress[] => {
   const { wallet } = useWallet();
-  const accounts: Account<AnySpawnArguments>[] = wallet?.accounts ?? [];
-  return accounts.map((acc) => ({
-    ...acc,
-    address: computeAddress(
-      hrp,
-      acc.templateAddress as StdTemplateKeys,
-      acc.spawnArguments
-    ),
-  }));
+  const accs = wallet?.accounts;
+  return useMemo(() => {
+    const accounts: Account<AnySpawnArguments>[] = accs ?? [];
+    return accounts.map((acc) => ({
+      ...acc,
+      address: computeAddress(
+        hrp,
+        acc.templateAddress as StdTemplateKeys,
+        acc.spawnArguments
+      ),
+    }));
+  }, [accs, hrp]);
 };
 
 export const useCurrentAccount = (

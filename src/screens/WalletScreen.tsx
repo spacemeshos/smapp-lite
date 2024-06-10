@@ -15,22 +15,18 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { O, pipe } from '@mobily/ts-belt';
-import {
-  IconCake,
-  IconQrcode,
-  IconRefresh,
-  IconSend,
-  IconUserScan,
-  IconWritingSign,
-} from '@tabler/icons-react';
+import { IconQrcode, IconRefresh, IconSend } from '@tabler/icons-react';
 
 import AccountSelection from '../components/AccountSelection';
+import CopyButton from '../components/CopyButton';
 import LockWallet from '../components/LockWallet';
 import MainMenu from '../components/MainMenu';
 import NetworkSelection from '../components/NetworksSeletion';
 import NodeStatusBadge from '../components/NodeStatusBadge';
 import PasswordAlert from '../components/PasswordAlert';
+import ReceiveModal from '../components/Receive';
 import RewardsList from '../components/RewardsList';
+import SendTxModal from '../components/sendTx/SendTxModal';
 import TxDetails from '../components/TxDetails';
 import TxList from '../components/TxList';
 import useDataRefresher from '../hooks/useDataRefresher';
@@ -58,6 +54,9 @@ function WalletScreen(): JSX.Element {
     setSelectedTx(null);
     txDisclosure.onClose();
   };
+
+  const sendTxDisclosure = useDisclosure();
+  const receiveModalDisclosure = useDisclosure();
 
   const hrp = useCurrentHRP();
   const currentAccount = useCurrentAccount(hrp);
@@ -118,7 +117,10 @@ function WalletScreen(): JSX.Element {
           <Text color="yellow">Please switch account to view balance.</Text>,
           (account) => (
             <>
-              <Text>{account.address}</Text>
+              <Text>
+                {account.address}
+                <CopyButton value={account.address} />
+              </Text>
               <Text fontSize="3xl" mt={4}>
                 {formatSmidge(balance)}
                 <IconButton
@@ -146,26 +148,34 @@ function WalletScreen(): JSX.Element {
       {O.mapWithDefault(accountData, <></>, ([account, network]) => (
         <>
           <ButtonGroup mt={2} mb={2} w="100%">
-            <Button w="20%" h={14} flexDirection="column" p={2}>
+            <Button
+              w="50%"
+              h={14}
+              flexDirection="column"
+              p={2}
+              onClick={sendTxDisclosure.onOpen}
+            >
               <IconSend />
               Send
             </Button>
-            <Button w="20%" h={14} flexDirection="column" p={2}>
-              <IconCake />
-              Spawn
-            </Button>
-            <Button w="20%" h={14} flexDirection="column" p={2}>
+            <Button
+              w="50%"
+              h={14}
+              flexDirection="column"
+              p={2}
+              onClick={receiveModalDisclosure.onOpen}
+            >
               <IconQrcode />
               Receive
             </Button>
-            <Button w="20%" h={14} flexDirection="column" p={2}>
+            {/* <Button w="25%" h={14} flexDirection="column" p={2}>
               <IconWritingSign />
               Sign
             </Button>
-            <Button w="20%" h={14} flexDirection="column" p={2}>
+            <Button w="25%" h={14} flexDirection="column" p={2}>
               <IconUserScan />
               Verify
-            </Button>
+            </Button> */}
           </ButtonGroup>
           <Tabs
             w="100%"
@@ -217,6 +227,17 @@ function WalletScreen(): JSX.Element {
         </>
       ))}
       <PasswordAlert />
+      <SendTxModal
+        isOpen={sendTxDisclosure.isOpen}
+        onClose={sendTxDisclosure.onClose}
+      />
+      {currentAccount && (
+        <ReceiveModal
+          account={currentAccount}
+          isOpen={receiveModalDisclosure.isOpen}
+          onClose={receiveModalDisclosure.onClose}
+        />
+      )}
     </Flex>
   );
 }

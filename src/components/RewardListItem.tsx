@@ -45,7 +45,8 @@ function RewardListItem({
           </Text>
           <ExplorerButton
             dataType="rewards"
-            value={`${reward.smesher}/${reward.layerPaid}`}
+            value={`0x${reward.smesher}/${reward.layerPaid}`}
+            v2
             ml={1}
           />
         </Flex>

@@ -45,8 +45,8 @@ function RevealSecretKey({
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
-      <ModalCloseButton />
       <ModalContent>
+        <ModalCloseButton />
         <ModalHeader>Secret Key</ModalHeader>
         <ModalBody>
           <Text mb={4}>

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { fetchBalanceByAddress } from '../api/requests/balance';
+import { fetchBalances } from '../api/requests/balance';
 import { fetchRewardsByAddress } from '../api/requests/rewards';
 import { fetchTransactionsByAddress } from '../api/requests/tx';
 import useAccountData from '../store/useAccountData';
@@ -13,15 +13,17 @@ const useAccountHandlers = () => {
 
   const currentNetwork = getCurrentNetwork();
 
-  const fetchAccountState = useMemo(
-    () => async (address: Bech32Address) => {
+  const fetchAccountStates = useMemo(
+    () => async (addresses: Bech32Address[]) => {
       if (!currentNetwork) {
         throw new Error('Cannot fetch account state: no network selected');
       }
 
       const rpc = currentNetwork.jsonRPC;
-      const states = await fetchBalanceByAddress(rpc, address);
-      setAccountState(currentNetwork.genesisID, address, states);
+      const balances = await fetchBalances(rpc, addresses);
+      balances.forEach(({ address, ...states }) => {
+        setAccountState(currentNetwork.genesisID, address, states);
+      });
     },
     [currentNetwork, setAccountState]
   );
@@ -53,7 +55,7 @@ const useAccountHandlers = () => {
   );
 
   return {
-    fetchAccountState,
+    fetchAccountState: fetchAccountStates,
     fetchTransactions,
     fetchRewards,
   };

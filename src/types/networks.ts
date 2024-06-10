@@ -14,7 +14,8 @@ export type Network = {
 export type NodeStatus = {
   connectedPeers: number;
   isSynced: boolean;
-  syncedLayer: number;
-  topLayer: number;
-  verifiedLayer: number;
+  currentLayer: number;
+  appliedLayer: number;
+  processedLayer: number;
+  latestLayer: number;
 };

@@ -12,3 +12,6 @@ export const parseAddress = (address: Bech32Address) => {
     publicKey: Uint8Array.from(bech32.fromWords(decoded.words)),
   };
 };
+
+export const getWords = (address: Bech32Address) =>
+  Uint8Array.from(bech32.fromWords(bech32.decode(address).words));

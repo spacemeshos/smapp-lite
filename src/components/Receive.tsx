@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import QRCode from 'react-qr-code';
 
 import {
   Button,
@@ -10,21 +11,22 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-  Textarea,
 } from '@chakra-ui/react';
 import { useCopyToClipboard } from '@uidotdev/usehooks';
 
-type MnemonicsModalProps = {
-  mnemonics: string;
+import { AccountWithAddress } from '../types/wallet';
+
+type ReceiveModalProps = {
+  account: AccountWithAddress;
   isOpen: boolean;
   onClose: () => void;
 };
 
-function MnemonicsModal({
-  mnemonics,
+function ReceiveModal({
+  account,
   isOpen,
   onClose,
-}: MnemonicsModalProps): JSX.Element {
+}: ReceiveModalProps): JSX.Element {
   const [isCopied, setIsCopied] = useState(false);
   const [, copy] = useCopyToClipboard();
 
@@ -43,21 +45,24 @@ function MnemonicsModal({
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader>Backup mnemonics</ModalHeader>
+        <ModalHeader>Receive funds</ModalHeader>
         <ModalBody>
-          <Text mb={4}>
-            Please keep your mnemonics secret and do not share with anyone. They
-            can be used to restore your wallet and access to your funds.
+          <Text fontSize="sm" mb={4}>
+            {account.address}
           </Text>
-          <Textarea readOnly value={mnemonics} rows={4} resize="none" />
-          <Text fontSize="xs" color="gray" mt={2}>
-            We recommend you to remember mnemonics and not store them on your
-            computer. Or write them down on a piece of paper and keep it in a
-            safe place.
-          </Text>
+          <QRCode
+            bgColor="var(--chakra-colors-gray-700)"
+            fgColor="var(--chakra-colors-gray-300)"
+            style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
+            value={account.address}
+          />
         </ModalBody>
         <ModalFooter>
-          <Button isDisabled={isCopied} onClick={onCopyClick(mnemonics)} w={20}>
+          <Button
+            isDisabled={isCopied}
+            onClick={onCopyClick(account.address)}
+            w={20}
+          >
             {isCopied ? 'Copied' : 'Copy'}
           </Button>
           <Button colorScheme="blue" onClick={onClose} ml={2}>
@@ -69,4 +74,4 @@ function MnemonicsModal({
   );
 }
 
-export default MnemonicsModal;
+export default ReceiveModal;
