@@ -32,7 +32,7 @@
     "@noble/ed25519": "^2.1.0",
     "@scure/bip39": "^1.2.2",
     "@spacemesh/ed25519-bip32": "^0.2.1",
-    "@spacemesh/sm-codec": "/Users/brusher/Work/spacemeshos/sm-codec",
+    "@spacemesh/sm-codec": "^0.6.1",
     "@tabler/icons-react": "^3.1.0",
     "@tanstack/react-virtual": "^3.3.0",
     "@uidotdev/usehooks": "^2.4.1",
@@ -87,5 +87,9 @@
     "ts-jest": "^29.0.5",
     "typescript": "^4.5.5",
     "vite": "^4.0.4"
+  },
+  "resolutions": {
+    "wrap-ansi": "7.0.0",
+    "string-width": "4.1.0"
   }
 }
