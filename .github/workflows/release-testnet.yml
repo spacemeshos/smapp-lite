@@ -1,0 +1,72 @@
+name: Release the APP at Testnet
+
+# Notes:
+# This pipeline will deploy the page on Cloudflare Pages ( direct upload ), Similar to a S3 bucket.
+
+# You need to have the following secrets and variables defined in your repository:
+#   - PRODUCTION_ENV_NAME
+#   - PRODUCTION_ENV_URL
+#   - DEVELOPMENT_ENV_NAME
+#   - DEVELOPMENT_ENV_URL
+#   - CLOUDFLARE_API_TOKEN -> https://developers.cloudflare.com/workers/wrangler/ci-cd/#api-token
+#   - CLOUDFLARE_ACCOUNT_ID -> Request to devops team to get this value
+
+
+on:
+    # Manual trigger
+    workflow_dispatch:
+      inputs:
+        branch:
+          description: 'Branch, Tag or Commit SHA to deploy'
+          required: true
+          default: 'testnet'
+          type: string
+    
+permissions:
+  pull-requests: write
+  actions: write
+  contents: read
+
+jobs:
+    release:
+        
+        environment:
+            name: ${{ vars.DEVELOPMENT_ENV_NAME }}
+            url: ${{ vars.DEVELOPMENT_ENV_URL }}
+    
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/Checkout@v4
+              with:
+                ref: ${{ github.event.inputs.branch }}
+
+            - name: Set up Node
+              uses: actions/setup-node@v4
+              with:
+                node-version: 20
+                cache: 'yarn' # You can choose npm|yarn|pnpm
+            
+            - name: Install dependencies
+              run: yarn install # If you use npm, you would run: npm ci
+
+            - name: Build
+              run: yarn build
+              env:
+                NODE_ENV: production
+            
+
+            # If we need, we can easily change thjis step to deploy to S3 bucket
+            - name: Deploy
+              uses: cloudflare/wrangler-action@v3
+              with:
+                packageManager: yarn
+                apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+                accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+                environment: Production # This is a different app, so we need to specify the environment (Production or Preview)
+                # The default branch for mainnet is main, and for the testnet is testnet
+                command: pages deploy ./dist --project-name ${{ vars.DEVELOPMENT_ENV_NAME }} --branch testnet --commit-hash ${{ env.GITHUB_SHA }}
+
+
+                
+            
