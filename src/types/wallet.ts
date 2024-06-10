@@ -42,7 +42,7 @@ export type AccountWithAddress<T = AnySpawnArguments> = Account<T> & {
 };
 
 export interface Contact {
-  address: string;
+  address: Bech32Address;
   nickname: string;
 }
 

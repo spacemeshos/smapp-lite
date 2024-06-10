@@ -1,11 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
+import { singletonHook } from 'react-singleton-hook';
+
+import { O } from '@mobily/ts-belt';
 
 import useNetworks from '../store/useNetworks';
 import useWallet from '../store/useWallet';
 import { Bech32Address } from '../types/common';
+import { noop } from '../utils/func';
 
 import useAccountHandlers from './useAccountHandlers';
-import { useCurrentHRP } from './useNetworkSelectors';
+import { useCurrentHRP, useLayerDuration } from './useNetworkSelectors';
 import { useAccountsList } from './useWalletSelectors';
 
 // This hook is used to automatically re-fetch all the required
@@ -17,6 +21,7 @@ const useDataRefresher = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const hrp = useCurrentHRP();
+  const layerDur = useLayerDuration();
   const accounts = useAccountsList(hrp);
   const { selectedAccount } = useWallet();
   const currentNetwork = getCurrentNetwork();
@@ -47,10 +52,16 @@ const useDataRefresher = () => {
   );
 
   useEffect(() => {
+    let ival: ReturnType<typeof setInterval>;
     if (curAddress && rpc) {
       doRequests(addresses, curAddress);
+      ival = setInterval(
+        () => doRequests(addresses, curAddress),
+        O.getWithDefault(layerDur, 300) * 1000
+      );
     }
-  }, [addresses, curAddress, rpc, doRequests]);
+    return () => clearInterval(ival);
+  }, [addresses, curAddress, rpc, doRequests, layerDur]);
 
   return {
     isLoading,
@@ -62,4 +73,10 @@ const useDataRefresher = () => {
   };
 };
 
-export default useDataRefresher;
+export default singletonHook(
+  {
+    isLoading: false,
+    refreshData: noop,
+  },
+  useDataRefresher
+);

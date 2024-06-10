@@ -6,7 +6,7 @@ import { BigIntStringSchema } from './strNumber';
 
 // Common stuff
 
-export const TransactionIdSchema = z.string().nonempty();
+export const TransactionIdSchema = z.string().min(1);
 
 export const NestedTransactionIdSchema = z.object({ id: TransactionIdSchema });
 
@@ -80,3 +80,11 @@ export type TransactionState = z.infer<typeof TransactionStateEnumSchema>;
 export type WithLayer = { layer: number };
 
 export type WithState = { state: TransactionState };
+
+export const EstimateGasResponseSchema = z.object({
+  recommendedMaxGas: BigIntStringSchema,
+});
+
+export const SubmitTxResponseSchema = z.object({
+  txId: z.string().min(1),
+});

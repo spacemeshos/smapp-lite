@@ -160,9 +160,17 @@ function TxDetails({
               <>
                 <Row
                   label="Datetime"
-                  value={formatTimestamp(
-                    timestampByLayer(genesisTime, layerDurationSec, tx.layer)
-                  )}
+                  value={
+                    tx.layer
+                      ? formatTimestamp(
+                          timestampByLayer(
+                            genesisTime,
+                            layerDurationSec,
+                            tx.layer
+                          )
+                        )
+                      : formatTimestamp(Date.now())
+                  }
                 />
                 <Row label="ID" value={tx.id} isCopyable explorer="txs" />
                 <Text fontSize="sm">
@@ -199,14 +207,18 @@ function TxDetails({
                   <Box flex={1} pr={4}>
                     <Row
                       label="Layer"
-                      value={tx.layer.toString()}
+                      value={tx.layer ? tx.layer.toString() : 'Waiting...'}
                       explorer="layers"
                     />
                   </Box>
                   <Box flex={1} pl={4}>
                     <Row
                       label="Epoch"
-                      value={epochByLayer(layersPerEpoch, tx.layer).toString()}
+                      value={
+                        tx.layer
+                          ? epochByLayer(layersPerEpoch, tx.layer).toString()
+                          : 'Waiting...'
+                      }
                       explorer="epochs"
                     />
                   </Box>

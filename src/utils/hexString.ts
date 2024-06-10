@@ -20,3 +20,8 @@ export const toHexString = (
     (str: string, byte: number) => str + byte.toString(16).padStart(2, '0'),
     withPrefix ? '0x' : ''
   );
+
+export const normalizeHexString = (str: HexString, withPrefix = false) => {
+  const trimmed = str.replace(/^0x/, '');
+  return withPrefix ? `0x${trimmed}` : trimmed;
+};

@@ -54,7 +54,7 @@ function NodeStatusBadge(): JSX.Element | null {
         <Box mt={2}>
           <Badge mr={2}>Connected peers: {status.connectedPeers}</Badge>
           <Badge mr={2}>
-            Layer: {status.syncedLayer} / {status.topLayer}
+            Layer: {status.processedLayer} / {status.currentLayer}
           </Badge>
         </Box>
       </CardBody>

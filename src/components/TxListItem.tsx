@@ -46,11 +46,17 @@ function TxListItem({
               {tx.template.methodName}
             </Text>
             <Text fontSize="xx-small" color="gray" mt={1}>
-              {formatTimestamp(
-                timestampByLayer(genesisTime, layerDurationSec, tx.layer)
-              )}{' '}
-              (Layer {tx.layer} in Epoch{' '}
-              {epochByLayer(layersPerEpoch, tx.layer)})
+              {tx.layer ? (
+                <>
+                  {formatTimestamp(
+                    timestampByLayer(genesisTime, layerDurationSec, tx.layer)
+                  )}{' '}
+                  (Layer {tx.layer} in Epoch{' '}
+                  {epochByLayer(layersPerEpoch, tx.layer)})
+                </>
+              ) : (
+                'Waiting for processing the transaction...'
+              )}
             </Text>
           </Box>
           <Flex flexDirection="column" textAlign="right">

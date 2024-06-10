@@ -15,8 +15,8 @@ import {
 } from '@chakra-ui/react';
 
 type Props<T extends FieldValues> = PropsWithChildren<{
-  label: string;
-  options: { value: string; label: string }[];
+  label?: string;
+  options: { value: string; label: string; disabled?: boolean }[];
   register: UseFormRegisterReturn;
   errors: FieldErrors<T>;
   isSubmitted?: boolean;
@@ -41,13 +41,15 @@ function FormSelect<T extends FieldValues>({
       mt={2}
       mb={2}
     >
-      <FormLabel fontSize="sm" mb={0}>
-        {label}
-      </FormLabel>
+      {label && (
+        <FormLabel fontSize="sm" mb={0}>
+          {label}
+        </FormLabel>
+      )}
       <InputGroup>
         <Select {...inputProps} {...register}>
-          {options.map(({ value, label: optLabel }) => (
-            <option key={value} value={value}>
+          {options.map(({ value, label: optLabel, disabled }) => (
+            <option key={value} value={value} disabled={!!disabled}>
               {optLabel}
             </option>
           ))}
@@ -62,6 +64,7 @@ function FormSelect<T extends FieldValues>({
 }
 
 FormSelect.defaultProps = {
+  label: '',
   isSubmitted: false,
   inputProps: {},
 };

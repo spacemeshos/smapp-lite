@@ -4,10 +4,6 @@ import { z } from 'zod';
 import { isHexString } from '../../types/common';
 import { isValid } from '../../utils/base64';
 
-export const NumberSchema = z.object({
-  number: z.number(),
-});
-
 export const HexStringSchema = z.custom<string>((str) => {
   if (typeof str !== 'string') return false;
   return isHexString(str);

@@ -96,7 +96,7 @@ function VerifyMnemonicScreen(): JSX.Element {
             {wordsInBank.map((wordIndex) => (
               <DraggableTag
                 key={`word_${words[wordIndex]}}`}
-                word={words[wordIndex]}
+                word={words[wordIndex] ?? ''}
                 index={wordIndex}
                 from="bank"
                 moveWord={moveWord}
@@ -121,7 +121,7 @@ function VerifyMnemonicScreen(): JSX.Element {
                       {placedWord !== null && placedWord !== undefined ? (
                         <DraggableTag
                           key={`word_${words[placedWord]}`}
-                          word={words[placedWord]}
+                          word={words[placedWord] ?? ''}
                           index={placedWord}
                           from={idx}
                           moveWord={moveWord}

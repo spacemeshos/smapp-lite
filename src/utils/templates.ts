@@ -1,6 +1,7 @@
 import { bech32 } from 'bech32';
 
 import {
+  StdMethods,
   StdPublicKeys,
   StdTemplateKeys,
   TemeplateArgumentsMap,
@@ -29,6 +30,8 @@ export type MultiSigSpawnArguments = {
   PublicKeys: HexString[];
 };
 
+export type VestingSpawnArguments = MultiSigSpawnArguments;
+
 export type VaultSpawnArguments = {
   Owner: HexString;
   TotalAmount: number;
@@ -41,6 +44,33 @@ export type AnySpawnArguments =
   | SingleSigSpawnArguments
   | MultiSigSpawnArguments
   | VaultSpawnArguments;
+
+export enum MethodName {
+  Unknown = 'Unknown Method',
+  SelfSpawn = 'Self Spawn',
+  Spend = 'Spend',
+  Drain = 'Drain',
+}
+
+export enum MethodSelectors {
+  SelfSpawn = StdMethods.Spawn,
+  Spend = StdMethods.Spend,
+  Drain = StdMethods.Drain,
+}
+
+export const MethodNamesMap = {
+  [MethodSelectors.SelfSpawn]: MethodName.SelfSpawn,
+  [MethodSelectors.Spend]: MethodName.Spend,
+  [MethodSelectors.Drain]: MethodName.Drain,
+} as const;
+
+export const TemplateMethodsMap = {
+  [StdPublicKeys.SingleSig]: [MethodSelectors.SelfSpawn, MethodSelectors.Spend],
+  [StdPublicKeys.MultiSig]: [MethodSelectors.SelfSpawn, MethodSelectors.Spend],
+  [StdPublicKeys.Vault]: [MethodSelectors.SelfSpawn, MethodSelectors.Spend],
+  [StdPublicKeys.Vesting]: [MethodSelectors.SelfSpawn, MethodSelectors.Drain],
+};
+
 //
 // Utils
 //
@@ -67,21 +97,9 @@ export const getTemplateNameByAddress = (
   return getTemplateNameByKey(pk);
 };
 
-export enum MethodName {
-  Unknown = 'Unknown Method',
-  SelfSpawn = 'Self Spawn',
-  Spend = 'Spend',
-  Drain = 'Drain',
-}
-
-export const MethodNamesMap: { [key: number]: MethodName } = {
-  0: MethodName.SelfSpawn,
-  16: MethodName.Spend,
-  17: MethodName.Drain,
-};
-
 export const getMethodName = (methodSelector: number) =>
-  MethodNamesMap[methodSelector] ?? MethodName.Unknown;
+  MethodNamesMap[methodSelector as keyof typeof MethodNamesMap] ??
+  MethodName.Unknown;
 
 export const convertSpawnArgumentsForEncoding = <T extends StdTemplateKeys>(
   tpl: T,

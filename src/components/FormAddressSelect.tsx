@@ -1,4 +1,3 @@
-import { bech32 } from 'bech32';
 import { PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 import {
   FieldError,
@@ -23,7 +22,6 @@ import {
 
 import { Bech32AddressSchema } from '../api/schemas/address';
 import { AccountWithAddress } from '../types/wallet';
-import { toHexString } from '../utils/hexString';
 
 type Props<
   T extends FieldValues,
@@ -72,11 +70,6 @@ function FormAddressSelect<T extends FieldValues, FieldName extends Path<T>>({
                   return false;
                 }
               },
-              setValueAs: (val: string) => {
-                const b32 = bech32.decode(val);
-                const words = bech32.fromWords(b32.words);
-                return toHexString(words);
-              },
             })}
           />
         );
@@ -85,7 +78,10 @@ function FormAddressSelect<T extends FieldValues, FieldName extends Path<T>>({
         return (
           <Select {...register(fieldName)}>
             {accounts.map((acc) => (
-              <option key={acc.address} value={acc.address}>
+              <option
+                key={`${acc.address}_${acc.displayName}`}
+                value={acc.address}
+              >
                 {acc.displayName} ({acc.address})
               </option>
             ))}

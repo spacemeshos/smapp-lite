@@ -191,3 +191,5 @@ export const encryptWallet = async (
 
 export const safeKeyForAccount = (acc: AccountWithAddress) =>
   `${acc.address}_${acc.displayName.replace(/\s/g, '_')}`;
+
+export const getEmptySignature = () => new Uint8Array(64).fill(0);

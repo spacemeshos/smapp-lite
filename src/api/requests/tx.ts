@@ -7,10 +7,12 @@ import {
 
 import { Bech32Address } from '../../types/common';
 import { Transaction } from '../../types/tx';
-import { fromBase64 } from '../../utils/base64';
+import { fromBase64, toBase64 } from '../../utils/base64';
 import { toHexString } from '../../utils/hexString';
 import { getMethodName, getTemplateNameByAddress } from '../../utils/templates';
 import {
+  EstimateGasResponseSchema,
+  SubmitTxResponseSchema,
   TransactionResponseObject,
   TransactionResponseSchema,
   WithLayer,
@@ -93,3 +95,25 @@ export const fetchTransactionsByAddress = async (
     }
   });
 };
+
+export const fetchEstimatedGas = async (rpc: string, encodedTx: Uint8Array) =>
+  fetch(`${rpc}/spacemesh.v2alpha1.TransactionService/EstimateGas`, {
+    method: 'POST',
+    body: JSON.stringify({
+      transaction: toBase64(encodedTx),
+    }),
+  })
+    .then((r) => r.json())
+    .then(EstimateGasResponseSchema.parse)
+    .then(({ recommendedMaxGas }) => recommendedMaxGas);
+
+export const fetchPublishTx = async (rpc: string, encodedTx: Uint8Array) =>
+  fetch(`${rpc}/spacemesh.v2alpha1.TransactionService/SubmitTransaction`, {
+    method: 'POST',
+    body: JSON.stringify({
+      transaction: toBase64(encodedTx),
+    }),
+  })
+    .then((r) => r.json())
+    .then(SubmitTxResponseSchema.parse)
+    .then(({ txId }) => txId);
