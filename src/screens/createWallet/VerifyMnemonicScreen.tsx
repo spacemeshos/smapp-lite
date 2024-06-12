@@ -78,6 +78,21 @@ function VerifyMnemonicScreen(): JSX.Element {
     }
   };
 
+  const placeWord = (wordIndex: number, from: SlotIndex) => {
+    if (from === 'bank') {
+      const occupiedSlots = Object.keys(slots);
+      const freeSlots = indexesToCheck
+        .sort((a, b) => a - b)
+        .filter((k) => !occupiedSlots.includes(String(k)));
+      const nextFreeSlot = freeSlots[0];
+      if (!nextFreeSlot) {
+        throw new Error('Cannot find next empty slot');
+      }
+      return moveWord(wordIndex, nextFreeSlot, from);
+    }
+    return moveWord(wordIndex, 'bank', from);
+  };
+
   const allWordsPlaced =
     wordsInBank.length === 0 &&
     Object.entries(slots).every(([k, v]) => parseInt(k, 10) === v);
@@ -100,6 +115,7 @@ function VerifyMnemonicScreen(): JSX.Element {
                 index={wordIndex}
                 from="bank"
                 moveWord={moveWord}
+                placeWord={placeWord}
               />
             ))}
           </CardHeader>
@@ -125,6 +141,7 @@ function VerifyMnemonicScreen(): JSX.Element {
                           index={placedWord}
                           from={idx}
                           moveWord={moveWord}
+                          placeWord={placeWord}
                           full
                         />
                       ) : (
@@ -173,6 +190,7 @@ function VerifyMnemonicScreen(): JSX.Element {
 
 type DraggableTagProps = {
   moveWord: (wordIndex: number, slot: SlotIndex, from: SlotIndex) => void;
+  placeWord: (wordIndex: number, from: SlotIndex) => void;
   from: SlotIndex;
   full?: boolean;
 } & DraggableItem;
@@ -182,6 +200,7 @@ function DraggableTag({
   word,
   index,
   moveWord,
+  placeWord,
   from,
   full,
 }: DraggableTagProps): JSX.Element {
@@ -219,7 +238,7 @@ function DraggableTag({
       opacity={isDragging ? 0.5 : 1}
       userSelect="none"
       fontSize="md"
-      onDoubleClick={() => moveWord(index, 'bank', from)}
+      onClick={() => placeWord(index, from)}
       {...fullStyles}
     >
       {full && typeof from === 'number' && (
