@@ -91,11 +91,6 @@ function Row({ label, value, isCopyable, explorer }: RowProps) {
   );
 }
 
-Row.defaultProps = {
-  isCopyable: false,
-  render: (value: string) => value,
-};
-
 const renderTxSpecificData = (tx: Transaction) => {
   if (isSpendTransaction(tx)) {
     const destination = getDestinationAddress(tx, tx.principal);

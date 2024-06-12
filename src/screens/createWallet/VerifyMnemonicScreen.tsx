@@ -202,7 +202,7 @@ function DraggableTag({
   moveWord,
   placeWord,
   from,
-  full,
+  full = false,
 }: DraggableTagProps): JSX.Element {
   const [{ isDragging }, dragRef] = useDrag(() => ({
     type: 'word',
@@ -251,10 +251,6 @@ function DraggableTag({
   );
 }
 
-DraggableTag.defaultProps = {
-  full: false,
-};
-
 type DroppableBoxProps = PropsWithChildren<{
   slot: SlotIndex;
   hasWordInside: boolean;
@@ -262,7 +258,7 @@ type DroppableBoxProps = PropsWithChildren<{
 
 function DroppableBox({
   slot,
-  children,
+  children = '',
   hasWordInside,
 }: DroppableBoxProps): JSX.Element {
   const [{ isOver }, dropRef] = useDrop(() => ({

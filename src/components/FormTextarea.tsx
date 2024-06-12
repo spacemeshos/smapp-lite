@@ -25,9 +25,9 @@ function FormTextarea<T extends FieldValues>({
   label,
   register,
   errors,
-  isSubmitted,
-  children,
-  textareaProps,
+  isSubmitted = false,
+  children = '',
+  textareaProps = { rows: 4 },
 }: Props<T>): JSX.Element {
   const isRequired = !!register.required;
   const error = errors[register.name];
@@ -49,10 +49,5 @@ function FormTextarea<T extends FieldValues>({
     </FormControl>
   );
 }
-
-FormTextarea.defaultProps = {
-  isSubmitted: false,
-  textareaProps: { rows: 4 },
-};
 
 export default FormTextarea;

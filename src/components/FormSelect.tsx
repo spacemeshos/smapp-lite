@@ -24,13 +24,13 @@ type Props<T extends FieldValues> = PropsWithChildren<{
 }>;
 
 function FormSelect<T extends FieldValues>({
-  label,
+  label = '',
   options,
   register,
   errors,
-  isSubmitted,
-  children,
-  inputProps,
+  isSubmitted = false,
+  children = '',
+  inputProps = {},
 }: Props<T>): JSX.Element {
   const isRequired = !!register.required;
   const error = errors[register.name];
@@ -62,11 +62,5 @@ function FormSelect<T extends FieldValues>({
     </FormControl>
   );
 }
-
-FormSelect.defaultProps = {
-  label: '',
-  isSubmitted: false,
-  inputProps: {},
-};
 
 export default FormSelect;

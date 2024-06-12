@@ -47,9 +47,9 @@ function FormAddressSelect<T extends FieldValues, FieldName extends Path<T>>({
   register,
   unregister,
   errors,
-  isSubmitted,
-  isRequired,
-  children,
+  isSubmitted = false,
+  isRequired = false,
+  children = '',
 }: Props<T, FieldName>): JSX.Element {
   const [origin, setOrigin] = useState(Origin.Local);
   useEffect(() => () => unregister(fieldName), [unregister, fieldName, origin]);
@@ -120,11 +120,5 @@ function FormAddressSelect<T extends FieldValues, FieldName extends Path<T>>({
     </>
   );
 }
-
-FormAddressSelect.defaultProps = {
-  isSubmitted: false,
-  isRequired: false,
-  children: '',
-};
 
 export default FormAddressSelect;

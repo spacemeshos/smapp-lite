@@ -27,10 +27,10 @@ function FormInput<T extends FieldValues>({
   label,
   register,
   errors,
-  isSubmitted,
-  children,
-  inputAddon,
-  inputProps,
+  isSubmitted = false,
+  children = '',
+  inputAddon = null,
+  inputProps = {},
 }: Props<T>): JSX.Element {
   const isRequired = !!register.required;
   const error = errors[register.name];
@@ -55,11 +55,5 @@ function FormInput<T extends FieldValues>({
     </FormControl>
   );
 }
-
-FormInput.defaultProps = {
-  isSubmitted: false,
-  inputAddon: null,
-  inputProps: {},
-};
 
 export default FormInput;
