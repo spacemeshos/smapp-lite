@@ -147,6 +147,7 @@ function AddNetworkDrawer({ isOpen, onClose }: Props): JSX.Element {
                   value: /^https?:\/\/.+/,
                   message: 'URL must start with http:// or https://',
                 },
+                value: 'https://explorer.spacemesh.io',
                 setValueAs: normalizeURL,
               })}
               errors={errors}
