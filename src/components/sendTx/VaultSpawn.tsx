@@ -20,19 +20,19 @@ function VaultSpawn({
   unregister,
 }: VaultSpawnProps): JSX.Element {
   useEffect(() => {
-    register('payload.owner', { value: args.Owner });
-    register('payload.totalAmount', { value: args.TotalAmount });
-    register('payload.initialUnlockAmount', {
+    register('payload.Owner', { value: args.Owner });
+    register('payload.TotalAmount', { value: args.TotalAmount });
+    register('payload.InitialUnlockAmount', {
       value: args.InitialUnlockAmount,
     });
-    register('payload.vestingStart', { value: args.VestingStart });
-    register('payload.vestingEnd', { value: args.VestingEnd });
+    register('payload.VestingStart', { value: args.VestingStart });
+    register('payload.VestingEnd', { value: args.VestingEnd });
     return () => {
-      unregister('payload.owner');
-      unregister('payload.totalAmount');
-      unregister('payload.initialUnlockAmount');
-      unregister('payload.vestingStart');
-      unregister('payload.vestingEnd');
+      unregister('payload.Owner');
+      unregister('payload.TotalAmount');
+      unregister('payload.InitialUnlockAmount');
+      unregister('payload.VestingStart');
+      unregister('payload.VestingEnd');
     };
   }, [args, register, unregister]);
 

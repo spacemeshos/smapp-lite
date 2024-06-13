@@ -1,5 +1,7 @@
 import { bech32 } from 'bech32';
 
+import { StdMethods } from '@spacemesh/sm-codec';
+
 import { Transaction } from '../types/tx';
 import { MethodName, TemplateName } from '../utils/templates';
 import { collectTxIdsByAddress } from '../utils/tx';
@@ -21,6 +23,7 @@ describe('collectTxIdsByAddress', () => {
       template: {
         name: TemplateName.SingleSig,
         methodName: MethodName.Spend,
+        method: StdMethods.Spend,
       },
       parsed: {
         Destination: bech32.fromWords(bech32.decode(destination).words),

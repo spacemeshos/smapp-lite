@@ -241,7 +241,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               Nonce: BigInt(data.nonce),
               GasPrice: BigInt(data.gasPrice),
               Arguments: {
-                PublicKey: fromHexString(args.publicKey),
+                PublicKey: fromHexString(args.PublicKey),
               },
             }
           );
@@ -250,11 +250,11 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             accountsList.find(
               (acc) =>
                 isSingleSigAccount(acc) &&
-                acc.spawnArguments.PublicKey === args.publicKey
+                acc.spawnArguments.PublicKey === args.PublicKey
             )?.displayName || 'external key';
 
           const eligibleKeys = (wallet?.keychain || []).filter(
-            (kp) => kp.publicKey === args.publicKey
+            (kp) => kp.publicKey === args.PublicKey
           );
 
           setTxData({
@@ -283,14 +283,14 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               Nonce: BigInt(data.nonce),
               GasPrice: BigInt(data.gasPrice),
               Arguments: {
-                Required: BigInt(args.required),
-                PublicKeys: args.publicKeys.map(fromHexString),
+                Required: BigInt(args.Required),
+                PublicKeys: args.PublicKeys.map(fromHexString),
               },
             }
           );
 
           const eligibleKeys = (wallet?.keychain || []).filter((kp) =>
-            args.publicKeys.includes(kp.publicKey)
+            args.PublicKeys.includes(kp.publicKey)
           );
 
           setTxData({
@@ -302,7 +302,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               data.templateAddress
             )} account: ${currerntAccount.displayName}`,
           });
-          updateEstimatedGas(encoded, args.required);
+          updateEstimatedGas(encoded, args.Required);
         }
         if (data.templateAddress === StdPublicKeys.Vault) {
           const args = VaultSpawnSchema.parse(data.payload);
@@ -312,11 +312,11 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               Nonce: BigInt(data.nonce),
               GasPrice: BigInt(data.gasPrice),
               Arguments: {
-                Owner: getWords(args.owner),
-                TotalAmount: BigInt(args.totalAmount),
-                InitialUnlockAmount: BigInt(args.initialUnlockAmount),
-                VestingStart: BigInt(args.vestingStart),
-                VestingEnd: BigInt(args.vestingEnd),
+                Owner: getWords(args.Owner),
+                TotalAmount: BigInt(args.TotalAmount),
+                InitialUnlockAmount: BigInt(args.InitialUnlockAmount),
+                VestingStart: BigInt(args.VestingStart),
+                VestingEnd: BigInt(args.VestingEnd),
               },
             }
           );
@@ -345,8 +345,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               Nonce: BigInt(data.nonce),
               GasPrice: BigInt(data.gasPrice),
               Arguments: {
-                Amount: BigInt(args.amount),
-                Destination: getWords(args.destination),
+                Amount: BigInt(args.Amount),
+                Destination: getWords(args.Destination),
               },
             }
           );
@@ -362,8 +362,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             form: data,
             encoded,
             eligibleKeys,
-            description: `Send ${formatSmidge(args.amount)} to ${
-              args.destination
+            description: `Send ${formatSmidge(args.Amount)} to ${
+              args.Destination
             }`,
           });
           updateEstimatedGas(encoded, 0);
@@ -376,8 +376,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               Nonce: BigInt(data.nonce),
               GasPrice: BigInt(data.gasPrice),
               Arguments: {
-                Amount: BigInt(args.amount),
-                Destination: getWords(args.destination),
+                Amount: BigInt(args.Amount),
+                Destination: getWords(args.Destination),
               },
             }
           );
@@ -395,8 +395,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             form: data,
             encoded,
             eligibleKeys,
-            description: `Send ${formatSmidge(args.amount)} to ${
-              args.destination
+            description: `Send ${formatSmidge(args.Amount)} to ${
+              args.Destination
             }`,
           });
           updateEstimatedGas(encoded, curAcc.spawnArguments.Required);
@@ -410,8 +410,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               Nonce: BigInt(data.nonce),
               GasPrice: BigInt(data.gasPrice),
               Arguments: {
-                Amount: BigInt(args.amount),
-                Destination: getWords(args.destination),
+                Amount: BigInt(args.Amount),
+                Destination: getWords(args.Destination),
               },
             }
           );
@@ -427,7 +427,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             form: data,
             encoded,
             eligibleKeys,
-            description: `Spawn ${formatSmidge(args.amount)}`,
+            description: `Spawn ${formatSmidge(args.Amount)}`,
           });
           updateEstimatedGas(encoded, 0);
         }
@@ -442,9 +442,9 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               Nonce: BigInt(data.nonce),
               GasPrice: BigInt(data.gasPrice),
               Arguments: {
-                Vault: getWords(args.vault),
-                Amount: BigInt(args.amount),
-                Destination: getWords(args.destination),
+                Vault: getWords(args.Vault),
+                Amount: BigInt(args.Amount),
+                Destination: getWords(args.Destination),
               },
             }
           );
@@ -459,9 +459,9 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             form: data,
             encoded,
             eligibleKeys,
-            description: `Drain ${formatSmidge(args.amount)} from ${
-              args.vault
-            } to ${args.destination}`,
+            description: `Drain ${formatSmidge(args.Amount)} from ${
+              args.Vault
+            } to ${args.Destination}`,
           });
           const curAcc =
             currerntAccount as AccountWithAddress<VestingSpawnArguments>;

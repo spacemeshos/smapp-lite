@@ -27,7 +27,6 @@ function TxListItem({
   layersPerEpoch,
 }: TxListItemProps): JSX.Element {
   const txBalance = getTxBalance(tx, host);
-
   return (
     <Card
       mb={2}
@@ -60,8 +59,18 @@ function TxListItem({
             </Text>
           </Box>
           <Flex flexDirection="column" textAlign="right">
-            <Text flex={1} color={txBalance < BigInt(0) ? 'red.600' : 'green'}>
-              {txBalance !== 0 ? formatSmidge(txBalance) : ''}
+            <Text
+              flex={1}
+              color={
+                // eslint-disable-next-line no-nested-ternary
+                txBalance === null || txBalance === BigInt(0)
+                  ? 'gray'
+                  : txBalance < BigInt(0)
+                  ? 'red.600'
+                  : 'green'
+              }
+            >
+              {txBalance !== null && formatSmidge(txBalance)}
             </Text>
             <Text color="gray" fontSize="xx-small" title="Fee" mb="2px">
               {formatSmidge(-1n * BigInt(tx.gas.maxGas))}

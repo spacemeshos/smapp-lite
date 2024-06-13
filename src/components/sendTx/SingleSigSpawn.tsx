@@ -20,8 +20,8 @@ function SingleSigSpawn({
   unregister,
 }: SingleSigSpawnProps): JSX.Element {
   useEffect(() => {
-    register('payload.publicKey', { value: args.PublicKey });
-    return () => unregister('payload.publicKey');
+    register('payload.PublicKey', { value: args.PublicKey });
+    return () => unregister('payload.PublicKey');
   }, [args, register, unregister]);
 
   return (

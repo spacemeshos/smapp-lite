@@ -21,11 +21,11 @@ function MultiSigSpawn({
   unregister,
 }: MultiSigSpawnProps): JSX.Element {
   useEffect(() => {
-    register('payload.publicKeys', { value: args.PublicKeys });
-    register('payload.required', { value: args.Required });
+    register('payload.PublicKeys', { value: args.PublicKeys });
+    register('payload.Required', { value: args.Required });
     return () => {
-      unregister('payload.publicKeys');
-      unregister('payload.required');
+      unregister('payload.PublicKeys');
+      unregister('payload.Required');
     };
   }, [args, register, unregister]);
 
