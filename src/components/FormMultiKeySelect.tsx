@@ -39,7 +39,7 @@ function FormMultiKeySelect<
   register,
   unregister,
   errors,
-  isSubmitted,
+  isSubmitted = false,
 }: Props<T, FieldName>): JSX.Element {
   const { fields, append, remove } = useFieldArray({
     control,
@@ -91,9 +91,5 @@ function FormMultiKeySelect<
     </>
   );
 }
-
-FormMultiKeySelect.defaultProps = {
-  isSubmitted: false,
-};
 
 export default FormMultiKeySelect;

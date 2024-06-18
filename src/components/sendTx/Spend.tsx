@@ -31,8 +31,8 @@ function Spend({
 }: SpendProps): JSX.Element {
   useEffect(
     () => () => {
-      unregister('payload.destination');
-      unregister('payload.amount');
+      unregister('payload.Destination');
+      unregister('payload.Amount');
     },
     [register, unregister]
   );
@@ -44,7 +44,7 @@ function Spend({
           Destination Address:
         </FormLabel>
         <FormAddressSelect
-          fieldName="payload.destination"
+          fieldName="payload.Destination"
           accounts={accounts}
           register={register}
           unregister={noop} // avoid unregistering address on unmount
@@ -56,7 +56,7 @@ function Spend({
       <FormInput
         label="Amount"
         inputProps={{ type: 'number' }}
-        register={register('payload.amount', {
+        register={register('payload.Amount', {
           value: '0',
           setValueAs: (val: string) => BigInt(val).toString(),
         })}

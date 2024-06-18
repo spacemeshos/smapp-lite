@@ -64,7 +64,7 @@ const renderTemplateSpecificFields = (form: FormValues) => {
     case StdPublicKeys.SingleSig: {
       if (form.payload.methodSelector === MethodSelectors.SelfSpawn) {
         const args = SingleSigSpawnSchema.parse(form.payload);
-        return <PreviewDataRow label="Public key" value={args.publicKey} />;
+        return <PreviewDataRow label="Public key" value={args.PublicKey} />;
       }
       if (form.payload.methodSelector === MethodSelectors.Spend) {
         const args = SpendSchema.parse(form.payload);
@@ -72,9 +72,9 @@ const renderTemplateSpecificFields = (form: FormValues) => {
           <>
             <PreviewDataRow
               label="Destination address"
-              value={args.destination}
+              value={args.Destination}
             />
-            <PreviewDataRow label="Amount" value={formatSmidge(args.amount)} />
+            <PreviewDataRow label="Amount" value={formatSmidge(args.Amount)} />
           </>
         );
       }
@@ -93,9 +93,9 @@ const renderTemplateSpecificFields = (form: FormValues) => {
           <>
             <PreviewDataRow
               label="Required signatures"
-              value={String(args.required)}
+              value={String(args.Required)}
             />
-            {args.publicKeys.map((pk, i) => (
+            {args.PublicKeys.map((pk, i) => (
               <PreviewDataRow key={pk} label={`Public Key ${i}`} value={pk} />
             ))}
           </>
@@ -107,9 +107,9 @@ const renderTemplateSpecificFields = (form: FormValues) => {
           <>
             <PreviewDataRow
               label="Destination address"
-              value={args.destination}
+              value={args.Destination}
             />
-            <PreviewDataRow label="Amount" value={formatSmidge(args.amount)} />
+            <PreviewDataRow label="Amount" value={formatSmidge(args.Amount)} />
           </>
         );
       }
@@ -120,12 +120,12 @@ const renderTemplateSpecificFields = (form: FormValues) => {
         const args = DrainSchema.parse(form.payload);
         return (
           <>
-            <PreviewDataRow label="Vault address" value={args.vault} />
+            <PreviewDataRow label="Vault address" value={args.Vault} />
             <PreviewDataRow
               label="Destination address"
-              value={String(args.destination)}
+              value={String(args.Destination)}
             />
-            <PreviewDataRow label="Amount" value={String(args.amount)} />
+            <PreviewDataRow label="Amount" value={String(args.Amount)} />
           </>
         );
       }
@@ -141,22 +141,22 @@ const renderTemplateSpecificFields = (form: FormValues) => {
         const args = VaultSpawnSchema.parse(form.payload);
         return (
           <>
-            <PreviewDataRow label="Owner address" value={args.owner} />
+            <PreviewDataRow label="Owner address" value={args.Owner} />
             <PreviewDataRow
               label="Total amount"
-              value={String(args.totalAmount)}
+              value={String(args.TotalAmount)}
             />
             <PreviewDataRow
               label="Initial unlock amount"
-              value={String(args.initialUnlockAmount)}
+              value={String(args.InitialUnlockAmount)}
             />
             <PreviewDataRow
               label="Vesting start (layer)"
-              value={String(args.vestingStart)}
+              value={String(args.VestingStart)}
             />
             <PreviewDataRow
               label="Vesting end (layer)"
-              value={String(args.vestingEnd)}
+              value={String(args.VestingEnd)}
             />
           </>
         );
@@ -167,9 +167,9 @@ const renderTemplateSpecificFields = (form: FormValues) => {
           <>
             <PreviewDataRow
               label="Destination address"
-              value={args.destination}
+              value={args.Destination}
             />
-            <PreviewDataRow label="Amount" value={formatSmidge(args.amount)} />
+            <PreviewDataRow label="Amount" value={formatSmidge(args.Amount)} />
           </>
         );
       }

@@ -11,11 +11,10 @@ import { IconEye, IconEyeOff } from '@tabler/icons-react';
 
 type Props = {
   placeholder?: string;
-  initialValue?: string;
   register: ReturnType<UseFormRegister<FieldValues>>;
 };
 
-function PasswordInput({ placeholder, register }: Props) {
+function PasswordInput({ placeholder = 'Enter password', register }: Props) {
   const [show, setShow] = useState(false);
 
   const toggleShow = () => setShow(!show);
@@ -40,10 +39,5 @@ function PasswordInput({ placeholder, register }: Props) {
     </InputGroup>
   );
 }
-
-PasswordInput.defaultProps = {
-  placeholder: 'Enter password',
-  initialValue: '',
-};
 
 export default PasswordInput;

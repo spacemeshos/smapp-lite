@@ -9,8 +9,8 @@ type PreviewDataRowProps = {
 function PreviewDataRow({
   label,
   value,
-  labelProps,
-  valueProps,
+  labelProps = {},
+  valueProps = {},
 }: PreviewDataRowProps) {
   return (
     <Box mb={2}>
@@ -23,9 +23,5 @@ function PreviewDataRow({
     </Box>
   );
 }
-PreviewDataRow.defaultProps = {
-  labelProps: {},
-  valueProps: {},
-};
 
 export default PreviewDataRow;

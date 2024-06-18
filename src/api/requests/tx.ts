@@ -30,7 +30,7 @@ export const fetchTransactionsChunk = async (
   fetch(`${rpc}/spacemesh.v2alpha1.TransactionService/List`, {
     method: 'POST',
     body: JSON.stringify({
-      principal: address,
+      address,
       include_state: true,
       include_result: true,
       limit,

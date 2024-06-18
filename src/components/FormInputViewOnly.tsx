@@ -17,9 +17,9 @@ type Props = PropsWithChildren<{
 
 function FormInputViewOnly({
   label,
-  children,
-  inputAddon,
-  inputProps,
+  children = '',
+  inputAddon = null,
+  inputProps = {},
   value,
 }: Props): JSX.Element {
   return (
@@ -35,10 +35,5 @@ function FormInputViewOnly({
     </Box>
   );
 }
-
-FormInputViewOnly.defaultProps = {
-  inputAddon: null,
-  inputProps: {},
-};
 
 export default FormInputViewOnly;

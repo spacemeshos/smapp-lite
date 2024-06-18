@@ -3,6 +3,7 @@
 1. [X] Create wallet
    1. [X] Show mnemonics
    2. [X] Ask to confirm
+      - [X] Click on tag to place a word
    3. [X] Ask display name and password
 
 2. [X] Recover from mnemonics
@@ -74,23 +75,33 @@
 
 --
 
-Z. [X] Lock wallet when idle for some time
+Features
 
-Y. [X] Update wallet format to allow adding other account types, view-only accounts, etc
+- [X] Lock wallet when idle for some time
 
-X. [X] Publish changed @spacemesh/ed25519-bip32
-   0. [X] Make it work well for smapp-lite
-   1. [X] Make it works without breaking change...
-   2. [ ] Open PR (to sdk repo)
-   3. [X] Publish to NPM
-   4. [X] Update smapp-lite/package.json
+- [X] Update wallet format to allow adding other account types, view-only accounts, etc
 
-W. [X] Add VirtualScroll on WalletScreen
+- [X] Publish changed @spacemesh/ed25519-bip32
+  0. [X] Make it work well for smapp-lite
+  1. [X] Make it works without breaking change...
+  2. [ ] Open PR (to sdk repo)
+  3. [X] Publish to NPM
+  4. [X] Update smapp-lite/package.json
 
-V. [X] Auto-fetch data on switching account / network
+- [X] Add VirtualScroll on WalletScreen
 
-U. [ ] Add cache (service worker) for static resources (to allow working offline)
+- [X] Auto-fetch data on switching account / network
 
-T. [ ] Add cache for API requests (if possible to replace POST with GET on API side)
+- [ ] Add cache (service worker) for static resources (to allow working offline)
 
-S. [X] Auto-fetch transactions and rewards periodically
+- [ ] Add cache for API requests (if possible to replace POST with GET on API side)
+
+- [X] Auto-fetch transactions and rewards periodically
+
+- [ ] Add SMH/Smidge Inputs
+
+- [ ] Add QR Code scanner
+
+- [ ] Load more transactions / rewards (now it is limited to latest 1000)
+
+- [ ] Session stickiness

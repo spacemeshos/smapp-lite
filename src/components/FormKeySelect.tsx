@@ -48,9 +48,9 @@ function FormKeySelect<T extends FieldValues, FieldName extends Path<T>>({
   register,
   unregister,
   errors,
-  isSubmitted,
-  isRequired,
-  children,
+  isSubmitted = false,
+  isRequired = false,
+  children = '',
 }: Props<T, FieldName>): JSX.Element {
   const [keyType, setKeyType] = useState(KeyType.Local);
   useEffect(
@@ -115,11 +115,5 @@ function FormKeySelect<T extends FieldValues, FieldName extends Path<T>>({
     </>
   );
 }
-
-FormKeySelect.defaultProps = {
-  isSubmitted: false,
-  isRequired: false,
-  children: '',
-};
 
 export default FormKeySelect;

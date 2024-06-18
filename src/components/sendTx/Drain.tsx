@@ -32,9 +32,9 @@ function Drain({
 }: DrainProps): JSX.Element {
   useEffect(
     () => () => {
-      unregister('payload.vault');
-      unregister('payload.destination');
-      unregister('payload.amount');
+      unregister('payload.Vault');
+      unregister('payload.Destination');
+      unregister('payload.Amount');
     },
     [register, unregister]
   );
@@ -50,7 +50,7 @@ function Drain({
           Vault Address:
         </FormLabel>
         <FormAddressSelect
-          fieldName="payload.vault"
+          fieldName="payload.Vault"
           accounts={vaults}
           register={register}
           unregister={noop} // avoid unregistering address on unmount
@@ -64,7 +64,7 @@ function Drain({
           Destination Address:
         </FormLabel>
         <FormAddressSelect
-          fieldName="payload.destination"
+          fieldName="payload.Destination"
           accounts={accounts}
           register={register}
           unregister={noop} // avoid unregistering address on unmount
@@ -76,7 +76,7 @@ function Drain({
       <FormInput
         label="Amount"
         inputProps={{ type: 'number' }}
-        register={register('payload.amount', {
+        register={register('payload.Amount', {
           value: '0',
           setValueAs: (val: string) => BigInt(val).toString(),
         })}

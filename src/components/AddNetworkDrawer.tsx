@@ -18,6 +18,7 @@ import {
 
 import { fetchNetworkInfo } from '../api/requests/netinfo';
 import useNetworks from '../store/useNetworks';
+import { normalizeURL } from '../utils/url';
 
 import FormInput from './FormInput';
 
@@ -93,6 +94,7 @@ function AddNetworkDrawer({ isOpen, onClose }: Props): JSX.Element {
               register={register('api', {
                 value: 'https://',
                 required: 'JSON API URL is required',
+                setValueAs: normalizeURL,
                 pattern: {
                   value: /^https?:\/\/.+/,
                   message: 'URL must start with http:// or https://',
@@ -101,7 +103,9 @@ function AddNetworkDrawer({ isOpen, onClose }: Props): JSX.Element {
                   setApiError('');
                   setApiLoading(true);
                   try {
-                    const info = await fetchNetworkInfo(e.target.value);
+                    const info = await fetchNetworkInfo(
+                      normalizeURL(e.target.value)
+                    );
                     if (!info) {
                       throw new Error('Cannot fetch network info');
                     }
@@ -143,6 +147,8 @@ function AddNetworkDrawer({ isOpen, onClose }: Props): JSX.Element {
                   value: /^https?:\/\/.+/,
                   message: 'URL must start with http:// or https://',
                 },
+                value: 'https://explorer.spacemesh.io',
+                setValueAs: normalizeURL,
               })}
               errors={errors}
               isSubmitted={isSubmitted}

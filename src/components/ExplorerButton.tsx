@@ -18,10 +18,10 @@ interface ExplorerButtonProps extends ButtonProps {
 function ExplorerButton({
   dataType,
   value,
-  iconSize,
-  label,
-  full,
-  v2,
+  iconSize = 14,
+  label = 'Open in Explorer',
+  full = false,
+  v2 = false,
   ...buttonProps
 }: ExplorerButtonProps): JSX.Element {
   const { getCurrentNetwork } = useNetworks();
@@ -58,12 +58,5 @@ function ExplorerButton({
     />
   );
 }
-
-ExplorerButton.defaultProps = {
-  v2: false,
-  full: false,
-  iconSize: 14,
-  label: 'Open in Explorer',
-};
 
 export default ExplorerButton;

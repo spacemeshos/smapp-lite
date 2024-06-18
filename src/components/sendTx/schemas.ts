@@ -12,32 +12,32 @@ import { MethodSelectors } from '../../utils/templates';
 
 export const SpendSchema = z.object({
   methodSelector: z.literal(MethodSelectors.Spend),
-  destination: Bech32AddressSchema,
-  amount: BigIntStringSchema,
+  Destination: Bech32AddressSchema,
+  Amount: BigIntStringSchema,
 });
 
 export type SpendPayload = z.infer<typeof SpendSchema>;
 
 export const DrainSchema = z.object({
   methodSelector: z.literal(MethodSelectors.Drain),
-  vault: Bech32AddressSchema,
-  destination: Bech32AddressSchema,
-  amount: BigIntStringSchema,
+  Vault: Bech32AddressSchema,
+  Destination: Bech32AddressSchema,
+  Amount: BigIntStringSchema,
 });
 
 export type DrainPayload = z.infer<typeof DrainSchema>;
 
 export const SingleSigSpawnSchema = z.object({
   methodSelector: z.literal(MethodSelectors.SelfSpawn),
-  publicKey: HexStringSchema,
+  PublicKey: HexStringSchema,
 });
 
 export type SingleSigSpawnPayload = z.infer<typeof SingleSigSpawnSchema>;
 
 export const MultiSigSpawnSchema = z.object({
   methodSelector: z.literal(MethodSelectors.SelfSpawn),
-  required: z.number().min(0).max(10),
-  publicKeys: z
+  Required: z.number().min(0).max(10),
+  PublicKeys: z
     .array(HexStringSchema)
     .min(1, 'MultiSig account requires at least two parties'),
 });
@@ -46,19 +46,19 @@ export type MultiSigSpawnPayload = z.infer<typeof MultiSigSpawnSchema>;
 
 export const VaultSpawnSchema = z.object({
   methodSelector: z.literal(MethodSelectors.SelfSpawn),
-  owner: Bech32AddressSchema,
-  totalAmount: z.number().min(0),
-  initialUnlockAmount: z.number().min(0),
-  vestingStart: z.number().min(0),
-  vestingEnd: z.number().min(0),
+  Owner: Bech32AddressSchema,
+  TotalAmount: z.number().min(0),
+  InitialUnlockAmount: z.number().min(0),
+  VestingStart: z.number().min(0),
+  VestingEnd: z.number().min(0),
 });
 
 export type VaultSpawnPayload = z.infer<typeof VaultSpawnSchema>;
 
 export const VestingSpawnSchema = z.object({
   methodSelector: z.literal(MethodSelectors.SelfSpawn),
-  required: z.number().min(0).max(10),
-  publicKeys: z
+  Required: z.number().min(0).max(10),
+  PublicKeys: z
     .array(HexStringSchema)
     .min(1, 'Vesting account requires at least two parties'),
 });

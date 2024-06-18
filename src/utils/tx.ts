@@ -1,6 +1,7 @@
 import { bech32 } from 'bech32';
 
 import { D } from '@mobily/ts-belt';
+import { StdMethods } from '@spacemesh/sm-codec';
 
 import { TransactionState } from '../api/schemas/tx';
 import { Bech32Address } from '../types/common';
@@ -25,16 +26,16 @@ export const isSelfSpawnTransaction = (
 ): tx is ParsedSpawnTransaction =>
   tx.template.name === TemplateName.SingleSig &&
   tx.template.methodName === MethodName.SelfSpawn &&
-  !!tx.parsed.PublicKey;
+  !!tx.parsed.publicKey;
 
 export const isSpendTransaction = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tx: Transaction<any>
 ): tx is ParsedSpendTransaction =>
   tx.template.name === TemplateName.SingleSig &&
-  tx.template.methodName === MethodName.Spend &&
-  !!tx.parsed.Destination &&
-  !!tx.parsed.Amount;
+  tx.template.method === StdMethods.Spend &&
+  Object.hasOwn(tx.parsed, 'Destination') &&
+  Object.hasOwn(tx.parsed, 'Amount');
 
 export const getDestinationAddress = <T>(
   tx: Transaction<T>,
@@ -70,7 +71,6 @@ export const collectTxIdsByAddress = (
     const byPrincipal = result[tx.principal] || new Set<string>();
     byPrincipal.add(tx.id);
     result[tx.principal] = byPrincipal;
-
     const destination = getDestinationAddress(tx, tx.principal);
     if (destination && destination !== tx.principal) {
       const byDestination = result[destination] || new Set<string>();
@@ -93,14 +93,16 @@ export const getTxBalance = <T>(tx: Transaction<T>, host: Bech32Address) => {
           case TxType.Spent: {
             return -1n * tx.parsed.Amount;
           }
+          case TxType.Self:
+            return 0n;
           default:
-            return 0;
+            return null;
         }
       }
-      return 0;
+      return null;
     }
     default: {
-      return 0;
+      return null;
     }
   }
 };
