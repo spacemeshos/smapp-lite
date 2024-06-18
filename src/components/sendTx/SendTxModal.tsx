@@ -20,12 +20,18 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { O, pipe } from '@mobily/ts-belt';
 import {
+  DrainArguments,
+  MultiSigSpawnArguments as MultiSigSpawnArgumentsTx,
   MultiSigTemplate,
+  SingleSigSpawnArguments as SingleSigSpawnArgumentsTx,
   SingleSigTemplate,
+  SpendArguments,
   StdMethods,
   StdPublicKeys,
   StdTemplateKeys,
+  VaultSpawnArguments as VaultSpawnArgumentsTx,
   VaultTemplate,
+  VestingSpawnArguments as VestingSpawnArgumentsTx,
   VestingTemplate,
 } from '@spacemesh/sm-codec';
 
@@ -92,6 +98,18 @@ type SendTxModalProps = {
   onClose: () => void;
 };
 
+type AnyArguments =
+  | SpendArguments
+  | SingleSigSpawnArgumentsTx
+  | MultiSigSpawnArgumentsTx
+  | VaultSpawnArgumentsTx
+  | VestingSpawnArgumentsTx
+  | DrainArguments;
+type TxData = ConfirmationData & {
+  description: string;
+  Arguments: AnyArguments;
+};
+
 function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
   const { wallet } = useWallet();
   const { withPassword } = usePassword();
@@ -138,9 +156,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
   const { setTransactions } = useAccountData();
 
   const confirmationModal = useDisclosure();
-  const [txData, setTxData] = useState<
-    null | (ConfirmationData & { description: string })
-  >(null);
+  const [txData, setTxData] = useState<null | TxData>(null);
   const [estimatedGas, setEstimatedGas] = useState<null | bigint>(null);
 
   useEffect(() => {
@@ -235,14 +251,15 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
       case StdMethods.Spawn: {
         if (data.templateAddress === StdPublicKeys.SingleSig) {
           const args = SingleSigSpawnSchema.parse(data.payload);
+          const Arguments = {
+            PublicKey: fromHexString(args.PublicKey),
+          };
           const encoded = SingleSigTemplate.methods[StdMethods.Spawn].encode(
             pinripalBytes,
             {
               Nonce: BigInt(data.nonce),
               GasPrice: BigInt(data.gasPrice),
-              Arguments: {
-                PublicKey: fromHexString(args.PublicKey),
-              },
+              Arguments,
             }
           );
 
@@ -265,6 +282,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             description: `Spawn ${getTemplateNameByKey(
               data.templateAddress
             )} account using ${spawnAccount}`,
+            Arguments,
           });
           updateEstimatedGas(encoded, 0);
         }
@@ -277,15 +295,16 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             data.templateAddress === StdPublicKeys.Vesting
               ? VestingTemplate
               : MultiSigTemplate;
+          const Arguments = {
+            Required: BigInt(args.Required),
+            PublicKeys: args.PublicKeys.map(fromHexString),
+          };
           const encoded = Template.methods[StdMethods.Spawn].encode(
             pinripalBytes,
             {
               Nonce: BigInt(data.nonce),
               GasPrice: BigInt(data.gasPrice),
-              Arguments: {
-                Required: BigInt(args.Required),
-                PublicKeys: args.PublicKeys.map(fromHexString),
-              },
+              Arguments,
             }
           );
 
@@ -301,23 +320,25 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             description: `Spawn ${getTemplateNameByKey(
               data.templateAddress
             )} account: ${currerntAccount.displayName}`,
+            Arguments,
           });
           updateEstimatedGas(encoded, args.Required);
         }
         if (data.templateAddress === StdPublicKeys.Vault) {
           const args = VaultSpawnSchema.parse(data.payload);
+          const Arguments = {
+            Owner: getWords(args.Owner),
+            TotalAmount: BigInt(args.TotalAmount),
+            InitialUnlockAmount: BigInt(args.InitialUnlockAmount),
+            VestingStart: BigInt(args.VestingStart),
+            VestingEnd: BigInt(args.VestingEnd),
+          };
           const encoded = VaultTemplate.methods[StdMethods.Spawn].encode(
             pinripalBytes,
             {
               Nonce: BigInt(data.nonce),
               GasPrice: BigInt(data.gasPrice),
-              Arguments: {
-                Owner: getWords(args.Owner),
-                TotalAmount: BigInt(args.TotalAmount),
-                InitialUnlockAmount: BigInt(args.InitialUnlockAmount),
-                VestingStart: BigInt(args.VestingStart),
-                VestingEnd: BigInt(args.VestingEnd),
-              },
+              Arguments,
             }
           );
 
@@ -331,6 +352,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             description: `Spawn ${getTemplateNameByKey(
               data.templateAddress
             )} account: ${currerntAccount.displayName}`,
+            Arguments,
           });
           updateEstimatedGas(encoded, 0);
         }
@@ -339,15 +361,16 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
       case StdMethods.Spend: {
         if (data.templateAddress === StdPublicKeys.SingleSig) {
           const args = SpendSchema.parse(data.payload);
+          const Arguments = {
+            Amount: BigInt(args.Amount),
+            Destination: getWords(args.Destination),
+          };
           const encoded = SingleSigTemplate.methods[StdMethods.Spend].encode(
             pinripalBytes,
             {
               Nonce: BigInt(data.nonce),
               GasPrice: BigInt(data.gasPrice),
-              Arguments: {
-                Amount: BigInt(args.Amount),
-                Destination: getWords(args.Destination),
-              },
+              Arguments,
             }
           );
 
@@ -365,20 +388,22 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             description: `Send ${formatSmidge(args.Amount)} to ${
               args.Destination
             }`,
+            Arguments,
           });
           updateEstimatedGas(encoded, 0);
         }
         if (data.templateAddress === StdPublicKeys.MultiSig) {
           const args = SpendSchema.parse(data.payload);
+          const Arguments = {
+            Amount: BigInt(args.Amount),
+            Destination: getWords(args.Destination),
+          };
           const encoded = MultiSigTemplate.methods[StdMethods.Spend].encode(
             pinripalBytes,
             {
               Nonce: BigInt(data.nonce),
               GasPrice: BigInt(data.gasPrice),
-              Arguments: {
-                Amount: BigInt(args.Amount),
-                Destination: getWords(args.Destination),
-              },
+              Arguments,
             }
           );
 
@@ -398,21 +423,23 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             description: `Send ${formatSmidge(args.Amount)} to ${
               args.Destination
             }`,
+            Arguments,
           });
           updateEstimatedGas(encoded, curAcc.spawnArguments.Required);
         }
 
         if (data.templateAddress === StdPublicKeys.Vault) {
           const args = SpendSchema.parse(data.payload);
+          const Arguments = {
+            Amount: BigInt(args.Amount),
+            Destination: getWords(args.Destination),
+          };
           const encoded = VaultTemplate.methods[StdMethods.Spend].encode(
             pinripalBytes,
             {
               Nonce: BigInt(data.nonce),
               GasPrice: BigInt(data.gasPrice),
-              Arguments: {
-                Amount: BigInt(args.Amount),
-                Destination: getWords(args.Destination),
-              },
+              Arguments,
             }
           );
 
@@ -428,6 +455,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             encoded,
             eligibleKeys,
             description: `Spawn ${formatSmidge(args.Amount)}`,
+            Arguments,
           });
           updateEstimatedGas(encoded, 0);
         }
@@ -436,16 +464,17 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
       case StdMethods.Drain: {
         if (data.templateAddress === StdPublicKeys.Vesting) {
           const args = DrainSchema.parse(data.payload);
+          const Arguments = {
+            Vault: getWords(args.Vault),
+            Amount: BigInt(args.Amount),
+            Destination: getWords(args.Destination),
+          };
           const encoded = VestingTemplate.methods[StdMethods.Drain].encode(
             pinripalBytes,
             {
               Nonce: BigInt(data.nonce),
               GasPrice: BigInt(data.gasPrice),
-              Arguments: {
-                Vault: getWords(args.Vault),
-                Amount: BigInt(args.Amount),
-                Destination: getWords(args.Destination),
-              },
+              Arguments,
             }
           );
 
@@ -462,6 +491,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             description: `Drain ${formatSmidge(args.Amount)} from ${
               args.Vault
             } to ${args.Destination}`,
+            Arguments,
           });
           const curAcc =
             currerntAccount as AccountWithAddress<VestingSpawnArguments>;
@@ -527,7 +557,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             methodName: getMethodName(txData.form.payload.methodSelector),
           },
           layer: 0,
-          parsed: txData.form.payload,
+          parsed: txData.Arguments,
           state: 'TRANSACTION_STATE_MEMPOOL',
         },
       ]);
