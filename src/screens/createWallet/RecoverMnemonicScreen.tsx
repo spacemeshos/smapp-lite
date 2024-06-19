@@ -7,6 +7,7 @@ import { wordlist } from '@scure/bip39/wordlists/english';
 
 import BackButton from '../../components/BackButton';
 import FormTextarea from '../../components/FormTextarea';
+import { normalizeMnemonic } from '../../utils/mnemonic';
 
 import { useWalletCreation } from './WalletCreationContext';
 
@@ -42,6 +43,7 @@ function RecoverMnemonicScreen(): JSX.Element {
               label="Please put your 12-word or 24-word mnemonic:"
               register={register('mnemonic', {
                 required: true,
+                setValueAs: normalizeMnemonic,
                 validate: (value) => {
                   const words = value.split(' ');
                   if (words.length !== 12 && words.length !== 24) {
