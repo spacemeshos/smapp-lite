@@ -144,6 +144,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
     handleSubmit,
     getValues,
     setValue,
+    setError,
+    clearErrors,
     formState: { errors, isSubmitted },
   } = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
@@ -213,6 +215,12 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
   useEffect(() => {
     setValue('nonce', parseInt(accountState.projected.nonce, 10));
   }, [setValue, accountState]);
+
+  const close = () => {
+    setTxData(null);
+    clearErrors();
+    onClose();
+  };
 
   const updateEstimatedGas = async (
     encodedTx: Uint8Array,
@@ -535,36 +543,46 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
         txData.encoded,
         signature
       );
-      const txId = await publishTx(signedTx);
-      // eslint-disable-next-line no-console
-      console.log('Published tx:', txId);
-      setTransactions(genesisID, [
-        {
-          id: toHexString(fromBase64(txId), true),
-          principal: txData.principal,
-          nonce: {
-            counter: String(txData.form.nonce),
-            bitfield: 0,
+      try {
+        const txId = await publishTx(signedTx);
+        // eslint-disable-next-line no-console
+        console.log('Published tx:', txId);
+        setTransactions(genesisID, [
+          {
+            id: toHexString(fromBase64(txId), true),
+            principal: txData.principal,
+            nonce: {
+              counter: String(txData.form.nonce),
+              bitfield: 0,
+            },
+            gas: {
+              maxGas: String(estimatedGas),
+              price: String(txData.form.gasPrice),
+            },
+            template: {
+              address: txData.form.templateAddress,
+              method: txData.form.payload.methodSelector,
+              name: getTemplateNameByKey(txData.form.templateAddress),
+              methodName: getMethodName(txData.form.payload.methodSelector),
+            },
+            layer: 0,
+            parsed: txData.Arguments,
+            state: 'TRANSACTION_STATE_MEMPOOL',
           },
-          gas: {
-            maxGas: String(estimatedGas),
-            price: String(txData.form.gasPrice),
-          },
-          template: {
-            address: txData.form.templateAddress,
-            method: txData.form.payload.methodSelector,
-            name: getTemplateNameByKey(txData.form.templateAddress),
-            methodName: getMethodName(txData.form.payload.methodSelector),
-          },
-          layer: 0,
-          parsed: txData.Arguments,
-          state: 'TRANSACTION_STATE_MEMPOOL',
-        },
-      ]);
-      setTxData(null);
-      refreshData();
-      confirmationModal.onClose();
-      onClose();
+        ]);
+        setTxData(null);
+        refreshData();
+        confirmationModal.onClose();
+        close();
+      } catch (err) {
+        const message =
+          err instanceof Error
+            ? err?.message
+            : 'Cannot publish transaction by unknown reason';
+        setError('root', { message });
+        setTxData(null);
+        confirmationModal.onClose();
+      }
     }
   };
 
@@ -658,7 +676,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <Modal isOpen={isOpen} onClose={close} isCentered>
         <Form control={control}>
           <input
             type="hidden"
@@ -675,6 +693,11 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             <ModalCloseButton />
             <ModalHeader pb={0}>Send a transaction</ModalHeader>
             <ModalBody minH={0}>
+              {errors.root?.message && (
+                <Text mb={2} color="red">
+                  {errors.root.message}
+                </Text>
+              )}
               <FormSelect
                 register={register('payload.methodSelector', {
                   valueAsNumber: true,

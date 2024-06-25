@@ -10,6 +10,7 @@ import { Transaction } from '../../types/tx';
 import { fromBase64, toBase64 } from '../../utils/base64';
 import { toHexString } from '../../utils/hexString';
 import { getMethodName, getTemplateNameByAddress } from '../../utils/templates';
+import { parseResponse } from '../schemas/error';
 import {
   EstimateGasResponseSchema,
   SubmitTxResponseSchema,
@@ -38,7 +39,7 @@ export const fetchTransactionsChunk = async (
     }),
   })
     .then((r) => r.json())
-    .then(TransactionResponseSchema.parse)
+    .then(parseResponse(TransactionResponseSchema))
     .then(({ transactions }) =>
       transactions.map((tx) => ({
         ...tx.tx,
@@ -104,7 +105,7 @@ export const fetchEstimatedGas = async (rpc: string, encodedTx: Uint8Array) =>
     }),
   })
     .then((r) => r.json())
-    .then(EstimateGasResponseSchema.parse)
+    .then(parseResponse(EstimateGasResponseSchema))
     .then(({ recommendedMaxGas }) => recommendedMaxGas);
 
 export const fetchPublishTx = async (rpc: string, encodedTx: Uint8Array) =>
@@ -115,5 +116,5 @@ export const fetchPublishTx = async (rpc: string, encodedTx: Uint8Array) =>
     }),
   })
     .then((r) => r.json())
-    .then(SubmitTxResponseSchema.parse)
+    .then(parseResponse(SubmitTxResponseSchema))
     .then(({ txId }) => txId);

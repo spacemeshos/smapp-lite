@@ -2,6 +2,7 @@ import { Bech32Address } from '../../types/common';
 import { Reward } from '../../types/reward';
 import { fromBase64 } from '../../utils/base64';
 import { toHexString } from '../../utils/hexString';
+import { parseResponse } from '../schemas/error';
 import { RewardsListSchema } from '../schemas/rewards';
 
 import getFetchAll from './getFetchAll';
@@ -21,7 +22,7 @@ export const fetchRewardsChunk = (
     }),
   })
     .then((r) => r.json())
-    .then(RewardsListSchema.parse)
+    .then(parseResponse(RewardsListSchema))
     .then(({ rewards }) =>
       rewards.map(
         (reward): Reward => ({
