@@ -605,6 +605,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             errors={errors}
             isSubmitted={isSubmitted}
             accounts={accountsList}
+            setValue={setValue}
+            getValues={getValues}
           />
         );
       }
@@ -625,6 +627,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             errors={errors}
             isSubmitted={isSubmitted}
             accounts={accountsList}
+            setValue={setValue}
+            getValues={getValues}
           />
         );
       }
@@ -645,6 +649,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             errors={errors}
             isSubmitted={isSubmitted}
             accounts={accountsList}
+            setValue={setValue}
+            getValues={getValues}
           />
         );
       }
@@ -665,6 +671,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             errors={errors}
             isSubmitted={isSubmitted}
             accounts={accountsList}
+            setValue={setValue}
+            getValues={getValues}
           />
         );
       }

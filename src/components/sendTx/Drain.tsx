@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import {
   FieldErrors,
+  UseFormGetValues,
   UseFormRegister,
+  UseFormSetValue,
   UseFormUnregister,
 } from 'react-hook-form';
 
@@ -11,7 +13,7 @@ import { StdPublicKeys } from '@spacemesh/sm-codec';
 import { AccountWithAddress } from '../../types/wallet';
 import { noop } from '../../utils/func';
 import FormAddressSelect from '../FormAddressSelect';
-import FormInput from '../FormInput';
+import FormAmountInput from '../FormAmountInput';
 
 import { FormValues } from './schemas';
 
@@ -20,6 +22,8 @@ type DrainProps = {
   register: UseFormRegister<FormValues>;
   unregister: UseFormUnregister<FormValues>;
   errors: FieldErrors<FormValues>;
+  setValue: UseFormSetValue<FormValues>;
+  getValues: UseFormGetValues<FormValues>;
   isSubmitted: boolean;
 };
 
@@ -29,6 +33,8 @@ function Drain({
   unregister,
   errors,
   isSubmitted,
+  setValue,
+  getValues,
 }: DrainProps): JSX.Element {
   useEffect(
     () => () => {
@@ -73,15 +79,15 @@ function Drain({
           isRequired
         />
       </FormControl>
-      <FormInput
+      <FormAmountInput
         label="Amount"
-        inputProps={{ type: 'number' }}
         register={register('payload.Amount', {
           value: '0',
-          setValueAs: (val: string) => BigInt(val).toString(),
         })}
         errors={errors}
         isSubmitted={isSubmitted}
+        setValue={setValue}
+        getValues={getValues}
       />
     </>
   );

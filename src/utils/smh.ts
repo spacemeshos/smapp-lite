@@ -18,8 +18,8 @@ export const toSMH = (smidge: bigint): string => {
   return hasFractional ? `${integer}.${fractional.slice(0, 3)}` : integer;
 };
 
-export const toSmidge = (smh: bigint): string =>
-  String(smh * BigInt(10) ** BigInt(9));
+export const toSmidge = (smh: number): string =>
+  String(Math.round(smh * 10 ** 9));
 
 const packValueAndUnit = (value: string, unit: CoinUnits) => ({
   value,
