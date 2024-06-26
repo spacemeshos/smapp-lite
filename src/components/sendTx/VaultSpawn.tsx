@@ -21,9 +21,11 @@ function VaultSpawn({
 }: VaultSpawnProps): JSX.Element {
   useEffect(() => {
     register('payload.Owner', { value: args.Owner });
-    register('payload.TotalAmount', { value: args.TotalAmount });
+    register('payload.TotalAmount', {
+      value: String(BigInt(args.TotalAmount)),
+    });
     register('payload.InitialUnlockAmount', {
-      value: args.InitialUnlockAmount,
+      value: String(BigInt(args.InitialUnlockAmount)),
     });
     register('payload.VestingStart', { value: args.VestingStart });
     register('payload.VestingEnd', { value: args.VestingEnd });

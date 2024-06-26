@@ -4,12 +4,19 @@ import { z } from 'zod';
 import { isHexString } from '../../types/common';
 import { isValid } from '../../utils/base64';
 
-export const HexStringSchema = z.custom<string>((str) => {
-  if (typeof str !== 'string') return false;
-  return isHexString(str);
-});
+export const HexStringSchema = z.custom<string>(
+  (str) => {
+    if (typeof str !== 'string') return false;
+    return isHexString(str);
+  },
+  {
+    message: 'Expected HEX string',
+  }
+);
 
-export const Base64Schema = z.string().refine(isValid);
+export const Base64Schema = z
+  .string()
+  .refine(isValid, { message: 'Expected Base64 string' });
 
 export const DurationSchema = z
   .string()

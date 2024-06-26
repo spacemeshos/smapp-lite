@@ -42,7 +42,6 @@ function Spend({
     },
     [register, unregister]
   );
-
   return (
     <>
       <FormControl isRequired>
@@ -61,9 +60,7 @@ function Spend({
       </FormControl>
       <FormAmountInput
         label="Amount"
-        register={register('payload.Amount', {
-          value: '0',
-        })}
+        register={register('payload.Amount', { value: '0' })}
         errors={errors}
         isSubmitted={isSubmitted}
         setValue={setValue}

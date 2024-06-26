@@ -7,6 +7,7 @@ import {
   Card,
   CardBody,
   Flex,
+  InputRightElement,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -732,24 +733,24 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                 )
               )}
               <Flex mt={0}>
-                <Box mr={2}>
+                <Box mr={2} w="50%">
                   <FormInput
                     label="Gas Price"
                     inputProps={{ type: 'number' }}
                     register={register('gasPrice', {
                       value: 1,
                       valueAsNumber: true,
-                      required: 'Gas price is required',
-                      min: {
-                        value: 1,
-                        message: 'Gas price must be at least 1',
-                      },
                     })}
                     errors={errors}
                     isSubmitted={isSubmitted}
+                    inputAddon={
+                      <InputRightElement mr={2}>
+                        <Text fontSize="xs">Smidge</Text>
+                      </InputRightElement>
+                    }
                   />
                 </Box>
-                <Box ml={2}>
+                <Box ml={2} w="50%">
                   <FormInput
                     label="Nonce"
                     inputProps={{ type: 'number' }}
