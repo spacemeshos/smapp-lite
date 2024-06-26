@@ -200,7 +200,12 @@ function TxDetails({
                 </Box>
                 <Flex mt={6}>
                   <Box flex={1} pr={4}>
-                    <Row label="Fee" value={formatSmidge(tx.gas.maxGas)} />
+                    <Row
+                      label="Fee"
+                      value={formatSmidge(
+                        BigInt(tx.gas.maxGas) * BigInt(tx.gas.price)
+                      )}
+                    />
                   </Box>
                   <Box flex={1} pl={4}>
                     <Row label="Nonce" value={tx.nonce.counter.toString()} />
