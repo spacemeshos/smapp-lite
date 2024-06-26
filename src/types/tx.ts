@@ -26,6 +26,7 @@ export type Transaction<T = Record<string, unknown>> = {
   layer: number;
   parsed: T;
   state: TransactionState;
+  message?: string;
 };
 
 // TODO: Support other transaction types

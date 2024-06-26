@@ -176,6 +176,14 @@ function TxDetails({
                   />
                   {formatTxState(tx.state)}
                 </Text>
+                {tx.state === 'TRANSACTION_STATE_REJECTED' && tx.message && (
+                  <Text
+                    fontSize="xs"
+                    _firstLetter={{ textTransform: 'capitalize' }}
+                  >
+                    {tx.message}
+                  </Text>
+                )}
 
                 <Box mt={6}>
                   <Row
