@@ -63,8 +63,6 @@ function MainMenu(): JSX.Element {
           </MenuItem>
           <MenuItem onClick={exportWalletFile}>Export wallet file</MenuItem>
           <MenuDivider />
-          <MenuItem>Manage networks</MenuItem>
-          <MenuDivider />
           <MenuItem color="red" onClick={wipeAlert.onOpen}>
             Wipe out
           </MenuItem>
