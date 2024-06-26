@@ -15,6 +15,7 @@ name: Pull request Analysis and preview ( Mainnet )
 on:
   pull_request:
     branches: [ "main" ]
+    types: [opened, synchronize, edited, ready_for_review]
     
 permissions:
   pull-requests: write
