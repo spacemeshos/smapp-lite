@@ -748,6 +748,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                         <Text fontSize="xs">Smidge</Text>
                       </InputRightElement>
                     }
+                    // eslint-disable-next-line max-len
+                    hint="How many to pay for the gas, in case of busy network transactions with higher gas will be processed first"
                   />
                 </Box>
                 <Box ml={2} w="50%">
@@ -766,6 +768,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                     })}
                     errors={errors}
                     isSubmitted={isSubmitted}
+                    // eslint-disable-next-line max-len
+                    hint="The number that used only once to make any transaction unique. In common case it is incrementing automatically."
                   />
                 </Box>
               </Flex>
