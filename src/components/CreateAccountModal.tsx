@@ -130,6 +130,7 @@ function CreateAccountModal({
     reset,
     control,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitted },
   } = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
@@ -176,6 +177,7 @@ function CreateAccountModal({
               errors={errors}
               isSubmitted={isSubmitted}
               isRequired
+              setValue={setValue}
             />
             <FormInput
               label="Total amount"

@@ -56,6 +56,8 @@ function Spend({
           errors={errors}
           isSubmitted={isSubmitted}
           isRequired
+          defaultForeign
+          setValue={setValue}
         />
       </FormControl>
       <FormAmountInput
