@@ -1,12 +1,13 @@
 import { useRef } from 'react';
 
-import { ListItem, OrderedList, TabPanel, Text } from '@chakra-ui/react';
+import { Box, ListItem, OrderedList, TabPanel, Text } from '@chakra-ui/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
 import { Account } from '../types/account';
 import { Network } from '../types/networks';
 import { Transaction } from '../types/tx';
 
+import ExplorerButton from './ExplorerButton';
 import TxListItem from './TxListItem';
 
 type TxListProps = {
@@ -81,6 +82,23 @@ function TxList({
           );
         })}
       </div>
+      {txs.length >= 1000 && (
+        <Box mt={2} textAlign="center">
+          <Text fontSize="sm" mb={2}>
+            The app shows only latest 1000 of transactions.
+            <br />
+            If you want to see older transactions please use Explorer.
+          </Text>
+          <ExplorerButton
+            dataType="accounts"
+            value={account.address}
+            label="Open in Explorer"
+            full
+            variant="outline"
+            width={200}
+          />
+        </Box>
+      )}
     </TabPanel>
   );
 }

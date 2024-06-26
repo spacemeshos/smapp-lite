@@ -11,7 +11,7 @@ const getFetchAll = <Arg, Res>(
   perPage = 100,
   maxCycles = 10
 ): FetchAllFn<Arg, Res> => {
-  let cycle = 0;
+  let cycle = 1;
   const fetchNextChunk = async (
     rpc: string,
     arg: Arg,
