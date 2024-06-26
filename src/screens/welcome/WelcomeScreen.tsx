@@ -10,18 +10,17 @@ function WelcomeScreen(): JSX.Element {
       <Image src={logo} width={200} mb={8} />
 
       <Button as={Link} to="/create" width={280} mb={4} size="lg">
-        Create new wallet
+        Create new Wallet
       </Button>
       <Button as={Link} to="/create/recover" width={280} mb={4} size="lg">
-        Recover from mnemonics
+        Recover your Wallet
       </Button>
       <Button as={Link} to="/import" width={280} mb={4} size="lg">
-        Import wallet file
+        Import Wallet file
       </Button>
 
       <Text fontSize="sm" width={290} textAlign="center">
-        Application stores wallet file encrypted with AES-GCM on your local
-        machine.
+        The app securely stores your encrypted Wallet file on your device.
       </Text>
     </>
   );
