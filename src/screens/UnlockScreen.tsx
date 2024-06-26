@@ -2,15 +2,18 @@ import { Form, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import {
+  Box,
   Button,
   Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
 
 import PasswordInput from '../components/PasswordInput';
+import WipeOutAlert from '../components/WipeOutAlert';
 import useWallet from '../store/useWallet';
 
 type FormValues = {
@@ -37,28 +40,49 @@ function UnlockScreen(): JSX.Element {
     navigate('/wallet');
   });
 
+  const wipeAlert = useDisclosure();
+
   return (
-    <Flex
-      direction="column"
-      alignItems="center"
-      justifyContent="center"
-      flexGrow={1}
-      fontSize="3xl"
-    >
-      <Text fontSize="xl" mb={4}>
-        Unlock wallet
-      </Text>
-      <Form control={control}>
-        <FormControl isInvalid={!!errors.password?.message}>
-          <FormLabel>Enter password:</FormLabel>
-          <PasswordInput register={register('password')} />
-          <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
-        </FormControl>
-        <Button type="submit" mt={4} onClick={() => submit()} size="lg">
-          Unlock
+    <>
+      <Flex
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        flexGrow={1}
+        fontSize="3xl"
+      >
+        <Text fontSize="xl" mb={4}>
+          Unlock wallet
+        </Text>
+        <Form control={control}>
+          <FormControl isInvalid={!!errors.password?.message}>
+            <FormLabel>Enter password:</FormLabel>
+            <PasswordInput register={register('password')} />
+            <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
+          </FormControl>
+          <Button type="submit" mt={4} onClick={() => submit()} size="lg">
+            Unlock
+          </Button>
+        </Form>
+      </Flex>
+      <Box mt={6} mb={2} textAlign="center" maxW={360}>
+        <Text fontSize="xs" mb={2}>
+          If you want to open another wallet file or re-create it from mnemonic,
+          please wipe out the current wallet first.
+          <br />
+          <strong>Please, ensure that you have saved the mnemonic.</strong>
+        </Text>
+        <Button
+          onClick={wipeAlert.onOpen}
+          colorScheme="red"
+          size="sm"
+          variant="outline"
+        >
+          Wipe out
         </Button>
-      </Form>
-    </Flex>
+      </Box>
+      <WipeOutAlert disclosure={wipeAlert} />
+    </>
   );
 }
 

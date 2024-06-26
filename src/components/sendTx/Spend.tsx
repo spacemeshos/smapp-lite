@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import {
   FieldErrors,
+  UseFormGetValues,
   UseFormRegister,
+  UseFormSetValue,
   UseFormUnregister,
 } from 'react-hook-form';
 
@@ -10,7 +12,7 @@ import { FormControl, FormLabel } from '@chakra-ui/react';
 import { AccountWithAddress } from '../../types/wallet';
 import { noop } from '../../utils/func';
 import FormAddressSelect from '../FormAddressSelect';
-import FormInput from '../FormInput';
+import FormAmountInput from '../FormAmountInput';
 
 import { FormValues } from './schemas';
 
@@ -19,6 +21,8 @@ type SpendProps = {
   register: UseFormRegister<FormValues>;
   unregister: UseFormUnregister<FormValues>;
   errors: FieldErrors<FormValues>;
+  setValue: UseFormSetValue<FormValues>;
+  getValues: UseFormGetValues<FormValues>;
   isSubmitted: boolean;
 };
 
@@ -27,6 +31,8 @@ function Spend({
   register,
   unregister,
   errors,
+  setValue,
+  getValues,
   isSubmitted,
 }: SpendProps): JSX.Element {
   useEffect(
@@ -53,15 +59,15 @@ function Spend({
           isRequired
         />
       </FormControl>
-      <FormInput
+      <FormAmountInput
         label="Amount"
-        inputProps={{ type: 'number' }}
         register={register('payload.Amount', {
           value: '0',
-          setValueAs: (val: string) => BigInt(val).toString(),
         })}
         errors={errors}
         isSubmitted={isSubmitted}
+        setValue={setValue}
+        getValues={getValues}
       />
     </>
   );

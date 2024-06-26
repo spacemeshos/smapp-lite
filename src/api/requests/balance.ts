@@ -1,6 +1,7 @@
 import { AccountStatesWithAddress } from '../../types/account';
 import { Bech32Address } from '../../types/common';
 import { BalanceResponseSchema } from '../schemas/account';
+import { parseResponse } from '../schemas/error';
 
 const DEFAULT_STATE = {
   nonce: '0',
@@ -17,7 +18,7 @@ export const fetchBalances = async (rpc: string, addresses: Bech32Address[]) =>
     }),
   })
     .then((r) => r.json())
-    .then(BalanceResponseSchema.parse)
+    .then(parseResponse(BalanceResponseSchema))
     .then(({ accounts }) =>
       addresses.reduce((acc, nextAddress) => {
         const states = accounts.find((s) => s.address === nextAddress);

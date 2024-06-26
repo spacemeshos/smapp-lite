@@ -54,7 +54,7 @@ import CopyButton from './CopyButton';
 import CreateAccountModal from './CreateAccountModal';
 import CreateKeyPairModal from './CreateKeyPairModal';
 import ExplorerButton from './ExplorerButton';
-import ImportKeyPairModal from './ImportKeyPairModal copy';
+import ImportKeyPairModal from './ImportKeyPairModal';
 import RevealSecretKeyModal from './RevealSecretKeyModal';
 
 type KeyManagerProps = {
