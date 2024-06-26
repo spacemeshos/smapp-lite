@@ -52,6 +52,11 @@ function AddNetworkDrawer({ isOpen, onClose }: Props): JSX.Element {
   const [apiError, setApiError] = useState('');
   const [apiLoading, setApiLoading] = useState(false);
 
+  const close = () => {
+    reset();
+    onClose();
+  };
+
   const onSubmit = handleSubmit((data) => {
     addNetwork({
       name: data.name,
@@ -64,8 +69,7 @@ function AddNetworkDrawer({ isOpen, onClose }: Props): JSX.Element {
       layersPerEpoch: parseInt(data.layersPerEpoch, 10),
     });
 
-    reset();
-    onClose();
+    close();
   });
 
   return (
@@ -205,7 +209,7 @@ function AddNetworkDrawer({ isOpen, onClose }: Props): JSX.Element {
           </DrawerBody>
 
           <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
+            <Button variant="outline" mr={3} onClick={close}>
               Cancel
             </Button>
             <Button type="submit" colorScheme="green" onClick={onSubmit}>
