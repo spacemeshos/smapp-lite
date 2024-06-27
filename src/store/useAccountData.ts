@@ -146,7 +146,9 @@ const useAccountData = create<AccountDataStore>((set, get) => ({
         false,
         (acc) =>
           !!acc.transactions.find(
-            (tx) => tx.template.method === MethodSelectors.SelfSpawn
+            (tx) =>
+              tx.template.method === MethodSelectors.SelfSpawn &&
+              tx.state === 'TRANSACTION_STATE_PROCESSED'
           )
       )
     ),
