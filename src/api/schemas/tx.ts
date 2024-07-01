@@ -76,10 +76,13 @@ export type TransactionResponseObject = z.infer<typeof TransactionSchema>;
 
 export type TransactionResponse = z.infer<typeof TransactionResponseSchema>;
 export type TransactionState = z.infer<typeof TransactionStateEnumSchema>;
+export type TransactionResultStatus = z.infer<
+  typeof TransactionResultStatusSchema
+>;
 
 export type WithLayer = { layer: number };
 
-export type WithState = { state: TransactionState };
+export type WithState = { state: TransactionState; message?: string };
 
 export const EstimateGasResponseSchema = z.object({
   recommendedMaxGas: BigIntStringSchema,

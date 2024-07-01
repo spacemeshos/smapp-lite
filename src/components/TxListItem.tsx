@@ -73,7 +73,7 @@ function TxListItem({
               {txBalance !== null && formatSmidge(txBalance)}
             </Text>
             <Text color="gray" fontSize="xx-small" title="Fee" mb="2px">
-              {formatSmidge(-1n * BigInt(tx.gas.maxGas))}
+              {formatSmidge(-1n * BigInt(tx.gas.maxGas) * BigInt(tx.gas.price))}
             </Text>
           </Flex>
         </Flex>

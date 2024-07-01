@@ -16,6 +16,8 @@ import { useCopyToClipboard } from '@uidotdev/usehooks';
 
 import { AccountWithAddress } from '../types/wallet';
 
+import CopyButton from './CopyButton';
+
 type ReceiveModalProps = {
   account: AccountWithAddress;
   isOpen: boolean;
@@ -49,6 +51,7 @@ function ReceiveModal({
         <ModalBody>
           <Text fontSize="sm" mb={4}>
             {account.address}
+            <CopyButton value={account.address} />
           </Text>
           <QRCode
             bgColor="var(--chakra-colors-gray-700)"

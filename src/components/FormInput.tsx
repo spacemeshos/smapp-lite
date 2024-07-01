@@ -6,13 +6,16 @@ import {
 } from 'react-hook-form';
 
 import {
+  Box,
   FormControl,
   FormErrorMessage,
   FormLabel,
   Input,
   InputGroup,
   InputProps,
+  Tooltip,
 } from '@chakra-ui/react';
+import { IconHelp } from '@tabler/icons-react';
 
 type Props<T extends FieldValues> = PropsWithChildren<{
   label: string;
@@ -21,6 +24,7 @@ type Props<T extends FieldValues> = PropsWithChildren<{
   isSubmitted?: boolean;
   inputAddon?: ReactNode;
   inputProps?: InputProps;
+  hint?: string;
 }>;
 
 function FormInput<T extends FieldValues>({
@@ -31,6 +35,7 @@ function FormInput<T extends FieldValues>({
   children = '',
   inputAddon = null,
   inputProps = {},
+  hint = undefined,
 }: Props<T>): JSX.Element {
   const isRequired = !!register.required;
   const error = errors[register.name];
@@ -43,6 +48,13 @@ function FormInput<T extends FieldValues>({
     >
       <FormLabel fontSize="sm" mb={0}>
         {label}
+        {!!hint && (
+          <Tooltip label={hint}>
+            <Box display="inline-block" ml={1}>
+              <IconHelp size={14} style={{ marginBottom: '-2px' }} />
+            </Box>
+          </Tooltip>
+        )}
       </FormLabel>
       <InputGroup>
         <Input {...inputProps} {...register} />

@@ -176,6 +176,14 @@ function TxDetails({
                   />
                   {formatTxState(tx.state)}
                 </Text>
+                {tx.state === 'TRANSACTION_STATE_REJECTED' && tx.message && (
+                  <Text
+                    fontSize="xs"
+                    _firstLetter={{ textTransform: 'capitalize' }}
+                  >
+                    {tx.message}
+                  </Text>
+                )}
 
                 <Box mt={6}>
                   <Row
@@ -192,7 +200,12 @@ function TxDetails({
                 </Box>
                 <Flex mt={6}>
                   <Box flex={1} pr={4}>
-                    <Row label="Fee" value={formatSmidge(tx.gas.maxGas)} />
+                    <Row
+                      label="Fee"
+                      value={formatSmidge(
+                        BigInt(tx.gas.maxGas) * BigInt(tx.gas.price)
+                      )}
+                    />
                   </Box>
                   <Box flex={1} pl={4}>
                     <Row label="Nonce" value={tx.nonce.counter.toString()} />

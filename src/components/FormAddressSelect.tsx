@@ -5,7 +5,9 @@ import {
   FieldValues,
   get,
   Path,
+  PathValue,
   UseFormRegister,
+  UseFormSetValue,
   UseFormUnregister,
 } from 'react-hook-form';
 
@@ -23,6 +25,11 @@ import {
 import { Bech32AddressSchema } from '../api/schemas/address';
 import { AccountWithAddress } from '../types/wallet';
 
+enum Origin {
+  Local = 'local',
+  Foreign = 'foreign',
+}
+
 type Props<
   T extends FieldValues,
   FieldName extends Path<T>
@@ -31,15 +38,12 @@ type Props<
   accounts: AccountWithAddress[];
   register: UseFormRegister<T>;
   unregister: UseFormUnregister<T>;
+  setValue: UseFormSetValue<T>;
   errors: FieldErrors<T>;
   isSubmitted?: boolean;
   isRequired?: boolean;
+  defaultForeign?: boolean;
 }>;
-
-enum Origin {
-  Local = 'local',
-  Foreign = 'foreign',
-}
 
 function FormAddressSelect<T extends FieldValues, FieldName extends Path<T>>({
   fieldName,
@@ -50,9 +54,19 @@ function FormAddressSelect<T extends FieldValues, FieldName extends Path<T>>({
   isSubmitted = false,
   isRequired = false,
   children = '',
+  defaultForeign = false,
+  setValue,
 }: Props<T, FieldName>): JSX.Element {
-  const [origin, setOrigin] = useState(Origin.Local);
+  const [origin, setOrigin] = useState(
+    defaultForeign ? Origin.Foreign : Origin.Local
+  );
   useEffect(() => () => unregister(fieldName), [unregister, fieldName, origin]);
+  useEffect(() => {
+    const firstLocal = accounts?.[0]?.address;
+    if (origin === Origin.Local && !!firstLocal) {
+      setValue(fieldName, firstLocal as PathValue<T, FieldName>);
+    }
+  }, [origin, accounts, setValue, fieldName]);
 
   const error = get(errors, fieldName) as FieldError | undefined;
   const renderInputs = () => {

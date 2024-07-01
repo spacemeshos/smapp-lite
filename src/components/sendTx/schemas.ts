@@ -4,7 +4,7 @@ import { StdPublicKeys } from '@spacemesh/sm-codec';
 
 import { Bech32AddressSchema } from '../../api/schemas/address';
 import { HexStringSchema } from '../../api/schemas/common';
-import { BigIntStringSchema } from '../../api/schemas/strNumber';
+import { BigIntMin, BigIntStringSchema } from '../../api/schemas/strNumber';
 import { Bech32Address } from '../../types/common';
 import { MethodSelectors } from '../../utils/templates';
 
@@ -13,7 +13,7 @@ import { MethodSelectors } from '../../utils/templates';
 export const SpendSchema = z.object({
   methodSelector: z.literal(MethodSelectors.Spend),
   Destination: Bech32AddressSchema,
-  Amount: BigIntStringSchema,
+  Amount: BigIntStringSchema.and(BigIntMin(0n)),
 });
 
 export type SpendPayload = z.infer<typeof SpendSchema>;
@@ -22,7 +22,7 @@ export const DrainSchema = z.object({
   methodSelector: z.literal(MethodSelectors.Drain),
   Vault: Bech32AddressSchema,
   Destination: Bech32AddressSchema,
-  Amount: BigIntStringSchema,
+  Amount: BigIntStringSchema.and(BigIntMin(0n)),
 });
 
 export type DrainPayload = z.infer<typeof DrainSchema>;
@@ -47,8 +47,8 @@ export type MultiSigSpawnPayload = z.infer<typeof MultiSigSpawnSchema>;
 export const VaultSpawnSchema = z.object({
   methodSelector: z.literal(MethodSelectors.SelfSpawn),
   Owner: Bech32AddressSchema,
-  TotalAmount: z.number().min(0),
-  InitialUnlockAmount: z.number().min(0),
+  TotalAmount: BigIntStringSchema.and(BigIntMin(0n)),
+  InitialUnlockAmount: BigIntStringSchema.and(BigIntMin(0n)),
   VestingStart: z.number().min(0),
   VestingEnd: z.number().min(0),
 });
@@ -68,8 +68,14 @@ export type VestingSpawnPayload = z.infer<typeof VestingSpawnSchema>;
 // Tx schemas by template addr
 
 export const CommonTxFields = {
-  gasPrice: z.number(),
-  nonce: z.number(),
+  gasPrice: z
+    .number({ message: 'Required field' })
+    .int('Only integer values accepted')
+    .min(1),
+  nonce: z
+    .number({ message: 'Required field' })
+    .int('Only integer values accepted')
+    .min(0),
 };
 
 export const SingleSigSchema = z.object({

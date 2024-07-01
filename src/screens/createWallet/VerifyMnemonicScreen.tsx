@@ -101,8 +101,8 @@ function VerifyMnemonicScreen(): JSX.Element {
     <>
       <BackButton />
       <Text fontSize="lg" mb={4}>
-        Let&apos;s verify that you have write down your mnemonic and will be
-        able to recover later if needed.
+        Let&apos;s verify that you have written down your seed phrase and will
+        able to recover your accounts/funds later if needed.
       </Text>
       <DndProvider backend={HTML5Backend}>
         <Card fontSize="sm" margin={[4, null]} borderRadius="xl" w="100%">

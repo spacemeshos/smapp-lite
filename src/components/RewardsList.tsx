@@ -1,12 +1,13 @@
 import { useRef } from 'react';
 
-import { Link, TabPanel, Text } from '@chakra-ui/react';
+import { Box, Link, TabPanel, Text } from '@chakra-ui/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
 import { Account } from '../types/account';
 import { Network } from '../types/networks';
 import { Reward } from '../types/reward';
 
+import ExplorerButton from './ExplorerButton';
 import RewardListItem from './RewardListItem';
 
 type RewardsListProps = {
@@ -80,6 +81,23 @@ function RewardsList({
           );
         })}
       </div>
+      {rewards.length >= 1000 && (
+        <Box mt={2} textAlign="center">
+          <Text fontSize="sm" mb={2}>
+            The app shows only latest 1000 of rewards.
+            <br />
+            If you want to see older rewards please use Explorer.
+          </Text>
+          <ExplorerButton
+            dataType="accounts"
+            value={account.address}
+            label="Open in Explorer"
+            full
+            variant="outline"
+            width={200}
+          />
+        </Box>
+      )}
     </TabPanel>
   );
 }

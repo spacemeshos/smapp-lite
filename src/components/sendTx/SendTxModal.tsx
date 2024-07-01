@@ -7,6 +7,7 @@ import {
   Card,
   CardBody,
   Flex,
+  InputRightElement,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -732,24 +733,26 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                 )
               )}
               <Flex mt={0}>
-                <Box mr={2}>
+                <Box mr={2} w="50%">
                   <FormInput
                     label="Gas Price"
                     inputProps={{ type: 'number' }}
                     register={register('gasPrice', {
                       value: 1,
                       valueAsNumber: true,
-                      required: 'Gas price is required',
-                      min: {
-                        value: 1,
-                        message: 'Gas price must be at least 1',
-                      },
                     })}
                     errors={errors}
                     isSubmitted={isSubmitted}
+                    inputAddon={
+                      <InputRightElement mr={2}>
+                        <Text fontSize="xs">Smidge</Text>
+                      </InputRightElement>
+                    }
+                    // eslint-disable-next-line max-len
+                    hint="How many to pay for the gas, in case of busy network transactions with higher gas will be processed first"
                   />
                 </Box>
-                <Box ml={2}>
+                <Box ml={2} w="50%">
                   <FormInput
                     label="Nonce"
                     inputProps={{ type: 'number' }}
@@ -765,6 +768,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                     })}
                     errors={errors}
                     isSubmitted={isSubmitted}
+                    // eslint-disable-next-line max-len
+                    hint="The number that used only once to make any transaction unique. In common case it is incrementing automatically."
                   />
                 </Box>
               </Flex>

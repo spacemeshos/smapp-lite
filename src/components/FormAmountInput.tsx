@@ -1,5 +1,6 @@
 import { PropsWithChildren, ReactNode, useState } from 'react';
 import {
+  FieldError,
   FieldErrors,
   FieldValues,
   Path,
@@ -42,8 +43,15 @@ function FormAmountInput<T extends FieldValues>({
 }: Props<T>): JSX.Element {
   const [units, setUnits] = useState(CoinUnits.SMH);
   const [displayValue, setDisplayValue] = useState('0');
+  const paths = register.name.split('.');
+  const error = paths.reduce(
+    (acc, next) =>
+      Object.hasOwn(acc, next) ? (acc[next] as FieldErrors<T>) : acc,
+    errors
+  ) as FieldError | undefined;
+
+  // Handlers
   const toggleUnits = () => {
-    const paths = register.name.split('.');
     const vals = getValues();
 
     const val = paths.reduce((acc, next) => acc?.[next], vals);
@@ -61,23 +69,25 @@ function FormAmountInput<T extends FieldValues>({
     setDisplayValue(val);
 
     if (units === CoinUnits.SMH) {
+      if ((!val && val !== '0') || Number.isNaN(Number(val))) {
+        // Required to invalidate values like `123-1231231`
+        setValue(register.name as Path<T>, val as PathValue<T, Path<T>>);
+        return;
+      }
       setValue(
         register.name as Path<T>,
         toSmidge(Number(val)) as PathValue<T, Path<T>>
       );
     } else {
-      setValue(
-        register.name as Path<T>,
-        String(BigInt(val)) as PathValue<T, Path<T>>
-      );
+      setValue(register.name as Path<T>, val as PathValue<T, Path<T>>);
     }
   };
 
-  const error = errors[register.name];
+  // Component
   return (
     <FormControl
       isRequired={!!register.required}
-      isInvalid={isSubmitted && !!errors[register.name]?.message}
+      isInvalid={isSubmitted && !!error?.message}
       mt={2}
       mb={2}
     >

@@ -16,11 +16,36 @@ import {
   SubmitTxResponseSchema,
   TransactionResponseObject,
   TransactionResponseSchema,
+  TransactionResultStatus,
+  TransactionState,
   WithLayer,
   WithState,
 } from '../schemas/tx';
 
 import getFetchAll from './getFetchAll';
+
+const getTxState = (
+  resultStatus: TransactionResultStatus | undefined,
+  txState: TransactionState | undefined
+): TransactionState => {
+  // TODO: Remove kludges once go-sm issue solved:
+  // https://github.com/spacemeshos/go-spacemesh/issues/5317
+  if (resultStatus) {
+    if (resultStatus === 'TRANSACTION_STATUS_SUCCESS') {
+      return 'TRANSACTION_STATE_PROCESSED';
+    }
+    if (
+      resultStatus === 'TRANSACTION_STATUS_FAILURE' ||
+      resultStatus === 'TRANSACTION_STATUS_INVALID'
+    ) {
+      return 'TRANSACTION_STATE_REJECTED';
+    }
+  }
+  if (txState) {
+    return txState;
+  }
+  return 'TRANSACTION_STATE_UNSPECIFIED';
+};
 
 export const fetchTransactionsChunk = async (
   rpc: string,
@@ -44,7 +69,8 @@ export const fetchTransactionsChunk = async (
       transactions.map((tx) => ({
         ...tx.tx,
         layer: tx.txResult?.layer || 0,
-        state: tx.txState ?? 'TRANSACTION_STATE_UNSPECIFIED',
+        state: getTxState(tx.txResult?.status, tx.txState),
+        message: tx.txResult?.message,
       }))
     );
 
@@ -86,6 +112,7 @@ export const fetchTransactionsByAddress = async (
         layer: tx.layer,
         parsed: parsed.Payload.Arguments,
         state: tx.state,
+        message: tx.message,
       } satisfies Transaction<(typeof parsed)['Payload']['Arguments']>;
     } catch (err) {
       /* eslint-disable no-console */
