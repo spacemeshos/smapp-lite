@@ -1,3 +1,4 @@
+import fileDownload from 'js-file-download';
 import { useEffect, useMemo, useState } from 'react';
 import { Form, useForm } from 'react-hook-form';
 
@@ -516,6 +517,33 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
     confirmationModal.onOpen();
   });
 
+  const sign = async (signWith: HexString, externalSignature?: HexString) => {
+    if (!txData) {
+      throw new Error('Cannot sign unknown transaction');
+    }
+    if (!genesisID) {
+      throw new Error(
+        // eslint-disable-next-line max-len
+        'Cannot sign transaction: No Genesis ID, please connect to the network first'
+      );
+    }
+
+    // TODO: Support multisig
+    const signature = !externalSignature
+      ? await withPassword(
+          (password) => signTx(txData.encoded, signWith, password),
+          'Enter password to sign transaction',
+          txData.description
+        )
+      : fromHexString(externalSignature);
+
+    if (signature) {
+      // TODO: Support multisig
+      return SingleSigTemplate.methods[0].sign(txData.encoded, signature);
+    }
+    return null;
+  };
+
   const signAndPublish = async (
     signWith: HexString,
     externalSignature?: HexString
@@ -530,20 +558,9 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
       );
     }
 
-    // TODO: Support multisig
-    const signature = !externalSignature
-      ? await withPassword(
-          (password) => signTx(txData.encoded, signWith, password),
-          'Enter password to sign transaction',
-          txData.description
-        )
-      : fromHexString(externalSignature);
-
-    if (signature) {
-      const signedTx = SingleSigTemplate.methods[0].sign(
-        txData.encoded,
-        signature
-      );
+    const signedTx = await sign(signWith, externalSignature);
+    if (signedTx) {
+      // TODO: Support multisig
       try {
         const txId = await publishTx(signedTx);
         // eslint-disable-next-line no-console
@@ -584,6 +601,29 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
         setTxData(null);
         confirmationModal.onClose();
       }
+    }
+  };
+
+  const exportTx = async (
+    signWith: HexString | null,
+    externalSignature?: HexString
+  ) => {
+    if (!txData) {
+      throw new Error('Cannot export unknown transaction');
+    }
+    if (signWith && !genesisID) {
+      throw new Error(
+        // eslint-disable-next-line max-len
+        'Cannot sign and export transaction: No Genesis ID, please connect to the network first'
+      );
+    }
+
+    const tx = signWith
+      ? await sign(signWith, externalSignature)
+      : txData.encoded;
+
+    if (tx) {
+      fileDownload(toHexString(tx, true), 'transaction.hex', 'text/plain');
     }
   };
 
@@ -789,6 +829,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
           isOpen={confirmationModal.isOpen}
           onClose={confirmationModal.onClose}
           onSubmit={signAndPublish}
+          onExport={exportTx}
         />
       )}
     </>

@@ -5,11 +5,17 @@ import { useForm } from 'react-hook-form';
 import {
   Box,
   Button,
+  ButtonGroup,
   Divider,
   Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -21,6 +27,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { StdPublicKeys } from '@spacemesh/sm-codec';
+import { IconChevronDown } from '@tabler/icons-react';
 
 import { Bech32Address, HexString } from '../../types/common';
 import { SafeKeyWithType } from '../../types/wallet';
@@ -55,6 +62,7 @@ export type ConfirmationData = {
 type ConfirmationModalProps = ConfirmationData & {
   onClose: () => void;
   onSubmit: (signWith: HexString, externalSignature?: HexString) => void;
+  onExport: (signWith: HexString | null, externalSignature?: HexString) => void;
   isOpen: boolean;
   estimatedGas: bigint | null;
 };
@@ -201,6 +209,7 @@ function ConfirmationModal({
   isOpen,
   onClose,
   onSubmit,
+  onExport,
 }: ConfirmationModalProps): JSX.Element {
   const {
     watch,
@@ -228,6 +237,16 @@ function ConfirmationModal({
     reset();
     onSubmit(data.signWith, data.externalSignature);
   });
+
+  const exportSigned = handleSubmit((data) => {
+    reset();
+    onExport(data.signWith, data.externalSignature);
+  });
+
+  const exportUnsigned = () => {
+    reset();
+    onExport(null);
+  };
 
   const isSingleSig = form.templateAddress === StdPublicKeys.SingleSig;
 
@@ -332,14 +351,29 @@ function ConfirmationModal({
           <Button onClick={onClose} ml={2}>
             Back
           </Button>
-          <Button
-            colorScheme="blue"
-            onClick={submit}
-            ml={2}
-            isDisabled={!isSingleSig}
-          >
-            Sign & Publish
-          </Button>
+          <ButtonGroup isAttached>
+            <Button
+              colorScheme="blue"
+              onClick={submit}
+              ml={2}
+              isDisabled={!isSingleSig}
+              mr="1px"
+            >
+              Sign & Publish
+            </Button>
+            <Menu>
+              <MenuButton
+                as={IconButton}
+                icon={<IconChevronDown />}
+                colorScheme="blue"
+                minW={8}
+              />
+              <MenuList>
+                <MenuItem onClick={exportSigned}>Sign & Export</MenuItem>
+                <MenuItem onClick={exportUnsigned}>Export Unsigned</MenuItem>
+              </MenuList>
+            </Menu>
+          </ButtonGroup>
         </ModalFooter>
       </ModalContent>
     </Modal>
