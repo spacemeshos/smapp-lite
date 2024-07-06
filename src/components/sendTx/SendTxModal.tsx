@@ -648,6 +648,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             accounts={accountsList}
             setValue={setValue}
             getValues={getValues}
+            watch={watch}
           />
         );
       }
@@ -670,6 +671,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             accounts={accountsList}
             setValue={setValue}
             getValues={getValues}
+            watch={watch}
           />
         );
       }
@@ -692,6 +694,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             accounts={accountsList}
             setValue={setValue}
             getValues={getValues}
+            watch={watch}
           />
         );
       }
@@ -714,6 +717,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             accounts={accountsList}
             setValue={setValue}
             getValues={getValues}
+            watch={watch}
           />
         );
       }

@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactNode, useState } from 'react';
+import { PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 import {
   FieldError,
   FieldErrors,
@@ -8,6 +8,7 @@ import {
   UseFormGetValues,
   UseFormRegisterReturn,
   UseFormSetValue,
+  UseFormWatch,
 } from 'react-hook-form';
 
 import {
@@ -31,6 +32,7 @@ type Props<T extends FieldValues> = PropsWithChildren<{
   isSubmitted?: boolean;
   setValue: UseFormSetValue<T>;
   getValues: UseFormGetValues<T>;
+  watch: UseFormWatch<T>;
 }>;
 
 function FormAmountInput<T extends FieldValues>({
@@ -39,10 +41,41 @@ function FormAmountInput<T extends FieldValues>({
   errors,
   setValue,
   getValues,
+  watch,
   isSubmitted = false,
 }: Props<T>): JSX.Element {
   const [units, setUnits] = useState(CoinUnits.SMH);
   const [displayValue, setDisplayValue] = useState('0');
+  const formVal = watch(register.name as Path<T>);
+
+  useEffect(() => {
+    // Do not re-update in case it is the same value
+    const curSmidges =
+      units === CoinUnits.SMH ? toSmidge(Number(displayValue)) : displayValue;
+    if (!formVal || formVal === curSmidges) {
+      return;
+    }
+
+    if (units === CoinUnits.SMH) {
+      // Update display value and change units if needed
+      if (formVal > 10n ** 7n) {
+        setDisplayValue(toSMH(BigInt(formVal)));
+      } else {
+        setDisplayValue(formVal);
+        setUnits(CoinUnits.Smidge);
+      }
+    }
+    if (units === CoinUnits.Smidge) {
+      // Update display value and change units if needed
+      if (formVal > 10n ** 7n) {
+        setDisplayValue(toSMH(BigInt(formVal)));
+        setUnits(CoinUnits.SMH);
+      } else {
+        setDisplayValue(formVal);
+      }
+    }
+  }, [displayValue, formVal, units]);
+
   const paths = register.name.split('.');
   const error = paths.reduce(
     (acc, next) =>
