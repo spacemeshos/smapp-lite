@@ -129,7 +129,12 @@ function FormAmountInput<T extends FieldValues>({
       </FormLabel>
       <Input type="hidden" {...register} />
       <InputGroup>
-        <Input type="number" value={displayValue} onChange={onChange} />
+        <Input
+          type="number"
+          key={`display_input-${register.name}`}
+          value={displayValue}
+          onChange={onChange}
+        />
         <InputRightElement p={0} w={100} justifyContent="end" pr={2}>
           <Text fontSize="xs">{units}</Text>
           <IconButton

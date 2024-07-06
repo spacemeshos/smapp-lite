@@ -18,7 +18,7 @@ export const useEstimateGas = () => {
   };
 };
 
-export const useSignSingleSig = () => {
+export const useSignTx = () => {
   const { revealSecretKey } = useWallet();
   const genesisID = useCurrentGenesisID();
   return async (

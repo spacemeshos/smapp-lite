@@ -1,5 +1,5 @@
 // TODO
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
 import {
@@ -27,6 +27,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { StdPublicKeys } from '@spacemesh/sm-codec';
+import { MultiSigPart, SingleSig } from '@spacemesh/sm-codec/lib/codecs';
 import { IconChevronDown } from '@tabler/icons-react';
 
 import { Bech32Address, HexString } from '../../types/common';
@@ -57,6 +58,9 @@ export type ConfirmationData = {
   form: FormValues;
   encoded: Uint8Array;
   eligibleKeys: SafeKeyWithType[];
+  signatures?: SingleSig | MultiSigPart[];
+  required?: number;
+  isMultiSig?: boolean;
 };
 
 type ConfirmationModalProps = ConfirmationData & {
@@ -206,6 +210,9 @@ function ConfirmationModal({
   encoded,
   eligibleKeys,
   estimatedGas,
+  signatures = undefined,
+  required = 1,
+  isMultiSig = false,
   isOpen,
   onClose,
   onSubmit,
@@ -222,16 +229,31 @@ function ConfirmationModal({
   } = useForm<FormKeySelect>();
 
   const signWith = watch('signWith');
+  const hasSingleSig = useMemo(
+    () => !!signatures && signatures instanceof Uint8Array,
+    [signatures]
+  );
 
   useEffect(() => {
+    if (hasSingleSig) {
+      // If SingleSig with attached signature,
+      // then put it into signature input
+      setValue('signWith', EXTERNAL);
+      return;
+    }
+    // Otherwise select eligible keys as usually
     setValue('signWith', eligibleKeys[0]?.publicKey || EXTERNAL);
-  }, [eligibleKeys, setValue]);
+  }, [eligibleKeys, hasSingleSig, setValue, signatures]);
 
   useEffect(() => {
     if (signWith !== EXTERNAL) {
       unregister('externalSignature');
     }
-  }, [unregister, signWith]);
+    if (signWith === EXTERNAL && hasSingleSig) {
+      // If signature is already provided — put it as External signature
+      setValue('externalSignature', toHexString(signatures as SingleSig));
+    }
+  }, [unregister, signWith, setValue, hasSingleSig, signatures]);
 
   const submit = handleSubmit((data) => {
     reset();
@@ -248,7 +270,101 @@ function ConfirmationModal({
     onExport(null);
   };
 
-  const isSingleSig = form.templateAddress === StdPublicKeys.SingleSig;
+  const renderSignatures = () => {
+    if (!signatures || signatures.length === 0) return null;
+    if (isMultiSig) {
+      const multisig = signatures as MultiSigPart[];
+      return (
+        <Box mb={2}>
+          <Text fontSize="xs" color="whiteAlpha.600">
+            With signatures:
+          </Text>
+          {multisig.map((sig) => {
+            const hex = toHexString(sig.Sig);
+            return (
+              <Flex fontSize="xx-small" key={hex}>
+                <Text whiteSpace="nowrap" mr={2} color="whiteAlpha.800">
+                  Ref: {String(sig.Ref)}
+                </Text>
+                <Text whiteSpace="pre-wrap" wordBreak="break-all">
+                  {hex}
+                </Text>
+              </Flex>
+            );
+          })}
+        </Box>
+      );
+    }
+    // Do not display it for SingleSig
+    return null;
+  };
+
+  const renderActions = () => {
+    if (!isMultiSig) {
+      return (
+        <ButtonGroup isAttached>
+          <Button colorScheme="blue" onClick={submit} ml={2} mr="1px">
+            {hasSingleSig ? 'Publish' : 'Sign & Publish'}
+          </Button>
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              icon={<IconChevronDown />}
+              colorScheme="blue"
+              minW={8}
+            />
+            <MenuList>
+              <MenuItem onClick={exportSigned}>
+                {hasSingleSig ? 'Export Signed' : 'Sign & Export'}
+              </MenuItem>
+              <MenuItem onClick={exportUnsigned}>Export Unsigned</MenuItem>
+            </MenuList>
+          </Menu>
+        </ButtonGroup>
+      );
+    }
+
+    const hasAllSignatures = signatures && signatures.length === required;
+    const missingOneSignature = (signatures?.length ?? 0) === required - 1;
+
+    const mayPublish = hasAllSignatures || missingOneSignature;
+
+    return (
+      <ButtonGroup isAttached>
+        <Button
+          colorScheme="blue"
+          onClick={mayPublish ? submit : exportSigned}
+          ml={2}
+          mr="1px"
+        >
+          {/* eslint-disable-next-line no-nested-ternary */}
+          {hasAllSignatures
+            ? 'Publish'
+            : missingOneSignature
+            ? 'Sign & Publish'
+            : 'Sign & Export'}
+        </Button>
+        <Menu>
+          <MenuButton
+            as={IconButton}
+            icon={<IconChevronDown />}
+            colorScheme="blue"
+            minW={8}
+          />
+          <MenuList>
+            {mayPublish && (
+              <MenuItem onClick={exportSigned}>
+                {hasAllSignatures ? 'Export Signed' : 'Sign & Export'}
+              </MenuItem>
+            )}
+            <MenuItem onClick={exportUnsigned}>Export Unsigned</MenuItem>
+          </MenuList>
+        </Menu>
+      </ButtonGroup>
+    );
+  };
+
+  const shouldSign = !isMultiSig || signatures?.length !== required;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -296,45 +412,50 @@ function ConfirmationModal({
               whiteSpace: 'pre-wrap',
             }}
           />
-          <Divider mb={2} />
-          <FormControl isInvalid={isSubmitted && !!errors.signWith?.message}>
-            <FormLabel>Sign transaction using key:</FormLabel>
-            <Select
-              {...register('signWith', {
-                value: eligibleKeys[0]?.publicKey,
-                required:
-                  'Please select at least one eligible key to sign transaction',
-              })}
-            >
-              {eligibleKeys.map((kp) => (
-                <option key={kp.publicKey} value={kp.publicKey}>
-                  {`${kp.displayName} (${getAbbreviatedHexString(
-                    kp.publicKey
-                  )})`}
-                </option>
-              ))}
-              <option value={EXTERNAL}>External signature</option>
-            </Select>
-            {errors.signWith?.message && (
-              <FormErrorMessage>{errors.signWith.message}</FormErrorMessage>
-            )}
-          </FormControl>
-          {signWith === EXTERNAL && (
-            <FormInput
-              label="Put the signature for the transaction:"
-              register={register('externalSignature', {
-                required: 'Please provide a signature to sign transaction with',
-                minLength: 64,
-                maxLength: 64,
-              })}
-              errors={errors}
-              isSubmitted={isSubmitted}
-            />
-          )}
-          {!isSingleSig && (
-            <Text color="orange" fontSize="sm" mt={2}>
-              Sorry, only SingleSig account is supported at the moment.
-            </Text>
+          {renderSignatures()}
+          {shouldSign && (
+            <>
+              <Divider mb={2} />
+              <FormControl
+                isInvalid={isSubmitted && !!errors.signWith?.message}
+              >
+                <FormLabel>Sign transaction using key:</FormLabel>
+                <Select
+                  {...register('signWith', {
+                    value: eligibleKeys[0]?.publicKey,
+                    required:
+                      // eslint-disable-next-line max-len
+                      'Please select at least one eligible key to sign transaction',
+                  })}
+                >
+                  {eligibleKeys.map((kp) => (
+                    <option key={kp.publicKey} value={kp.publicKey}>
+                      {`${kp.displayName} (${getAbbreviatedHexString(
+                        kp.publicKey
+                      )})`}
+                    </option>
+                  ))}
+                  <option value={EXTERNAL}>External signature</option>
+                </Select>
+                {errors.signWith?.message && (
+                  <FormErrorMessage>{errors.signWith.message}</FormErrorMessage>
+                )}
+              </FormControl>
+              {/* TODO: Add REF field for External signature of MultiSig TX */}
+              {signWith === EXTERNAL && (
+                <FormInput
+                  label="Put the signature for the transaction:"
+                  register={register('externalSignature', {
+                    required:
+                      'Please provide a signature to sign transaction with',
+                    minLength: 128,
+                    maxLength: 128,
+                  })}
+                  errors={errors}
+                  isSubmitted={isSubmitted}
+                />
+              )}
+            </>
           )}
         </ModalBody>
         <ModalFooter>
@@ -351,29 +472,7 @@ function ConfirmationModal({
           <Button onClick={onClose} ml={2}>
             Back
           </Button>
-          <ButtonGroup isAttached>
-            <Button
-              colorScheme="blue"
-              onClick={submit}
-              ml={2}
-              isDisabled={!isSingleSig}
-              mr="1px"
-            >
-              Sign & Publish
-            </Button>
-            <Menu>
-              <MenuButton
-                as={IconButton}
-                icon={<IconChevronDown />}
-                colorScheme="blue"
-                minW={8}
-              />
-              <MenuList>
-                <MenuItem onClick={exportSigned}>Sign & Export</MenuItem>
-                <MenuItem onClick={exportUnsigned}>Export Unsigned</MenuItem>
-              </MenuList>
-            </Menu>
-          </ButtonGroup>
+          {renderActions()}
         </ModalFooter>
       </ModalContent>
     </Modal>
