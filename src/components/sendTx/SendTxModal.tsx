@@ -721,8 +721,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               {O.mapWithDefault(
                 currerntAccount,
                 <Text color="red">
-                  No account selected. Please switch to an account first.
-                  first.
+                  No account selected. Please switch to an account first. first.
                 </Text>,
                 (curAcc) => (
                   <Card variant="outline">
