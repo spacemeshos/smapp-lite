@@ -52,7 +52,7 @@ function SetPasswordScreen(): JSX.Element {
       <BackButton onClick={reset} />
 
       <Text fontSize="xl" mb={4} mt={2}>
-        Last step to create a new wallet
+        Final step to access your wallet
       </Text>
 
       <Card fontSize="sm" borderRadius="xl" w="100%">
