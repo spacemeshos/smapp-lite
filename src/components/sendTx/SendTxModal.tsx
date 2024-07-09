@@ -721,7 +721,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               {O.mapWithDefault(
                 currerntAccount,
                 <Text color="red">
-                  None of account is selected. Please switch to any account
+                  No account selected. Please switch to an account first.
                   first.
                 </Text>,
                 (curAcc) => (
@@ -749,7 +749,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                       </InputRightElement>
                     }
                     // eslint-disable-next-line max-len
-                    hint="How many to pay for the gas, in case of busy network transactions with higher gas will be processed first"
+                    hint="How much to pay for gas: During high network traffic, 
+                    transactions with higher gas fees are prioritized."
                   />
                 </Box>
                 <Box ml={2} w="50%">
@@ -769,7 +770,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                     errors={errors}
                     isSubmitted={isSubmitted}
                     // eslint-disable-next-line max-len
-                    hint="The number that used only once to make any transaction unique. In common case it is incrementing automatically."
+                    hint="The number is used only once to ensure each transaction is unique. 
+                    It increments automatically, but can also be set manually if needed."
                   />
                 </Box>
               </Flex>
