@@ -27,6 +27,7 @@ export type Transaction<T = Record<string, unknown>> = {
   parsed: T;
   state: TransactionState;
   message?: string;
+  touched?: Bech32Address[];
 };
 
 // TODO: Support other transaction types

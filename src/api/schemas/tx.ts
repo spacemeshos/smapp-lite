@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { Bech32Address } from '../../types/common';
+
 import { Bech32AddressSchema } from './address';
 import { Base64Schema } from './common';
 import { BigIntStringSchema } from './strNumber';
@@ -60,8 +62,8 @@ export const TransactionStateEnumSchema = z.enum([
 
 export const TransactionResponseObjectSchema = z.object({
   tx: TransactionSchema,
-  txResult: z.optional(TransactionResultSchema),
-  txState: z.optional(TransactionStateEnumSchema),
+  txResult: z.nullable(TransactionResultSchema),
+  txState: z.nullable(TransactionStateEnumSchema),
 });
 
 // Responses
@@ -80,9 +82,12 @@ export type TransactionResultStatus = z.infer<
   typeof TransactionResultStatusSchema
 >;
 
-export type WithLayer = { layer: number };
-
-export type WithState = { state: TransactionState; message?: string };
+export type WithExtraData = {
+  layer: number;
+  state: TransactionState;
+  touched?: Bech32Address[];
+  message?: string;
+};
 
 export const EstimateGasResponseSchema = z.object({
   recommendedMaxGas: BigIntStringSchema,

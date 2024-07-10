@@ -14,6 +14,7 @@ import {
 import { Bech32Address, HexString } from '../types/common';
 
 import { fromHexString, toHexString } from './hexString';
+import { getWords } from './bech32';
 
 export const TemplateKey = StdPublicKeys;
 
@@ -125,7 +126,7 @@ export const convertSpawnArgumentsForEncoding = <T extends StdTemplateKeys>(
   if (tpl === StdPublicKeys.Vault) {
     const args = spawnArgs as VaultSpawnArguments;
     return {
-      Owner: Uint8Array.from(bech32.fromWords(bech32.decode(args.Owner).words)),
+      Owner: getWords(args.Owner),
       TotalAmount: BigInt(args.TotalAmount),
       InitialUnlockAmount: BigInt(args.InitialUnlockAmount),
       VestingStart: BigInt(args.VestingStart),

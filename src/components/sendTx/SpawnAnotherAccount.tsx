@@ -1,7 +1,12 @@
 import { useCallback, useState } from 'react';
-import { UseFormRegister, UseFormUnregister } from 'react-hook-form';
+import {
+  UseFormRegister,
+  UseFormSetValue,
+  UseFormUnregister,
+} from 'react-hook-form';
 
 import { FormControl, FormLabel, Select, Text } from '@chakra-ui/react';
+import { StdTemplateKeys } from '@spacemesh/sm-codec';
 
 import { AccountWithAddress } from '../../types/wallet';
 import {
@@ -21,20 +26,26 @@ type SpawnAnotherAccount = {
   accounts: AccountWithAddress<AnySpawnArguments>[];
   register: UseFormRegister<FormValues>;
   unregister: UseFormUnregister<FormValues>;
+  setValue: UseFormSetValue<FormValues>;
 };
 
 function SpawnAnotherAccount({
   accounts,
   register,
   unregister,
+  setValue,
 }: SpawnAnotherAccount) {
   const [selectedAddress, setSelectedAddress] = useState(accounts[0]?.address);
 
   const selectAccount = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setSelectedAddress(e.target.value);
+      const account = accounts.find((acc) => acc.address === e.target.value);
+      if (account) {
+        setSelectedAddress(e.target.value);
+        setValue('templateAddress', account.templateAddress as StdTemplateKeys);
+      }
     },
-    []
+    [accounts, setValue]
   );
 
   const selectedAccount = accounts.find((x) => x.address === selectedAddress);

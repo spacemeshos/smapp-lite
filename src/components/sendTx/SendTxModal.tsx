@@ -98,9 +98,9 @@ import {
   VaultSpawnSchema,
 } from './schemas';
 import SingleSigSpawn from './SingleSigSpawn';
+import SpawnAnotherAccount from './SpawnAnotherAccount';
 import Spend from './Spend';
 import VaultSpawn from './VaultSpawn';
-import SpawnAnotherAccount from './SpawnAnotherAccount';
 
 type SendTxModalProps = {
   isOpen: boolean;
@@ -268,7 +268,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
 
     const principal = computeAddress(
       hrp,
-      data.templateAddress,
+      currerntAccount.templateAddress as StdTemplateKeys,
       currerntAccount.spawnArguments
     );
     const pinripalBytes = getWords(principal);
@@ -931,6 +931,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
         accounts={accountsList.filter((acc) => acc !== currerntAccount)}
         register={register}
         unregister={unregister}
+        setValue={setValue}
       />
     ) : (
       defaultComponent
