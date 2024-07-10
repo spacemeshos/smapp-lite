@@ -75,7 +75,7 @@ function ImportKeyPairModal({
                 required: 'Name is required',
                 minLength: {
                   value: 2,
-                  message: 'Give some meaningful name to your account',
+                  message: 'Give your account a meaningful name',
                 },
               })}
               errors={errors}
@@ -89,7 +89,7 @@ function ImportKeyPairModal({
                   const trimmed = value.replace(/^0x/, '');
                   if (trimmed.length !== 128) {
                     // eslint-disable-next-line max-len
-                    return `Secret key must be 64 bytes length`;
+                    return `The secret key must be 64 bytes long`;
                   }
                   if (keys.includes(trimmed.slice(64))) {
                     return `You already have this key in the wallet file`;

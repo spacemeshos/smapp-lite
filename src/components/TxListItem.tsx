@@ -54,7 +54,7 @@ function TxListItem({
                   {epochByLayer(layersPerEpoch, tx.layer)})
                 </>
               ) : (
-                'Waiting for processing the transaction...'
+                'Waiting for the transaction to be processed...'
               )}
             </Text>
           </Box>

@@ -84,7 +84,7 @@ function RewardsList({
       {rewards.length >= 1000 && (
         <Box mt={2} textAlign="center">
           <Text fontSize="sm" mb={2}>
-            The app shows only latest 1000 of rewards.
+            The app shows only the latest 1000 rewards.
             <br />
             If you want to see older rewards please use Explorer.
           </Text>
