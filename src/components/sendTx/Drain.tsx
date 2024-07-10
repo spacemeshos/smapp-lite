@@ -67,6 +67,7 @@ function Drain({
           isSubmitted={isSubmitted}
           isRequired
           setValue={setValue}
+          getValues={getValues}
         />
       </FormControl>
       <FormControl isRequired>
@@ -82,6 +83,7 @@ function Drain({
           isSubmitted={isSubmitted}
           isRequired
           setValue={setValue}
+          getValues={getValues}
         />
       </FormControl>
       <FormAmountInput

@@ -1,4 +1,10 @@
-import { PropsWithChildren, ReactNode, useEffect, useState } from 'react';
+import {
+  PropsWithChildren,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   FieldError,
   FieldErrors,
@@ -6,6 +12,7 @@ import {
   get,
   Path,
   PathValue,
+  UseFormGetValues,
   UseFormRegister,
   UseFormSetValue,
   UseFormUnregister,
@@ -39,6 +46,7 @@ type Props<
   register: UseFormRegister<T>;
   unregister: UseFormUnregister<T>;
   setValue: UseFormSetValue<T>;
+  getValues: UseFormGetValues<T>;
   errors: FieldErrors<T>;
   isSubmitted?: boolean;
   isRequired?: boolean;
@@ -56,17 +64,26 @@ function FormAddressSelect<T extends FieldValues, FieldName extends Path<T>>({
   children = '',
   defaultForeign = false,
   setValue,
+  getValues,
 }: Props<T, FieldName>): JSX.Element {
   const [origin, setOrigin] = useState(
     defaultForeign ? Origin.Foreign : Origin.Local
   );
+  const prevOrigin = useRef(origin);
   useEffect(() => () => unregister(fieldName), [unregister, fieldName, origin]);
   useEffect(() => {
     const firstLocal = accounts?.[0]?.address;
-    if (origin === Origin.Local && !!firstLocal) {
+    const val = getValues(fieldName);
+    const foundVal = accounts.find((x) => x.address === val);
+    if (
+      prevOrigin.current !== origin &&
+      origin === Origin.Local &&
+      !!firstLocal &&
+      !foundVal
+    ) {
       setValue(fieldName, firstLocal as PathValue<T, FieldName>);
     }
-  }, [origin, accounts, setValue, fieldName]);
+  }, [prevOrigin, origin, accounts, setValue, fieldName, getValues]);
 
   const error = get(errors, fieldName) as FieldError | undefined;
   const renderInputs = () => {
@@ -76,6 +93,9 @@ function FormAddressSelect<T extends FieldValues, FieldName extends Path<T>>({
           <Input
             {...register(fieldName, {
               required: isRequired ? 'Please pick the address' : false,
+              value: (!defaultForeign
+                ? accounts[0]?.address ?? ''
+                : '') as PathValue<T, FieldName>,
               validate: (val) => {
                 try {
                   Bech32AddressSchema.parse(val);
@@ -108,7 +128,10 @@ function FormAddressSelect<T extends FieldValues, FieldName extends Path<T>>({
     <>
       <RadioGroup
         size="sm"
-        onChange={(next) => setOrigin(next as Origin)}
+        onChange={(next) => {
+          prevOrigin.current = origin;
+          setOrigin(next as Origin);
+        }}
         value={origin}
         mb={1}
       >
