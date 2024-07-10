@@ -52,7 +52,7 @@ function SetPasswordScreen(): JSX.Element {
       <BackButton onClick={reset} />
 
       <Text fontSize="xl" mb={4} mt={2}>
-        Last step to create a new wallet
+        Final step to access your wallet
       </Text>
 
       <Card fontSize="sm" borderRadius="xl" w="100%">
@@ -72,7 +72,7 @@ function SetPasswordScreen(): JSX.Element {
                   },
                   minLength: {
                     value: 8,
-                    message: 'Password should be at least 8 characters length',
+                    message: 'Password should be at least 8 characters long',
                   },
                   validate: (val) => {
                     const hasUpperCase = /[A-Z]/.test(val);
@@ -109,7 +109,7 @@ function SetPasswordScreen(): JSX.Element {
                   validate: (val, formVals) => {
                     if (val !== formVals.password) {
                       // eslint-disable-next-line max-len
-                      return 'Your passwords do no match';
+                      return 'Your passwords do not match';
                     }
                     return undefined;
                   },

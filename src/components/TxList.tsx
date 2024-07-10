@@ -85,7 +85,7 @@ function TxList({
       {txs.length >= 1000 && (
         <Box mt={2} textAlign="center">
           <Text fontSize="sm" mb={2}>
-            The app shows only latest 1000 of transactions.
+            The app shows only the latest 1000 transactions.
             <br />
             If you want to see older transactions please use Explorer.
           </Text>

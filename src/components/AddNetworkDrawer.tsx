@@ -159,7 +159,7 @@ function AddNetworkDrawer({ isOpen, onClose }: Props): JSX.Element {
             />
 
             <Text fontSize="xx-small" color="grey" mt={4}>
-              Next fields should be fullfilled automatically by the API.
+              Next fields should be filled automatically by the API.
             </Text>
 
             <FormInput

@@ -338,7 +338,7 @@ function CreateAccountModal({
                 required: 'Name is required',
                 minLength: {
                   value: 2,
-                  message: 'Give some meaningful name to your account',
+                  message: 'Give your account a meaningful name',
                 },
               })}
               errors={errors}
