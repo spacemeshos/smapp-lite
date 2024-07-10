@@ -57,22 +57,22 @@ export enum MethodName {
 }
 
 export enum MethodSelectors {
-  SelfSpawn = StdMethods.Spawn,
+  Spawn = StdMethods.Spawn,
   Spend = StdMethods.Spend,
   Drain = StdMethods.Drain,
 }
 
 export const MethodNamesMap = {
-  [MethodSelectors.SelfSpawn]: MethodName.SelfSpawn,
+  [MethodSelectors.Spawn]: MethodName.SelfSpawn,
   [MethodSelectors.Spend]: MethodName.Spend,
   [MethodSelectors.Drain]: MethodName.Drain,
 } as const;
 
 export const TemplateMethodsMap = {
-  [StdPublicKeys.SingleSig]: [MethodSelectors.SelfSpawn, MethodSelectors.Spend],
-  [StdPublicKeys.MultiSig]: [MethodSelectors.SelfSpawn, MethodSelectors.Spend],
-  [StdPublicKeys.Vault]: [MethodSelectors.SelfSpawn, MethodSelectors.Spend],
-  [StdPublicKeys.Vesting]: [MethodSelectors.SelfSpawn, MethodSelectors.Drain],
+  [StdPublicKeys.SingleSig]: [MethodSelectors.Spawn, MethodSelectors.Spend],
+  [StdPublicKeys.MultiSig]: [MethodSelectors.Spawn, MethodSelectors.Spend],
+  [StdPublicKeys.Vault]: [MethodSelectors.Spawn, MethodSelectors.Spend],
+  [StdPublicKeys.Vesting]: [MethodSelectors.Spawn, MethodSelectors.Drain],
 };
 
 //
@@ -150,7 +150,7 @@ export const getTemplateMethod = (
 
   switch (templateAddress) {
     case StdPublicKeys.SingleSig: {
-      if (method === MethodSelectors.SelfSpawn) {
+      if (method === MethodSelectors.Spawn) {
         return SingleSigTemplate.methods[0];
       }
       if (method === MethodSelectors.Spend) {
@@ -159,7 +159,7 @@ export const getTemplateMethod = (
       return throwUnsupportedMethodError();
     }
     case StdPublicKeys.MultiSig: {
-      if (method === MethodSelectors.SelfSpawn) {
+      if (method === MethodSelectors.Spawn) {
         return MultiSigTemplate.methods[0];
       }
       if (method === MethodSelectors.Spend) {
@@ -168,7 +168,7 @@ export const getTemplateMethod = (
       return throwUnsupportedMethodError();
     }
     case StdPublicKeys.Vault: {
-      if (method === MethodSelectors.SelfSpawn) {
+      if (method === MethodSelectors.Spawn) {
         return VaultTemplate.methods[0];
       }
       if (method === MethodSelectors.Spend) {
@@ -177,7 +177,7 @@ export const getTemplateMethod = (
       return throwUnsupportedMethodError();
     }
     case StdPublicKeys.Vesting: {
-      if (method === MethodSelectors.SelfSpawn) {
+      if (method === MethodSelectors.Spawn) {
         return VestingTemplate.methods[0];
       }
       if (method === MethodSelectors.Drain) {

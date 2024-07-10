@@ -185,7 +185,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
     () =>
       [
         {
-          value: MethodSelectors.SelfSpawn,
+          value: MethodSelectors.Spawn,
           label: 'Self Spawn',
           disabled: isSpawned,
         },
@@ -205,20 +205,20 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
   useEffect(() => {
     // Automatically switch between methods if the account is spawned or not
     if (
-      getValues().payload.methodSelector === MethodSelectors.SelfSpawn &&
+      getValues().payload.methodSelector === MethodSelectors.Spawn &&
       isSpawned
     ) {
       setValue(
         'payload.methodSelector',
         methodOptions.find((opt) => !opt.disabled)?.value ??
-          MethodSelectors.SelfSpawn
+          MethodSelectors.Spawn
       );
     }
     if (
-      getValues().payload.methodSelector !== MethodSelectors.SelfSpawn &&
+      getValues().payload.methodSelector !== MethodSelectors.Spawn &&
       !isSpawned
     ) {
-      setValue('payload.methodSelector', MethodSelectors.SelfSpawn);
+      setValue('payload.methodSelector', MethodSelectors.Spawn);
     }
   }, [setValue, isSpawned, methodOptions, getValues]);
 
@@ -732,7 +732,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
       const templateAddress =
         currerntAccount.templateAddress as StdTemplateKeys;
       switch (method) {
-        case MethodSelectors.SelfSpawn: {
+        case MethodSelectors.Spawn: {
           if (templateAddress === StdPublicKeys.SingleSig) {
             const args = tx.Payload.Arguments as SpawnArguments;
             return {

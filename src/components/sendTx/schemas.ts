@@ -28,14 +28,14 @@ export const DrainSchema = z.object({
 export type DrainPayload = z.infer<typeof DrainSchema>;
 
 export const SingleSigSpawnSchema = z.object({
-  methodSelector: z.literal(MethodSelectors.SelfSpawn),
+  methodSelector: z.literal(MethodSelectors.Spawn),
   PublicKey: HexStringSchema,
 });
 
 export type SingleSigSpawnPayload = z.infer<typeof SingleSigSpawnSchema>;
 
 export const MultiSigSpawnSchema = z.object({
-  methodSelector: z.literal(MethodSelectors.SelfSpawn),
+  methodSelector: z.literal(MethodSelectors.Spawn),
   Required: z.number().min(0).max(10),
   PublicKeys: z
     .array(HexStringSchema)
@@ -45,7 +45,7 @@ export const MultiSigSpawnSchema = z.object({
 export type MultiSigSpawnPayload = z.infer<typeof MultiSigSpawnSchema>;
 
 export const VaultSpawnSchema = z.object({
-  methodSelector: z.literal(MethodSelectors.SelfSpawn),
+  methodSelector: z.literal(MethodSelectors.Spawn),
   Owner: Bech32AddressSchema,
   TotalAmount: BigIntStringSchema.and(BigIntMin(0n)),
   InitialUnlockAmount: BigIntStringSchema.and(BigIntMin(0n)),
@@ -56,7 +56,7 @@ export const VaultSpawnSchema = z.object({
 export type VaultSpawnPayload = z.infer<typeof VaultSpawnSchema>;
 
 export const VestingSpawnSchema = z.object({
-  methodSelector: z.literal(MethodSelectors.SelfSpawn),
+  methodSelector: z.literal(MethodSelectors.Spawn),
   Required: z.number().min(0).max(10),
   PublicKeys: z
     .array(HexStringSchema)
