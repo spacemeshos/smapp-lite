@@ -25,7 +25,7 @@ export const isSingleSigSpawnTransaction = (
   tx: Transaction<any>
 ): tx is ParsedSpawnTransaction =>
   tx.template.name === TemplateName.SingleSig &&
-  tx.template.methodName === MethodName.SelfSpawn &&
+  tx.template.methodName === MethodName.Spawn &&
   !!tx.parsed.publicKey;
 
 export const isSpendTransaction = (

@@ -69,7 +69,10 @@ export const fetchTransactionsChunk = async (
       transactions.map((tx) => ({
         ...tx.tx,
         layer: tx.txResult?.layer || 0,
-        state: getTxState(tx.txResult?.status, tx.txState),
+        state: getTxState(
+          tx.txResult?.status,
+          tx.txState || 'TRANSACTION_STATE_UNSPECIFIED'
+        ),
         message: tx.txResult?.message,
       }))
     );

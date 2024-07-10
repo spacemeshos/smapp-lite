@@ -51,7 +51,7 @@ export type AnySpawnArguments =
 
 export enum MethodName {
   Unknown = 'Unknown Method',
-  SelfSpawn = 'Self Spawn',
+  Spawn = 'Spawn',
   Spend = 'Spend',
   Drain = 'Drain',
 }
@@ -63,7 +63,7 @@ export enum MethodSelectors {
 }
 
 export const MethodNamesMap = {
-  [MethodSelectors.Spawn]: MethodName.SelfSpawn,
+  [MethodSelectors.Spawn]: MethodName.Spawn,
   [MethodSelectors.Spend]: MethodName.Spend,
   [MethodSelectors.Drain]: MethodName.Drain,
 } as const;
