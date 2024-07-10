@@ -5,6 +5,7 @@ import {
   UseFormRegister,
   UseFormSetValue,
   UseFormUnregister,
+  UseFormWatch,
 } from 'react-hook-form';
 
 import { FormControl, FormLabel } from '@chakra-ui/react';
@@ -24,6 +25,7 @@ type DrainProps = {
   errors: FieldErrors<FormValues>;
   setValue: UseFormSetValue<FormValues>;
   getValues: UseFormGetValues<FormValues>;
+  watch: UseFormWatch<FormValues>;
   isSubmitted: boolean;
 };
 
@@ -35,6 +37,7 @@ function Drain({
   isSubmitted,
   setValue,
   getValues,
+  watch,
 }: DrainProps): JSX.Element {
   useEffect(
     () => () => {
@@ -90,6 +93,7 @@ function Drain({
         isSubmitted={isSubmitted}
         setValue={setValue}
         getValues={getValues}
+        watch={watch}
       />
     </>
   );

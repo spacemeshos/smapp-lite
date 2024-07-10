@@ -20,7 +20,7 @@ export enum TxType {
   Spent,
 }
 
-export const isSelfSpawnTransaction = (
+export const isSingleSigSpawnTransaction = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tx: Transaction<any>
 ): tx is ParsedSpawnTransaction =>
@@ -32,7 +32,6 @@ export const isSpendTransaction = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tx: Transaction<any>
 ): tx is ParsedSpendTransaction =>
-  tx.template.name === TemplateName.SingleSig &&
   tx.template.method === StdMethods.Spend &&
   Object.hasOwn(tx.parsed, 'Destination') &&
   Object.hasOwn(tx.parsed, 'Amount');

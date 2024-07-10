@@ -1,10 +1,14 @@
 import { bech32 } from 'bech32';
 
 import {
+  MultiSigTemplate,
+  SingleSigTemplate,
   StdMethods,
   StdPublicKeys,
   StdTemplateKeys,
   TemeplateArgumentsMap,
+  VaultTemplate,
+  VestingTemplate,
 } from '@spacemesh/sm-codec';
 
 import { Bech32Address, HexString } from '../types/common';
@@ -130,4 +134,59 @@ export const convertSpawnArgumentsForEncoding = <T extends StdTemplateKeys>(
   }
 
   throw new Error('Cannot convert spawn arguments: Unknown template key');
+};
+
+export const getTemplateMethod = (
+  templateAddress: HexString,
+  method: number
+) => {
+  const throwUnsupportedMethodError = () => {
+    throw new Error(
+      `Template ${getTemplateNameByKey(
+        templateAddress
+      )} does not supported method ${method}`
+    );
+  };
+
+  switch (templateAddress) {
+    case StdPublicKeys.SingleSig: {
+      if (method === MethodSelectors.SelfSpawn) {
+        return SingleSigTemplate.methods[0];
+      }
+      if (method === MethodSelectors.Spend) {
+        return SingleSigTemplate.methods[16];
+      }
+      return throwUnsupportedMethodError();
+    }
+    case StdPublicKeys.MultiSig: {
+      if (method === MethodSelectors.SelfSpawn) {
+        return MultiSigTemplate.methods[0];
+      }
+      if (method === MethodSelectors.Spend) {
+        return MultiSigTemplate.methods[16];
+      }
+      return throwUnsupportedMethodError();
+    }
+    case StdPublicKeys.Vault: {
+      if (method === MethodSelectors.SelfSpawn) {
+        return VaultTemplate.methods[0];
+      }
+      if (method === MethodSelectors.Spend) {
+        return VaultTemplate.methods[16];
+      }
+      return throwUnsupportedMethodError();
+    }
+    case StdPublicKeys.Vesting: {
+      if (method === MethodSelectors.SelfSpawn) {
+        return VestingTemplate.methods[0];
+      }
+      if (method === MethodSelectors.Drain) {
+        return VestingTemplate.methods[17];
+      }
+      return throwUnsupportedMethodError();
+    }
+    default: {
+      throw new Error(`Unknown template: ${templateAddress}`);
+    }
+  }
 };

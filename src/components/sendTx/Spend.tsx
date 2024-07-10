@@ -5,6 +5,7 @@ import {
   UseFormRegister,
   UseFormSetValue,
   UseFormUnregister,
+  UseFormWatch,
 } from 'react-hook-form';
 
 import { FormControl, FormLabel } from '@chakra-ui/react';
@@ -23,6 +24,7 @@ type SpendProps = {
   errors: FieldErrors<FormValues>;
   setValue: UseFormSetValue<FormValues>;
   getValues: UseFormGetValues<FormValues>;
+  watch: UseFormWatch<FormValues>;
   isSubmitted: boolean;
 };
 
@@ -33,6 +35,7 @@ function Spend({
   errors,
   setValue,
   getValues,
+  watch,
   isSubmitted,
 }: SpendProps): JSX.Element {
   useEffect(
@@ -67,6 +70,7 @@ function Spend({
         isSubmitted={isSubmitted}
         setValue={setValue}
         getValues={getValues}
+        watch={watch}
       />
     </>
   );

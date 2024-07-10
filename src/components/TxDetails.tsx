@@ -29,7 +29,7 @@ import {
   formatTxState,
   getDestinationAddress,
   getStatusColor,
-  isSelfSpawnTransaction,
+  isSingleSigSpawnTransaction,
   isSpendTransaction,
 } from '../utils/tx';
 
@@ -109,7 +109,7 @@ const renderTxSpecificData = (tx: Transaction) => {
       </>
     );
   }
-  if (isSelfSpawnTransaction(tx)) {
+  if (isSingleSigSpawnTransaction(tx)) {
     return (
       <Row
         label="PublicKey"
