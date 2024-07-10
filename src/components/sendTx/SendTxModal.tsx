@@ -1044,7 +1044,15 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                   onRead={handleImportTx}
                   onError={showImportError}
                 >
-                  <Button variant="link" colorScheme="purple" size="xs" p={1}>
+                  <Button
+                    variant="link"
+                    colorScheme="purple"
+                    size="xs"
+                    p={1}
+                    isDisabled={
+                      !!(currerntAccount && isVaultAccount(currerntAccount))
+                    }
+                  >
                     import a transaction
                   </Button>
                 </TxFileReader>
@@ -1129,9 +1137,24 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                   />
                 </Box>
               </Flex>
+              {!!(currerntAccount && isVaultAccount(currerntAccount)) && (
+                <Text fontSize="sm" color="orange">
+                  Vault account cannot publish any transactions by itself.
+                  <br />
+                  You have to switch to Vesting account first and then publish
+                  transactions from it: Spawn or Drain.
+                </Text>
+              )}
             </ModalBody>
             <ModalFooter>
-              <Button colorScheme="blue" onClick={submit} ml={2}>
+              <Button
+                colorScheme="blue"
+                onClick={submit}
+                ml={2}
+                isDisabled={
+                  !!(currerntAccount && isVaultAccount(currerntAccount))
+                }
+              >
                 Next
               </Button>
             </ModalFooter>
