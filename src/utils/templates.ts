@@ -13,8 +13,8 @@ import {
 
 import { Bech32Address, HexString } from '../types/common';
 
-import { fromHexString, toHexString } from './hexString';
 import { getWords } from './bech32';
+import { fromHexString, toHexString } from './hexString';
 
 export const TemplateKey = StdPublicKeys;
 

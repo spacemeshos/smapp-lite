@@ -20,6 +20,7 @@ import {
 import { useCopyToClipboard } from '@uidotdev/usehooks';
 
 import { Transaction } from '../types/tx';
+import { generateAddress } from '../utils/bech32';
 import { formatTimestamp } from '../utils/datetime';
 import { ExplorerDataType } from '../utils/getExplorerUrl';
 import { toHexString } from '../utils/hexString';
@@ -29,8 +30,12 @@ import {
   formatTxState,
   getDestinationAddress,
   getStatusColor,
+  isDrainTransaction,
+  isMultiSigSpawnTransaction,
   isSingleSigSpawnTransaction,
   isSpendTransaction,
+  isVaultSpawnTransaction,
+  isVestingSpawnTransaction,
 } from '../utils/tx';
 
 import ExplorerButton from './ExplorerButton';
@@ -91,7 +96,7 @@ function Row({ label, value, isCopyable, explorer }: RowProps) {
   );
 }
 
-const renderTxSpecificData = (tx: Transaction) => {
+const renderTxSpecificData = (hrp: string, tx: Transaction) => {
   if (isSpendTransaction(tx)) {
     const destination = getDestinationAddress(tx, tx.principal);
     if (!destination) {
@@ -118,6 +123,62 @@ const renderTxSpecificData = (tx: Transaction) => {
       />
     );
   }
+  if (isMultiSigSpawnTransaction(tx) || isVestingSpawnTransaction(tx)) {
+    return (
+      <>
+        <Row
+          label="Required signatures"
+          value={String(tx.parsed.Required)}
+          isCopyable
+        />
+        <Row
+          label="Public Keys"
+          value={tx.parsed.PublicKeys.map((x) => toHexString(x, true)).join(
+            ', '
+          )}
+          isCopyable
+        />
+      </>
+    );
+  }
+  if (isVaultSpawnTransaction(tx)) {
+    return (
+      <>
+        <Row
+          label="Owner"
+          value={generateAddress(tx.parsed.Owner, hrp)}
+          isCopyable
+        />
+        <Row label="Total Amount" value={formatSmidge(tx.parsed.TotalAmount)} />
+        <Row
+          label="Initial Unlocked Amount"
+          value={formatSmidge(tx.parsed.InitialUnlockAmount)}
+        />
+        <Row
+          label="Vesting Start (Layer)"
+          value={String(tx.parsed.VestingStart)}
+        />
+        <Row label="Vesting End (Layer)" value={String(tx.parsed.VestingEnd)} />
+      </>
+    );
+  }
+  if (isDrainTransaction(tx)) {
+    return (
+      <>
+        <Row
+          label="Vault"
+          value={generateAddress(tx.parsed.Vault, hrp)}
+          isCopyable
+        />
+        <Row label="Amount" value={formatSmidge(tx.parsed.Amount)} />
+        <Row
+          label="Destination"
+          value={generateAddress(tx.parsed.Destination, hrp)}
+          isCopyable
+        />
+      </>
+    );
+  }
 
   return null;
 };
@@ -129,6 +190,7 @@ type TxDetailsProps = {
   genesisTime: number;
   layerDurationSec: number;
   layersPerEpoch: number;
+  hrp: string;
 };
 
 function TxDetails({
@@ -138,6 +200,7 @@ function TxDetails({
   genesisTime,
   layerDurationSec,
   layersPerEpoch,
+  hrp,
 }: TxDetailsProps): JSX.Element | null {
   return (
     <Portal>
@@ -196,7 +259,7 @@ function TxDetails({
                     label="Transaction type"
                     value={`${tx.template.name}.${tx.template.methodName}`}
                   />
-                  {renderTxSpecificData(tx)}
+                  {renderTxSpecificData(hrp, tx)}
                 </Box>
                 <Flex mt={6}>
                   <Box flex={1} pr={4}>

@@ -1,4 +1,10 @@
-import { SingleSigSpawnArguments, SpendArguments } from '@spacemesh/sm-codec';
+import {
+  MultiSigSpawnArguments,
+  SingleSigSpawnArguments,
+  SpendArguments,
+  VaultSpawnArguments,
+  VestingSpawnArguments,
+} from '@spacemesh/sm-codec';
 
 import { TransactionState } from '../api/schemas/tx';
 
@@ -31,6 +37,10 @@ export type Transaction<T = Record<string, unknown>> = {
 };
 
 // TODO: Support other transaction types
-export type ParsedSpawnTransaction = Transaction<SingleSigSpawnArguments>;
+export type ParsedSpawnTransaction =
+  | Transaction<SingleSigSpawnArguments>
+  | Transaction<MultiSigSpawnArguments>
+  | Transaction<VestingSpawnArguments>
+  | Transaction<VaultSpawnArguments>;
 
 export type ParsedSpendTransaction = Transaction<SpendArguments>;

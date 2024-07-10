@@ -1,7 +1,14 @@
 import { bech32 } from 'bech32';
 
 import { D } from '@mobily/ts-belt';
-import { StdMethods } from '@spacemesh/sm-codec';
+import {
+  DrainArguments,
+  MultiSigSpawnArguments,
+  SingleSigSpawnArguments,
+  StdMethods,
+  VaultSpawnArguments,
+  VestingSpawnArguments,
+} from '@spacemesh/sm-codec';
 
 import { TransactionState } from '../api/schemas/tx';
 import { Bech32Address } from '../types/common';
@@ -20,19 +27,55 @@ export enum TxType {
   Spent,
 }
 
+export const isSpawnTransaction = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  tx: Transaction<any>
+): tx is ParsedSpawnTransaction => tx.template.methodName === MethodName.Spawn;
+
 export const isSingleSigSpawnTransaction = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tx: Transaction<any>
-): tx is ParsedSpawnTransaction =>
-  tx.template.name === TemplateName.SingleSig &&
-  tx.template.methodName === MethodName.Spawn &&
-  !!tx.parsed.publicKey;
+): tx is Transaction<SingleSigSpawnArguments> =>
+  isSpawnTransaction(tx) && Object.hasOwn(tx.parsed, 'PublicKey');
+
+export const isMultiSigSpawnTransaction = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  tx: Transaction<any>
+): tx is Transaction<MultiSigSpawnArguments> =>
+  isSpawnTransaction(tx) &&
+  Object.hasOwn(tx.parsed, 'Required') &&
+  Object.hasOwn(tx.parsed, 'PublicKey');
+
+export const isVestingSpawnTransaction = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  tx: Transaction<any>
+): tx is Transaction<VestingSpawnArguments> => isMultiSigSpawnTransaction(tx);
+
+export const isVaultSpawnTransaction = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  tx: Transaction<any>
+): tx is Transaction<VaultSpawnArguments> =>
+  isSpawnTransaction(tx) &&
+  Object.hasOwn(tx.parsed, 'Owner') &&
+  Object.hasOwn(tx.parsed, 'TotalAmount') &&
+  Object.hasOwn(tx.parsed, 'InitialUnlockAmount') &&
+  Object.hasOwn(tx.parsed, 'VestingStart') &&
+  Object.hasOwn(tx.parsed, 'VestingEnd');
 
 export const isSpendTransaction = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tx: Transaction<any>
 ): tx is ParsedSpendTransaction =>
   tx.template.method === StdMethods.Spend &&
+  Object.hasOwn(tx.parsed, 'Destination') &&
+  Object.hasOwn(tx.parsed, 'Amount');
+
+export const isDrainTransaction = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  tx: Transaction<any>
+): tx is Transaction<DrainArguments> =>
+  tx.template.method === StdMethods.Drain &&
+  Object.hasOwn(tx.parsed, 'Vault') &&
   Object.hasOwn(tx.parsed, 'Destination') &&
   Object.hasOwn(tx.parsed, 'Amount');
 
@@ -67,6 +110,13 @@ export const collectTxIdsByAddress = (
 ): Record<Bech32Address, TransactionID[]> => {
   const result = D.map(prevTxIds, (txIds) => new Set(txIds));
   txs.forEach((tx) => {
+    if (tx.touched && tx.touched.length > 0) {
+      tx.touched.forEach((addr) => {
+        const byAddr = result[addr] || new Set<string>();
+        byAddr.add(tx.id);
+        result[addr] = byAddr;
+      });
+    }
     const byPrincipal = result[tx.principal] || new Set<string>();
     byPrincipal.add(tx.id);
     result[tx.principal] = byPrincipal;
