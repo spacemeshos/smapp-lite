@@ -100,6 +100,7 @@ import {
 import SingleSigSpawn from './SingleSigSpawn';
 import Spend from './Spend';
 import VaultSpawn from './VaultSpawn';
+import SpawnAnotherAccount from './SpawnAnotherAccount';
 
 type SendTxModalProps = {
   isOpen: boolean;
@@ -181,13 +182,18 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
     }
   }, [currerntAccount, setValue]);
 
+  const isCurrentVaultAccount = O.mapWithDefault(
+    currerntAccount,
+    false,
+    isVaultAccount
+  );
+
   const methodOptions = useMemo(
     () =>
       [
         {
           value: MethodSelectors.Spawn,
-          label: 'Self Spawn',
-          disabled: isSpawned,
+          label: isSpawned ? 'Spawn' : 'Self Spawn',
         },
         { value: MethodSelectors.Spend, label: 'Spend', disabled: !isSpawned },
         { value: MethodSelectors.Drain, label: 'Drain', disabled: !isSpawned },
@@ -210,8 +216,9 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
     ) {
       setValue(
         'payload.methodSelector',
-        methodOptions.find((opt) => !opt.disabled)?.value ??
-          MethodSelectors.Spawn
+        methodOptions.find(
+          (opt) => opt.value !== MethodSelectors.Spawn && !opt.disabled
+        )?.value ?? MethodSelectors.Spawn
       );
     }
     if (
@@ -918,6 +925,17 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
     setImportErrors(err.message);
   };
 
+  const renderSpawnOrSelfSpawn = (defaultComponent: JSX.Element) =>
+    isSpawned ? (
+      <SpawnAnotherAccount
+        accounts={accountsList.filter((acc) => acc !== currerntAccount)}
+        register={register}
+        unregister={unregister}
+      />
+    ) : (
+      defaultComponent
+    );
+
   const renderTemplateSpecificFields = (acc: AccountWithAddress) => {
     switch (acc.templateAddress) {
       case StdPublicKeys.Vault: {
@@ -948,11 +966,13 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
           throw new Error('Invalid account type for Vesting template');
         }
         return selectedMethod === StdMethods.Spawn ? (
-          <MultiSigSpawn
-            register={register}
-            unregister={unregister}
-            spawnArguments={acc.spawnArguments}
-          />
+          renderSpawnOrSelfSpawn(
+            <MultiSigSpawn
+              register={register}
+              unregister={unregister}
+              spawnArguments={acc.spawnArguments}
+            />
+          )
         ) : (
           <Drain
             register={register}
@@ -971,11 +991,13 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
           throw new Error('Invalid account type for MultiSig template');
         }
         return selectedMethod === StdMethods.Spawn ? (
-          <MultiSigSpawn
-            register={register}
-            unregister={unregister}
-            spawnArguments={acc.spawnArguments}
-          />
+          renderSpawnOrSelfSpawn(
+            <MultiSigSpawn
+              register={register}
+              unregister={unregister}
+              spawnArguments={acc.spawnArguments}
+            />
+          )
         ) : (
           <Spend
             register={register}
@@ -994,11 +1016,13 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
           throw new Error('Invalid account type for SingleSig template');
         }
         return selectedMethod === StdMethods.Spawn ? (
-          <SingleSigSpawn
-            register={register}
-            unregister={unregister}
-            spawnArguments={acc.spawnArguments}
-          />
+          renderSpawnOrSelfSpawn(
+            <SingleSigSpawn
+              register={register}
+              unregister={unregister}
+              spawnArguments={acc.spawnArguments}
+            />
+          )
         ) : (
           <Spend
             register={register}
@@ -1137,7 +1161,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                   />
                 </Box>
               </Flex>
-              {!!(currerntAccount && isVaultAccount(currerntAccount)) && (
+              {isCurrentVaultAccount && (
                 <Text fontSize="sm" color="orange">
                   Vault account cannot publish any transactions by itself.
                   <br />
@@ -1151,9 +1175,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                 colorScheme="blue"
                 onClick={submit}
                 ml={2}
-                isDisabled={
-                  !!(currerntAccount && isVaultAccount(currerntAccount))
-                }
+                isDisabled={isCurrentVaultAccount}
               >
                 Next
               </Button>
