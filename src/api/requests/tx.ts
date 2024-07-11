@@ -1,15 +1,15 @@
-import {
-  SpawnTransaction,
-  SpendTransaction,
-  StdPublicKeys,
-  StdTemplates,
-} from '@spacemesh/sm-codec';
+import { SpawnTransaction, SpendTransaction } from '@spacemesh/sm-codec';
 
 import { Bech32Address } from '../../types/common';
 import { Transaction } from '../../types/tx';
 import { fromBase64, toBase64 } from '../../utils/base64';
+import { getWords } from '../../utils/bech32';
 import { toHexString } from '../../utils/hexString';
-import { getMethodName, getTemplateNameByAddress } from '../../utils/templates';
+import {
+  getMethodName,
+  getTemplateMethod,
+  getTemplateNameByAddress,
+} from '../../utils/templates';
 import { parseResponse } from '../schemas/error';
 import {
   EstimateGasResponseSchema,
@@ -18,8 +18,7 @@ import {
   TransactionResponseSchema,
   TransactionResultStatus,
   TransactionState,
-  WithLayer,
-  WithState,
+  WithExtraData,
 } from '../schemas/tx';
 
 import getFetchAll from './getFetchAll';
@@ -52,7 +51,7 @@ export const fetchTransactionsChunk = async (
   address: Bech32Address,
   limit = 100,
   offset = 0
-): Promise<(TransactionResponseObject & WithLayer & WithState)[]> =>
+): Promise<(TransactionResponseObject & WithExtraData)[]> =>
   fetch(`${rpc}/spacemesh.v2alpha1.TransactionService/List`, {
     method: 'POST',
     body: JSON.stringify({
@@ -69,8 +68,12 @@ export const fetchTransactionsChunk = async (
       transactions.map((tx) => ({
         ...tx.tx,
         layer: tx.txResult?.layer || 0,
-        state: getTxState(tx.txResult?.status, tx.txState),
+        state: getTxState(
+          tx.txResult?.status,
+          tx.txState || 'TRANSACTION_STATE_UNSPECIFIED'
+        ),
         message: tx.txResult?.message,
+        touched: tx.txResult?.touchedAddresses || [tx.tx.principal],
       }))
     );
 
@@ -83,9 +86,8 @@ export const fetchTransactionsByAddress = async (
   const txs = await fetchTransactions(rpc, address);
 
   return txs.map((tx) => {
-    // TODO: Support other templates
-    const template =
-      StdTemplates[StdPublicKeys.SingleSig].methods[tx.method as 0 | 16];
+    const templateAddress = toHexString(getWords(tx.template));
+    const template = getTemplateMethod(templateAddress, tx.method);
     try {
       const parsedRaw = template.decode(fromBase64(tx.raw));
       const parsed =
@@ -113,6 +115,7 @@ export const fetchTransactionsByAddress = async (
         parsed: parsed.Payload.Arguments,
         state: tx.state,
         message: tx.message,
+        touched: tx.touched,
       } satisfies Transaction<(typeof parsed)['Payload']['Arguments']>;
     } catch (err) {
       /* eslint-disable no-console */

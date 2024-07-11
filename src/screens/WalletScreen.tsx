@@ -217,6 +217,7 @@ function WalletScreen(): JSX.Element {
             </TabPanels>
           </Tabs>
           <TxDetails
+            hrp={hrp}
             disclosure={txDisclosure}
             tx={selectedTx}
             onClose={closeTxDetails}

@@ -74,7 +74,7 @@ type ConfirmationModalProps = ConfirmationData & {
 const renderTemplateSpecificFields = (form: FormValues) => {
   switch (form.templateAddress) {
     case StdPublicKeys.SingleSig: {
-      if (form.payload.methodSelector === MethodSelectors.SelfSpawn) {
+      if (form.payload.methodSelector === MethodSelectors.Spawn) {
         const args = SingleSigSpawnSchema.parse(form.payload);
         return <PreviewDataRow label="Public key" value={args.PublicKey} />;
       }
@@ -99,7 +99,7 @@ const renderTemplateSpecificFields = (form: FormValues) => {
     }
     case StdPublicKeys.MultiSig:
     case StdPublicKeys.Vesting: {
-      if (form.payload.methodSelector === MethodSelectors.SelfSpawn) {
+      if (form.payload.methodSelector === MethodSelectors.Spawn) {
         const args = MultiSigSpawnSchema.parse(form.payload);
         return (
           <>
@@ -149,7 +149,7 @@ const renderTemplateSpecificFields = (form: FormValues) => {
       );
     }
     case StdPublicKeys.Vault: {
-      if (form.payload.methodSelector === MethodSelectors.SelfSpawn) {
+      if (form.payload.methodSelector === MethodSelectors.Spawn) {
         const args = VaultSpawnSchema.parse(form.payload);
         return (
           <>

@@ -30,7 +30,6 @@ function TxList({
     getScrollElement: () => parentRef.current,
     estimateSize: () => 82.5,
   });
-
   return (
     <TabPanel ref={parentRef} flexGrow={1} height={1} overflow="auto">
       <div

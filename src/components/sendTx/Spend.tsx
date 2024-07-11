@@ -61,6 +61,7 @@ function Spend({
           isRequired
           defaultForeign
           setValue={setValue}
+          getValues={getValues}
         />
       </FormControl>
       <FormAmountInput

@@ -13,7 +13,7 @@ describe('collectTxIdsByAddress', () => {
       principal,
       template: {
         name: TemplateName.SingleSig,
-        methodName: MethodName.SelfSpawn,
+        methodName: MethodName.Spawn,
       },
     } as Transaction);
   const spend = (id: string, principal: string, destination: string) =>

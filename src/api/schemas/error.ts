@@ -22,6 +22,14 @@ export const parseResponse =
     try {
       return schema.parse(input);
     } catch (err) {
-      throw toError(ErrorResponse.parse(input));
+      if (
+        typeof input === 'object' &&
+        !!input &&
+        Object.hasOwn(input, 'message')
+      ) {
+        throw toError(ErrorResponse.parse(input));
+      } else {
+        throw err;
+      }
     }
   };
