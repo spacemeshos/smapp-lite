@@ -115,6 +115,7 @@ export const VestingSchema = z.object({
   templateAddress: z.literal(StdPublicKeys.Vesting),
   payload: z.discriminatedUnion('methodSelector', [
     VestingSpawnSchema,
+    SpendSchema,
     DrainSchema,
   ]),
   ...CommonTxFields,

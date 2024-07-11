@@ -2279,10 +2279,10 @@
   resolved "https://registry.yarnpkg.com/@spacemesh/ed25519-bip32/-/ed25519-bip32-0.2.1.tgz#f622616060fb477b1fbc5d1292ff21993927a3b2"
   integrity sha512-wwB9FHotFBc1IqYLNZRXt9jZIm7K4gWap4EaotEGeoRLvVJNR/J63TXZBEsHhPrMOWTC2yAcxi6GC47bxsYOhA==
 
-"@spacemesh/sm-codec@^0.7.1":
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/@spacemesh/sm-codec/-/sm-codec-0.7.1.tgz#b01377e84d6e71f30d790e468cfbef2659dff486"
-  integrity sha512-7apUG6HEtPOEB8HSGYZ91ep9Xrebjjm6KSKffHKD2ycecMCfkWWhsy74Sd/vfaH0hOVPkRVeZAYrisMZtE+HZw==
+"@spacemesh/sm-codec@^0.7.2":
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/@spacemesh/sm-codec/-/sm-codec-0.7.2.tgz#6d18241c7f399dd3b5f5705f12381113a1515394"
+  integrity sha512-VDhPw0sgpcIiZBak517HETfwnyOGrRHp1/kWK0Wey3EuCHhG8yaMzJX9yE3q9j6BoxU2+q8+/GE4TdlYbY3Y0A==
   dependencies:
     "@noble/hashes" "^1.4.0"
     scale-ts "^1.6.0"

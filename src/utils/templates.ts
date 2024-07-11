@@ -73,7 +73,11 @@ export const TemplateMethodsMap = {
   [StdPublicKeys.SingleSig]: [MethodSelectors.Spawn, MethodSelectors.Spend],
   [StdPublicKeys.MultiSig]: [MethodSelectors.Spawn, MethodSelectors.Spend],
   [StdPublicKeys.Vault]: [MethodSelectors.Spawn, MethodSelectors.Spend],
-  [StdPublicKeys.Vesting]: [MethodSelectors.Spawn, MethodSelectors.Drain],
+  [StdPublicKeys.Vesting]: [
+    MethodSelectors.Spawn,
+    MethodSelectors.Spend,
+    MethodSelectors.Drain,
+  ],
 };
 
 //
@@ -180,6 +184,9 @@ export const getTemplateMethod = (
     case StdPublicKeys.Vesting: {
       if (method === MethodSelectors.Spawn) {
         return VestingTemplate.methods[0];
+      }
+      if (method === MethodSelectors.Spend) {
+        return VestingTemplate.methods[16];
       }
       if (method === MethodSelectors.Drain) {
         return VestingTemplate.methods[17];
