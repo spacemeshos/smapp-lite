@@ -624,7 +624,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               bitfield: 0,
             },
             gas: {
-              maxGas: String(estimatedGas),
+              maxGas: estimatedGas ? String(estimatedGas) : '',
               price: String(txData.form.gasPrice),
             },
             template: {
