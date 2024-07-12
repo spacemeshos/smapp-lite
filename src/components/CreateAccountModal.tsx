@@ -172,7 +172,9 @@ function CreateAccountModal({
             </Text>
             <FormAddressSelect
               fieldName="owner"
-              accounts={accounts}
+              accounts={accounts.filter(
+                (acc) => acc.templateAddress === StdPublicKeys.Vesting
+              )}
               register={register}
               unregister={unregister}
               errors={errors}
