@@ -43,6 +43,7 @@ import {
 } from '../types/wallet';
 import { BUTTON_ICON_SIZE } from '../utils/constants';
 import {
+  AnySpawnArguments,
   getTemplateNameByKey,
   MultiSigSpawnArguments,
   SingleSigSpawnArguments,
@@ -150,6 +151,15 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
         throw new Error('Unknown account type');
       }
     }
+  };
+
+  const withoutInitialUnlockAmount = (args: AnySpawnArguments) => {
+    if (Object.hasOwn(args, 'InitialUnlockAmount')) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { InitialUnlockAmount, ...rest } = args as VaultSpawnArguments;
+      return rest;
+    }
+    return args;
   };
 
   return (
@@ -328,18 +338,18 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                             </Text>
 
                             <Box color="grey">
-                              {Object.entries(acc.spawnArguments).map(
-                                ([k, v]) => (
-                                  <Box
-                                    key={`${safeKeyForAccount(acc)}_${k}_wtf`}
-                                    mt={1}
-                                    fontSize="xx-small"
-                                    wordBreak="break-all"
-                                  >
-                                    {k}: {JSON.stringify(v)}
-                                  </Box>
-                                )
-                              )}
+                              {Object.entries(
+                                withoutInitialUnlockAmount(acc.spawnArguments)
+                              ).map(([k, v]) => (
+                                <Box
+                                  key={`${safeKeyForAccount(acc)}_${k}_wtf`}
+                                  mt={1}
+                                  fontSize="xx-small"
+                                  wordBreak="break-all"
+                                >
+                                  {k}: {JSON.stringify(v)}
+                                </Box>
+                              ))}
                             </Box>
                           </Box>
                         );

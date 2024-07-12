@@ -227,17 +227,6 @@ function CreateAccountModal({
               inputProps={{ type: 'number' }}
               register={register('totalAmount', {
                 required: 'Please specify total amount locked in the vault',
-                valueAsNumber: true,
-              })}
-              errors={errors}
-              isSubmitted={isSubmitted}
-            />
-            <FormInput
-              label="Initial unlock amount"
-              inputProps={{ type: 'number' }}
-              register={register('initialUnlockAmount', {
-                required: 'Please specify the initial unlock amount',
-                valueAsNumber: true,
               })}
               errors={errors}
               isSubmitted={isSubmitted}
