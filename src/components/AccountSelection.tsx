@@ -37,7 +37,7 @@ function AccountSelection(): JSX.Element {
       >
         Switch
       </MenuButton>
-      <MenuList minWidth={240}>
+      <MenuList minWidth={240} maxW="100vw" maxH="80vh" overflow="auto">
         <MenuOptionGroup
           type="radio"
           value={String(selectedAccount)}
