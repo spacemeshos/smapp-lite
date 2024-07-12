@@ -39,8 +39,8 @@ export type VestingSpawnArguments = MultiSigSpawnArguments;
 
 export type VaultSpawnArguments = {
   Owner: HexString;
-  TotalAmount: number;
-  InitialUnlockAmount: number;
+  TotalAmount: string;
+  InitialUnlockAmount: string;
   VestingStart: number;
   VestingEnd: number;
 };

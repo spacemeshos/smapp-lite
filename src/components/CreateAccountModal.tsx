@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Form, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -23,6 +24,12 @@ import { useCurrentHRP } from '../hooks/useNetworkSelectors';
 import { useAccountsList } from '../hooks/useWalletSelectors';
 import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
+import {
+  GENESIS_VESTING_ACCOUNTS,
+  GENESIS_VESTING_END,
+  GENESIS_VESTING_START,
+} from '../utils/constants';
+import { noop } from '../utils/func';
 import { AnySpawnArguments, getTemplateNameByKey } from '../utils/templates';
 
 import FormAddressSelect from './FormAddressSelect';
@@ -57,8 +64,8 @@ const VaultSchema = z.object({
   displayName: DisplayNameSchema,
   templateAddress: z.literal(StdPublicKeys.Vault),
   owner: Bech32AddressSchema,
-  totalAmount: z.number().min(0),
-  initialUnlockAmount: z.number().min(0),
+  totalAmount: z.string().min(0),
+  initialUnlockAmount: z.string().min(0),
   vestingStart: z.number().min(0),
   vestingEnd: z.number().min(0),
 });
@@ -138,6 +145,38 @@ function CreateAccountModal({
     defaultValues,
   });
   const selectedTemplate = watch('templateAddress');
+  const selectedOwner = watch('owner');
+  const totalAmount = watch('totalAmount');
+
+  useEffect(() => {
+    if (selectedTemplate === StdPublicKeys.Vault) {
+      register('initialUnlockAmount', {
+        required: 'Please specify the initial unlock amount',
+      });
+      return () => unregister('initialUnlockAmount');
+    }
+    return noop;
+  }, [register, selectedTemplate, unregister]);
+
+  useEffect(() => {
+    const owner = selectedOwner || getValues('owner');
+    if (Object.hasOwn(GENESIS_VESTING_ACCOUNTS, owner)) {
+      const amount =
+        GENESIS_VESTING_ACCOUNTS[
+          owner as keyof typeof GENESIS_VESTING_ACCOUNTS
+        ];
+      setValue('totalAmount', String(amount));
+      setValue('initialUnlockAmount', String(amount / 4n));
+      setValue('vestingStart', GENESIS_VESTING_START);
+      setValue('vestingEnd', GENESIS_VESTING_END);
+    }
+  }, [getValues, selectedOwner, selectedTemplate, setValue]);
+
+  useEffect(() => {
+    if (totalAmount) {
+      setValue('initialUnlockAmount', String(BigInt(totalAmount) / 4n));
+    }
+  }, [totalAmount, setValue]);
 
   const submit = handleSubmit(async (data) => {
     const success = await withPassword(
