@@ -1,3 +1,4 @@
+import fileDownload from 'js-file-download';
 import { useState } from 'react';
 
 import {
@@ -55,6 +56,7 @@ import CopyButton from './CopyButton';
 import CreateAccountModal from './CreateAccountModal';
 import CreateKeyPairModal from './CreateKeyPairModal';
 import ExplorerButton from './ExplorerButton';
+import ImportAccountModal from './ImportAccountModal';
 import ImportKeyPairModal from './ImportKeyPairModal';
 import RevealSecretKeyModal from './RevealSecretKeyModal';
 
@@ -105,6 +107,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
   const importKeyPairModal = useDisclosure();
   const revealSecretKeyModal = useDisclosure();
   const createAccountModal = useDisclosure();
+  const importAccountModal = useDisclosure();
 
   const closeHandler = () => {
     onClose();
@@ -129,6 +132,13 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
       revealSecretKeyModal.onOpen();
     }
   };
+
+  const exportAccount = (acc: AccountWithAddress) =>
+    fileDownload(
+      JSON.stringify(acc, null, 2),
+      `${acc.address}.account`,
+      'text/plain'
+    );
 
   const getKeysByAccount = (acc: AccountWithAddress) => {
     switch (acc.templateAddress) {
@@ -272,6 +282,12 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                           Create new account
                         </Text>
                       </Button>
+                      <Button onClick={importAccountModal.onOpen}>
+                        <IconFileImport size={BUTTON_ICON_SIZE} />
+                        <Text as="span" ml={1}>
+                          Import account
+                        </Text>
+                      </Button>
                     </ButtonGroup>
                     <Box flex={1}>
                       {accounts.map((acc) => {
@@ -284,6 +300,22 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                             backgroundColor="blackAlpha.300"
                             borderRadius="md"
                           >
+                            <Button
+                              size="xx-small"
+                              p={1}
+                              fontSize="xx-small"
+                              fontWeight="normal"
+                              float="right"
+                              display="flex"
+                              alignItems="center"
+                              borderRadius="sm"
+                              textTransform="uppercase"
+                              gap={1}
+                              onClick={() => exportAccount(acc)}
+                            >
+                              <IconKey size={12} />
+                              Export account
+                            </Button>
                             <Text fontSize="md">
                               <strong>{acc.displayName}</strong>
                               <Badge
@@ -380,6 +412,11 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
       <CreateAccountModal
         isOpen={createAccountModal.isOpen}
         onClose={createAccountModal.onClose}
+      />
+      <ImportAccountModal
+        accounts={accounts}
+        isOpen={importAccountModal.isOpen}
+        onClose={importAccountModal.onClose}
       />
     </>
   );

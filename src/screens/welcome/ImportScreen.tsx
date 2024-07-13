@@ -99,7 +99,6 @@ function ImportScreen(): JSX.Element {
               ref={inputRef}
               display="none"
               type="file"
-              size="lg"
               accept=".json"
               onChange={readFile}
             />
