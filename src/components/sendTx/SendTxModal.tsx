@@ -1180,7 +1180,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                     isSubmitted={isSubmitted}
                     // eslint-disable-next-line max-len
                     hint="The number is used only once to ensure each transaction is unique. 
-                    It increments automatically, but can also be set manually if needed."
+                    It increments automatically,
+                    but can also be set manually if needed."
                   />
                 </Box>
               </Flex>

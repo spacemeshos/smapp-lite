@@ -50,11 +50,6 @@ function VaultSpawn({
         value={String(args.TotalAmount)}
       />
       <FormInputViewOnly
-        label="Initial unlock amount"
-        inputProps={{ type: 'number' }}
-        value={String(args.InitialUnlockAmount)}
-      />
-      <FormInputViewOnly
         label="Vesting Start (layer)"
         inputProps={{ type: 'number' }}
         value={String(args.VestingStart)}
