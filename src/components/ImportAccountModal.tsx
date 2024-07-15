@@ -135,7 +135,7 @@ function ImportAccountModal({
             accountData.spawnArguments,
             password
           ),
-        'Creating a new Account',
+        'Import Account',
         // eslint-disable-next-line max-len
         `Please enter the password to create the new account "${displayName}" of type "${getTemplateNameByKey(
           accountData.templateAddress

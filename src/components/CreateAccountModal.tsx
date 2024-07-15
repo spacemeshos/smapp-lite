@@ -116,7 +116,7 @@ function CreateAccountModal({
           extractSpawnArgs(data),
           password
         ),
-      'Creating a new Account',
+      'Create a new Account',
       // eslint-disable-next-line max-len
       `Please enter the password to create the new account "${
         data.displayName
