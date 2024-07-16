@@ -36,6 +36,15 @@ export const isAnyMultiSig = <T extends AnySpawnArguments>(
   account.templateAddress === StdPublicKeys.MultiSig ||
   account.templateAddress === StdPublicKeys.Vesting;
 
+export const isAnyAccount = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  account: any
+): account is AccountWithAddress<AnySpawnArguments> =>
+  isSingleSigAccount(account) ||
+  isMultiSigAccount(account) ||
+  isVestingAccount(account) ||
+  isVaultAccount(account);
+
 export const extractRequiredSignatures = <T extends AnySpawnArguments>(
   account: AccountWithAddress<T>
 ): 0 | number => {

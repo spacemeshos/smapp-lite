@@ -45,7 +45,7 @@ function CreateKeyPairModal({
   const submit = handleSubmit(async ({ displayName, path }) => {
     const success = await withPassword(
       (password) => createKeyPair(displayName, path, password),
-      'Creating a new Key Pair',
+      'Create a new Key Pair',
       // eslint-disable-next-line max-len
       `Please enter the password to create the new key pair "${displayName}" with path "${path}"`
     );
