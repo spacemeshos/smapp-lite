@@ -6,6 +6,7 @@ import {
   ButtonGroup,
   Flex,
   IconButton,
+  Spacer,
   Spinner,
   Tab,
   TabList,
@@ -19,6 +20,7 @@ import { IconQrcode, IconRefresh, IconSend } from '@tabler/icons-react';
 
 import AccountSelection from '../components/AccountSelection';
 import CopyButton from '../components/CopyButton';
+import HardwareWalletConnect from '../components/HardwareWalletConnect';
 import LockWallet from '../components/LockWallet';
 import MainMenu from '../components/MainMenu';
 import NetworkSelection from '../components/NetworksSeletion';
@@ -81,12 +83,14 @@ function WalletScreen(): JSX.Element {
       width="100%"
     >
       <Flex
-        justifyContent="space-between"
+        // justifyContent="space-between"
         alignItems="center"
         width="100%"
         fontSize="sm"
       >
         <NetworkSelection />
+        <HardwareWalletConnect />
+        <Spacer />
         <Box>
           <MainMenu />
           <LockWallet />

@@ -27,6 +27,9 @@
     "@emotion/react": "^11.8.1",
     "@emotion/styled": "^11.8.1",
     "@hookform/resolvers": "^3.4.0",
+    "@ledgerhq/hw-transport": "^6.31.0",
+    "@ledgerhq/hw-transport-web-ble": "^6.29.0",
+    "@ledgerhq/hw-transport-webusb": "^6.29.0",
     "@mobily/ts-belt": "^3.13.1",
     "@noble/ed25519": "^2.1.0",
     "@scure/bip39": "^1.2.2",
@@ -35,6 +38,7 @@
     "@tabler/icons-react": "^3.1.0",
     "@tanstack/react-virtual": "^3.3.0",
     "@uidotdev/usehooks": "^2.4.1",
+    "@zondax/ledger-spacemesh": "^0.2.0",
     "bech32": "^2.0.0",
     "eventemitter3": "^5.0.1",
     "framer-motion": "^8.5.2",
@@ -84,7 +88,8 @@
     "rollup": "^3.10.1",
     "ts-jest": "^29.0.5",
     "typescript": "^4.5.5",
-    "vite": "^4.5.3"
+    "vite": "^4.5.3",
+    "vite-plugin-node-polyfills": "^0.22.0"
   },
   "resolutions": {
     "wrap-ansi": "7.0.0",
