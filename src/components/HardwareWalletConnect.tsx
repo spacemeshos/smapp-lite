@@ -148,7 +148,7 @@ function Connected({ device }: { device: LedgerDevice }) {
   const { resetDevice } = useHardwareWallet();
 
   const TransportIcon =
-    device.transport === LedgerTransports.Bluetooth
+    device.transportType === LedgerTransports.Bluetooth
       ? IconBluetoothConnected
       : IconUsb;
 

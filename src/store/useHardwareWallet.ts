@@ -23,8 +23,9 @@ export enum LedgerTransports {
 
 export type LedgerDevice = {
   type: KeyOrigin.Ledger;
-  transport: LedgerTransports;
+  transportType: LedgerTransports;
   app: SpaceMeshApp;
+  transport: Transport;
   actions: {
     getPubKey: (path: string) => Promise<HexString>;
     signTx: (path: string, blob: Uint8Array) => Promise<Uint8Array>;
@@ -40,22 +41,22 @@ export type UseHardwareWalletHook = {
   modalReconnect: UseDisclosureReturn; // null only possible on init
   // Actions
   selectLedgerDevice: (transport: LedgerTransports) => void;
-  reconnect: () => void;
-  resetDevice: () => void;
+  reconnect: () => Promise<void>;
+  resetDevice: () => Promise<void>;
 };
 
 // Hook
 
 const createLedgerTransport = (
-  transport: LedgerTransports
+  transportType: LedgerTransports
 ): Promise<Transport> => {
-  switch (transport) {
+  switch (transportType) {
     case LedgerTransports.Bluetooth:
       return LedgerWebBLE.create();
     case LedgerTransports.WebUSB:
       return LedgerWebUSB.create();
     default: {
-      throw new Error(`Unknown Ledger transport: ${transport}`);
+      throw new Error(`Unknown Ledger transport: ${transportType}`);
     }
   }
 };
@@ -70,10 +71,12 @@ const useHardwareWallet = (): UseHardwareWalletHook => {
     throw e;
   };
 
-  const selectLedgerDevice = async (transport: LedgerTransports) => {
-    const app = new SpaceMeshApp(await createLedgerTransport(transport));
+  const selectLedgerDevice = async (transportType: LedgerTransports) => {
+    const transport = await createLedgerTransport(transportType);
+    const app = new SpaceMeshApp(transport);
     setDevice({
       type: KeyOrigin.Ledger,
+      transportType,
       transport,
       app,
       actions: {
@@ -92,8 +95,11 @@ const useHardwareWallet = (): UseHardwareWalletHook => {
     modalConnect.onClose();
   };
 
-  const resetDevice = () => {
+  const resetDevice = async () => {
     setDevice(null);
+    if (device?.transport) {
+      await device.transport.close();
+    }
   };
 
   const reconnect = async () => {
@@ -103,7 +109,7 @@ const useHardwareWallet = (): UseHardwareWalletHook => {
       return;
     }
 
-    await selectLedgerDevice(selectedDevice.transport);
+    await selectLedgerDevice(selectedDevice.transportType);
     modalReconnect.onClose();
   };
 
@@ -133,8 +139,8 @@ export default singletonHook(
     modalReconnect: getDisclosureDefaults(),
     // Actions
     selectLedgerDevice: noop,
-    reconnect: noop,
-    resetDevice: noop,
+    reconnect: Promise.resolve,
+    resetDevice: Promise.resolve,
   },
   useHardwareWallet
 );

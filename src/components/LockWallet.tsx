@@ -1,21 +1,16 @@
 import { IconButton } from '@chakra-ui/react';
 import { IconLock } from '@tabler/icons-react';
 
-import usePassword from '../store/usePassword';
-import useWallet from '../store/useWallet';
+import useLockWallet from '../hooks/useLockWallet';
 
 function LockWallet(): JSX.Element {
-  const { lockWallet } = useWallet();
-  const { resetPassword } = usePassword();
+  const lockWallet = useLockWallet();
 
   return (
     <IconButton
       aria-label="Lock wallet"
       icon={<IconLock />}
-      onClick={() => {
-        lockWallet();
-        resetPassword();
-      }}
+      onClick={lockWallet}
       ml={2}
     />
   );
