@@ -2,6 +2,7 @@ import { Form, useForm } from 'react-hook-form';
 
 import {
   Button,
+  Checkbox,
   Link,
   Modal,
   ModalBody,
@@ -12,6 +13,7 @@ import {
   ModalOverlay,
   Text,
 } from '@chakra-ui/react';
+import { StdPublicKeys } from '@spacemesh/sm-codec';
 
 import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
@@ -27,13 +29,14 @@ type CreateKeyPairModalProps = {
 type FormValues = {
   displayName: string;
   path: string;
+  createSingleSig: boolean;
 };
 
 function CreateKeyPairModal({
   isOpen,
   onClose,
 }: CreateKeyPairModalProps): JSX.Element {
-  const { createKeyPair, wallet } = useWallet();
+  const { createKeyPair, createAccount, wallet } = useWallet();
   const { withPassword } = usePassword();
   const {
     register,
@@ -48,17 +51,30 @@ function CreateKeyPairModal({
     onClose();
   };
 
-  const submit = handleSubmit(async ({ displayName, path }) => {
-    const success = await withPassword(
-      (password) => createKeyPair(displayName, path, password),
-      'Create a new Key Pair',
-      // eslint-disable-next-line max-len
-      `Please enter the password to create the new key pair "${displayName}" with path "${path}"`
-    );
-    if (success) {
-      close();
+  const submit = handleSubmit(
+    async ({ displayName, path, createSingleSig }) => {
+      const success = await withPassword(
+        async (password) => {
+          const key = await createKeyPair(displayName, path, password);
+          if (createSingleSig) {
+            await createAccount(
+              displayName,
+              StdPublicKeys.SingleSig,
+              { PublicKey: key.publicKey },
+              password
+            );
+          }
+          return true;
+        },
+        'Create a new Key Pair',
+        // eslint-disable-next-line max-len
+        `Please enter the password to create the new key pair "${displayName}" with path "${path}"`
+      );
+      if (success) {
+        close();
+      }
     }
-  });
+  );
 
   return (
     <Modal isOpen={isOpen} onClose={close} isCentered>
@@ -113,6 +129,14 @@ function CreateKeyPairModal({
               errors={errors}
               isSubmitted={isSubmitted}
             />
+            <Checkbox
+              size="lg"
+              colorScheme="green"
+              defaultChecked
+              {...register('createSingleSig', { value: true })}
+            >
+              <Text fontSize="md">Create SingleSig account automatically</Text>
+            </Checkbox>
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" onClick={submit} ml={2}>

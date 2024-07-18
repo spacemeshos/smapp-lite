@@ -2,6 +2,7 @@ import { Form, useForm } from 'react-hook-form';
 
 import {
   Button,
+  Checkbox,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -11,6 +12,7 @@ import {
   ModalOverlay,
   Text,
 } from '@chakra-ui/react';
+import { StdPublicKeys } from '@spacemesh/sm-codec';
 
 import useHardwareWallet from '../store/useHardwareWallet';
 import usePassword from '../store/usePassword';
@@ -27,13 +29,14 @@ type ImportKeyFromLedgerModalProps = {
 type FormValues = {
   displayName: string;
   path: string;
+  createSingleSig: boolean;
 };
 
 function ImportKeyFromLedgerModal({
   isOpen,
   onClose,
 }: ImportKeyFromLedgerModalProps): JSX.Element {
-  const { addForeignKey, wallet } = useWallet();
+  const { addForeignKey, createAccount, wallet } = useWallet();
   const { withPassword } = usePassword();
   const { checkDeviceConnection, connectedDevice, modalConnect } =
     useHardwareWallet();
@@ -51,29 +54,42 @@ function ImportKeyFromLedgerModal({
     onClose();
   };
 
-  const submit = handleSubmit(async ({ displayName, path }) => {
-    const isConnected = await checkDeviceConnection();
-    if (!isConnected) {
-      return;
+  const submit = handleSubmit(
+    async ({ displayName, path, createSingleSig }) => {
+      const isConnected = await checkDeviceConnection();
+      if (!isConnected) {
+        return;
+      }
+      if (!connectedDevice) {
+        modalConnect.onOpen();
+        return;
+      }
+      const publicKey = await connectedDevice.actions.getPubKey(path);
+      const success = await withPassword(
+        async (password) => {
+          const key = await addForeignKey(
+            { displayName, path, publicKey },
+            password
+          );
+          if (createSingleSig) {
+            await createAccount(
+              displayName,
+              StdPublicKeys.SingleSig,
+              { PublicKey: key.publicKey },
+              password
+            );
+          }
+          return true;
+        },
+        'Import PublicKey from Ledger device',
+        // eslint-disable-next-line max-len
+        `Please enter the password to store public key ${publicKey} in the wallet.`
+      );
+      if (success) {
+        close();
+      }
     }
-    if (!connectedDevice) {
-      modalConnect.onOpen();
-      return;
-    }
-    const publicKey = await connectedDevice.actions.getPubKey(path);
-    const success = await withPassword(
-      async (password) => {
-        await addForeignKey({ displayName, path, publicKey }, password);
-        return true;
-      },
-      'Import PublicKey from Ledger device',
-      // eslint-disable-next-line max-len
-      `Please enter the password to store public key ${publicKey} in the wallet.`
-    );
-    if (success) {
-      close();
-    }
-  });
+  );
 
   return (
     <Modal isOpen={isOpen} onClose={close} isCentered>
@@ -117,6 +133,14 @@ function ImportKeyFromLedgerModal({
               errors={errors}
               isSubmitted={isSubmitted}
             />
+            <Checkbox
+              size="lg"
+              colorScheme="green"
+              defaultChecked
+              {...register('createSingleSig', { value: true })}
+            >
+              <Text fontSize="md">Create SingleSig account automatically</Text>
+            </Checkbox>
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" onClick={submit} ml={2}>

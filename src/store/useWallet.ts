@@ -68,7 +68,7 @@ type WalletActions = {
   addForeignKey: (
     key: { displayName: string; path: string; publicKey: HexString },
     password: string
-  ) => void;
+  ) => Promise<SafeKey>;
   createKeyPair: (
     displayName: string,
     path: string,
@@ -229,7 +229,8 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
         created: getISODate(),
         origin: KeyOrigin.Ledger,
       };
-      return get().addKeyPair(newKeyPair, password);
+      await get().addKeyPair(newKeyPair, password);
+      return ensafeKeyPair(newKeyPair);
     },
     createKeyPair: async (displayName, path, password) => {
       const wallet = await get().loadWalletWithSecrets(password);

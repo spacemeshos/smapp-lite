@@ -2,6 +2,7 @@ import { Form, useForm } from 'react-hook-form';
 
 import {
   Button,
+  Checkbox,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -11,6 +12,7 @@ import {
   ModalOverlay,
   Text,
 } from '@chakra-ui/react';
+import { StdPublicKeys } from '@spacemesh/sm-codec';
 
 import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
@@ -28,6 +30,7 @@ type ImportKeyPairModalProps = {
 type FormValues = {
   displayName: string;
   secretKey: HexString;
+  createSingleSig: boolean;
 };
 
 function ImportKeyPairModal({
@@ -35,7 +38,7 @@ function ImportKeyPairModal({
   onClose,
   keys,
 }: ImportKeyPairModalProps): JSX.Element {
-  const { importKeyPair } = useWallet();
+  const { importKeyPair, createAccount } = useWallet();
   const { withPassword } = usePassword();
   const {
     register,
@@ -45,20 +48,37 @@ function ImportKeyPairModal({
     formState: { errors, isSubmitted },
   } = useForm<FormValues>();
 
-  const submit = handleSubmit(async ({ displayName, secretKey }) => {
-    const success = await withPassword(
-      (password) => importKeyPair(displayName, secretKey, password),
-      'Importing the Key Pair',
-      // eslint-disable-next-line max-len
-      `Please enter the password to create the new key pair "${displayName}" from the secret key.`
-    );
-    if (success) {
-      reset();
-      onClose();
+  const close = () => {
+    reset();
+    onClose();
+  };
+
+  const submit = handleSubmit(
+    async ({ displayName, secretKey, createSingleSig }) => {
+      const success = await withPassword(
+        async (password) => {
+          const key = await importKeyPair(displayName, secretKey, password);
+          if (createSingleSig) {
+            await createAccount(
+              displayName,
+              StdPublicKeys.SingleSig,
+              { PublicKey: key.publicKey },
+              password
+            );
+          }
+          return true;
+        },
+        'Importing the Key Pair',
+        // eslint-disable-next-line max-len
+        `Please enter the password to create the new key pair "${displayName}" from the secret key.`
+      );
+      if (success) {
+        close();
+      }
     }
-  });
+  );
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={close} isCentered>
       <Form control={control}>
         <ModalOverlay />
         <ModalContent>
@@ -100,11 +120,19 @@ function ImportKeyPairModal({
               errors={errors}
               isSubmitted={isSubmitted}
             />
-            <Text fontSize="xs" color="gray" mt={2}>
+            <Text fontSize="xs" color="gray" mt={2} mb={2}>
               The secret key should be a hexadecimal string.
               <br />
               Public key will be extracted from the secret key.
             </Text>
+            <Checkbox
+              size="lg"
+              colorScheme="green"
+              defaultChecked
+              {...register('createSingleSig', { value: true })}
+            >
+              <Text fontSize="md">Create SingleSig account automatically</Text>
+            </Checkbox>
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" onClick={submit} ml={2}>
