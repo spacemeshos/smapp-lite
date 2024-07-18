@@ -3,6 +3,7 @@ import {
   Button,
   ButtonGroup,
   IconButton,
+  Image,
   ListItem,
   Modal,
   ModalBody,
@@ -24,6 +25,7 @@ import {
   IconUsb,
 } from '@tabler/icons-react';
 
+import ledgerLogo from '../assets/ledger_logo.svg';
 import useHardwareWallet, {
   LedgerDevice,
   LedgerTransports,
@@ -147,11 +149,11 @@ function DeviceApprovalModal() {
         <ModalHeader>Sign Transaction on Ledger Device</ModalHeader>
         <ModalBody minH={0} pb={6}>
           <Text>
-            Please check out the transaction on your Ledger device and then
-            approve or reject it.
+            Please verify the transaction on your Ledger device and select
+            either &quot;Approve&quot; or &quot;Reject&quot; option.
+            <Image src={ledgerLogo} width={100} mt={6} />
           </Text>
         </ModalBody>
-        <ModalFooter />
       </ModalContent>
     </Modal>
   );
