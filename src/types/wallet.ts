@@ -20,7 +20,7 @@ export type KeyPair = {
 
 export type SafeKey = Omit<KeyPair, 'secretKey'>;
 
-export type ForeignKey = SafeKey & { origin: KeyOrigin };
+export type ForeignKey = SafeKey & { path: string; origin: KeyOrigin };
 export type LocalKey = KeyPair & { secretKey: string };
 export type AnyKey = SafeKey | ForeignKey | LocalKey;
 
