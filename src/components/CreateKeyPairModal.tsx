@@ -2,6 +2,7 @@ import { Form, useForm } from 'react-hook-form';
 
 import {
   Button,
+  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -42,6 +43,11 @@ function CreateKeyPairModal({
     formState: { errors, isSubmitted },
   } = useForm<FormValues>();
 
+  const close = () => {
+    reset();
+    onClose();
+  };
+
   const submit = handleSubmit(async ({ displayName, path }) => {
     const success = await withPassword(
       (password) => createKeyPair(displayName, path, password),
@@ -50,12 +56,12 @@ function CreateKeyPairModal({
       `Please enter the password to create the new key pair "${displayName}" with path "${path}"`
     );
     if (success) {
-      reset();
-      onClose();
+      close();
     }
   });
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={close} isCentered>
       <Form control={control}>
         <ModalOverlay />
         <ModalContent>
@@ -65,14 +71,15 @@ function CreateKeyPairModal({
             <Text mb={4}>
               New key pair will be derived from your mnemonics using the
               derivation path (
-              <a
+              <Link
                 // eslint-disable-next-line max-len
                 href="https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki"
                 target="_blank"
                 rel="noreferrer"
+                color="blue.300"
               >
                 BIP-32 standard
-              </a>
+              </Link>
               ).
             </Text>
             <FormInput
