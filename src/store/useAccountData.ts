@@ -68,6 +68,11 @@ const getAccountRewards = (net: NetworkState, address: Bech32Address) =>
 const getAccountTransactions = (net: NetworkState, address: Bech32Address) =>
   (net.txIds?.[address] || [])
     .map((txId) => net.transactions?.[txId])
+    .sort((a, b) => {
+      if (!a?.layer) return 1;
+      if (!b?.layer) return -1;
+      return a.layer - b.layer;
+    })
     .filter(Boolean) as Transaction[];
 
 // Store
