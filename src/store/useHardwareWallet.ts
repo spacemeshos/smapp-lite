@@ -1,3 +1,4 @@
+import { detect } from 'detect-browser';
 import { useState } from 'react';
 import { singletonHook } from 'react-singleton-hook';
 
@@ -15,6 +16,26 @@ import Bip32KeyDerivation from '../utils/bip32';
 import { getDisclosureDefaults } from '../utils/disclosure';
 import { noop } from '../utils/func';
 import { toHexString } from '../utils/hexString';
+
+export const IS_SUPPORTED = (() => {
+  // User Agent cannot change during the runtime
+  const browser = detect();
+  switch (browser && browser.name) {
+    case 'chrome':
+    case 'chromium-webview':
+    case 'edge':
+    case 'edge-chromium':
+    case 'edge-ios':
+    case 'opera':
+    case 'opera-mini':
+    case 'samsung':
+    case 'safari':
+    case 'yandexbrowser':
+      return true;
+    default:
+      return false;
+  }
+})();
 
 // Types
 

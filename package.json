@@ -41,6 +41,7 @@
     "@zondax/ledger-js": "^0.10.0",
     "@zondax/ledger-spacemesh": "^0.2.2",
     "bech32": "^2.0.0",
+    "detect-browser": "^5.3.0",
     "eventemitter3": "^5.0.1",
     "framer-motion": "^8.5.2",
     "install": "^0.13.0",

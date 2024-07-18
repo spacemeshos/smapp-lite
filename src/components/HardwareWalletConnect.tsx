@@ -27,6 +27,7 @@ import {
 
 import ledgerLogo from '../assets/ledger_logo.svg';
 import useHardwareWallet, {
+  IS_SUPPORTED,
   LedgerDevice,
   LedgerTransports,
 } from '../store/useHardwareWallet';
@@ -51,6 +52,15 @@ function DeviceSelectionModal() {
             Please turn on your Ledger device, unlock the PIN code, and pick the
             connection type:
           </Text>
+
+          {!IS_SUPPORTED && (
+            <Text color="orange" fontSize="sm" mb={4}>
+              Your browser does not support connecting to Ledger devices.
+              <br />
+              Please, switch to <strong>Chrome</strong>, <strong>Brave</strong>,
+              Edge or Opera browser
+            </Text>
+          )}
           <ButtonGroup w="100%">
             <Button
               colorScheme="blue"
@@ -58,6 +68,7 @@ function DeviceSelectionModal() {
               display="block"
               flex={1}
               h={20}
+              isDisabled={!IS_SUPPORTED}
             >
               <IconBluetooth style={{ margin: 'auto' }} />
               Bluetooth
@@ -71,6 +82,7 @@ function DeviceSelectionModal() {
               display="block"
               flex={1}
               h={20}
+              isDisabled={!IS_SUPPORTED}
             >
               <IconUsb style={{ margin: 'auto' }} />
               WebUSB
