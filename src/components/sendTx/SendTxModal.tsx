@@ -55,10 +55,11 @@ import {
   useCurrentAccount,
 } from '../../hooks/useWalletSelectors';
 import useAccountData from '../../store/useAccountData';
+import useHardwareWallet from '../../store/useHardwareWallet';
 import usePassword from '../../store/usePassword';
 import useWallet from '../../store/useWallet';
 import { HexString } from '../../types/common';
-import { AccountWithAddress } from '../../types/wallet';
+import { AccountWithAddress, KeyOrigin } from '../../types/wallet';
 import {
   extractEligibleKeys,
   extractRequiredSignatures,
@@ -71,6 +72,7 @@ import {
 import { fromBase64 } from '../../utils/base64';
 import { generateAddress, getWords } from '../../utils/bech32';
 import { fromHexString, toHexString } from '../../utils/hexString';
+import { isForeignKey } from '../../utils/keys';
 import { formatSmidge } from '../../utils/smh';
 import {
   getMethodName,
@@ -80,6 +82,7 @@ import {
   MultiSigSpawnArguments,
   TemplateMethodsMap,
 } from '../../utils/templates';
+import { prepareTxForSign } from '../../utils/tx';
 import { computeAddress, getEmptySignature } from '../../utils/wallet';
 import FormInput from '../FormInput';
 import FormSelect from '../FormSelect';
@@ -123,6 +126,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
   const { wallet } = useWallet();
   const { withPassword } = usePassword();
   const { isSpawnedAccount, getAccountData } = useAccountData();
+  const { checkDeviceConnection, connectedDevice } = useHardwareWallet();
   const hrp = useCurrentHRP();
   const genesisID = useCurrentGenesisID();
   const currerntAccount = useCurrentAccount(hrp);
@@ -561,13 +565,31 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
       );
     }
 
-    const signature = !externalSignature
-      ? await withPassword(
-          (password) => signTx(txData.encoded, signWith, password),
-          'Enter password to sign transaction',
-          txData.description
-        )
-      : fromHexString(externalSignature);
+    const getSignature = async () => {
+      if (!wallet) {
+        throw new Error('Cannot sign transaction: Open the wallet first');
+      }
+      const keyToUse = wallet.keychain.find((k) => k.publicKey === signWith);
+      if (isForeignKey(keyToUse) && keyToUse.origin === KeyOrigin.Ledger) {
+        if (!(await checkDeviceConnection()) || !connectedDevice) {
+          throw new Error('Please connect to Ledger device first');
+        }
+        return connectedDevice.actions.signTx(
+          keyToUse.path,
+          prepareTxForSign(genesisID, txData.encoded)
+        );
+      }
+
+      return withPassword(
+        (password) => signTx(txData.encoded, signWith, password),
+        'Enter password to sign transaction',
+        txData.description
+      );
+    };
+
+    const signature = externalSignature
+      ? fromHexString(externalSignature)
+      : await getSignature();
 
     if (signature) {
       if (

@@ -31,7 +31,7 @@ import { MultiSigPart, SingleSig } from '@spacemesh/sm-codec/lib/codecs';
 import { IconChevronDown } from '@tabler/icons-react';
 
 import { Bech32Address, HexString } from '../../types/common';
-import { SafeKeyWithType } from '../../types/wallet';
+import { KeyPairType, SafeKeyWithType } from '../../types/wallet';
 import { getAbbreviatedHexString } from '../../utils/abbr';
 import { toHexString } from '../../utils/hexString';
 import { formatSmidge } from '../../utils/smh';
@@ -433,6 +433,9 @@ function ConfirmationModal({
                       {`${kp.displayName} (${getAbbreviatedHexString(
                         kp.publicKey
                       )})`}
+                      {kp.type === KeyPairType.Hardware
+                        ? ' — Hardware Wallet'
+                        : null}
                     </option>
                   ))}
                   <option value={EXTERNAL}>External signature</option>
