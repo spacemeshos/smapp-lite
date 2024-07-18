@@ -10,6 +10,7 @@ import { SpaceMeshApp } from '@zondax/ledger-spacemesh';
 
 import { HexString } from '../types/common';
 import { KeyOrigin } from '../types/wallet';
+import Bip32KeyDerivation from '../utils/bip32';
 import { getDisclosureDefaults } from '../utils/disclosure';
 import { noop } from '../utils/func';
 import { toHexString } from '../utils/hexString';
@@ -34,15 +35,18 @@ export type LedgerDevice = {
 
 export type UseHardwareWalletHook = {
   // Data
-  selectedDevice: O.Option<LedgerDevice>; // None if not selected
-  isSelected: boolean;
+  connectedDevice: O.Option<LedgerDevice>; // None if not selected
+  isDeviceConnected: boolean;
+  connectionError: string | null;
   // Utils
-  modalConnect: UseDisclosureReturn; // null only possible on init
-  modalReconnect: UseDisclosureReturn; // null only possible on init
+  // eslint-disable-next-line max-len
+  modalConnect: UseDisclosureReturn;
+  modalReconnect: UseDisclosureReturn;
   // Actions
-  selectLedgerDevice: (transport: LedgerTransports) => void;
-  reconnect: () => Promise<void>;
+  connectDevice: (transport: LedgerTransports) => void;
+  reconnectDevice: () => Promise<void>;
   resetDevice: () => Promise<void>;
+  checkDeviceConnection: () => Promise<boolean>;
 };
 
 // Hook
@@ -63,6 +67,7 @@ const createLedgerTransport = (
 
 const useHardwareWallet = (): UseHardwareWalletHook => {
   const [device, setDevice] = useState<LedgerDevice | null>(null);
+  const [connectionError, setConnectionError] = useState<string | null>(null);
   const modalConnect = useDisclosure({ id: 'connectDevice' });
   const modalReconnect = useDisclosure({ id: 'reconnectDevice' });
 
@@ -71,7 +76,7 @@ const useHardwareWallet = (): UseHardwareWalletHook => {
     throw e;
   };
 
-  const selectLedgerDevice = async (transportType: LedgerTransports) => {
+  const connectDevice = async (transportType: LedgerTransports) => {
     const transport = await createLedgerTransport(transportType);
     const app = new SpaceMeshApp(transport);
     setDevice({
@@ -80,12 +85,12 @@ const useHardwareWallet = (): UseHardwareWalletHook => {
       transport,
       app,
       actions: {
-        getPubKey: async (path: string): Promise<HexString> =>
+        getPubKey: async (path) =>
           app
             .getAddressAndPubKey(path, false)
             .then((x) => toHexString(x.pubkey))
             .catch(handleLedgerError),
-        signTx: async (path: string, blob: Uint8Array) =>
+        signTx: async (path, blob) =>
           app
             .sign(path, Buffer.from(blob))
             .then((x) => Uint8Array.from(x.signature))
@@ -93,54 +98,85 @@ const useHardwareWallet = (): UseHardwareWalletHook => {
       },
     });
     modalConnect.onClose();
+
+    try {
+      await app.getAddressAndPubKey(Bip32KeyDerivation.createPath(0), false);
+      setConnectionError(null);
+    } catch (e) {
+      if (e instanceof Error) {
+        setConnectionError(e.message);
+      }
+      modalReconnect.onOpen();
+    }
   };
 
   const resetDevice = async () => {
     setDevice(null);
+    setConnectionError(null);
     if (device?.transport) {
       await device.transport.close();
     }
   };
 
-  const reconnect = async () => {
-    if (O.isNone(selectedDevice)) {
+  const reconnectDevice = async () => {
+    if (!device) {
+      setConnectionError(null);
       modalConnect.onOpen();
       modalReconnect.onClose();
       return;
     }
 
-    await selectLedgerDevice(selectedDevice.transportType);
     modalReconnect.onClose();
+    await connectDevice(device.transportType);
   };
 
-  const selectedDevice = O.fromNullable(device);
+  const checkDeviceConnection = async () => {
+    if (!device) {
+      modalConnect.onOpen();
+      return false;
+    }
+    try {
+      await device.actions.getPubKey(Bip32KeyDerivation.createPath(0));
+      return true;
+    } catch (err) {
+      if (err instanceof Error) {
+        setConnectionError(err.message);
+        modalReconnect.onOpen();
+      }
+      return false;
+    }
+  };
 
   return {
     // Data
-    selectedDevice,
-    isSelected: O.isSome(selectedDevice),
+    connectedDevice: O.fromNullable(device),
+    isDeviceConnected: !!device,
+    connectionError,
     // Utils
     modalConnect,
     modalReconnect,
     // Actions
-    selectLedgerDevice,
-    reconnect,
+    connectDevice,
+    reconnectDevice,
     resetDevice,
+    checkDeviceConnection,
   };
 };
 
 export default singletonHook(
   {
     // Data
-    selectedDevice: O.None,
-    isSelected: false,
+    connectedDevice: O.None,
+    isDeviceConnected: false,
+    connectionError: null,
     // Utils
     modalConnect: getDisclosureDefaults(),
     modalReconnect: getDisclosureDefaults(),
     // Actions
-    selectLedgerDevice: noop,
-    reconnect: Promise.resolve,
+    connectDevice: noop,
+    reconnectDevice: Promise.resolve,
     resetDevice: Promise.resolve,
+    checkDeviceConnection: () => Promise.resolve(false),
   },
   useHardwareWallet
 );

@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   ButtonGroup,
   IconButton,
@@ -7,9 +8,11 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
   OrderedList,
+  Spacer,
   Text,
 } from '@chakra-ui/react';
 import { O } from '@mobily/ts-belt';
@@ -29,7 +32,7 @@ import { BUTTON_ICON_SIZE } from '../utils/constants';
 
 // Child Components
 function DeviceSelectionModal() {
-  const { modalConnect, selectLedgerDevice } = useHardwareWallet();
+  const { modalConnect, connectDevice } = useHardwareWallet();
   return (
     <Modal
       isOpen={modalConnect.isOpen}
@@ -48,7 +51,7 @@ function DeviceSelectionModal() {
           <ButtonGroup w="100%">
             <Button
               colorScheme="blue"
-              onClick={() => selectLedgerDevice(LedgerTransports.Bluetooth)}
+              onClick={() => connectDevice(LedgerTransports.Bluetooth)}
               display="block"
               flex={1}
               h={20}
@@ -61,7 +64,7 @@ function DeviceSelectionModal() {
             </Button>
             <Button
               colorScheme="blue"
-              onClick={() => selectLedgerDevice(LedgerTransports.WebUSB)}
+              onClick={() => connectDevice(LedgerTransports.WebUSB)}
               display="block"
               flex={1}
               h={20}
@@ -80,7 +83,9 @@ function DeviceSelectionModal() {
 }
 
 function DeviceReconnectModal() {
-  const { modalReconnect, reconnect, resetDevice } = useHardwareWallet();
+  const { modalReconnect, reconnectDevice, resetDevice, connectionError } =
+    useHardwareWallet();
+
   const disconnectAndClose = () => {
     resetDevice();
     modalReconnect.onClose();
@@ -97,32 +102,35 @@ function DeviceReconnectModal() {
         <ModalCloseButton />
         <ModalHeader>Reconnect to Ledger Device</ModalHeader>
         <ModalBody minH={0} pb={6}>
-          <Text mb={4}>
-            Cannot get access to the Hardware Wallet.
+          <Text mb={4} color="red">
+            Cannot get access to the Hardware Wallet:
             <br />
-            Please follow next steps to reconnect:
+            {connectionError}
           </Text>
-          <OrderedList spacing={1}>
-            <ListItem>Check the device connection,</ListItem>
-            <ListItem>Unlock the device,</ListItem>
-            <ListItem>Run Spacemesh App on your Ledger,</ListItem>
-            <ListItem>Click the button below.</ListItem>
-          </OrderedList>
+          <Box fontSize="sm">
+            <Text mb={2}>Please follow next steps to reconnect:</Text>
+            <OrderedList spacing={1}>
+              <ListItem>Check the device connection,</ListItem>
+              <ListItem>Unlock the device,</ListItem>
+              <ListItem>Run Spacemesh App on your Ledger,</ListItem>
+              <ListItem>Click the button below.</ListItem>
+            </OrderedList>
+          </Box>
+        </ModalBody>
+        <ModalFooter>
           <Button
-            colorScheme="blue"
-            onClick={reconnect}
-            display="block"
-            flex={1}
-            h={20}
-            mb={4}
+            variant="outline"
+            colorScheme="red"
+            onClick={disconnectAndClose}
           >
+            Disconnect
+          </Button>
+          <Spacer />
+          <Button colorScheme="blue" onClick={reconnectDevice}>
             <IconRefresh style={{ margin: 'auto' }} />
             Reconnect
           </Button>
-          <Button variant="outline" onClick={disconnectAndClose} m="auto">
-            Disconnect
-          </Button>
-        </ModalBody>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
@@ -169,8 +177,8 @@ function Connected({ device }: { device: LedgerDevice }) {
 // Main Component
 
 function HardwareWalletConnect() {
-  const { selectedDevice } = useHardwareWallet();
-  return O.mapWithDefault(selectedDevice, <NotConnected />, (device) => (
+  const { connectedDevice } = useHardwareWallet();
+  return O.mapWithDefault(connectedDevice, <NotConnected />, (device) => (
     <Connected device={device} />
   ));
 }

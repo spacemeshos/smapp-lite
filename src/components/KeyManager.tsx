@@ -57,6 +57,7 @@ import CreateAccountModal from './CreateAccountModal';
 import CreateKeyPairModal from './CreateKeyPairModal';
 import ExplorerButton from './ExplorerButton';
 import ImportAccountModal from './ImportAccountModal';
+import ImportKeyFromLedgerModal from './ImportKeyFromLedgerModal';
 import ImportKeyPairModal from './ImportKeyPairModal';
 import RevealSecretKeyModal from './RevealSecretKeyModal';
 
@@ -105,6 +106,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
 
   const createKeyPairModal = useDisclosure();
   const importKeyPairModal = useDisclosure();
+  const importFromLedgerModal = useDisclosure();
   const revealSecretKeyModal = useDisclosure();
   const createAccountModal = useDisclosure();
   const importAccountModal = useDisclosure();
@@ -215,6 +217,12 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                         <IconFileImport size={BUTTON_ICON_SIZE} />
                         <Text as="span" ml={1}>
                           Import key
+                        </Text>
+                      </Button>
+                      <Button onClick={importFromLedgerModal.onOpen}>
+                        <IconDeviceUsb size={BUTTON_ICON_SIZE} />
+                        <Text as="span" ml={1}>
+                          Import from Ledger
                         </Text>
                       </Button>
                     </ButtonGroup>
@@ -402,6 +410,10 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
         isOpen={importKeyPairModal.isOpen}
         onClose={importKeyPairModal.onClose}
         keys={(wallet?.keychain ?? []).map((k) => k.publicKey)}
+      />
+      <ImportKeyFromLedgerModal
+        isOpen={importFromLedgerModal.isOpen}
+        onClose={importFromLedgerModal.onClose}
       />
       <RevealSecretKeyModal
         displayName={revealed.displayName}
