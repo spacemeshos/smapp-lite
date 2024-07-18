@@ -213,16 +213,16 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                           Create new key
                         </Text>
                       </Button>
-                      <Button onClick={importKeyPairModal.onOpen}>
-                        <IconFileImport size={BUTTON_ICON_SIZE} />
-                        <Text as="span" ml={1}>
-                          Import key
-                        </Text>
-                      </Button>
                       <Button onClick={importFromLedgerModal.onOpen}>
                         <IconDeviceUsb size={BUTTON_ICON_SIZE} />
                         <Text as="span" ml={1}>
                           Import from Ledger
+                        </Text>
+                      </Button>
+                      <Button onClick={importKeyPairModal.onOpen}>
+                        <IconFileImport size={BUTTON_ICON_SIZE} />
+                        <Text as="span" ml={1}>
+                          Import secret key
                         </Text>
                       </Button>
                     </ButtonGroup>
