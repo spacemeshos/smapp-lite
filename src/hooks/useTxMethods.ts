@@ -4,7 +4,7 @@ import { signAsync } from '@noble/ed25519';
 import { fetchEstimatedGas, fetchPublishTx } from '../api/requests/tx';
 import useWallet from '../store/useWallet';
 import { HexString } from '../types/common';
-import { fromHexString } from '../utils/hexString';
+import { prepareTxForSign } from '../utils/tx';
 
 import { useCurrentGenesisID, useCurrentRPC } from './useNetworkSelectors';
 
@@ -33,7 +33,7 @@ export const useSignTx = () => {
     }
     const secret = await revealSecretKey(publicKey, password);
     return signAsync(
-      Uint8Array.from([...fromHexString(genesisID), ...encodedTx]),
+      prepareTxForSign(genesisID, encodedTx),
       secret.slice(0, 64)
     );
   };
