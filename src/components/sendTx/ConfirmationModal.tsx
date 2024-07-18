@@ -69,6 +69,7 @@ type ConfirmationModalProps = ConfirmationData & {
   onExport: (signWith: HexString | null, externalSignature?: HexString) => void;
   isOpen: boolean;
   estimatedGas: bigint | null;
+  isLedgerRejected?: boolean;
 };
 
 const renderTemplateSpecificFields = (form: FormValues) => {
@@ -208,6 +209,7 @@ function ConfirmationModal({
   principal,
   form,
   encoded,
+  isLedgerRejected = false,
   eligibleKeys,
   estimatedGas,
   signatures = undefined,
@@ -373,6 +375,11 @@ function ConfirmationModal({
         <ModalCloseButton />
         <ModalHeader pb={0}>Verify transaction</ModalHeader>
         <ModalBody minH={0}>
+          {isLedgerRejected && (
+            <Text mb={2} color="red">
+              Transaction rejected by Ledger
+            </Text>
+          )}
           <PreviewDataRow label="Principal Address" value={principal} />
           <Flex>
             <Box w="50%" pr={2}>

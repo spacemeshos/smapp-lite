@@ -29,6 +29,7 @@ import useHardwareWallet, {
   LedgerTransports,
 } from '../store/useHardwareWallet';
 import { BUTTON_ICON_SIZE } from '../utils/constants';
+import { noop } from '../utils/func';
 
 // Child Components
 function DeviceSelectionModal() {
@@ -136,6 +137,26 @@ function DeviceReconnectModal() {
   );
 }
 
+function DeviceApprovalModal() {
+  const { modalApproval } = useHardwareWallet();
+
+  return (
+    <Modal isOpen={modalApproval.isOpen} onClose={noop} isCentered>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Sign Transaction on Ledger Device</ModalHeader>
+        <ModalBody minH={0} pb={6}>
+          <Text>
+            Please check out the transaction on your Ledger device and then
+            approve or reject it.
+          </Text>
+        </ModalBody>
+        <ModalFooter />
+      </ModalContent>
+    </Modal>
+  );
+}
+
 function NotConnected() {
   const { modalConnect } = useHardwareWallet();
   return (
@@ -170,6 +191,7 @@ function Connected({ device }: { device: LedgerDevice }) {
         onClick={resetDevice}
       />
       <DeviceReconnectModal />
+      <DeviceApprovalModal />
     </>
   );
 }

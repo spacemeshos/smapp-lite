@@ -38,6 +38,7 @@
     "@tabler/icons-react": "^3.1.0",
     "@tanstack/react-virtual": "^3.3.0",
     "@uidotdev/usehooks": "^2.4.1",
+    "@zondax/ledger-js": "^0.10.0",
     "@zondax/ledger-spacemesh": "^0.2.0",
     "bech32": "^2.0.0",
     "eventemitter3": "^5.0.1",

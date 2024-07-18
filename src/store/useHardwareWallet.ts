@@ -6,6 +6,7 @@ import Transport from '@ledgerhq/hw-transport';
 import LedgerWebBLE from '@ledgerhq/hw-transport-web-ble';
 import LedgerWebUSB from '@ledgerhq/hw-transport-webusb';
 import { O } from '@mobily/ts-belt';
+import { ResponseError } from '@zondax/ledger-js';
 import { SpaceMeshApp } from '@zondax/ledger-spacemesh';
 
 import { HexString } from '../types/common';
@@ -42,6 +43,7 @@ export type UseHardwareWalletHook = {
   // eslint-disable-next-line max-len
   modalConnect: UseDisclosureReturn;
   modalReconnect: UseDisclosureReturn;
+  modalApproval: UseDisclosureReturn;
   // Actions
   connectDevice: (transport: LedgerTransports) => void;
   reconnectDevice: () => Promise<void>;
@@ -70,6 +72,7 @@ const useHardwareWallet = (): UseHardwareWalletHook => {
   const [connectionError, setConnectionError] = useState<string | null>(null);
   const modalConnect = useDisclosure({ id: 'connectDevice' });
   const modalReconnect = useDisclosure({ id: 'reconnectDevice' });
+  const modalApproval = useDisclosure({ id: 'approvalDevice' });
 
   const handleLedgerError = (e: Error) => {
     modalReconnect.onOpen();
@@ -90,11 +93,23 @@ const useHardwareWallet = (): UseHardwareWalletHook => {
             .getAddressAndPubKey(path, false)
             .then((x) => toHexString(x.pubkey))
             .catch(handleLedgerError),
-        signTx: async (path, blob) =>
-          app
+        signTx: async (path, blob) => {
+          modalApproval.onOpen();
+          const res = await app
             .sign(path, Buffer.from(blob))
             .then((x) => Uint8Array.from(x.signature))
-            .catch(handleLedgerError),
+            .catch((e) => {
+              modalApproval.onClose();
+              if (e instanceof ResponseError) {
+                if (e.returnCode === 27014 || e.returnCode === 65535) {
+                  throw e;
+                }
+              }
+              return handleLedgerError(e);
+            });
+          modalApproval.onClose();
+          return res;
+        },
       },
     });
     modalConnect.onClose();
@@ -155,6 +170,7 @@ const useHardwareWallet = (): UseHardwareWalletHook => {
     // Utils
     modalConnect,
     modalReconnect,
+    modalApproval,
     // Actions
     connectDevice,
     reconnectDevice,
@@ -172,6 +188,7 @@ export default singletonHook(
     // Utils
     modalConnect: getDisclosureDefaults(),
     modalReconnect: getDisclosureDefaults(),
+    modalApproval: getDisclosureDefaults(),
     // Actions
     connectDevice: noop,
     reconnectDevice: Promise.resolve,
