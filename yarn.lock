@@ -2796,10 +2796,10 @@
   dependencies:
     "@ledgerhq/hw-transport" "6.30.6"
 
-"@zondax/ledger-spacemesh@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@zondax/ledger-spacemesh/-/ledger-spacemesh-0.2.0.tgz#dc48e295d85ce9b7e010f50bae2c6d41c648e651"
-  integrity sha512-aYsWz8Fr5QlXX8/ybSaFvcjX7NaIku97ngYLCcteLX8RwFr6bUsoGh894WmjF0Qof3kUpKkJcZ2k9LX+SqWADQ==
+"@zondax/ledger-spacemesh@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@zondax/ledger-spacemesh/-/ledger-spacemesh-0.2.2.tgz#38c78d5e8c2d4d918629c6ab8b95b18e0c5c3d01"
+  integrity sha512-qEsw7avMi9tM8+Ad2sGm9U4kVh7KX0iOKJwD0tQvVvtYyn6kP1HpgvhtgwOEg32mjiXEMQmVaMOyU843GEUguQ==
   dependencies:
     "@zondax/ledger-js" "^0.10.0"
 
