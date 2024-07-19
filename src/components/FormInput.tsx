@@ -24,7 +24,7 @@ type Props<T extends FieldValues> = PropsWithChildren<{
   isSubmitted?: boolean;
   inputAddon?: ReactNode;
   inputProps?: InputProps;
-  hint?: string;
+  hint?: ReactNode;
 }>;
 
 function FormInput<T extends FieldValues>({
