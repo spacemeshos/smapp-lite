@@ -1153,13 +1153,24 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                     errors={errors}
                     isSubmitted={isSubmitted}
                     inputAddon={
-                      <InputRightElement mr={2}>
-                        <Text fontSize="xs">Smidge</Text>
+                      <InputRightElement w="auto" pr={2}>
+                        <Text fontSize="xs">Smidge per unit</Text>
                       </InputRightElement>
                     }
-                    // eslint-disable-next-line max-len
-                    hint="How much to pay for gas: During high network traffic, 
-                    transactions with higher gas fees are prioritized."
+                    hint={
+                      <>
+                        <Text mb={2}>
+                          <strong>How much to pay per gas unit</strong>
+                          <br />
+                          During high network traffic, transactions with higher
+                          gas prices are prioritized.
+                        </Text>
+                        <Text>
+                          Example: transaction costs 25,000 gas units, gas price
+                          is 2 smidges, the total fee will be 50,000 smidges.
+                        </Text>
+                      </>
+                    }
                   />
                 </Box>
                 <Box ml={2} w="50%">
@@ -1178,10 +1189,17 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                     })}
                     errors={errors}
                     isSubmitted={isSubmitted}
-                    // eslint-disable-next-line max-len
-                    hint="The number is used only once to ensure each transaction is unique. 
-                    It increments automatically,
-                    but can also be set manually if needed."
+                    hint={
+                      <Text>
+                        <strong>The transaction counter</strong>
+                        <br />
+                        The number is used only to ensure each transaction is
+                        unique.
+                        <br />
+                        It increments automatically, but can be set manually if
+                        needed.
+                      </Text>
+                    }
                   />
                 </Box>
               </Flex>
