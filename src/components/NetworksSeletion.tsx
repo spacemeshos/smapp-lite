@@ -7,7 +7,6 @@ import {
   MenuItemOption,
   MenuList,
   MenuOptionGroup,
-  Spacer,
   useDisclosure,
 } from '@chakra-ui/react';
 import { O } from '@mobily/ts-belt';
@@ -71,7 +70,6 @@ function NetworkSelection(): JSX.Element {
           <MenuItem onClick={onOpen}>Add new network...</MenuItem>
         </MenuList>
       </Menu>
-      <Spacer />
     </>
   );
 }

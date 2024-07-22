@@ -14,32 +14,33 @@ import {
 } from '@chakra-ui/react';
 import { StdPublicKeys } from '@spacemesh/sm-codec';
 
+import useHardwareWallet from '../store/useHardwareWallet';
 import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
-import { HexString } from '../types/common';
+import Bip32KeyDerivation from '../utils/bip32';
 
 import FormInput from './FormInput';
-import FormTextarea from './FormTextarea';
 
-type ImportKeyPairModalProps = {
+type ImportKeyFromLedgerModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  keys: HexString[];
 };
 
 type FormValues = {
   displayName: string;
-  secretKey: HexString;
+  path: string;
   createSingleSig: boolean;
 };
 
-function ImportKeyPairModal({
+function ImportKeyFromLedgerModal({
   isOpen,
   onClose,
-  keys,
-}: ImportKeyPairModalProps): JSX.Element {
-  const { importKeyPair, createAccount } = useWallet();
+}: ImportKeyFromLedgerModalProps): JSX.Element {
+  const { addForeignKey, createAccount, wallet } = useWallet();
   const { withPassword } = usePassword();
+  const { checkDeviceConnection, connectedDevice, modalConnect } =
+    useHardwareWallet();
+
   const {
     register,
     reset,
@@ -54,10 +55,22 @@ function ImportKeyPairModal({
   };
 
   const submit = handleSubmit(
-    async ({ displayName, secretKey, createSingleSig }) => {
+    async ({ displayName, path, createSingleSig }) => {
+      const isConnected = await checkDeviceConnection();
+      if (!isConnected) {
+        return;
+      }
+      if (!connectedDevice) {
+        modalConnect.onOpen();
+        return;
+      }
+      const publicKey = await connectedDevice.actions.getPubKey(path);
       const success = await withPassword(
         async (password) => {
-          const key = await importKeyPair(displayName, secretKey, password);
+          const key = await addForeignKey(
+            { displayName, path, publicKey },
+            password
+          );
           if (createSingleSig) {
             await createAccount(
               displayName,
@@ -68,26 +81,26 @@ function ImportKeyPairModal({
           }
           return true;
         },
-        'Importing the Key Pair',
+        'Import PublicKey from Ledger device',
         // eslint-disable-next-line max-len
-        `Please enter the password to create the new key pair "${displayName}" from the secret key.`
+        `Please enter the password to store public key ${publicKey} in the wallet.`
       );
       if (success) {
         close();
       }
     }
   );
+
   return (
     <Modal isOpen={isOpen} onClose={close} isCentered>
       <Form control={control}>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
-          <ModalHeader>Import the Key Pair</ModalHeader>
+          <ModalHeader>Import Public Key from Ledger</ModalHeader>
           <ModalBody>
             <Text mb={4}>
-              Please set the name for your key and paste the secret key in the
-              textarea below.
+              Only public key will be imported from the Ledger.
             </Text>
             <FormInput
               label="Name"
@@ -101,18 +114,18 @@ function ImportKeyPairModal({
               errors={errors}
               isSubmitted={isSubmitted}
             />
-            <FormTextarea
-              label="Secret key"
-              register={register('secretKey', {
-                required: 'Secret key is required for import',
+            <FormInput
+              label="Derivation Path"
+              register={register('path', {
+                required: 'Derivation path is required',
+                value: Bip32KeyDerivation.createPath(
+                  (wallet?.keychain || []).length
+                ),
                 validate: (value) => {
-                  const trimmed = value.replace(/^0x/, '');
-                  if (trimmed.length !== 128) {
+                  const valid = Bip32KeyDerivation.isValidPath(value);
+                  if (!valid) {
                     // eslint-disable-next-line max-len
-                    return `The secret key must be 64 bytes long`;
-                  }
-                  if (keys.includes(trimmed.slice(64))) {
-                    return `You already have this key in the wallet file`;
+                    return `Derivation path should follow rules and starts with "m/${Bip32KeyDerivation.BIP_PROPOSAL}'/${Bip32KeyDerivation.COIN_TYPE}'/"`;
                   }
                   return true;
                 },
@@ -120,11 +133,6 @@ function ImportKeyPairModal({
               errors={errors}
               isSubmitted={isSubmitted}
             />
-            <Text fontSize="xs" color="gray" mt={2} mb={2}>
-              The secret key should be a hexadecimal string.
-              <br />
-              Public key will be extracted from the secret key.
-            </Text>
             <Checkbox
               size="lg"
               colorScheme="green"
@@ -136,7 +144,7 @@ function ImportKeyPairModal({
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" onClick={submit} ml={2}>
-              Import
+              Import Public Key
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -145,4 +153,4 @@ function ImportKeyPairModal({
   );
 }
 
-export default ImportKeyPairModal;
+export default ImportKeyFromLedgerModal;

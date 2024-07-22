@@ -55,10 +55,11 @@ import {
   useCurrentAccount,
 } from '../../hooks/useWalletSelectors';
 import useAccountData from '../../store/useAccountData';
+import useHardwareWallet from '../../store/useHardwareWallet';
 import usePassword from '../../store/usePassword';
 import useWallet from '../../store/useWallet';
 import { HexString } from '../../types/common';
-import { AccountWithAddress } from '../../types/wallet';
+import { AccountWithAddress, KeyOrigin } from '../../types/wallet';
 import {
   extractEligibleKeys,
   extractRequiredSignatures,
@@ -71,6 +72,7 @@ import {
 import { fromBase64 } from '../../utils/base64';
 import { generateAddress, getWords } from '../../utils/bech32';
 import { fromHexString, toHexString } from '../../utils/hexString';
+import { isForeignKey } from '../../utils/keys';
 import { formatSmidge } from '../../utils/smh';
 import {
   getMethodName,
@@ -80,6 +82,7 @@ import {
   MultiSigSpawnArguments,
   TemplateMethodsMap,
 } from '../../utils/templates';
+import { prepareTxForSign } from '../../utils/tx';
 import { computeAddress, getEmptySignature } from '../../utils/wallet';
 import FormInput from '../FormInput';
 import FormSelect from '../FormSelect';
@@ -123,10 +126,12 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
   const { wallet } = useWallet();
   const { withPassword } = usePassword();
   const { isSpawnedAccount, getAccountData } = useAccountData();
+  const { checkDeviceConnection, connectedDevice } = useHardwareWallet();
   const hrp = useCurrentHRP();
   const genesisID = useCurrentGenesisID();
   const currerntAccount = useCurrentAccount(hrp);
   const accountsList = useAccountsList(hrp);
+  const [isLedgerRejected, setIsLedgerRejected] = useState(false);
   const isSpawned = pipe(
     O.zip(genesisID, currerntAccount),
     O.mapWithDefault(false, ([genId, acc]) =>
@@ -236,8 +241,14 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
   const close = () => {
     setTxData(null);
     setImportErrors('');
+    setIsLedgerRejected(false);
     clearErrors();
     onClose();
+  };
+
+  const onConfirmationModalClose = () => {
+    setIsLedgerRejected(false);
+    confirmationModal.onClose();
   };
 
   const updateEstimatedGas = async (
@@ -561,39 +572,58 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
       );
     }
 
-    const signature = !externalSignature
-      ? await withPassword(
-          (password) => signTx(txData.encoded, signWith, password),
-          'Enter password to sign transaction',
-          txData.description
-        )
-      : fromHexString(externalSignature);
-
-    if (signature) {
-      if (
-        currerntAccount.templateAddress === StdPublicKeys.MultiSig ||
-        currerntAccount.templateAddress === StdPublicKeys.Vesting
-      ) {
-        const keys = (currerntAccount.spawnArguments as MultiSigSpawnArguments)
-          .PublicKeys;
-        const ref = keys.findIndex((k) => k === signWith);
-        const existingSignatures = (txData.signatures as MultiSigPart[]) || [];
-        const sortedSignatures = [
-          ...existingSignatures,
-          {
-            Ref: BigInt(ref),
-            Sig: signature,
-          },
-        ].sort((a, b) => Number(a.Ref - b.Ref));
-        return MultiSigTemplate.methods[0].sign(
-          txData.encoded,
-          sortedSignatures
-        );
+    const getSignature = async () => {
+      if (!wallet) {
+        throw new Error('Cannot sign transaction: Open the wallet first');
       }
-      // SingleSig, also valid for Vault account
-      return SingleSigTemplate.methods[0].sign(txData.encoded, signature);
+      const keyToUse = wallet.keychain.find((k) => k.publicKey === signWith);
+      if (isForeignKey(keyToUse) && keyToUse.origin === KeyOrigin.Ledger) {
+        if (!(await checkDeviceConnection()) || !connectedDevice) {
+          return null;
+        }
+        return connectedDevice.actions
+          .signTx(keyToUse.path, prepareTxForSign(genesisID, txData.encoded))
+          .catch(() => {
+            setIsLedgerRejected(true);
+            return null;
+          });
+      }
+
+      return withPassword(
+        (password) => signTx(txData.encoded, signWith, password),
+        'Enter password to sign transaction',
+        txData.description
+      );
+    };
+
+    const signature = externalSignature
+      ? fromHexString(externalSignature)
+      : await getSignature();
+
+    if (!signature) {
+      return null;
     }
-    return null;
+
+    if (
+      currerntAccount.templateAddress === StdPublicKeys.MultiSig ||
+      currerntAccount.templateAddress === StdPublicKeys.Vesting ||
+      currerntAccount.templateAddress === StdPublicKeys.Vault
+    ) {
+      const keys = (currerntAccount.spawnArguments as MultiSigSpawnArguments)
+        .PublicKeys;
+      const ref = keys.findIndex((k) => k === signWith);
+      const existingSignatures = (txData.signatures as MultiSigPart[]) || [];
+      const sortedSignatures = [
+        ...existingSignatures,
+        {
+          Ref: BigInt(ref),
+          Sig: signature,
+        },
+      ].sort((a, b) => Number(a.Ref - b.Ref));
+      return MultiSigTemplate.methods[0].sign(txData.encoded, sortedSignatures);
+    }
+
+    return SingleSigTemplate.methods[0].sign(txData.encoded, signature);
   };
 
   const signAndPublish = async (
@@ -1230,9 +1260,10 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
           {...txData}
           estimatedGas={estimatedGas}
           isOpen={confirmationModal.isOpen}
-          onClose={confirmationModal.onClose}
+          onClose={onConfirmationModalClose}
           onSubmit={signAndPublish}
           onExport={exportTx}
+          isLedgerRejected={isLedgerRejected}
         />
       )}
     </>

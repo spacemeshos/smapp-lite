@@ -31,7 +31,7 @@ import { MultiSigPart, SingleSig } from '@spacemesh/sm-codec/lib/codecs';
 import { IconChevronDown } from '@tabler/icons-react';
 
 import { Bech32Address, HexString } from '../../types/common';
-import { SafeKeyWithType } from '../../types/wallet';
+import { KeyPairType, SafeKeyWithType } from '../../types/wallet';
 import { getAbbreviatedHexString } from '../../utils/abbr';
 import { toHexString } from '../../utils/hexString';
 import { formatSmidge } from '../../utils/smh';
@@ -69,6 +69,7 @@ type ConfirmationModalProps = ConfirmationData & {
   onExport: (signWith: HexString | null, externalSignature?: HexString) => void;
   isOpen: boolean;
   estimatedGas: bigint | null;
+  isLedgerRejected?: boolean;
 };
 
 const renderTemplateSpecificFields = (form: FormValues) => {
@@ -208,6 +209,7 @@ function ConfirmationModal({
   principal,
   form,
   encoded,
+  isLedgerRejected = false,
   eligibleKeys,
   estimatedGas,
   signatures = undefined,
@@ -373,6 +375,11 @@ function ConfirmationModal({
         <ModalCloseButton />
         <ModalHeader pb={0}>Verify transaction</ModalHeader>
         <ModalBody minH={0}>
+          {isLedgerRejected && (
+            <Text mb={2} color="red">
+              Transaction rejected by Ledger
+            </Text>
+          )}
           <PreviewDataRow label="Principal Address" value={principal} />
           <Flex>
             <Box w="50%" pr={2}>
@@ -433,6 +440,9 @@ function ConfirmationModal({
                       {`${kp.displayName} (${getAbbreviatedHexString(
                         kp.publicKey
                       )})`}
+                      {kp.type === KeyPairType.Hardware
+                        ? ' — Hardware Wallet'
+                        : null}
                     </option>
                   ))}
                   <option value={EXTERNAL}>External signature</option>

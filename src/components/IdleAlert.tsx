@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   Modal,
@@ -9,8 +9,8 @@ import {
 } from '@chakra-ui/react';
 import { useIdle } from '@uidotdev/usehooks';
 
+import useLockWallet from '../hooks/useLockWallet';
 import useWindowFocus from '../hooks/useWindowFocus';
-import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
 import { noop } from '../utils/func';
 
@@ -18,8 +18,8 @@ const IDLE_TIME_SECONDS = 120;
 const IDLE_ALERT_SECONDS = 30;
 
 function IdleAlert(): JSX.Element {
-  const { lockWallet, isWalletUnlocked } = useWallet();
-  const { resetPassword } = usePassword();
+  const { isWalletUnlocked } = useWallet();
+  const lockWallet = useLockWallet();
   const isIdle = useIdle(IDLE_TIME_SECONDS * 1000);
   const isFocused = useWindowFocus();
   const [showModal, setShowModal] = useState(false);
@@ -61,9 +61,8 @@ function IdleAlert(): JSX.Element {
   useEffect(() => {
     if (shouldLockWallet) {
       lockWallet();
-      resetPassword();
     }
-  }, [shouldLockWallet, lockWallet, resetPassword]);
+  }, [shouldLockWallet, lockWallet]);
 
   return (
     <Modal isOpen={showModal} onClose={noop}>

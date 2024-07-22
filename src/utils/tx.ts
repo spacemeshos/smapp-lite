@@ -19,6 +19,7 @@ import {
   TransactionID,
 } from '../types/tx';
 
+import { fromHexString } from './hexString';
 import { MethodName, TemplateName } from './templates';
 
 export enum TxType {
@@ -192,3 +193,6 @@ export const formatTxState = (state: TransactionState) => {
       return 'Unknown state';
   }
 };
+
+export const prepareTxForSign = (genesisID: string, tx: Uint8Array) =>
+  Uint8Array.from([...fromHexString(genesisID), ...tx]);

@@ -9,6 +9,8 @@ import {
   Account,
   AnyKey,
   Contact,
+  ForeignKey,
+  KeyOrigin,
   LocalKey,
   SafeKey,
   SafeKeyWithType,
@@ -63,6 +65,10 @@ type WalletActions = {
   loadWalletWithSecrets: (password: string) => Promise<Wallet>;
   showMnemonics: (password: string) => Promise<string>;
   addKeyPair: (keypair: AnyKey, password: string) => void;
+  addForeignKey: (
+    key: { displayName: string; path: string; publicKey: HexString },
+    password: string
+  ) => Promise<SafeKey>;
   createKeyPair: (
     displayName: string,
     path: string,
@@ -216,6 +222,15 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
         ...wallet,
         crypto: await encryptWallet(newSecrets, password),
       });
+    },
+    addForeignKey: async (key, password) => {
+      const newKeyPair: ForeignKey = {
+        ...key,
+        created: getISODate(),
+        origin: KeyOrigin.Ledger,
+      };
+      await get().addKeyPair(newKeyPair, password);
+      return ensafeKeyPair(newKeyPair);
     },
     createKeyPair: async (displayName, path, password) => {
       const wallet = await get().loadWalletWithSecrets(password);
