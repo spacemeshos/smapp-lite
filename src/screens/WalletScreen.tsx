@@ -125,7 +125,7 @@ function WalletScreen(): JSX.Element {
                 {account.address}
                 <CopyButton value={account.address} />
               </Text>
-              <Text fontSize="3xl" mt={4}>
+              <Text fontSize="3xl" mt={4} title={`${balance} Smidge`}>
                 {formatSmidge(balance)}
                 <IconButton
                   ml={2}
@@ -141,6 +141,7 @@ function WalletScreen(): JSX.Element {
                   }
                   aria-label="Refresh balance"
                   onClick={() => refreshData()}
+                  verticalAlign="text-bottom"
                 />
               </Text>
             </>
