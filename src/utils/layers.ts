@@ -25,3 +25,10 @@ export const nextEpochTime = (
     firstLayerInEpoch(layersPerEpoch, curEpoch + 1)
   );
 };
+
+export const layerByTimestamp = (
+  genesisTime: number,
+  layerDurationSec: number,
+  currentTime: number
+): number =>
+  Math.floor((currentTime - genesisTime) / (layerDurationSec * 1000));

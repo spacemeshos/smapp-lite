@@ -90,3 +90,23 @@ export const extractEligibleKeys = <T extends AnySpawnArguments>(
   }
   return [];
 };
+
+const zeroOrMore = (n: bigint): bigint => (n >= 0n ? n : 0n);
+export const getVaultUnlockedAmount = (
+  args: VaultSpawnArguments,
+  currentLayer: number,
+  currentBalance: bigint
+) => {
+  const vestingPeriod = BigInt(args.VestingEnd) - BigInt(args.VestingStart);
+  const layersPassed = BigInt(currentLayer) - BigInt(args.VestingStart);
+  const vestedLayers =
+    layersPassed < vestingPeriod ? layersPassed : vestingPeriod;
+  const vestingPerLayer = BigInt(args.TotalAmount) / vestingPeriod;
+  const totalUnlocked = vestedLayers * vestingPerLayer;
+  const alreadySpent = BigInt(args.TotalAmount) - currentBalance;
+  const available = totalUnlocked - alreadySpent;
+  return {
+    totalUnlocked: zeroOrMore(totalUnlocked),
+    available: zeroOrMore(available),
+  };
+};

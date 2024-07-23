@@ -14,3 +14,8 @@ export const formatISODate = (iso: string) => {
   const time = new Date(iso).getTime();
   return Number.isNaN(time) ? iso : formatTimestamp(time);
 };
+
+export const getCurrentTimeUTC = () => {
+  const now = new Date();
+  return now.getTime() + now.getTimezoneOffset() * 60000;
+};
