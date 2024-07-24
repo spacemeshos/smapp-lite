@@ -111,7 +111,7 @@
 5. Check behavior when clicking "Create Wallet" with both password fields empty.
 6. Check behavior when clicking "Create Wallet" with only one of the password fields filled.
 
-## Recover Your Wallet
+# Recover Your Wallet
 
 1. Verify the "Recover wallet from mnemonics" page loads successfully.
 2. Check that the page displays the following elements: "Back" button, "Next Step" button.
