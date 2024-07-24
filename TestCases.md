@@ -180,6 +180,9 @@
 6. Ensure the user is redirected to the login/main page appropriately.
 7. Verify behavior if clipboard permissions are denied.
 8. Ensure an appropriate error message is displayed if clipboard access is not available.
+9. Verify behavior when the network connection is lost during the tested process.
+10. Check behavior under slow network conditions.
+11. Ensure the system provides feedback to the user about the ongoing process (e.g., loading spinner or progress bar).
 
 # Usability and UI/UX
 
