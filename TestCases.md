@@ -1,4 +1,4 @@
-# Main Page:
+# Main Page
 
 1. Verify the main page loads successfully.
 2. Check that the main page displays three buttons: "Create New Wallet," "Recover Your Wallet," and "Import Wallet File."
@@ -109,7 +109,34 @@
 5. Check behavior when clicking "Create Wallet" with both password fields empty.
 6. Check behavior when clicking "Create Wallet" with only one of the password fields filled.
 
-## Edge Cases
+## Recover Your Wallet
+
+1. Verify the "Recover wallet from mnemonics" page loads successfully.
+2. Check that the page displays the following elements: "Back" button, "Next Step" button.
+3. Check that the page displays: Input field with the note "Please put your 12-word or 24-word mnemonic" above it.
+4. Ensure the input field accepts text input.
+5. Verify the input field does not have a placeholder text.
+6. Verify that the input field accepts exactly 12 or 24 words.
+7. Ensure that any incorrect number of words (less than 12 or between 13-23 or more than 24) displays an appropriate error message.
+8. Check that the input field accepts words without numbering or special formatting.
+9. Ensure that extra spaces, tabs, or formatting issues prevent the acceptance of a valid phrase.
+10. Verify that the system identifies and rejects invalid (inexistent) mnemonic phrases.
+11. Ensure an appropriate error message is shown for invalid phrases (e.g., incorrect words, wrong number of words).
+12. Ensure the system correctly identifies valid phrases without case sensitivity.
+
+**Back Button**
+
+1. Verify clicking the "Back" button navigates the user back to the main page.
+2. Ensure that any entered mnemonic phrase is not retained when navigating back.
+
+**Next Step Button**
+
+1. Verify the "Next Step" button is disabled if the input field is empty or contains an incorrect number of words.
+2. Ensure the "Next Step" button is enabled only when a valid 12-word or 24-word mnemonic phrase is entered.
+3. Verify that clicking the "Next Step" button with a valid mnemonic phrase navigates the user to the password setup screen.
+4. Ensure the password setup screen is the same as in the "Create new wallet" process.
+
+# Edge Cases
 
 1. Verify that reloading the mnemonic phrase page generates a new mnemonic phrase.
 2. Ensure the user is prompted to start the process again if the page is reloaded on the further steps.
@@ -120,7 +147,7 @@
 7. Verify behavior if clipboard permissions are denied.
 8. Ensure an appropriate error message is displayed if clipboard access is not available.
 
-## Usability and UI/UX
+# Usability and UI/UX
 
 1. Test the above features across different browsers (Chrome, Firefox, Safari, Edge).
 2. Ensure consistent behavior and appearance across browsers.
