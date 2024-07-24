@@ -83,6 +83,8 @@
 12. Verify that the "Confirm the password:" field must match the "Set the password:" field.
 13. Verify an appropriate error message is shown if the passwords in the "Set the password" and "Confirm the password" fields do not match.
 14. Verify the system correctly handles and accepts special characters in the password fields.
+15. Verify that the password is securely transmitted and not exposed in any way.
+16. Ensure the app correctly handles password encryption and validation.
 
 **Password Requirements Validation**
 
@@ -136,6 +138,38 @@
 3. Verify that clicking the "Next Step" button with a valid mnemonic phrase navigates the user to the password setup screen.
 4. Ensure the password setup screen is the same as in the "Create new wallet" process.
 
+# Import Wallet File
+
+1. Verify the "Import wallet file" page loads successfully.
+2. Ensure the "Select wallet file" button is visible and clickable.
+3. Verify that clicking the button opens the file selection dialog.
+4. Check that the file selection dialog allows the user to select a wallet file.
+5. Ensure that only valid wallet file types can be selected (i.e., .json).
+6. Ensure the "Setup password" page is visible and meets all the requirements described in the [Password Setup Page](#password-setup-page)
+7. Verify the "Import wallet" button throws an error if no file is selected or password field is empty.
+8. Ensure the "Import wallet" button func is enabled only when a file is selected and the password field is filled.
+9. Verify that clicking the "Import wallet" button with a valid wallet file and correct password successfully imports the wallet.
+10. Ensure the user is navigated to the wallet dashboard or success confirmation page upon successful wallet import.
+11. Verify behavior when an invalid wallet file type is selected.
+12. Ensure an appropriate error message is shown on invalid file.
+13. Verify behavior when the wrong password is entered for the selected wallet file.
+14. Ensure an appropriate error message is shown on the incorrect.
+15. Check behavior when clicking "Import wallet" with the password field empty.
+16. Ensure an appropriate error message is shown on empty password.
+17. Check behavior when clicking "Import wallet" without selecting a wallet file.
+18. Ensure an appropriate error message is shown on no file selection.
+19. Verify behavior when the user opens the file selection dialog but cancels the selection.
+20. Ensure the app correctly handles the cancellation and allows the user to retry.
+21. Verify behavior when a corrupted or incomplete wallet file is selected.
+22. Ensure an appropriate error message is shown for the corrupted/incomplete and the file is not processed.
+23. Verify behavior when the user selects multiple files in quick succession.
+24. Ensure only the last selected file is processed, or an appropriate message is shown if multiple files are not supported.
+25. Verify that the system provides immediate feedback upon correct file selection.
+26. Verify that the user can remove or change the selected file before entering the password.
+27. Ensure the system correctly updates the file selection and resets any error messages after retrying.
+28. Verify that users can cancel the file upload process if needed.
+29. Ensure that any partially uploaded files are handled correctly and the user can retry.
+
 # Edge Cases
 
 1. Verify that reloading the mnemonic phrase page generates a new mnemonic phrase.
@@ -157,4 +191,5 @@
 6. Verify that button labels are clear and understandable.
 7. Check that buttons are accessible via keyboard navigation.
 8. Verify the page loads quickly and performs smoothly during drag-and-drop actions.
-9. Ensure no significant lag or delay is experienced.
+9. Verify the page loads quickly and performs smoothly during file selection and password input.
+10. Ensure no significant lag or delay is experienced.
