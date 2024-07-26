@@ -17,6 +17,7 @@ import { StdPublicKeys } from '@spacemesh/sm-codec';
 import useHardwareWallet from '../store/useHardwareWallet';
 import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
+import { KeyPairType } from '../types/wallet';
 import Bip32KeyDerivation from '../utils/bip32';
 
 import FormInput from './FormInput';
@@ -119,7 +120,11 @@ function ImportKeyFromLedgerModal({
               register={register('path', {
                 required: 'Derivation path is required',
                 value: Bip32KeyDerivation.createPath(
-                  (wallet?.keychain || []).length
+                  (
+                    wallet?.keychain.filter(
+                      (x) => x.type === KeyPairType.Hardware
+                    ) || []
+                  ).length
                 ),
                 validate: (value) => {
                   const valid = Bip32KeyDerivation.isValidPath(value);
