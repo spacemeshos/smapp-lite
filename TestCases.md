@@ -60,12 +60,15 @@
 
 1. Verify that clicking "Back" navigates the user back to the mnemonic phrase page.
 2. Ensure that the mnemonic phrase is retained when returning to the mnemonic phrase page.
+3. Ensure that clicking 'Back' clears all filled words and prompts the user to fill in the 4 words again.
 
 **Next step button**
 
 1. Verify that clicking "Next Step" is only enabled when all 4 words are correctly placed in the grid.
 2. Ensure that clicking "Next Step" navigates the user to the next page i.e. password setup.
 3. Check behavior when attempting to click "Next Step" with only some of the words correctly placed.
+4. Ensure that clicking 'Next Step' clears all filled words and prompts the user to fill in the 4 words again.
+
 
 ## Password Setup Page
 
