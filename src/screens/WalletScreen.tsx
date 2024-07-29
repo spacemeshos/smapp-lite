@@ -5,6 +5,7 @@ import {
   Button,
   ButtonGroup,
   Flex,
+  Icon,
   IconButton,
   Spacer,
   Spinner,
@@ -16,7 +17,12 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { O, pipe } from '@mobily/ts-belt';
-import { IconQrcode, IconRefresh, IconSend } from '@tabler/icons-react';
+import {
+  IconLockOpen2,
+  IconQrcode,
+  IconRefresh,
+  IconSend,
+} from '@tabler/icons-react';
 
 import AccountSelection from '../components/AccountSelection';
 import CopyButton from '../components/CopyButton';
@@ -33,6 +39,7 @@ import TxDetails from '../components/TxDetails';
 import TxList from '../components/TxList';
 import useDataRefresher from '../hooks/useDataRefresher';
 import { useCurrentHRP } from '../hooks/useNetworkSelectors';
+import useVaultBalance from '../hooks/useVaultBalance';
 import { useCurrentAccount } from '../hooks/useWalletSelectors';
 import useAccountData from '../store/useAccountData';
 import useNetworks from '../store/useNetworks';
@@ -72,6 +79,12 @@ function WalletScreen(): JSX.Element {
     accountData,
     '0',
     ([account]) => account.state.current.balance
+  );
+
+  const unlockedBalance = useVaultBalance(
+    currentAccount,
+    currentNetwork,
+    BigInt(balance)
   );
 
   return (
@@ -125,7 +138,7 @@ function WalletScreen(): JSX.Element {
                 {account.address}
                 <CopyButton value={account.address} />
               </Text>
-              <Text fontSize="3xl" mt={4}>
+              <Text fontSize="3xl" mt={4} title={`${balance} Smidge`}>
                 {formatSmidge(balance)}
                 <IconButton
                   ml={2}
@@ -141,8 +154,30 @@ function WalletScreen(): JSX.Element {
                   }
                   aria-label="Refresh balance"
                   onClick={() => refreshData()}
+                  verticalAlign="text-bottom"
                 />
               </Text>
+              {O.mapWithDefault(
+                unlockedBalance,
+                // eslint-disable-next-line react/jsx-no-useless-fragment
+                <></>,
+                ({ available }) => (
+                  <Text
+                    fontSize="md"
+                    color="green.300"
+                    title={`${available} Smidge`}
+                  >
+                    <Icon
+                      as={IconLockOpen2}
+                      display="inline-block"
+                      boxSize={4}
+                      mr={1}
+                      mb={-0.5}
+                    />
+                    {formatSmidge(available)} available
+                  </Text>
+                )
+              )}
             </>
           )
         )}

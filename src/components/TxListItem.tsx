@@ -1,7 +1,12 @@
-import { CheckCircleIcon } from '@chakra-ui/icons';
 import { Box, Card, CardBody, Flex, Icon, Text } from '@chakra-ui/react';
 import { StdMethods } from '@spacemesh/sm-codec';
-import { IconArrowBigDownFilled, IconArrowBigLeftFilled, IconArrowBigLeftLinesFilled, IconArrowBigRightFilled, IconQuestionMark } from '@tabler/icons-react';
+import {
+  IconArrowBigDownFilled,
+  IconArrowBigLeftFilled,
+  IconArrowBigLeftLinesFilled,
+  IconArrowBigRightFilled,
+  IconQuestionMark,
+} from '@tabler/icons-react';
 
 import { Bech32Address } from '../types/common';
 import { Transaction } from '../types/tx';
