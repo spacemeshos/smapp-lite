@@ -126,7 +126,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
   const { wallet } = useWallet();
   const { withPassword } = usePassword();
   const { isSpawnedAccount, getAccountData } = useAccountData();
-  const { checkDeviceConnection, connectedDevice } = useHardwareWallet();
+  const { checkDeviceConnection, connectedDevice, modalWrongDevice } =
+    useHardwareWallet();
   const hrp = useCurrentHRP();
   const genesisID = useCurrentGenesisID();
   const currerntAccount = useCurrentAccount(hrp);
@@ -579,6 +580,13 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
       const keyToUse = wallet.keychain.find((k) => k.publicKey === signWith);
       if (isForeignKey(keyToUse) && keyToUse.origin === KeyOrigin.Ledger) {
         if (!(await checkDeviceConnection()) || !connectedDevice) {
+          return null;
+        }
+        const ledgerKey = await connectedDevice.actions.getPubKey(
+          keyToUse.path
+        );
+        if (ledgerKey !== keyToUse.publicKey) {
+          modalWrongDevice.onOpen();
           return null;
         }
         return connectedDevice.actions

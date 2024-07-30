@@ -158,6 +158,7 @@ function DeviceApprovalModal() {
     <Modal isOpen={modalApproval.isOpen} onClose={noop} isCentered>
       <ModalOverlay />
       <ModalContent>
+        <ModalCloseButton />
         <ModalHeader>Sign Transaction on Ledger Device</ModalHeader>
         <ModalBody minH={0} pb={6}>
           <Text>
@@ -166,6 +167,47 @@ function DeviceApprovalModal() {
             <Image src={ledgerLogo} width={100} mt={6} />
           </Text>
         </ModalBody>
+      </ModalContent>
+    </Modal>
+  );
+}
+
+function WrongDeviceModal() {
+  const { modalWrongDevice, resetDevice } = useHardwareWallet();
+  const disconnectAndClose = () => {
+    resetDevice();
+    modalWrongDevice.onClose();
+  };
+
+  return (
+    <Modal
+      isOpen={modalWrongDevice.isOpen}
+      onClose={modalWrongDevice.onClose}
+      isCentered
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Wrong Ledger device is connected</ModalHeader>
+        <ModalBody minH={0} pb={6}>
+          <Text>
+            Connected Ledger device does not have required public key to sign
+            this transaction. Please, connect the proper Ledger device and try
+            again.
+          </Text>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            variant="outline"
+            colorScheme="red"
+            onClick={disconnectAndClose}
+          >
+            Disconnect
+          </Button>
+          <Spacer />
+          <Button colorScheme="blue" onClick={modalWrongDevice.onClose}>
+            OK
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
@@ -206,6 +248,7 @@ function Connected({ device }: { device: LedgerDevice }) {
       />
       <DeviceReconnectModal />
       <DeviceApprovalModal />
+      <WrongDeviceModal />
     </>
   );
 }
