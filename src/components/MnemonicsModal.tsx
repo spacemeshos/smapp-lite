@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 import {
   Button,
@@ -14,19 +15,14 @@ import {
 } from '@chakra-ui/react';
 import { useCopyToClipboard } from '@uidotdev/usehooks';
 
-type MnemonicsModalProps = {
-  mnemonics: string;
-  isOpen: boolean;
-  onClose: () => void;
-};
+import useMnemonics from '../hooks/useMnemonics';
 
-function MnemonicsModal({
-  mnemonics,
-  isOpen,
-  onClose,
-}: MnemonicsModalProps): JSX.Element {
+function MnemonicsModal(): JSX.Element {
+  const { mnemonics, closeMnemonicsModal, isOpen } = useMnemonics();
   const [isCopied, setIsCopied] = useState(false);
   const [, copy] = useCopyToClipboard();
+
+  const { setValue, register } = useForm<{ mnemonics: string }>();
 
   let timeout: ReturnType<typeof setTimeout>;
   const onCopyClick = (data: string) => () => {
@@ -38,8 +34,16 @@ function MnemonicsModal({
     }, 5000);
   };
 
+  useEffect(() => {
+    // Used to clean up mnemonics from memory
+    setValue('mnemonics', mnemonics);
+    return () => {
+      setValue('mnemonics', '');
+    };
+  }, [mnemonics, setValue]);
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={closeMnemonicsModal} isCentered>
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
@@ -49,7 +53,14 @@ function MnemonicsModal({
             Please keep your mnemonics secret and do not share with anyone. They
             can be used to restore your wallet and access to your funds.
           </Text>
-          <Textarea readOnly value={mnemonics} rows={4} resize="none" />
+          <Textarea
+            {...register('mnemonics', {
+              value: mnemonics,
+            })}
+            readOnly
+            rows={4}
+            resize="none"
+          />
           <Text fontSize="xs" color="gray" mt={2}>
             We recommend you to remember mnemonics and not store them on your
             computer. Or write them down on a piece of paper and keep it in a
@@ -60,7 +71,7 @@ function MnemonicsModal({
           <Button isDisabled={isCopied} onClick={onCopyClick(mnemonics)} w={20}>
             {isCopied ? 'Copied' : 'Copy'}
           </Button>
-          <Button colorScheme="blue" onClick={onClose} ml={2}>
+          <Button colorScheme="blue" onClick={closeMnemonicsModal} ml={2}>
             OK
           </Button>
         </ModalFooter>
