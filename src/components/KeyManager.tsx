@@ -12,7 +12,6 @@ import {
   DrawerContent,
   DrawerOverlay,
   Flex,
-  Portal,
   Tab,
   TabList,
   TabPanel,
@@ -176,232 +175,225 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
 
   return (
     <>
-      <Portal>
-        <Drawer
-          size="lg"
-          placement="right"
-          isOpen={isOpen}
-          onClose={closeHandler}
-        >
-          <DrawerOverlay />
-          <DrawerContent>
-            <DrawerCloseButton zIndex={2} />
-            <DrawerBody p={0}>
-              <Tabs
-                w="100%"
-                display="flex"
-                flexGrow={1}
-                flexDirection="column"
-                colorScheme="green"
-                position="relative"
-              >
-                <TabList h={14}>
-                  <Tab>Keys</Tab>
-                  <Tab>Accounts</Tab>
-                </TabList>
-                <TabPanels
-                  display="flex"
-                  flex={1}
-                  flexDir="column"
-                  fontSize="sm"
-                >
-                  <TabPanel display="flex" flexDir="column">
-                    <ButtonGroup size="sm" spacing={2} mb={4}>
-                      <Button onClick={createKeyPairModal.onOpen}>
-                        <IconPlus size={BUTTON_ICON_SIZE} />
-                        <Text as="span" ml={1}>
-                          Create new key
+      <Drawer
+        size="lg"
+        placement="right"
+        isOpen={isOpen}
+        onClose={closeHandler}
+      >
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton zIndex={2} />
+          <DrawerBody p={0}>
+            <Tabs
+              w="100%"
+              display="flex"
+              flexGrow={1}
+              flexDirection="column"
+              colorScheme="green"
+              position="relative"
+            >
+              <TabList h={14}>
+                <Tab>Keys</Tab>
+                <Tab>Accounts</Tab>
+              </TabList>
+              <TabPanels display="flex" flex={1} flexDir="column" fontSize="sm">
+                <TabPanel display="flex" flexDir="column">
+                  <ButtonGroup size="sm" spacing={2} mb={4}>
+                    <Button onClick={createKeyPairModal.onOpen}>
+                      <IconPlus size={BUTTON_ICON_SIZE} />
+                      <Text as="span" ml={1}>
+                        Create new key
+                      </Text>
+                    </Button>
+                    <Button onClick={importFromLedgerModal.onOpen}>
+                      <IconDeviceUsb size={BUTTON_ICON_SIZE} />
+                      <Text as="span" ml={1}>
+                        Import from Ledger
+                      </Text>
+                    </Button>
+                    <Button onClick={importKeyPairModal.onOpen}>
+                      <IconFileImport size={BUTTON_ICON_SIZE} />
+                      <Text as="span" ml={1}>
+                        Import secret key
+                      </Text>
+                    </Button>
+                  </ButtonGroup>
+                  <Box flex={1}>
+                    {(wallet?.keychain ?? []).map((key) => (
+                      <Box
+                        key={key.publicKey}
+                        mb={2}
+                        p={2}
+                        backgroundColor="blackAlpha.300"
+                        borderRadius="md"
+                      >
+                        {key.type === KeyPairType.Software ? (
+                          <Button
+                            size="xx-small"
+                            p={1}
+                            fontSize="xx-small"
+                            fontWeight="normal"
+                            float="right"
+                            display="flex"
+                            alignItems="center"
+                            borderRadius="sm"
+                            textTransform="uppercase"
+                            gap={1}
+                            onClick={exportSecretKey(key)}
+                          >
+                            <IconKey size={12} />
+                            Export secret key
+                          </Button>
+                        ) : (
+                          <Badge
+                            p={1}
+                            fontSize="xx-small"
+                            fontWeight="normal"
+                            float="right"
+                            display="flex"
+                            alignItems="center"
+                            colorScheme="yellow"
+                            gap={1}
+                          >
+                            <IconDeviceUsb size={12} />
+                            Hardware
+                          </Badge>
+                        )}
+                        <Text fontWeight="bold" mb={1}>
+                          {key.displayName}
                         </Text>
-                      </Button>
-                      <Button onClick={importFromLedgerModal.onOpen}>
-                        <IconDeviceUsb size={BUTTON_ICON_SIZE} />
-                        <Text as="span" ml={1}>
-                          Import from Ledger
-                        </Text>
-                      </Button>
-                      <Button onClick={importKeyPairModal.onOpen}>
-                        <IconFileImport size={BUTTON_ICON_SIZE} />
-                        <Text as="span" ml={1}>
-                          Import secret key
-                        </Text>
-                      </Button>
-                    </ButtonGroup>
-                    <Box flex={1}>
-                      {(wallet?.keychain ?? []).map((key) => (
+
+                        <Text fontSize="xx-small">Public Key</Text>
+                        <Flex>
+                          <Text flex={1} style={{ lineBreak: 'anywhere' }}>
+                            0x{key.publicKey}
+                          </Text>
+                          <CopyButton value={`0x${key.publicKey}`} />
+                        </Flex>
+                      </Box>
+                    ))}
+                  </Box>
+                </TabPanel>
+                <TabPanel display="flex" flexDir="column">
+                  <ButtonGroup size="sm" spacing={2} mb={4}>
+                    <Button onClick={createAccountModal.onOpen}>
+                      <IconPlus size={BUTTON_ICON_SIZE} />
+                      <Text as="span" ml={1}>
+                        Create new account
+                      </Text>
+                    </Button>
+                    <Button onClick={importAccountModal.onOpen}>
+                      <IconFileImport size={BUTTON_ICON_SIZE} />
+                      <Text as="span" ml={1}>
+                        Import account
+                      </Text>
+                    </Button>
+                  </ButtonGroup>
+                  <Box flex={1}>
+                    {accounts.map((acc) => {
+                      const keys = getKeysByAccount(acc);
+                      return (
                         <Box
-                          key={key.publicKey}
+                          key={safeKeyForAccount(acc)}
                           mb={2}
                           p={2}
                           backgroundColor="blackAlpha.300"
                           borderRadius="md"
                         >
-                          {key.type === KeyPairType.Software ? (
-                            <Button
-                              size="xx-small"
-                              p={1}
-                              fontSize="xx-small"
-                              fontWeight="normal"
-                              float="right"
-                              display="flex"
-                              alignItems="center"
-                              borderRadius="sm"
-                              textTransform="uppercase"
-                              gap={1}
-                              onClick={exportSecretKey(key)}
-                            >
-                              <IconKey size={12} />
-                              Export secret key
-                            </Button>
-                          ) : (
+                          <Button
+                            size="xx-small"
+                            p={1}
+                            fontSize="xx-small"
+                            fontWeight="normal"
+                            float="right"
+                            display="flex"
+                            alignItems="center"
+                            borderRadius="sm"
+                            textTransform="uppercase"
+                            gap={1}
+                            onClick={() => exportAccount(acc)}
+                          >
+                            <IconKey size={12} />
+                            Export account
+                          </Button>
+                          <Text fontSize="md">
+                            <strong>{acc.displayName}</strong>
                             <Badge
-                              p={1}
-                              fontSize="xx-small"
                               fontWeight="normal"
-                              float="right"
-                              display="flex"
-                              alignItems="center"
-                              colorScheme="yellow"
-                              gap={1}
+                              fontSize="xx-small"
+                              ml={1}
+                              colorScheme={getTemplateColorByKey(
+                                acc.templateAddress
+                              )}
                             >
-                              <IconDeviceUsb size={12} />
-                              Hardware
+                              {getTemplateNameByKey(acc.templateAddress)}
                             </Badge>
-                          )}
-                          <Text fontWeight="bold" mb={1}>
-                            {key.displayName}
+                            <Badge
+                              display="inline-flex"
+                              alignItems="center"
+                              fontWeight="normal"
+                              fontSize="xx-small"
+                              ml={1}
+                              colorScheme="yellow"
+                            >
+                              {keys.length === 1 &&
+                                keys[0] &&
+                                renderSingleKey(keys[0])}
+                              {
+                                /* eslint-disable max-len */
+                                keys.length > 1 &&
+                                  `${keys.length} / ${
+                                    (
+                                      acc.spawnArguments as MultiSigSpawnArguments
+                                    ).Required
+                                  } keys`
+                                /* eslint-enable max-len */
+                              }
+                              {keys.length === 0 && (
+                                <>
+                                  <IconEyeglass2 size={10} />
+                                  <Text as="span" ml={1}>
+                                    View-only
+                                  </Text>
+                                </>
+                              )}
+                            </Badge>
+                          </Text>
+                          <Text mb={4}>
+                            {acc.address}
+                            <CopyButton value={acc.address} />
+                            <ExplorerButton
+                              dataType="accounts"
+                              value={acc.address}
+                              ml={1}
+                            />
                           </Text>
 
-                          <Text fontSize="xx-small">Public Key</Text>
-                          <Flex>
-                            <Text flex={1} style={{ lineBreak: 'anywhere' }}>
-                              0x{key.publicKey}
-                            </Text>
-                            <CopyButton value={`0x${key.publicKey}`} />
-                          </Flex>
-                        </Box>
-                      ))}
-                    </Box>
-                  </TabPanel>
-                  <TabPanel display="flex" flexDir="column">
-                    <ButtonGroup size="sm" spacing={2} mb={4}>
-                      <Button onClick={createAccountModal.onOpen}>
-                        <IconPlus size={BUTTON_ICON_SIZE} />
-                        <Text as="span" ml={1}>
-                          Create new account
-                        </Text>
-                      </Button>
-                      <Button onClick={importAccountModal.onOpen}>
-                        <IconFileImport size={BUTTON_ICON_SIZE} />
-                        <Text as="span" ml={1}>
-                          Import account
-                        </Text>
-                      </Button>
-                    </ButtonGroup>
-                    <Box flex={1}>
-                      {accounts.map((acc) => {
-                        const keys = getKeysByAccount(acc);
-                        return (
-                          <Box
-                            key={safeKeyForAccount(acc)}
-                            mb={2}
-                            p={2}
-                            backgroundColor="blackAlpha.300"
-                            borderRadius="md"
-                          >
-                            <Button
-                              size="xx-small"
-                              p={1}
-                              fontSize="xx-small"
-                              fontWeight="normal"
-                              float="right"
-                              display="flex"
-                              alignItems="center"
-                              borderRadius="sm"
-                              textTransform="uppercase"
-                              gap={1}
-                              onClick={() => exportAccount(acc)}
-                            >
-                              <IconKey size={12} />
-                              Export account
-                            </Button>
-                            <Text fontSize="md">
-                              <strong>{acc.displayName}</strong>
-                              <Badge
-                                fontWeight="normal"
+                          <Box color="grey">
+                            {Object.entries(
+                              withoutInitialUnlockAmount(acc.spawnArguments)
+                            ).map(([k, v]) => (
+                              <Box
+                                key={`${safeKeyForAccount(acc)}_${k}_wtf`}
+                                mt={1}
                                 fontSize="xx-small"
-                                ml={1}
-                                colorScheme={getTemplateColorByKey(
-                                  acc.templateAddress
-                                )}
+                                wordBreak="break-all"
                               >
-                                {getTemplateNameByKey(acc.templateAddress)}
-                              </Badge>
-                              <Badge
-                                display="inline-flex"
-                                alignItems="center"
-                                fontWeight="normal"
-                                fontSize="xx-small"
-                                ml={1}
-                                colorScheme="yellow"
-                              >
-                                {keys.length === 1 &&
-                                  keys[0] &&
-                                  renderSingleKey(keys[0])}
-                                {
-                                  /* eslint-disable max-len */
-                                  keys.length > 1 &&
-                                    `${keys.length} / ${
-                                      (
-                                        acc.spawnArguments as MultiSigSpawnArguments
-                                      ).Required
-                                    } keys`
-                                  /* eslint-enable max-len */
-                                }
-                                {keys.length === 0 && (
-                                  <>
-                                    <IconEyeglass2 size={10} />
-                                    <Text as="span" ml={1}>
-                                      View-only
-                                    </Text>
-                                  </>
-                                )}
-                              </Badge>
-                            </Text>
-                            <Text mb={4}>
-                              {acc.address}
-                              <CopyButton value={acc.address} />
-                              <ExplorerButton
-                                dataType="accounts"
-                                value={acc.address}
-                                ml={1}
-                              />
-                            </Text>
-
-                            <Box color="grey">
-                              {Object.entries(
-                                withoutInitialUnlockAmount(acc.spawnArguments)
-                              ).map(([k, v]) => (
-                                <Box
-                                  key={`${safeKeyForAccount(acc)}_${k}_wtf`}
-                                  mt={1}
-                                  fontSize="xx-small"
-                                  wordBreak="break-all"
-                                >
-                                  {k}: {JSON.stringify(v)}
-                                </Box>
-                              ))}
-                            </Box>
+                                {k}: {JSON.stringify(v)}
+                              </Box>
+                            ))}
                           </Box>
-                        );
-                      })}
-                    </Box>
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
-            </DrawerBody>
-          </DrawerContent>
-        </Drawer>
-      </Portal>
+                        </Box>
+                      );
+                    })}
+                  </Box>
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
       <CreateKeyPairModal
         isOpen={createKeyPairModal.isOpen}
         onClose={createKeyPairModal.onClose}

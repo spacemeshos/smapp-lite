@@ -12,7 +12,6 @@ import {
   DrawerOverlay,
   Flex,
   IconButton,
-  Portal,
   Text,
   Tooltip,
   UseDisclosureReturn,
@@ -203,108 +202,106 @@ function TxDetails({
   hrp,
 }: TxDetailsProps): JSX.Element | null {
   return (
-    <Portal>
-      <Drawer placement="right" isOpen={disclosure.isOpen} onClose={onClose}>
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
+    <Drawer placement="right" isOpen={disclosure.isOpen} onClose={onClose}>
+      <DrawerOverlay />
+      <DrawerContent>
+        <DrawerCloseButton />
 
-          <DrawerHeader>Transaction details</DrawerHeader>
+        <DrawerHeader>Transaction details</DrawerHeader>
 
-          <DrawerBody>
-            {tx === null ? (
-              <Text>No transaction selected</Text>
-            ) : (
-              <>
-                <Row
-                  label="Datetime"
-                  value={
-                    tx.layer
-                      ? formatTimestamp(
-                          timestampByLayer(
-                            genesisTime,
-                            layerDurationSec,
-                            tx.layer
-                          )
+        <DrawerBody>
+          {tx === null ? (
+            <Text>No transaction selected</Text>
+          ) : (
+            <>
+              <Row
+                label="Datetime"
+                value={
+                  tx.layer
+                    ? formatTimestamp(
+                        timestampByLayer(
+                          genesisTime,
+                          layerDurationSec,
+                          tx.layer
                         )
-                      : formatTimestamp(Date.now())
-                  }
+                      )
+                    : formatTimestamp(Date.now())
+                }
+              />
+              <Row label="ID" value={tx.id} isCopyable explorer="txs" />
+              <Text fontSize="sm">
+                <CheckCircleIcon
+                  color={getStatusColor(tx.state)}
+                  mr={2}
+                  mb={1}
                 />
-                <Row label="ID" value={tx.id} isCopyable explorer="txs" />
-                <Text fontSize="sm">
-                  <CheckCircleIcon
-                    color={getStatusColor(tx.state)}
-                    mr={2}
-                    mb={1}
-                  />
-                  {formatTxState(tx.state)}
+                {formatTxState(tx.state)}
+              </Text>
+              {tx.state === 'TRANSACTION_STATE_REJECTED' && tx.message && (
+                <Text
+                  fontSize="xs"
+                  _firstLetter={{ textTransform: 'capitalize' }}
+                >
+                  {tx.message}
                 </Text>
-                {tx.state === 'TRANSACTION_STATE_REJECTED' && tx.message && (
-                  <Text
-                    fontSize="xs"
-                    _firstLetter={{ textTransform: 'capitalize' }}
-                  >
-                    {tx.message}
-                  </Text>
-                )}
+              )}
 
-                <Box mt={6}>
+              <Box mt={6}>
+                <Row
+                  label="Principal"
+                  value={tx.principal}
+                  isCopyable
+                  explorer="accounts"
+                />
+                <Row
+                  label="Transaction type"
+                  value={`${tx.template.name}.${tx.template.methodName}`}
+                />
+                {renderTxSpecificData(hrp, tx)}
+              </Box>
+              <Flex mt={6}>
+                <Box flex={1} pr={4}>
                   <Row
-                    label="Principal"
-                    value={tx.principal}
-                    isCopyable
-                    explorer="accounts"
+                    label="Fee"
+                    value={formatSmidge(
+                      BigInt(tx.gas.maxGas) * BigInt(tx.gas.price)
+                    )}
                   />
-                  <Row
-                    label="Transaction type"
-                    value={`${tx.template.name}.${tx.template.methodName}`}
-                  />
-                  {renderTxSpecificData(hrp, tx)}
                 </Box>
-                <Flex mt={6}>
-                  <Box flex={1} pr={4}>
-                    <Row
-                      label="Fee"
-                      value={formatSmidge(
-                        BigInt(tx.gas.maxGas) * BigInt(tx.gas.price)
-                      )}
-                    />
-                  </Box>
-                  <Box flex={1} pl={4}>
-                    <Row label="Nonce" value={tx.nonce.counter.toString()} />
-                  </Box>
-                </Flex>
-                <Flex>
-                  <Box flex={1} pr={4}>
-                    <Row
-                      label="Layer"
-                      value={tx.layer ? tx.layer.toString() : 'Waiting...'}
-                      explorer="layers"
-                    />
-                  </Box>
-                  <Box flex={1} pl={4}>
-                    <Row
-                      label="Epoch"
-                      value={
-                        tx.layer
-                          ? epochByLayer(layersPerEpoch, tx.layer).toString()
-                          : 'Waiting...'
-                      }
-                      explorer="epochs"
-                    />
-                  </Box>
-                </Flex>
-              </>
-            )}
-          </DrawerBody>
-          <DrawerFooter>
-            {tx === null ? null : (
-              <ExplorerButton full dataType="txs" value={tx.id} />
-            )}
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
-    </Portal>
+                <Box flex={1} pl={4}>
+                  <Row label="Nonce" value={tx.nonce.counter.toString()} />
+                </Box>
+              </Flex>
+              <Flex>
+                <Box flex={1} pr={4}>
+                  <Row
+                    label="Layer"
+                    value={tx.layer ? tx.layer.toString() : 'Waiting...'}
+                    explorer="layers"
+                  />
+                </Box>
+                <Box flex={1} pl={4}>
+                  <Row
+                    label="Epoch"
+                    value={
+                      tx.layer
+                        ? epochByLayer(layersPerEpoch, tx.layer).toString()
+                        : 'Waiting...'
+                    }
+                    explorer="epochs"
+                  />
+                </Box>
+              </Flex>
+            </>
+          )}
+        </DrawerBody>
+        <DrawerFooter>
+          {tx === null ? null : (
+            <ExplorerButton full dataType="txs" value={tx.id} />
+          )}
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 }
 
