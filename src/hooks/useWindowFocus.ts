@@ -1,23 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-function useWindowFocus() {
+function useWindowFocus(timeout = 0) {
   const [focused, setFocused] = useState(true);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   useEffect(() => {
     const focusHandler = () => {
-      if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.log('Window is focused');
-        return;
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
       }
       setFocused(true);
     };
     const blurHandler = () => {
-      if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.log('Window is blurred');
-        return;
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
       }
-      setFocused(false);
+      timeoutRef.current = setTimeout(() => {
+        setFocused(false);
+        timeoutRef.current = null;
+      }, timeout);
     };
     window.addEventListener('focus', focusHandler);
     window.addEventListener('blur', blurHandler);
@@ -25,7 +26,7 @@ function useWindowFocus() {
       window.removeEventListener('focus', focusHandler);
       window.removeEventListener('blur', blurHandler);
     };
-  }, []);
+  }, [timeout]);
 
   return focused;
 }

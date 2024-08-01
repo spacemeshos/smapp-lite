@@ -21,7 +21,7 @@ function IdleAlert(): JSX.Element {
   const { isWalletUnlocked } = useWallet();
   const lockWallet = useLockWallet();
   const isIdle = useIdle(IDLE_TIME_SECONDS * 1000);
-  const isFocused = useWindowFocus();
+  const isFocused = useWindowFocus(IDLE_TIME_SECONDS * 1000);
   const [showModal, setShowModal] = useState(false);
   const [countdown, setCountdown] = useState(IDLE_ALERT_SECONDS);
   const [shouldLockWallet, setShouldLockWallet] = useState(false);
