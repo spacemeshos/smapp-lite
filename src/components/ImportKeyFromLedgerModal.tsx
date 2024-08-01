@@ -36,7 +36,7 @@ function ImportKeyFromLedgerModal({
   isOpen,
   onClose,
 }: ImportKeyFromLedgerModalProps): JSX.Element {
-  const { addForeignKey, createAccount, wallet } = useWallet();
+  const { addForeignKey, createAccount } = useWallet();
   const { withPassword } = usePassword();
   const { checkDeviceConnection, connectedDevice, modalConnect } =
     useHardwareWallet();
@@ -118,9 +118,7 @@ function ImportKeyFromLedgerModal({
               label="Derivation Path"
               register={register('path', {
                 required: 'Derivation path is required',
-                value: Bip32KeyDerivation.createPath(
-                  (wallet?.keychain || []).length
-                ),
+                value: Bip32KeyDerivation.createPath(0),
                 validate: (value) => {
                   const valid = Bip32KeyDerivation.isValidPath(value);
                   if (!valid) {

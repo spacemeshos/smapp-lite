@@ -65,6 +65,7 @@ export type UseHardwareWalletHook = {
   modalConnect: UseDisclosureReturn;
   modalReconnect: UseDisclosureReturn;
   modalApproval: UseDisclosureReturn;
+  modalWrongDevice: UseDisclosureReturn;
   // Actions
   connectDevice: (transport: LedgerTransports) => void;
   reconnectDevice: () => Promise<void>;
@@ -94,6 +95,7 @@ const useHardwareWallet = (): UseHardwareWalletHook => {
   const modalConnect = useDisclosure({ id: 'connectDevice' });
   const modalReconnect = useDisclosure({ id: 'reconnectDevice' });
   const modalApproval = useDisclosure({ id: 'approvalDevice' });
+  const modalWrongDevice = useDisclosure({ id: 'wrongDevice' });
 
   const handleLedgerError = (e: Error) => {
     modalReconnect.onOpen();
@@ -192,6 +194,7 @@ const useHardwareWallet = (): UseHardwareWalletHook => {
     modalConnect,
     modalReconnect,
     modalApproval,
+    modalWrongDevice,
     // Actions
     connectDevice,
     reconnectDevice,
@@ -210,6 +213,7 @@ export default singletonHook(
     modalConnect: getDisclosureDefaults(),
     modalReconnect: getDisclosureDefaults(),
     modalApproval: getDisclosureDefaults(),
+    modalWrongDevice: getDisclosureDefaults(),
     // Actions
     connectDevice: noop,
     reconnectDevice: Promise.resolve,
