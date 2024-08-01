@@ -69,7 +69,6 @@
 3. Check behavior when attempting to click "Next Step" with only some of the words correctly placed.
 4. Ensure that clicking 'Next Step' clears all filled words and prompts the user to fill in the 4 words again.
 
-
 ## Password Setup Page
 
 1. Verify the password setup page loads successfully.
@@ -172,6 +171,30 @@
 27. Ensure the system correctly updates the file selection and resets any error messages after retrying.
 28. Verify that users can cancel the file upload process if needed.
 29. Ensure that any partially uploaded files are handled correctly and the user can retry.
+
+# Log in / Log out
+
+1. Verify that navigating to `https://wallet.spacemesh.io/` redirects instantly to `https://wallet.spacemesh.io/unlock`.
+2. Verify the login page loads successfully - displays the following elements: Input field to enter the password, "Unlock" button. Footer message with "Wipe out" button.
+3. Ensure the password input field accepts text input.
+4. Verify that the input field has the indication for password entry and that it's securely masked (dots or asteriks replace chars)
+5. Check the eye icon, ensure it unmasks the password input.
+6. Verify the "Unlock" button is disabled if the password field is empty.
+7. Ensure the "Unlock" button is enabled when a password is entered.
+8. Verify that entering the correct password and clicking the "Unlock" button logs the user in.
+9. Ensure the user is navigated to the wallet overview screen upon successful login.
+10. Verify that entering an incorrect password and clicking the "Unlock" button does not log the user in.
+11. Ensure an appropriate error message is displayed for incorrect password attempts.
+12. Verify that clicking the "Wipe out" button prompts a confirmation dialog to avoid accidental data loss.
+13. Check that the confirmation dialog asks the user to confirm the wipe-out action.
+14. Ensure that confirming the wipe-out action deletes the current wallet data and navigates the user to the appropriate page for creating or recovering a wallet.
+15. Verify that canceling the wipe-out action keeps the current wallet data intact and returns the user to the login page.
+16. Verify that the log out button is visible in the upper right corner of the wallet overview screen (currently "lock" icon).
+17. Ensure the "lock" button is clickable.
+18. Check that clicking the "lock" button logs the user out and redirects them to the login page.
+19. Check behavior when the user's session expires: ensure the user is redirected to the login page and required to re-enter their password.
+20. Verify that the password is securely transmitted and not exposed in any way.
+21. Ensure the system correctly handles password encryption and validation.
 
 # Edge Cases
 
