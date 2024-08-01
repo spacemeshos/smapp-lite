@@ -285,6 +285,15 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
         currerntAccount.spawnArguments
       );
       const pinripalBytes = getWords(principal);
+      const commonProps = {
+        eligibleKeys: extractEligibleKeys(
+          currerntAccount,
+          accountsList,
+          wallet?.keychain ?? []
+        ),
+        isMultiSig: isAnyMultiSig(currerntAccount),
+        required: extractRequiredSignatures(currerntAccount),
+      };
 
       switch (data.payload.methodSelector) {
         case StdMethods.Spawn: {
@@ -313,16 +322,11 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               principal,
               form: data,
               encoded,
-              eligibleKeys: extractEligibleKeys(
-                currerntAccount,
-                accountsList,
-                wallet?.keychain ?? []
-              ),
               description: `Spawn ${getTemplateNameByKey(
                 data.templateAddress
               )} account using ${spawnAccount}`,
               Arguments,
-              isMultiSig: isAnyMultiSig(currerntAccount),
+              ...commonProps,
             });
             updateEstimatedGas(encoded, 0);
           }
@@ -352,17 +356,11 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               principal,
               form: data,
               encoded,
-              eligibleKeys: extractEligibleKeys(
-                currerntAccount,
-                accountsList,
-                wallet?.keychain ?? []
-              ),
               description: `Spawn ${getTemplateNameByKey(
                 data.templateAddress
               )} account: ${currerntAccount.displayName}`,
               Arguments,
-              isMultiSig: isAnyMultiSig(currerntAccount),
-              required: args.Required,
+              ...commonProps,
             });
             updateEstimatedGas(encoded, args.Required);
           }
@@ -388,16 +386,11 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               principal,
               form: data,
               encoded,
-              eligibleKeys: extractEligibleKeys(
-                currerntAccount,
-                accountsList,
-                wallet?.keychain ?? []
-              ),
               description: `Spawn ${getTemplateNameByKey(
                 data.templateAddress
               )} account: ${currerntAccount.displayName}`,
               Arguments,
-              isMultiSig: isAnyMultiSig(currerntAccount),
+              ...commonProps,
             });
             updateEstimatedGas(encoded, 0);
           }
@@ -423,16 +416,11 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               principal,
               form: data,
               encoded,
-              eligibleKeys: extractEligibleKeys(
-                currerntAccount,
-                accountsList,
-                wallet?.keychain ?? []
-              ),
               description: `Send ${formatSmidge(args.Amount)} to ${
                 args.Destination
               }`,
               Arguments,
-              isMultiSig: isAnyMultiSig(currerntAccount),
+              ...commonProps,
             });
             updateEstimatedGas(encoded, 0);
           }
@@ -454,24 +442,17 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               }
             );
 
-            const required = extractRequiredSignatures(currerntAccount);
             setTxData({
               principal,
               form: data,
               encoded,
-              eligibleKeys: extractEligibleKeys(
-                currerntAccount,
-                accountsList,
-                wallet?.keychain ?? []
-              ),
               description: `Send ${formatSmidge(args.Amount)} to ${
                 args.Destination
               }`,
               Arguments,
-              isMultiSig: isAnyMultiSig(currerntAccount),
-              required,
+              ...commonProps,
             });
-            updateEstimatedGas(encoded, required);
+            updateEstimatedGas(encoded, commonProps.required);
           }
 
           if (data.templateAddress === StdPublicKeys.Vault) {
@@ -493,14 +474,9 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               principal,
               form: data,
               encoded,
-              eligibleKeys: extractEligibleKeys(
-                currerntAccount,
-                accountsList,
-                wallet?.keychain ?? []
-              ),
               description: `Spawn ${formatSmidge(args.Amount)}`,
               Arguments,
-              isMultiSig: isAnyMultiSig(currerntAccount),
+              ...commonProps,
             });
             updateEstimatedGas(encoded, 0);
           }
@@ -523,24 +499,17 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               }
             );
 
-            const required = extractRequiredSignatures(currerntAccount);
             setTxData({
               principal,
               form: data,
               encoded,
-              eligibleKeys: extractEligibleKeys(
-                currerntAccount,
-                accountsList,
-                wallet?.keychain ?? []
-              ),
               description: `Drain ${formatSmidge(args.Amount)} from ${
                 args.Vault
               } to ${args.Destination}`,
               Arguments,
-              isMultiSig: isAnyMultiSig(currerntAccount),
-              required,
+              ...commonProps,
             });
-            updateEstimatedGas(encoded, required);
+            updateEstimatedGas(encoded, commonProps.required);
           }
           break;
         }
@@ -634,6 +603,23 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
     return SingleSigTemplate.methods[0].sign(txData.encoded, signature);
   };
 
+  const signWithExistingSignatures = (
+    tx: Uint8Array,
+    signatures: SingleSig | MultiSigPart[]
+  ) => {
+    if (!currerntAccount) {
+      throw new Error('Cannot sign transaction by unknown account');
+    }
+
+    if (currerntAccount.templateAddress === StdPublicKeys.SingleSig) {
+      return SingleSigTemplate.methods[0].sign(tx, signatures as SingleSig);
+    }
+    return MultiSigTemplate.methods[0].sign(
+      tx,
+      (signatures as MultiSigPart[]).sort((a, b) => Number(a.Ref - b.Ref))
+    );
+  };
+
   const signAndPublish = async (
     signWith: HexString,
     externalSignature?: HexString
@@ -647,7 +633,13 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
         'Cannot sign and publish transaction: No Genesis ID, please connect to the network first'
       );
     }
-    const signedTx = await sign(signWith, externalSignature);
+    const shouldSign =
+      !txData.isMultiSig || txData.signatures?.length !== txData.required;
+
+    const signedTx = shouldSign
+      ? await sign(signWith, externalSignature)
+      : signWithExistingSignatures(txData.encoded, txData.signatures ?? []);
+
     if (signedTx) {
       try {
         const txId = await publishTx(signedTx);
@@ -689,7 +681,9 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
         setTxData(null);
         confirmationModal.onClose();
       }
+      return true;
     }
+    return false;
   };
 
   const exportTx = async (
@@ -717,7 +711,9 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
         `tx-${signWith ? 'signed' : 'unsigned'}-${hex.slice(-6)}.hex`,
         'text/plain'
       );
+      return true;
     }
+    return false;
   };
 
   const importTx = async (txs: HexString[]) => {
@@ -748,9 +744,17 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
     }
 
     const method = Number(headers[0].MethodSelector) as MethodSelectors;
-    const tpl = getTemplateMethod(currerntAccount.templateAddress, method);
-    const parsed = txs.map((x) => tpl.decode(fromHexString(x)));
-    const rawTx = parsed[0];
+    const templateAddress =
+      method === MethodSelectors.Spawn
+        ? toHexString(
+            Codecs.SpawnTxHeader.dec(txs[0] as HexString).TemplateAddress
+          )
+        : currerntAccount.templateAddress;
+    const tpl = getTemplateMethod(templateAddress, method);
+    const parsed = txs.map((x) =>
+      tpl.decodeWithoutSignatures(fromHexString(x))
+    );
+    const rawTx = parsed[0]?.tx;
 
     if (!rawTx) {
       throw new Error('Cannot parse imported transaction');
@@ -763,7 +767,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
         // TODO: TS cannot infer the type properly
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        x.Payload
+        x.tx.Payload
       )
     );
     if (
@@ -783,8 +787,6 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
     );
 
     const convertToFormValues = (tx: typeof rawTx): FormValues => {
-      const templateAddress =
-        currerntAccount.templateAddress as StdTemplateKeys;
       switch (method) {
         case MethodSelectors.Spawn: {
           if (templateAddress === StdPublicKeys.SingleSig) {
@@ -885,20 +887,18 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
 
     const extractSignatures = (): undefined | SingleSig | MultiSigPart[] => {
       // Extract SingleSig
-      if (
-        currerntAccount.templateAddress === StdPublicKeys.SingleSig ||
-        currerntAccount.templateAddress === StdPublicKeys.Vault
-      ) {
+      if (currerntAccount.templateAddress === StdPublicKeys.SingleSig) {
         return parsed.reduce(
-          (acc, next) => next.Signature || acc,
+          (acc, next) => (next.rest ? Codecs.SingleSig.dec(next.rest) : acc),
           undefined as undefined | SingleSig
         );
       }
       // Extract MultiSig parts
       const sigs = new Set<MultiSigPart>();
       parsed.forEach((next) => {
-        if (next.Signatures) {
-          next.Signatures.forEach((nextSig) => {
+        if (next.rest) {
+          const parsedSigs = Codecs.MultiSig.dec(next.rest);
+          parsedSigs.forEach((nextSig) => {
             sigs.add(nextSig);
           });
         }
@@ -909,10 +909,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
     const extractRefs = (
       signatures: undefined | SingleSig | MultiSigPart[]
     ) => {
-      if (
-        currerntAccount.templateAddress === StdPublicKeys.SingleSig ||
-        currerntAccount.templateAddress === StdPublicKeys.Vault
-      ) {
+      if (currerntAccount.templateAddress === StdPublicKeys.SingleSig) {
         return undefined;
       }
       return (signatures as MultiSigPart[]).map(({ Ref }) => Number(Ref));
@@ -970,6 +967,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
   };
 
   const showImportError = (err: Error) => {
+    // eslint-disable-next-line no-console
+    console.error('Cannot import transaction:', err);
     setImportErrors(err.message);
   };
 
@@ -1271,6 +1270,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
           onClose={onConfirmationModalClose}
           onSubmit={signAndPublish}
           onExport={exportTx}
+          isMultiSig={txData.isMultiSig ?? false}
+          required={txData.required}
           isLedgerRejected={isLedgerRejected}
         />
       )}
