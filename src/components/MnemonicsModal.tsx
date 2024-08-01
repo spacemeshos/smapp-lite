@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 import {
@@ -13,26 +13,14 @@ import {
   Text,
   Textarea,
 } from '@chakra-ui/react';
-import { useCopyToClipboard } from '@uidotdev/usehooks';
 
+import useCopy from '../hooks/useCopy';
 import useMnemonics from '../hooks/useMnemonics';
 
 function MnemonicsModal(): JSX.Element {
   const { mnemonics, closeMnemonicsModal, isOpen } = useMnemonics();
-  const [isCopied, setIsCopied] = useState(false);
-  const [, copy] = useCopyToClipboard();
-
   const { setValue, register } = useForm<{ mnemonics: string }>();
-
-  let timeout: ReturnType<typeof setTimeout>;
-  const onCopyClick = (data: string) => () => {
-    clearTimeout(timeout);
-    copy(data);
-    setIsCopied(true);
-    timeout = setTimeout(() => {
-      setIsCopied(false);
-    }, 5000);
-  };
+  const { isCopied, onCopy } = useCopy();
 
   useEffect(() => {
     // Used to clean up mnemonics from memory
@@ -68,7 +56,11 @@ function MnemonicsModal(): JSX.Element {
           </Text>
         </ModalBody>
         <ModalFooter>
-          <Button isDisabled={isCopied} onClick={onCopyClick(mnemonics)} w={20}>
+          <Button
+            isDisabled={isCopied}
+            onClick={() => onCopy(mnemonics)}
+            w={20}
+          >
             {isCopied ? 'Copied' : 'Copy'}
           </Button>
           <Button colorScheme="blue" onClick={closeMnemonicsModal} ml={2}>
