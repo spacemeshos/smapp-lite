@@ -65,8 +65,14 @@ export type ConfirmationData = {
 
 type ConfirmationModalProps = ConfirmationData & {
   onClose: () => void;
-  onSubmit: (signWith: HexString, externalSignature?: HexString) => void;
-  onExport: (signWith: HexString | null, externalSignature?: HexString) => void;
+  onSubmit: (
+    signWith: HexString,
+    externalSignature?: HexString
+  ) => Promise<boolean>;
+  onExport: (
+    signWith: HexString | null,
+    externalSignature?: HexString
+  ) => Promise<boolean>;
   isOpen: boolean;
   estimatedGas: bigint | null;
   isLedgerRejected?: boolean;
@@ -241,11 +247,13 @@ function ConfirmationModal({
       // If SingleSig with attached signature,
       // then put it into signature input
       setValue('signWith', EXTERNAL);
-      return;
+    } else {
+      // Otherwise select eligible keys as usually
+      setValue('signWith', eligibleKeys[0]?.publicKey || EXTERNAL);
     }
-    // Otherwise select eligible keys as usually
-    setValue('signWith', eligibleKeys[0]?.publicKey || EXTERNAL);
-  }, [eligibleKeys, hasSingleSig, setValue, signatures]);
+
+    return () => reset();
+  }, [eligibleKeys, hasSingleSig, setValue, signatures, reset]);
 
   useEffect(() => {
     if (signWith !== EXTERNAL) {
@@ -257,20 +265,26 @@ function ConfirmationModal({
     }
   }, [unregister, signWith, setValue, hasSingleSig, signatures]);
 
-  const submit = handleSubmit((data) => {
-    reset();
-    onSubmit(data.signWith, data.externalSignature);
+  const submit = handleSubmit(async (data) => {
+    const res = await onSubmit(data.signWith, data.externalSignature);
+    if (res) {
+      reset();
+    }
   });
 
-  const exportSigned = handleSubmit((data) => {
-    reset();
-    onExport(data.signWith, data.externalSignature);
+  const exportSigned = handleSubmit(async (data) => {
+    const res = await onExport(data.signWith, data.externalSignature);
+    if (res) {
+      reset();
+    }
   });
 
-  const exportUnsigned = () => {
-    reset();
-    onExport(null);
-  };
+  const exportUnsigned = handleSubmit(async () => {
+    const res = await onExport(null);
+    if (res) {
+      reset();
+    }
+  });
 
   const renderSignatures = () => {
     if (!signatures || signatures.length === 0) return null;

@@ -681,7 +681,9 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
         setTxData(null);
         confirmationModal.onClose();
       }
+      return true;
     }
+    return false;
   };
 
   const exportTx = async (
@@ -709,7 +711,9 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
         `tx-${signWith ? 'signed' : 'unsigned'}-${hex.slice(-6)}.hex`,
         'text/plain'
       );
+      return true;
     }
+    return false;
   };
 
   const importTx = async (txs: HexString[]) => {
