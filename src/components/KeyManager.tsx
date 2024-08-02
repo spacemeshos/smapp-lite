@@ -1,5 +1,4 @@
 import fileDownload from 'js-file-download';
-import { useState } from 'react';
 
 import {
   Badge,
@@ -32,13 +31,12 @@ import {
 } from '@tabler/icons-react';
 
 import { useCurrentHRP } from '../hooks/useNetworkSelectors';
+import useRevealSecretKey from '../hooks/useRevealSecretKey';
 import { useAccountsList } from '../hooks/useWalletSelectors';
-import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
 import {
   AccountWithAddress,
   KeyPairType,
-  SafeKey,
   SafeKeyWithType,
 } from '../types/wallet';
 import { BUTTON_ICON_SIZE } from '../utils/constants';
@@ -97,41 +95,20 @@ const renderSingleKey = (key: SafeKeyWithType): JSX.Element =>
   );
 
 function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
-  const [revealed, setRevealed] = useState({ displayName: '', secretKey: '' });
-  const { wallet, revealSecretKey } = useWallet();
+  const { wallet } = useWallet();
   const hrp = useCurrentHRP();
   const accounts = useAccountsList(hrp);
-  const { withPassword } = usePassword();
+
+  const { revealSecretKey } = useRevealSecretKey();
 
   const createKeyPairModal = useDisclosure();
   const importKeyPairModal = useDisclosure();
   const importFromLedgerModal = useDisclosure();
-  const revealSecretKeyModal = useDisclosure();
   const createAccountModal = useDisclosure();
   const importAccountModal = useDisclosure();
 
   const closeHandler = () => {
     onClose();
-  };
-  const onRevealSecretModalCloseHandler = () => {
-    setRevealed({ displayName: '', secretKey: '' });
-    revealSecretKeyModal.onClose();
-  };
-
-  const exportSecretKey = (key: SafeKey) => async () => {
-    const sk = await withPassword(
-      (password) => revealSecretKey(key.publicKey, password),
-      'Reveal secret key',
-      // eslint-disable-next-line max-len
-      `Please type the password to reveal secret key for account "${key.displayName}"`
-    );
-    if (sk) {
-      setRevealed({
-        displayName: key.displayName,
-        secretKey: sk,
-      });
-      revealSecretKeyModal.onOpen();
-    }
   };
 
   const exportAccount = (acc: AccountWithAddress) =>
@@ -240,7 +217,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                             borderRadius="sm"
                             textTransform="uppercase"
                             gap={1}
-                            onClick={exportSecretKey(key)}
+                            onClick={() => revealSecretKey(key)}
                           >
                             <IconKey size={12} />
                             Export secret key
@@ -407,12 +384,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
         isOpen={importFromLedgerModal.isOpen}
         onClose={importFromLedgerModal.onClose}
       />
-      <RevealSecretKeyModal
-        displayName={revealed.displayName}
-        secretKey={revealed.secretKey}
-        isOpen={revealSecretKeyModal.isOpen}
-        onClose={onRevealSecretModalCloseHandler}
-      />
+      <RevealSecretKeyModal />
       <CreateAccountModal
         isOpen={createAccountModal.isOpen}
         onClose={createAccountModal.onClose}
