@@ -42,16 +42,16 @@ const white = defineStyle({
 });
 
 const danger = defineStyle({
-  bg: 'red.800',
+  bg: 'red.600',
   borderColor: 'brand.darkGreen',
   borderWidth: '2px',
-  textColor: 'brand.darkGreen',
+  textColor: 'brand.lightGray',
   borderRadius: 'full',
   _hover: {
     bg: 'brand.darkGreen',
     borderColor: 'red.600',
     borderWidth: '2px',
-    textColor: 'brand.green',
+    textColor: 'red.600',
   },
 });
 
