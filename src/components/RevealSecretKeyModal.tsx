@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 
 import {
   Button,
@@ -12,57 +13,54 @@ import {
   Text,
   Textarea,
 } from '@chakra-ui/react';
-import { useCopyToClipboard } from '@uidotdev/usehooks';
 
-import { HexString } from '../types/common';
+import useCopy from '../hooks/useCopy';
+import useRevealSecretKey from '../hooks/useRevealSecretKey';
 
-type RevealSecretKeyProps = {
-  displayName: string;
-  secretKey: HexString;
-  isOpen: boolean;
-  onClose: () => void;
-};
+function RevealSecretKey(): JSX.Element {
+  const { secretKey, isOpen, closeSecretKeyModal } = useRevealSecretKey();
+  const { setValue, register } = useForm<{ secretKey: string }>();
+  const { isCopied, onCopy } = useCopy();
 
-function RevealSecretKey({
-  displayName,
-  secretKey,
-  isOpen,
-  onClose,
-}: RevealSecretKeyProps): JSX.Element {
-  const [isCopied, setIsCopied] = useState(false);
-  const [, copy] = useCopyToClipboard();
-
-  let timeout: ReturnType<typeof setTimeout>;
-  const onCopyClick = (data: string) => () => {
-    clearTimeout(timeout);
-    copy(data);
-    setIsCopied(true);
-    timeout = setTimeout(() => {
-      setIsCopied(false);
-    }, 5000);
-  };
+  useEffect(() => {
+    // Used to clean up mnemonics from memory
+    setValue('secretKey', secretKey?.secretKey || '');
+    return () => {
+      setValue('secretKey', '');
+    };
+  }, [secretKey, setValue]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={closeSecretKeyModal} isCentered>
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
         <ModalHeader>Secret Key</ModalHeader>
         <ModalBody>
           <Text mb={4}>
-            This is the secret key for account &quot;{displayName}&quot;.
+            This is the secret key for account &quot;
+            {secretKey?.displayName ?? ''}&quot;.
           </Text>
-          <Textarea readOnly value={secretKey} rows={4} resize="none" />
+          <Textarea
+            readOnly
+            {...register('secretKey', { value: secretKey?.secretKey ?? '' })}
+            rows={4}
+            resize="none"
+          />
           <Text fontSize="xs" color="gray" mt={2}>
             Please keep it secret and do not share it to anyone, otherwise your
             funds might be stolen.
           </Text>
         </ModalBody>
         <ModalFooter>
-          <Button isDisabled={isCopied} onClick={onCopyClick(secretKey)} w={20}>
+          <Button
+            isDisabled={isCopied}
+            onClick={() => onCopy(secretKey?.secretKey ?? '')}
+            w={20}
+          >
             {isCopied ? 'Copied' : 'Copy'}
           </Button>
-          <Button colorScheme="blue" onClick={onClose} ml={2}>
+          <Button colorScheme="blue" onClick={closeSecretKeyModal} ml={2}>
             Close
           </Button>
         </ModalFooter>

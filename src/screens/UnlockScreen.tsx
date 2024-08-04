@@ -27,7 +27,9 @@ function UnlockScreen(): JSX.Element {
     register,
     control,
     setError,
+    setValue,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormValues>();
 
@@ -37,6 +39,8 @@ function UnlockScreen(): JSX.Element {
       setError('password', { type: 'value', message: 'Invalid password' });
       return;
     }
+    setValue('password', '');
+    reset();
     navigate('/wallet');
   });
 
