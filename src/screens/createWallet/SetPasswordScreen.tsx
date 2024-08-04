@@ -6,10 +6,13 @@ import {
   Button,
   Card,
   CardBody,
+  CardHeader,
+  Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
   Text,
+  Image,
 } from '@chakra-ui/react';
 
 import BackButton from '../../components/BackButton';
@@ -17,6 +20,7 @@ import PasswordInput from '../../components/PasswordInput';
 import useWallet from '../../store/useWallet';
 
 import { useWalletCreation } from './WalletCreationContext';
+import logo from '../../assets/logo_white.svg';
 
 type FormValues = {
   password: string;
@@ -48,14 +52,15 @@ function SetPasswordScreen(): JSX.Element {
   });
 
   return (
-    <>
-      <BackButton onClick={reset} />
+    <Flex flexDir="column" alignItems="center">
+      <Image src={logo} width={200} mb={8} />
 
-      <Text fontSize="xl" mb={4} mt={2}>
-        Final step to access your wallet
-      </Text>
-
-      <Card fontSize="sm" borderRadius="xl" w="100%">
+      <Card fontSize="sm" paddingX={20} paddingY={5} w="50vw">
+        <CardHeader>
+          <Text fontSize="xl" mb={4} mt={2} textAlign="center">
+            Final step to access your wallet
+          </Text>
+        </CardHeader>
         <CardBody>
           <Form control={control}>
             <FormControl
@@ -119,13 +124,18 @@ function SetPasswordScreen(): JSX.Element {
                 <FormErrorMessage>{errors.confirm.message}</FormErrorMessage>
               )}
             </FormControl>
-            <Button type="submit" colorScheme="green" onClick={onSubmit}>
-              Create wallet
-            </Button>
+            <Flex width="100%" justifyContent="center">
+              <Button type="submit" colorScheme="green" onClick={onSubmit}>
+                Create wallet
+              </Button>
+            </Flex>
           </Form>
         </CardBody>
       </Card>
-    </>
+      <Flex width="100%" justifyContent="flex-start">
+        <BackButton onClick={reset} />
+      </Flex>
+    </Flex>
   );
 }
 

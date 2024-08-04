@@ -8,8 +8,10 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  Flex,
   SimpleGrid,
   Text,
+  Image,
 } from '@chakra-ui/react';
 import { useCopyToClipboard } from '@uidotdev/usehooks';
 
@@ -17,6 +19,7 @@ import BackButton from '../../components/BackButton';
 import useWallet from '../../store/useWallet';
 
 import { useWalletCreation } from './WalletCreationContext';
+import logo from '../../assets/logo_white.svg';
 
 function CreateMnemonicScreen(): JSX.Element {
   const { generateMnemonic } = useWallet();
@@ -41,31 +44,34 @@ function CreateMnemonicScreen(): JSX.Element {
   };
 
   return (
-    <>
-      <BackButton />
-      <Text fontSize="xl" mb={4}>
-        Create a new wallet
-      </Text>
-      <Button onClick={regenerateMnemonic} pt={2} pb={2} pl={4} pr={4}>
-        Generate new mnemonics
-      </Button>
-      <Card fontSize="sm" margin={[4, null]} borderRadius="xl" w="100%">
+    <Flex flexDir="column" alignItems="center">
+      <Image src={logo} width={200} mb={8} />
+
+      <Card fontSize="sm" margin={[4, null]} paddingX={20} paddingY={5}>
         <CardHeader pb={0}>
-          <Text color="orange.500" textAlign="center">
+          <Text
+            fontSize="28px"
+            color="brand.green"
+            mb={4}
+            textAlign="center"
+            fontFamily="Univers65"
+          >
+            Create a new wallet
+          </Text>
+          <Text as="b" fontSize="16px" textAlign="center">
             Please, save the mnemonic to the safe place and do not share with
             anyone.
           </Text>
         </CardHeader>
-        <CardBody>
-          <SimpleGrid columns={[2, null, 3]} spacing="10px">
+        <CardBody paddingY={10}>
+          <SimpleGrid columns={[2, null, 3]} spacing="0px">
             {mnemonic.split(' ').map((word, idx) => (
               <Box
                 // eslint-disable-next-line react/no-array-index-key
                 key={`${idx}_${word}`}
-                borderRadius="md"
                 borderWidth={1}
-                borderColor="whiteAlpha.800"
-                bg="whiteAlpha.50"
+                borderColor="spacemesh.900"
+                bg="spacemesh.850"
                 p={2}
               >
                 <Text as="span" fontSize="xx-small">
@@ -81,26 +87,42 @@ function CreateMnemonicScreen(): JSX.Element {
             onClick={onCopyClick}
             width="100%"
             disabled={isCopied}
+            bg="#F0F0F0EE"
             colorScheme={isCopied ? 'gray' : undefined}
-            color={isCopied ? 'green.300' : undefined}
           >
             {isCopied ? 'Mnemonic is copied to clipboard' : 'Copy to clipboard'}
           </Button>
+          <Text
+            as="u"
+            onClick={regenerateMnemonic}
+            pt={2}
+            pb={2}
+            pl={4}
+            pr={4}
+            textAlign="center"
+            cursor="pointer"
+          >
+            Generate new mnemonics
+          </Text>
         </CardFooter>
       </Card>
-      <Button
-        pt={2}
-        pb={2}
-        pl={4}
-        pr={4}
-        onClick={() => {
-          ctx.setMnemonic(mnemonic);
-          navigate('/create/verify-mnemonic');
-        }}
-      >
-        Next step
-      </Button>
-    </>
+
+      <Flex width="100%" justifyContent="space-between">
+        <BackButton />
+        <Button
+          pt={2}
+          pb={2}
+          pl={4}
+          pr={4}
+          onClick={() => {
+            ctx.setMnemonic(mnemonic);
+            navigate('/create/verify-mnemonic');
+          }}
+        >
+          Next step
+        </Button>
+      </Flex>
+    </Flex>
   );
 }
 

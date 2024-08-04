@@ -9,9 +9,11 @@ import {
   Card,
   CardBody,
   CardHeader,
+  Flex,
   SimpleGrid,
   Tag,
   Text,
+  Image,
 } from '@chakra-ui/react';
 import { D } from '@mobily/ts-belt';
 
@@ -19,6 +21,7 @@ import BackButton from '../../components/BackButton';
 import getRandomIndexes from '../../utils/getRandomIndexes';
 
 import { useWalletCreation } from './WalletCreationContext';
+import logo from '../../assets/logo_white.svg';
 
 type DraggableItem = {
   word: string;
@@ -98,29 +101,35 @@ function VerifyMnemonicScreen(): JSX.Element {
     Object.entries(slots).every(([k, v]) => parseInt(k, 10) === v);
 
   return (
-    <>
-      <BackButton />
-      <Text fontSize="lg" mb={4}>
-        Let&apos;s verify that you have written down your seed phrase and will
-        able to recover your accounts/funds later if needed.
-      </Text>
+    <Flex flexDir="column" alignItems="center">
+      <Image src={logo} width={200} mb={8} />
+
       <DndProvider backend={HTML5Backend}>
-        <Card fontSize="sm" margin={[4, null]} borderRadius="xl" w="100%">
-          <CardHeader pb={0}>
-            <Text mb={2}>Please, place the missing words on their places:</Text>
-            {wordsInBank.map((wordIndex) => (
-              <DraggableTag
-                key={`word_${words[wordIndex]}}`}
-                word={words[wordIndex] ?? ''}
-                index={wordIndex}
-                from="bank"
-                moveWord={moveWord}
-                placeWord={placeWord}
-              />
-            ))}
+        <Card fontSize="sm" margin={[4, null]} paddingX={20} paddingY={5}>
+          <CardHeader pb={0} maxW="xl">
+            <Text fontSize="lg" mb={4}>
+              Let&apos;s verify that you have written down your seed phrase and
+              will able to recover your accounts/funds later if needed.
+            </Text>
+
+            <Text mb={2} textAlign="center">
+              Please, place the missing words on their places:
+            </Text>
+            <Flex width="100%" justifyContent="center">
+              {wordsInBank.map((wordIndex) => (
+                <DraggableTag
+                  key={`word_${words[wordIndex]}}`}
+                  word={words[wordIndex] ?? ''}
+                  index={wordIndex}
+                  from="bank"
+                  moveWord={moveWord}
+                  placeWord={placeWord}
+                />
+              ))}
+            </Flex>
           </CardHeader>
           <CardBody>
-            <SimpleGrid columns={[2, null, 3]} spacing="10px">
+            <SimpleGrid columns={[2, null, 3]} spacing="0px">
               {words.map((word, idx) => {
                 const isSlot = indexesToCheck.includes(idx);
                 if (isSlot) {
@@ -156,14 +165,13 @@ function VerifyMnemonicScreen(): JSX.Element {
                   <Box
                     // eslint-disable-next-line react/no-array-index-key
                     key={`${idx}_${word}`}
-                    borderRadius="md"
                     borderWidth={1}
-                    borderColor="whiteAlpha.800"
-                    bg={isSlot ? 'blackAlpha.50' : 'whiteAlpha.50'}
+                    borderColor="spacemesh.900"
+                    p={2}
+                    bg={isSlot ? 'spacemesh.900' : 'spacemesh.850'}
                     _hover={
                       isSlot ? { background: 'blackAlpha.300' } : undefined
                     }
-                    p={2}
                   >
                     <Text as="span" fontSize="xx-small">
                       {idx + 1}.{' '}
@@ -176,15 +184,20 @@ function VerifyMnemonicScreen(): JSX.Element {
           </CardBody>
         </Card>
       </DndProvider>
-      <Button
-        isDisabled={!allWordsPlaced}
-        onClick={() => {
-          navigate('/create/set-password');
-        }}
-      >
-        Next step
-      </Button>
-    </>
+
+      <Flex width="100%" justifyContent="space-between">
+        <BackButton />
+
+        <Button
+          isDisabled={!allWordsPlaced}
+          onClick={() => {
+            navigate('/create/set-password');
+          }}
+        >
+          Next step
+        </Button>
+      </Flex>
+    </Flex>
   );
 }
 
@@ -233,11 +246,18 @@ function DraggableTag({
   return (
     <Tag
       ref={dragRef}
-      colorScheme="purple"
+      bg="brand.darkGreen"
+      color="brand.green"
+      borderColor="brand.green"
+      borderWidth="2px"
+      borderRadius="full"
       cursor={isDragging ? 'grabbing' : 'grab'}
       opacity={isDragging ? 0.5 : 1}
       userSelect="none"
+      minW={24}
       fontSize="md"
+      alignItems="center"
+      justifyContent="center"
       onClick={() => placeWord(index, from)}
       {...fullStyles}
     >
@@ -272,10 +292,9 @@ function DroppableBox({
   return (
     <Box
       ref={dropRef}
-      borderRadius="md"
       borderWidth={1}
-      borderColor="gray.200"
-      bg={isOver ? 'blackAlpha.700' : 'blackAlpha.50'}
+      borderColor="spacemesh.900"
+      bg={isOver ? 'spacemesh.900' : 'spacemesh.900'}
       p={hasWordInside ? 0 : 2}
     >
       {children}

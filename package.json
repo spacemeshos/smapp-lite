@@ -22,6 +22,7 @@
     "cz": "cz"
   },
   "dependencies": {
+    "@chakra-ui/anatomy": "^2.2.2",
     "@chakra-ui/icons": "^2.0.17",
     "@chakra-ui/react": "^2.4.9",
     "@emotion/react": "^11.8.1",

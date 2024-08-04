@@ -26,6 +26,7 @@ function PasswordInput({ placeholder = 'Enter password', register }: Props) {
         type={show ? 'text' : 'password'}
         placeholder={placeholder}
         {...register}
+        borderRadius="full"
       />
       <InputRightElement width={10}>
         <IconButton
@@ -34,6 +35,7 @@ function PasswordInput({ placeholder = 'Enter password', register }: Props) {
           icon={show ? <IconEyeOff size={14} /> : <IconEye size={14} />}
           size="sm"
           onClick={toggleShow}
+          variant="ghost"
         />
       </InputRightElement>
     </InputGroup>
