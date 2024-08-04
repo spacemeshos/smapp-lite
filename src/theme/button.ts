@@ -27,6 +27,20 @@ const outline = defineStyle({
   },
 });
 
+const white = defineStyle({
+  bg: '#F0F0F0EE',
+  borderColor: '#F0F0F0EE',
+  borderWidth: '2px',
+  textColor: 'brand.darkGreen',
+  borderRadius: 'full',
+  _hover: {
+    bg: 'brand.darkGreen',
+    borderColor: '#F0F0F0EE',
+    borderWidth: '2px',
+    textColor: '#F0F0F0EE',
+  },
+});
+
 const danger = defineStyle({
   bg: 'red.800',
   borderColor: 'brand.darkGreen',
@@ -54,7 +68,7 @@ const buttonTheme = defineStyleConfig({
   defaultProps: {
     colorScheme: 'spacemesh',
   },
-  variants: { solid, outline, ghost, ghostWhite, danger },
+  variants: { solid, outline, ghost, ghostWhite, danger, white },
 });
 
 export default buttonTheme;

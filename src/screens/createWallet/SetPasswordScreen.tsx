@@ -21,6 +21,7 @@ import useWallet from '../../store/useWallet';
 
 import { useWalletCreation } from './WalletCreationContext';
 import logo from '../../assets/logo_white.svg';
+import { IconArrowNarrowRight } from '@tabler/icons-react';
 
 type FormValues = {
   password: string;
@@ -55,7 +56,13 @@ function SetPasswordScreen(): JSX.Element {
     <Flex flexDir="column" alignItems="center">
       <Image src={logo} width={200} mb={8} />
 
-      <Card fontSize="sm" paddingX={20} paddingY={5} w="50vw">
+      <Card
+        fontSize="sm"
+        paddingX={20}
+        paddingTop={20}
+        paddingBottom={16}
+        w="50vw"
+      >
         <CardHeader>
           <Text fontSize="xl" mb={4} mt={2} textAlign="center">
             Final step to access your wallet
@@ -124,8 +131,13 @@ function SetPasswordScreen(): JSX.Element {
                 <FormErrorMessage>{errors.confirm.message}</FormErrorMessage>
               )}
             </FormControl>
-            <Flex width="100%" justifyContent="center">
-              <Button type="submit" colorScheme="green" onClick={onSubmit}>
+            <Flex width="100%" justifyContent="center" pt={10}>
+              <Button
+                type="submit"
+                colorScheme="green"
+                onClick={onSubmit}
+                rightIcon={<IconArrowNarrowRight />}
+              >
                 Create wallet
               </Button>
             </Flex>

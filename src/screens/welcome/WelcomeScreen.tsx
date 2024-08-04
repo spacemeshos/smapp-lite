@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
-
 import { Button, Flex, Image, Text } from '@chakra-ui/react';
-
+import { IconArrowNarrowRight } from '@tabler/icons-react';
 import logo from '../../assets/logo_white.svg';
 
 function WelcomeScreen(): JSX.Element {
@@ -27,7 +26,14 @@ function WelcomeScreen(): JSX.Element {
           PLACE FOR TEXT
         </Text>
 
-        <Button as={Link} to="/create" width={280} size="lg" my={10}>
+        <Button
+          as={Link}
+          to="/create"
+          width={280}
+          size="lg"
+          my={10}
+          rightIcon={<IconArrowNarrowRight />}
+        >
           Create new wallet
         </Button>
 

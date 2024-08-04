@@ -93,7 +93,6 @@ function WalletScreen(): JSX.Element {
       alignItems="center"
       justifyContent="center"
       flexGrow={1}
-      width="100%"
     >
       <Flex
         // justifyContent="space-between"

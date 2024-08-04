@@ -20,6 +20,7 @@ import useWallet from '../../store/useWallet';
 
 import { useWalletCreation } from './WalletCreationContext';
 import logo from '../../assets/logo_white.svg';
+import { IconArrowNarrowRight } from '@tabler/icons-react';
 
 function CreateMnemonicScreen(): JSX.Element {
   const { generateMnemonic } = useWallet();
@@ -47,7 +48,7 @@ function CreateMnemonicScreen(): JSX.Element {
     <Flex flexDir="column" alignItems="center">
       <Image src={logo} width={200} mb={8} />
 
-      <Card fontSize="sm" margin={[4, null]} paddingX={20} paddingY={5}>
+      <Card fontSize="sm" marginY={4} paddingX={20} paddingY={5}>
         <CardHeader pb={0}>
           <Text
             fontSize="28px"
@@ -84,11 +85,10 @@ function CreateMnemonicScreen(): JSX.Element {
         </CardBody>
         <CardFooter pt={0} flexDirection="column">
           <Button
+            variant="white"
             onClick={onCopyClick}
             width="100%"
             disabled={isCopied}
-            bg="#F0F0F0EE"
-            colorScheme={isCopied ? 'gray' : undefined}
           >
             {isCopied ? 'Mnemonic is copied to clipboard' : 'Copy to clipboard'}
           </Button>
@@ -110,6 +110,7 @@ function CreateMnemonicScreen(): JSX.Element {
       <Flex width="100%" justifyContent="space-between">
         <BackButton />
         <Button
+          rightIcon={<IconArrowNarrowRight />}
           pt={2}
           pb={2}
           pl={4}

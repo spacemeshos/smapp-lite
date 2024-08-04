@@ -22,6 +22,7 @@ import getRandomIndexes from '../../utils/getRandomIndexes';
 
 import { useWalletCreation } from './WalletCreationContext';
 import logo from '../../assets/logo_white.svg';
+import { IconArrowNarrowRight } from '@tabler/icons-react';
 
 type DraggableItem = {
   word: string;
@@ -105,7 +106,7 @@ function VerifyMnemonicScreen(): JSX.Element {
       <Image src={logo} width={200} mb={8} />
 
       <DndProvider backend={HTML5Backend}>
-        <Card fontSize="sm" margin={[4, null]} paddingX={20} paddingY={5}>
+        <Card fontSize="sm" marginY={4} paddingX={20} paddingY={5}>
           <CardHeader pb={0} maxW="xl">
             <Text fontSize="lg" mb={4}>
               Let&apos;s verify that you have written down your seed phrase and
@@ -118,6 +119,7 @@ function VerifyMnemonicScreen(): JSX.Element {
             <Flex width="100%" justifyContent="center">
               {wordsInBank.map((wordIndex) => (
                 <DraggableTag
+                  placed={false}
                   key={`word_${words[wordIndex]}}`}
                   word={words[wordIndex] ?? ''}
                   index={wordIndex}
@@ -145,6 +147,7 @@ function VerifyMnemonicScreen(): JSX.Element {
                     >
                       {placedWord !== null && placedWord !== undefined ? (
                         <DraggableTag
+                          placed={true}
                           key={`word_${words[placedWord]}`}
                           word={words[placedWord] ?? ''}
                           index={placedWord}
@@ -189,6 +192,7 @@ function VerifyMnemonicScreen(): JSX.Element {
         <BackButton />
 
         <Button
+          rightIcon={<IconArrowNarrowRight />}
           isDisabled={!allWordsPlaced}
           onClick={() => {
             navigate('/create/set-password');
@@ -202,6 +206,7 @@ function VerifyMnemonicScreen(): JSX.Element {
 }
 
 type DraggableTagProps = {
+  placed: boolean;
   moveWord: (wordIndex: number, slot: SlotIndex, from: SlotIndex) => void;
   placeWord: (wordIndex: number, from: SlotIndex) => void;
   from: SlotIndex;
@@ -210,6 +215,7 @@ type DraggableTagProps = {
 
 // Sub components
 function DraggableTag({
+  placed,
   word,
   index,
   moveWord,
@@ -249,12 +255,12 @@ function DraggableTag({
       bg="brand.darkGreen"
       color="brand.green"
       borderColor="brand.green"
-      borderWidth="2px"
+      borderWidth={placed ? '0px' : '2px'}
       borderRadius="full"
       cursor={isDragging ? 'grabbing' : 'grab'}
       opacity={isDragging ? 0.5 : 1}
       userSelect="none"
-      minW={24}
+      minW={placed ? 0 : 24}
       fontSize="md"
       alignItems="center"
       justifyContent="center"
