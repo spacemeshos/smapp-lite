@@ -9,10 +9,12 @@ const baseStyle = definePartsStyle({
     border: '1px',
     padding: 1, // change the padding of the control
     _checked: {
-      bg: 'brand.green',
+      bg: 'brand.lightGray',
+      borderColor: 'brand.darkGreen',
     },
     iconColor: 'brand.green',
-    bg: 'brand.darkGreen',
+    bg: 'brand.lightGray',
+    borderColor: 'brand.darkGreen',
   },
 });
 
