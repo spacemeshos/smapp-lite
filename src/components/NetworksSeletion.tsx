@@ -45,7 +45,7 @@ function NetworkSelection(): JSX.Element {
             )
           }
           rightIcon={<IconChevronDown />}
-          m={2}
+          my={2}
           fontSize="sm"
           variant="dark"
         >

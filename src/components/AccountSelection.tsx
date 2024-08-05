@@ -34,7 +34,7 @@ function AccountSelection(): JSX.Element {
         fontSize="small"
         float="right"
         rightIcon={<IconChevronDown />}
-        m={2}
+        my={2}
       >
         {accounts[selectedAccount]?.displayName}
       </MenuButton>

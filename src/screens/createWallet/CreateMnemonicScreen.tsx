@@ -14,13 +14,12 @@ import {
   Image,
 } from '@chakra-ui/react';
 import { useCopyToClipboard } from '@uidotdev/usehooks';
-
+import { IconArrowNarrowRight } from '@tabler/icons-react';
 import BackButton from '../../components/BackButton';
 import useWallet from '../../store/useWallet';
 
 import { useWalletCreation } from './WalletCreationContext';
 import logo from '../../assets/logo_white.svg';
-import { IconArrowNarrowRight } from '@tabler/icons-react';
 
 function CreateMnemonicScreen(): JSX.Element {
   const { generateMnemonic } = useWallet();
