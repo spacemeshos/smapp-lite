@@ -48,7 +48,9 @@ function DeviceSelectionModal() {
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader>Connect to Ledger Device</ModalHeader>
+        <ModalHeader textAlign="center" color="brand.darkGreen">
+          Connect to Ledger Device
+        </ModalHeader>
         <ModalBody minH={0} pb={6}>
           <Text mb={4}>
             Please turn on your Ledger device, unlock the PIN code, and pick the
@@ -65,14 +67,13 @@ function DeviceSelectionModal() {
           )}
           <ButtonGroup w="100%">
             <Button
-              bg="black"
-              color="white"
               onClick={() => connectDevice(LedgerTransports.Bluetooth)}
               display="block"
               flex={1}
               h="60px"
               px={12}
               isDisabled={!IS_SUPPORTED}
+              variant="dark"
             >
               <Flex alignItems="center" justifyItems="center" w="100%">
                 <IconBluetooth style={{ margin: 'auto' }} />
@@ -83,14 +84,13 @@ function DeviceSelectionModal() {
               </Text>
             </Button>
             <Button
-              bg="black"
-              color="white"
               onClick={() => connectDevice(LedgerTransports.WebUSB)}
               display="block"
               flex={1}
               h="60px"
               px={12}
               isDisabled={!IS_SUPPORTED}
+              variant="dark"
             >
               <Flex alignItems="center" justifyItems="center" w="100%">
                 <IconUsb />
@@ -228,7 +228,7 @@ function NotConnected() {
   return (
     <>
       <IconButton
-        icon={<IconDeviceUsb size={BUTTON_ICON_SIZE} />}
+        icon={<IconDeviceUsb size={24} />}
         title="Connect a Hardware Wallet"
         aria-label="Connect a Hardware Wallet"
         ml={2}
@@ -251,7 +251,7 @@ function Connected({ device }: { device: LedgerDevice }) {
   return (
     <>
       <IconButton
-        icon={<TransportIcon size={BUTTON_ICON_SIZE} color="green" />}
+        icon={<TransportIcon size={24} color="green" />}
         title="Disconnect a Hardware Wallet"
         aria-label="Disconnect a Hardware Wallet"
         ml={2}

@@ -1175,9 +1175,9 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                   <Card shadow={0}>
                     <CardBody
                       pt={2}
-                      pr={3}
+                      pr={0}
                       pb={1}
-                      pl={3}
+                      pl={0}
                       bg="brand.lightGray"
                       color="blackAlpha.800"
                     >
@@ -1272,8 +1272,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             <ModalFooter justifyContent="center">
               <Button
                 px={12}
-                bg="brand.darkGreen"
-                color="brand.lightGray"
+                variant="dark"
                 onClick={submit}
                 isDisabled={isCurrentVaultAccount}
               >

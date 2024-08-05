@@ -55,7 +55,7 @@ function ReceiveModal({
           </Text>
           <QRCode
             bgColor="var(--chakra-colors-spacemesh-800)"
-            fgColor="var(--chakra-colors-blackAlpha-300)"
+            fgColor="var(--chakra-colors-blackAlpha-100)"
             style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
             value={account.address}
           />
