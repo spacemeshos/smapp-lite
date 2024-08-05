@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import {
   IconButton,
   Menu,
@@ -11,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { IconMenu2, IconSettings } from '@tabler/icons-react';
 
-import usePassword from '../store/usePassword';
+import useMnemonics from '../hooks/useMnemonics';
 import useWallet from '../store/useWallet';
 
 import KeyManager from './KeyManager';
@@ -19,18 +17,12 @@ import MnemonicsModal from './MnemonicsModal';
 import WipeOutAlert from './WipeOutAlert';
 
 function MainMenu(): JSX.Element {
-  const { exportWalletFile, showMnemonics } = useWallet();
-  const { withPassword } = usePassword();
+  const { exportWalletFile } = useWallet();
 
   const wipeAlert = useDisclosure();
 
-  const mnemonicsModal = useDisclosure();
   const keyManagerDrawer = useDisclosure();
-  const [mnemonics, setMnemonics] = useState('');
-  const onMnemonicsClose = () => {
-    setMnemonics('');
-    mnemonicsModal.onClose();
-  };
+  const { revealMnemonics } = useMnemonics();
 
   return (
     <>
@@ -47,22 +39,7 @@ function MainMenu(): JSX.Element {
           <MenuItem onClick={keyManagerDrawer.onOpen}>
             Manage keys & accounts
           </MenuItem>
-          <MenuItem
-            onClick={async () => {
-              const words = await withPassword(
-                showMnemonics,
-                'Show mnemonics',
-                // eslint-disable-next-line max-len
-                'Please enter your password to read mnemonics from the secret part of your wallet:'
-              );
-              if (words) {
-                setMnemonics(words);
-                mnemonicsModal.onOpen();
-              }
-            }}
-          >
-            Backup mnemonic
-          </MenuItem>
+          <MenuItem onClick={revealMnemonics}>Backup mnemonic</MenuItem>
           <MenuItem onClick={exportWalletFile}>Export wallet file</MenuItem>
           <MenuDivider />
           <MenuItem color="red" onClick={wipeAlert.onOpen}>
@@ -71,11 +48,7 @@ function MainMenu(): JSX.Element {
         </MenuList>
       </Menu>
       <WipeOutAlert disclosure={wipeAlert} />
-      <MnemonicsModal
-        isOpen={mnemonicsModal.isOpen}
-        onClose={onMnemonicsClose}
-        mnemonics={mnemonics}
-      />
+      <MnemonicsModal />
       <KeyManager
         isOpen={keyManagerDrawer.isOpen}
         onClose={keyManagerDrawer.onClose}

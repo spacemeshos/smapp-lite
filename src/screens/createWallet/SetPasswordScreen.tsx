@@ -32,6 +32,7 @@ function SetPasswordScreen(): JSX.Element {
   const {
     register,
     reset,
+    setValue,
     control,
     formState: { errors, isSubmitted },
     handleSubmit,
@@ -49,6 +50,9 @@ function SetPasswordScreen(): JSX.Element {
   const onSubmit = handleSubmit((vals) => {
     ctx.setPassword(vals.password);
     createWallet(vals.password, ctx.mnemonic);
+    setValue('password', '');
+    setValue('confirm', '');
+    reset();
     navigate('/wallet');
   });
 
@@ -121,8 +125,8 @@ function SetPasswordScreen(): JSX.Element {
                 <FormLabel>Confirm the password:</FormLabel>
                 <PasswordInput
                   register={register('confirm', {
-                    validate: (val, formVals) => {
-                      if (val !== formVals.password) {
+                    validate: (val, { password }) => {
+                      if (val !== password) {
                         // eslint-disable-next-line max-len
                         return 'Your passwords do not match';
                       }

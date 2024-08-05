@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  createBrowserRouter,
-  redirect,
-  RouterProvider,
-} from 'react-router-dom';
+import { createHashRouter, redirect, RouterProvider } from 'react-router-dom';
 
 import { ChakraProvider, ColorModeScript, Container } from '@chakra-ui/react';
 
@@ -27,7 +23,7 @@ import Fonts from './theme/Fonts';
 function App(): JSX.Element {
   const { hasWallet, isWalletUnlocked } = useWallet();
 
-  const router = createBrowserRouter([
+  const router = createHashRouter([
     {
       path: '/',
       element: <WelcomeWrapper />,

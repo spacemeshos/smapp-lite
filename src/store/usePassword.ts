@@ -95,6 +95,7 @@ const usePassword = (): UsePasswordReturnType => {
     formState: { errors },
     reset,
     setError,
+    setValue,
     register,
     handleSubmit,
   } = useForm<PasswordFormValues>();
@@ -126,6 +127,7 @@ const usePassword = (): UsePasswordReturnType => {
       const res = await passwordCallback(password);
       setPassword(password, remember);
       _onClose();
+      setValue('password', '');
       reset();
       eventEmitter.emit('success', res);
     } catch (err) {
@@ -142,8 +144,14 @@ const usePassword = (): UsePasswordReturnType => {
   // Utils
   const waitForIt = <T>() =>
     new Promise<T | null>((resolve) => {
-      eventEmitter.once('close', () => resolve(null));
-      eventEmitter.once('success', resolve);
+      eventEmitter.once('close', () => {
+        eventEmitter.removeAllListeners();
+        resolve(null);
+      });
+      eventEmitter.once('success', (x: T) => {
+        eventEmitter.removeAllListeners();
+        resolve(x);
+      });
     });
 
   const openAlert = async <T>(
