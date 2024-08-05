@@ -37,7 +37,7 @@ function NetworkSelection(): JSX.Element {
           leftIcon={
             // eslint-disable-next-line no-nested-ternary
             status?.isSynced ? (
-              <IconCircleFilled size={14} color="green" />
+              <IconCircleFilled size={14} color="#3AFFA7" />
             ) : O.isNone(currentNetwork) ? (
               <IconCircleFilled size={14} color="red" />
             ) : (
