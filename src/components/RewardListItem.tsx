@@ -38,6 +38,19 @@ function RewardListItem({
             </StatLabel>
             <StatNumber fontSize="sm" color="brand.green">
               {formatSmidge(reward.rewardForLayer + reward.rewardForFees)}
+              <Flex mb={1}>
+                <Text flex={1} fontSize="xx-small" color="#B9B9B9">
+                  {formatTimestamp(
+                    timestampByLayer(
+                      genesisTime,
+                      layerDurationSec,
+                      reward.layerPaid
+                    )
+                  )}{' '}
+                  (Layer {reward.layerPaid} in Epoch{' '}
+                  {epochByLayer(layersPerEpoch, reward.layerPaid)})
+                </Text>
+              </Flex>
             </StatNumber>
           </Stat>
           <Stat flex={1} color="#B9B9B9">
@@ -52,21 +65,14 @@ function RewardListItem({
               {formatSmidge(reward.rewardForFees)}
             </StatNumber>
           </Stat>
+
           <ExplorerButton
             dataType="rewards"
             value={`0x${reward.smesher}/${reward.layerPaid}`}
             v2
-            ml={1}
+            mt="auto"
+            mb="auto"
           />
-        </Flex>
-        <Flex mb={1}>
-          <Text flex={1} fontSize="xx-small" color="#B9B9B9">
-            {formatTimestamp(
-              timestampByLayer(genesisTime, layerDurationSec, reward.layerPaid)
-            )}{' '}
-            (Layer {reward.layerPaid} in Epoch{' '}
-            {epochByLayer(layersPerEpoch, reward.layerPaid)})
-          </Text>
         </Flex>
       </CardBody>
     </Card>
