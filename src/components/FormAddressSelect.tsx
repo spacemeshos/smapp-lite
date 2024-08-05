@@ -113,7 +113,7 @@ function FormAddressSelect<T extends FieldValues, FieldName extends Path<T>>({
       case Origin.Local:
       default:
         return (
-          <Select {...register(fieldName)}>
+          <Select {...register(fieldName)} border="1px" borderRadius="full">
             {accounts.map((acc) => (
               <option
                 key={`${acc.address}_${acc.displayName}`}

@@ -154,7 +154,7 @@ function ImportAccountModal({
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader>Import Account</ModalHeader>
+        <ModalHeader textAlign="center">Import Account</ModalHeader>
         <ModalBody textAlign="center">
           <Text mb={4}>Please select the account file to import.</Text>
           <Input
@@ -167,8 +167,7 @@ function ImportAccountModal({
           <Button
             size="lg"
             onClick={() => inputRef.current?.click()}
-            variant="solid"
-            colorScheme="green"
+            variant="dark"
             mb={4}
           >
             Select account file
@@ -181,6 +180,8 @@ function ImportAccountModal({
               type="text"
               onChange={(e) => setDisplayName(e.target.value)}
               value={displayName}
+              border="1px"
+              borderRadius="full"
             />
           </FormControl>
           {accountData && (
@@ -206,12 +207,7 @@ function ImportAccountModal({
           )}
         </ModalBody>
         <ModalFooter>
-          <Button
-            colorScheme="blue"
-            onClick={submit}
-            ml={2}
-            isDisabled={!!error}
-          >
+          <Button variant="dark" onClick={submit} ml={2} isDisabled={!!error}>
             Import
           </Button>
         </ModalFooter>
