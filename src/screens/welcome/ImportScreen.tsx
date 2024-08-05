@@ -90,7 +90,7 @@ function ImportScreen(): JSX.Element {
     <Flex direction="column" alignItems="center" justifyContent="center">
       <Image src={logo} width={200} my={8} />
 
-      <Card fontSize="sm" w="100%" padding={12} marginY={4}>
+      <Card fontSize="sm" marginY={4} paddingX={[10, 20]} paddingY={5}>
         <CardHeader>
           <Text fontSize="xl" mb={4} mt={2} textAlign="center">
             Import wallet file

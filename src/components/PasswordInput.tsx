@@ -20,7 +20,7 @@ function PasswordInput({ placeholder = 'Enter password', register }: Props) {
   const toggleShow = () => setShow(!show);
 
   return (
-    <InputGroup size="md" width={350}>
+    <InputGroup size="md" width={['100%', 350]}>
       <Input
         pr={2}
         type={show ? 'text' : 'password'}
