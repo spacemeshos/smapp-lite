@@ -94,24 +94,21 @@ function WalletScreen(): JSX.Element {
       alignItems="center"
       justifyContent="center"
       flexGrow={1}
-      p={12}
+      p={[2, 12]}
     >
-      <Flex
-        // justifyContent="space-between"
-        alignItems="center"
-        width="100%"
-        fontSize="sm"
-      >
+      <Flex alignItems="start" flexDir="row" width="100%" fontSize="sm">
         <AccountSelection />
         <Spacer />
-        <Box>
+        <Flex flexDir={['column', 'row']} alignItems="end">
           <NetworkSelection />
-          <MainMenu />
-          <LockWallet />
+          <Flex>
+            <MainMenu />
+            <LockWallet />
+          </Flex>
           {/*
           <HardwareWalletConnect />
           */}
-        </Box>
+        </Flex>
       </Flex>
 
       <NodeStatusBadge />
@@ -137,7 +134,7 @@ function WalletScreen(): JSX.Element {
           h="100%"
           flexDir="column"
           bgColor="spacemesh.850"
-          p={12}
+          p={[4, 12]}
           borderRadius="xl"
         >
           {O.mapWithDefault(

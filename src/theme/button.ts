@@ -70,15 +70,15 @@ const whiteOutline = defineStyle({
 
 const danger = defineStyle({
   bg: 'red.600',
-  borderColor: 'brand.darkGreen',
+  borderColor: 'red.600',
   borderWidth: '2px',
   textColor: 'brand.lightGray',
   borderRadius: 'full',
   _hover: {
-    bg: 'brand.darkGreen',
-    borderColor: 'red.600',
+    bg: 'red.500',
+    borderColor: 'red.500',
     borderWidth: '2px',
-    textColor: 'red.600',
+    textColor: 'brand.lightGray',
   },
 });
 

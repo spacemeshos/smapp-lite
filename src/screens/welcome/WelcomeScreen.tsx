@@ -19,7 +19,7 @@ function WelcomeScreen(): JSX.Element {
         marginY={4}
       >
         <Text
-          fontSize="30px"
+          fontSize={['20px', '30px']}
           textAlign="center"
           fontFamily="Univers63"
           color="brand.green"
@@ -27,7 +27,7 @@ function WelcomeScreen(): JSX.Element {
           THE OFFICIAL
         </Text>
         <Text
-          fontSize="45px"
+          fontSize={['35px', '45px']}
           textAlign="center"
           fontFamily="Univers93"
           color="brand.green"

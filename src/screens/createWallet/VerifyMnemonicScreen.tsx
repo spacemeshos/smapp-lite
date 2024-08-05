@@ -16,13 +16,12 @@ import {
   Image,
 } from '@chakra-ui/react';
 import { D } from '@mobily/ts-belt';
-
+import { IconArrowNarrowRight } from '@tabler/icons-react';
 import BackButton from '../../components/BackButton';
 import getRandomIndexes from '../../utils/getRandomIndexes';
 
 import { useWalletCreation } from './WalletCreationContext';
 import logo from '../../assets/logo_white.svg';
-import { IconArrowNarrowRight } from '@tabler/icons-react';
 
 type DraggableItem = {
   word: string;
@@ -106,7 +105,7 @@ function VerifyMnemonicScreen(): JSX.Element {
       <Image src={logo} width={200} my={8} />
 
       <DndProvider backend={HTML5Backend}>
-        <Card fontSize="sm" marginY={4} paddingX={20} paddingY={5}>
+        <Card fontSize="sm" marginY={4} paddingX={[10, 20]} paddingY={5}>
           <CardHeader pb={0} maxW="xl">
             <Text fontSize="lg" mb={4}>
               Let&apos;s verify that you have written down your seed phrase and
@@ -116,7 +115,7 @@ function VerifyMnemonicScreen(): JSX.Element {
             <Text mb={2} textAlign="center">
               Please, place the missing words on their places:
             </Text>
-            <Flex width="100%" justifyContent="center">
+            <SimpleGrid columns={[2, 4]} width="100%" alignItems="center">
               {wordsInBank.map((wordIndex) => (
                 <DraggableTag
                   placed={false}
@@ -128,9 +127,9 @@ function VerifyMnemonicScreen(): JSX.Element {
                   placeWord={placeWord}
                 />
               ))}
-            </Flex>
+            </SimpleGrid>
           </CardHeader>
-          <CardBody>
+          <CardBody paddingY={10}>
             <SimpleGrid columns={[2, null, 3]} spacing="0px">
               {words.map((word, idx) => {
                 const isSlot = indexesToCheck.includes(idx);
@@ -147,7 +146,7 @@ function VerifyMnemonicScreen(): JSX.Element {
                     >
                       {placedWord !== null && placedWord !== undefined ? (
                         <DraggableTag
-                          placed={true}
+                          placed
                           key={`word_${words[placedWord]}`}
                           word={words[placedWord] ?? ''}
                           index={placedWord}

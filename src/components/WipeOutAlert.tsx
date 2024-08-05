@@ -27,7 +27,7 @@ function WipeOutAlert({ disclosure }: WipeOutAlertProps): JSX.Element {
       onClose={disclosure.onClose}
     >
       <AlertDialogOverlay>
-        <AlertDialogContent bg="brand.darkGreen" color="white">
+        <AlertDialogContent>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
             Wipe out the wallet?
           </AlertDialogHeader>
@@ -40,11 +40,7 @@ function WipeOutAlert({ disclosure }: WipeOutAlertProps): JSX.Element {
           </AlertDialogBody>
 
           <AlertDialogFooter>
-            <Button
-              ref={cancelRef}
-              onClick={disclosure.onClose}
-              variant="outline"
-            >
+            <Button ref={cancelRef} onClick={disclosure.onClose} variant="dark">
               Cancel
             </Button>
             <Button
