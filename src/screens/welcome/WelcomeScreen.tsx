@@ -16,7 +16,7 @@ function WelcomeScreen(): JSX.Element {
         py={12}
         alignItems="center"
         flexDir="column"
-        marginTop="20%"
+        marginY={4}
       >
         <Text
           fontSize="30px"
