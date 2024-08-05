@@ -27,7 +27,6 @@ function PasswordInput({ placeholder = 'Enter password', register }: Props) {
         placeholder={placeholder}
         {...register}
         borderRadius="full"
-        bg="brand.darkGreen"
         borderColor="brand.darkGreen"
       />
       <InputRightElement width={10}>

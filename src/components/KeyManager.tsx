@@ -207,19 +207,28 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                 >
                   <TabPanel display="flex" flexDir="column">
                     <ButtonGroup size="sm" spacing={2} mb={4}>
-                      <Button onClick={createKeyPairModal.onOpen}>
+                      <Button
+                        onClick={createKeyPairModal.onOpen}
+                        variant="white"
+                      >
                         <IconPlus size={BUTTON_ICON_SIZE} />
                         <Text as="span" ml={1}>
                           Create new key
                         </Text>
                       </Button>
-                      <Button onClick={importFromLedgerModal.onOpen}>
+                      <Button
+                        onClick={importFromLedgerModal.onOpen}
+                        variant="white"
+                      >
                         <IconDeviceUsb size={BUTTON_ICON_SIZE} />
                         <Text as="span" ml={1}>
                           Import from Ledger
                         </Text>
                       </Button>
-                      <Button onClick={importKeyPairModal.onOpen}>
+                      <Button
+                        onClick={importKeyPairModal.onOpen}
+                        variant="white"
+                      >
                         <IconFileImport size={BUTTON_ICON_SIZE} />
                         <Text as="span" ml={1}>
                           Import secret key
@@ -248,6 +257,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                               textTransform="uppercase"
                               gap={1}
                               onClick={exportSecretKey(key)}
+                              variant="dark"
                             >
                               <IconKey size={12} />
                               Export secret key
@@ -284,13 +294,19 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                   </TabPanel>
                   <TabPanel display="flex" flexDir="column">
                     <ButtonGroup size="sm" spacing={2} mb={4}>
-                      <Button onClick={createAccountModal.onOpen}>
+                      <Button
+                        onClick={createAccountModal.onOpen}
+                        variant="white"
+                      >
                         <IconPlus size={BUTTON_ICON_SIZE} />
                         <Text as="span" ml={1}>
                           Create new account
                         </Text>
                       </Button>
-                      <Button onClick={importAccountModal.onOpen}>
+                      <Button
+                        onClick={importAccountModal.onOpen}
+                        variant="white"
+                      >
                         <IconFileImport size={BUTTON_ICON_SIZE} />
                         <Text as="span" ml={1}>
                           Import account
@@ -320,6 +336,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                               textTransform="uppercase"
                               gap={1}
                               onClick={() => exportAccount(acc)}
+                              variant="dark"
                             >
                               <IconKey size={12} />
                               Export account

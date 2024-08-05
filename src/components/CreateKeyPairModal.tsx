@@ -77,12 +77,12 @@ function CreateKeyPairModal({
   );
 
   return (
-    <Modal isOpen={isOpen} onClose={close} isCentered>
+    <Modal isOpen={isOpen} onClose={close} isCentered size="lg">
       <Form control={control}>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
-          <ModalHeader>Create a new Key Pair</ModalHeader>
+          <ModalHeader textAlign="center">Create a new Key Pair</ModalHeader>
           <ModalBody>
             <Text mb={4}>
               New key pair will be derived from your mnemonics using the
@@ -109,6 +109,7 @@ function CreateKeyPairModal({
               })}
               errors={errors}
               isSubmitted={isSubmitted}
+              inputProps={{ border: '1px', borderRadius: 'full' }}
             />
             <FormInput
               label="Derivation Path"
@@ -128,6 +129,7 @@ function CreateKeyPairModal({
               })}
               errors={errors}
               isSubmitted={isSubmitted}
+              inputProps={{ border: '1px', borderRadius: 'full' }}
             />
             <Checkbox
               size="lg"
@@ -139,7 +141,13 @@ function CreateKeyPairModal({
             </Checkbox>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" onClick={submit} ml={2}>
+            <Button
+              colorScheme="blue"
+              onClick={submit}
+              ml={2}
+              variant="dark"
+              px={10}
+            >
               Add
             </Button>
           </ModalFooter>
