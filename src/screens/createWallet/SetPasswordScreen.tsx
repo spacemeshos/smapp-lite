@@ -60,7 +60,7 @@ function SetPasswordScreen(): JSX.Element {
     <Flex flexDir="column" alignItems="center">
       <Image src={logo} width={200} my={8} />
 
-      <Card fontSize="sm" marginY={4} paddingX={[10, 20]} paddingY={5}>
+      <Card fontSize="sm" marginY={4} paddingX={[4, 20]} paddingY={5}>
         <CardHeader>
           <Text fontSize="xl" mb={4} mt={2} textAlign="center">
             Final step to access your wallet
