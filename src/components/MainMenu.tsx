@@ -9,7 +9,7 @@ import {
   MenuList,
   useDisclosure,
 } from '@chakra-ui/react';
-import { IconMenu2 } from '@tabler/icons-react';
+import { IconMenu2, IconSettings } from '@tabler/icons-react';
 
 import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
@@ -38,8 +38,10 @@ function MainMenu(): JSX.Element {
         <MenuButton
           as={IconButton}
           aria-label="Settings"
-          icon={<IconMenu2 />}
+          icon={<IconSettings />}
           fontSize="sm"
+          variant="dark"
+          m={2}
         />
         <MenuList>
           <MenuItem onClick={keyManagerDrawer.onOpen}>

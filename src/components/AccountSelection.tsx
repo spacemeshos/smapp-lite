@@ -6,6 +6,7 @@ import {
   MenuList,
   MenuOptionGroup,
 } from '@chakra-ui/react';
+import { IconChevronDown } from '@tabler/icons-react';
 
 import { useCurrentHRP } from '../hooks/useNetworkSelectors';
 import { useAccountsList } from '../hooks/useWalletSelectors';
@@ -28,14 +29,13 @@ function AccountSelection(): JSX.Element {
     <Menu>
       <MenuButton
         as={Button}
-        variant="outline"
-        ml={2}
-        mb={2}
+        variant="dark"
         textTransform="uppercase"
-        fontSize="xx-small"
+        fontSize="small"
         float="right"
+        rightIcon={<IconChevronDown />}
       >
-        Switch
+        {accounts[selectedAccount]?.displayName}
       </MenuButton>
       <MenuList minWidth={240} maxW="100vw" maxH="80vh" overflow="auto">
         <MenuOptionGroup

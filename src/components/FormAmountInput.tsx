@@ -130,6 +130,8 @@ function FormAmountInput<T extends FieldValues>({
       <Input type="hidden" {...register} />
       <InputGroup>
         <Input
+          border="1px"
+          borderRadius="full"
           type="number"
           key={`display_input-${register.name}`}
           value={displayValue}
@@ -145,6 +147,7 @@ function FormAmountInput<T extends FieldValues>({
             onClick={toggleUnits}
             icon={<IconSwitchHorizontal size={16} />}
             ml={1}
+            variant="outlineWhite"
           />
         </InputRightElement>
       </InputGroup>

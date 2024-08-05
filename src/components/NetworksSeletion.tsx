@@ -45,7 +45,9 @@ function NetworkSelection(): JSX.Element {
             )
           }
           rightIcon={<IconChevronDown />}
+          m={2}
           fontSize="sm"
+          variant="dark"
         >
           {O.mapWithDefault(currentNetwork, 'No network', (net) => net.name)}
         </MenuButton>

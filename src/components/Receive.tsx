@@ -47,7 +47,7 @@ function ReceiveModal({
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader>Receive funds</ModalHeader>
+        <ModalHeader textAlign="center">Receive funds</ModalHeader>
         <ModalBody>
           <Text fontSize="sm" mb={4}>
             {account.address}
@@ -62,13 +62,15 @@ function ReceiveModal({
         </ModalBody>
         <ModalFooter>
           <Button
+            variant="dark"
             isDisabled={isCopied}
             onClick={onCopyClick(account.address)}
-            w={20}
+            mr={2}
+            w="50%"
           >
             {isCopied ? 'Copied' : 'Copy'}
           </Button>
-          <Button colorScheme="blue" onClick={onClose} ml={2}>
+          <Button variant="dark" onClick={onClose} ml={2} w="50%">
             OK
           </Button>
         </ModalFooter>

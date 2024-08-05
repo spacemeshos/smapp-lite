@@ -19,6 +19,7 @@ import {
 } from 'react-hook-form';
 
 import {
+  border,
   FormControl,
   FormErrorMessage,
   Input,
@@ -91,6 +92,8 @@ function FormAddressSelect<T extends FieldValues, FieldName extends Path<T>>({
       case Origin.Foreign:
         return (
           <Input
+            border="1px"
+            borderRadius="full"
             {...register(fieldName, {
               required: isRequired ? 'Please pick the address' : false,
               value: (!defaultForeign

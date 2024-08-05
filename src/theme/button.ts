@@ -13,6 +13,19 @@ const solid = defineStyle({
   },
 });
 
+const dark = defineStyle({
+  textColor: 'brand.lightGray',
+  fillColor: 'brand.lightGray',
+  borderColor: 'spacemesh.850',
+  bgColor: 'spacemesh.850',
+  borderWidth: '2px',
+  borderRadius: 'full',
+  _hover: {
+    borderColor: 'spacemesh.800',
+    bgColor: 'spacemesh.800',
+  },
+});
+
 const outline = defineStyle({
   bg: 'brand.darkGreen',
   borderColor: 'brand.green',
@@ -32,6 +45,20 @@ const white = defineStyle({
   borderColor: '#F0F0F0EE',
   borderWidth: '2px',
   textColor: 'brand.darkGreen',
+  borderRadius: 'full',
+  _hover: {
+    bg: 'brand.darkGreen',
+    borderColor: '#F0F0F0EE',
+    borderWidth: '2px',
+    textColor: '#F0F0F0EE',
+  },
+});
+
+const whiteOutline = defineStyle({
+  bg: 'brand.darkGreen',
+  borderColor: '#F0F0F0EE',
+  borderWidth: '2px',
+  textColor: '#F0F0F0EE',
   borderRadius: 'full',
   _hover: {
     bg: 'brand.darkGreen',
@@ -68,7 +95,16 @@ const buttonTheme = defineStyleConfig({
   defaultProps: {
     colorScheme: 'spacemesh',
   },
-  variants: { solid, outline, ghost, ghostWhite, danger, white },
+  variants: {
+    solid,
+    outline,
+    ghost,
+    ghostWhite,
+    danger,
+    white,
+    dark,
+    whiteOutline,
+  },
 });
 
 export default buttonTheme;

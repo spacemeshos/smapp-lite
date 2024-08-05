@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   ButtonGroup,
+  Flex,
   IconButton,
   Image,
   ListItem,
@@ -42,6 +43,7 @@ function DeviceSelectionModal() {
       isOpen={modalConnect.isOpen}
       onClose={modalConnect.onClose}
       isCentered
+      size="xl"
     >
       <ModalOverlay />
       <ModalContent>
@@ -63,29 +65,37 @@ function DeviceSelectionModal() {
           )}
           <ButtonGroup w="100%">
             <Button
-              colorScheme="blue"
+              bg="black"
+              color="white"
               onClick={() => connectDevice(LedgerTransports.Bluetooth)}
               display="block"
               flex={1}
-              h={20}
+              h="60px"
+              px={12}
               isDisabled={!IS_SUPPORTED}
             >
-              <IconBluetooth style={{ margin: 'auto' }} />
-              Bluetooth
+              <Flex alignItems="center" justifyItems="center" w="100%">
+                <IconBluetooth style={{ margin: 'auto' }} />
+                Bluetooth
+              </Flex>
               <Text fontSize="xx-small" mt={1}>
                 (Ledger Nano X)
               </Text>
             </Button>
             <Button
-              colorScheme="blue"
+              bg="black"
+              color="white"
               onClick={() => connectDevice(LedgerTransports.WebUSB)}
               display="block"
               flex={1}
-              h={20}
+              h="60px"
+              px={12}
               isDisabled={!IS_SUPPORTED}
             >
-              <IconUsb style={{ margin: 'auto' }} />
-              WebUSB
+              <Flex alignItems="center" justifyItems="center" w="100%">
+                <IconUsb />
+                WebUSB
+              </Flex>
               <Text fontSize="xx-small" mt={1}>
                 (Ledger Nano S or S Plus)
               </Text>
@@ -223,6 +233,7 @@ function NotConnected() {
         aria-label="Connect a Hardware Wallet"
         ml={2}
         onClick={modalConnect.onOpen}
+        variant="dark"
       />
       <DeviceSelectionModal />
     </>

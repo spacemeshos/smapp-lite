@@ -1104,7 +1104,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={close} isCentered>
+      <Modal isOpen={isOpen} onClose={close} isCentered size="lg">
         <Form control={control}>
           <input
             type="hidden"
@@ -1119,9 +1119,9 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
           <ModalOverlay />
           <ModalContent>
             <ModalCloseButton />
-            <ModalHeader pb={0}>
+            <ModalHeader pt={0} textAlign="center" fontSize="x-large">
               Send a transaction
-              <Text fontSize="xs" color="gray.400">
+              <Text fontSize="xs" color="blackAlpha.800">
                 Or you can
                 <TxFileReader
                   multiple
@@ -1130,7 +1130,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                 >
                   <Button
                     variant="link"
-                    colorScheme="purple"
+                    as="u"
+                    color="blackAlpha.800"
                     size="xs"
                     p={1}
                     isDisabled={
@@ -1171,8 +1172,15 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                   No account selected. Please switch to an account first. first.
                 </Text>,
                 (curAcc) => (
-                  <Card variant="outline">
-                    <CardBody pt={2} pr={3} pb={1} pl={3}>
+                  <Card shadow={0}>
+                    <CardBody
+                      pt={2}
+                      pr={3}
+                      pb={1}
+                      pl={3}
+                      bg="brand.lightGray"
+                      color="blackAlpha.800"
+                    >
                       {renderTemplateSpecificFields(curAcc)}
                     </CardBody>
                   </Card>
@@ -1182,7 +1190,13 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                 <Box mr={2} w="50%">
                   <FormInput
                     label="Gas Price"
-                    inputProps={{ type: 'number' }}
+                    inputProps={{
+                      type: 'number',
+                      border: '1px',
+                      borderRadius: 'full',
+                      paddingLeft: 4,
+                      paddingRight: 4,
+                    }}
                     register={register('gasPrice', {
                       value: 1,
                       valueAsNumber: true,
@@ -1213,7 +1227,13 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                 <Box ml={2} w="50%">
                   <FormInput
                     label="Nonce"
-                    inputProps={{ type: 'number' }}
+                    inputProps={{
+                      type: 'number',
+                      border: '1px',
+                      borderRadius: 'full',
+                      paddingLeft: 4,
+                      paddingRight: 4,
+                    }}
                     register={register('nonce', {
                       value: 1,
                       valueAsNumber: true,
@@ -1249,11 +1269,12 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                 </Text>
               )}
             </ModalBody>
-            <ModalFooter>
+            <ModalFooter justifyContent="center">
               <Button
-                colorScheme="blue"
+                px={12}
+                bg="brand.darkGreen"
+                color="brand.lightGray"
                 onClick={submit}
-                ml={2}
                 isDisabled={isCurrentVaultAccount}
               >
                 Next

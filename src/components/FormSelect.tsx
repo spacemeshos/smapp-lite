@@ -47,7 +47,7 @@ function FormSelect<T extends FieldValues>({
         </FormLabel>
       )}
       <InputGroup>
-        <Select {...inputProps} {...register}>
+        <Select {...inputProps} {...register} border="1px" borderRadius="full">
           {options.map(({ value, label: optLabel, disabled }) => (
             <option key={value} value={value} disabled={!!disabled}>
               {optLabel}

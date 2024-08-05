@@ -1,7 +1,11 @@
 import { extendTheme, StyleFunctionProps, ThemeConfig } from '@chakra-ui/react';
 import buttonTheme from './theme/button';
 import cardTheme from './theme/card';
+import inputTheme from './theme/input';
 import menuTheme from './theme/menu';
+import modalTheme from './theme/modal';
+import selectTheme from './theme/select';
+import tabsTheme from './theme/tabs';
 
 const config: ThemeConfig = {
   initialColorMode: 'dark',
@@ -42,6 +46,10 @@ const components = {
   Menu: menuTheme,
   Button: buttonTheme,
   Card: cardTheme,
+  Tabs: tabsTheme,
+  Modal: modalTheme,
+  // Select: selectTheme,
+  // Input: inputTheme,
 };
 const theme = extendTheme({ config, colors, components, styles });
 

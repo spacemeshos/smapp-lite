@@ -13,7 +13,7 @@ const baseStyle = definePartsStyle({
     bg: 'teal.500',
     color: 'gray.200',
     _hover: {
-      bg: 'teal.600',
+      bg: 'alpha.50',
       color: 'white',
     },
   },
@@ -22,17 +22,14 @@ const baseStyle = definePartsStyle({
     py: '4',
     borderRadius: 'xl',
     border: 'none',
-    bg: 'brand.darkGreen',
+    bg: 'brand.lightGray',
   },
   item: {
     // this will style the MenuItem and MenuItemOption components
-    color: 'gray.200',
-    bg: 'brand.darkGreen',
-    _hover: {
-      bg: 'spacemesh.600',
-    },
+    color: 'brand.darkGreen',
+    bg: 'brand.lightGray',
     _focus: {
-      bg: 'spacemesh.600',
+      bg: 'blackAlpha.100',
     },
   },
   groupTitle: {
@@ -56,7 +53,8 @@ const baseStyle = definePartsStyle({
   divider: {
     // this will style the MenuDivider component
     my: '4',
-    borderColor: 'white',
+    mx: '2',
+    color: 'brand.darkGreen',
     borderBottom: '2px ',
   },
 });

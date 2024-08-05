@@ -11,7 +11,8 @@ function LockWallet(): JSX.Element {
       aria-label="Lock wallet"
       icon={<IconLock />}
       onClick={lockWallet}
-      ml={2}
+      m={2}
+      variant="dark"
     />
   );
 }
