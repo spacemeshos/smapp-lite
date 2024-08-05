@@ -89,61 +89,66 @@ function WalletScreen(): JSX.Element {
 
   return (
     <Flex
+      w="100%"
       direction="column"
       alignItems="center"
       justifyContent="center"
       flexGrow={1}
-      width="100%"
+      p={[2, 12]}
     >
-      <Flex
-        // justifyContent="space-between"
-        alignItems="center"
-        width="100%"
-        fontSize="sm"
-      >
-        <NetworkSelection />
-        <HardwareWalletConnect />
+      <Flex alignItems="start" flexDir="row" width="100%" fontSize="sm">
+        <AccountSelection />
         <Spacer />
-        <Box>
-          <MainMenu />
-          <LockWallet />
-        </Box>
+        <Flex flexDir={['column', 'row']} alignItems="end">
+          <NetworkSelection />
+          <Flex>
+            <MainMenu />
+            <LockWallet />
+          </Flex>
+          {/*
+          <HardwareWalletConnect />
+          */}
+        </Flex>
       </Flex>
 
       <NodeStatusBadge />
 
-      <Box
-        mt={2}
-        p={4}
-        w="100%"
-        fontSize="sm"
-        bgColor="blackAlpha.400"
-        borderRadius={6}
-      >
-        <AccountSelection />
-
-        <Text fontWeight="bold" color="green.300">
-          {O.mapWithDefault(
-            currentAccount,
-            'No account',
-            (acc) => acc.displayName
-          )}
-        </Text>
+      <Box mt={2} p={4} w="100%" fontSize="sm" borderRadius={6}>
         {O.mapWithDefault(
           currentAccount,
           <Text color="yellow">Please switch account to view balance.</Text>,
           (account) => (
-            <>
-              <Text>
-                {account.address}
-                <CopyButton value={account.address} />
-              </Text>
-              <Text fontSize="3xl" mt={4} title={`${balance} Smidge`}>
-                {formatSmidge(balance)}
+            <Text>
+              {account.address}
+              <CopyButton value={account.address} />
+            </Text>
+          )
+        )}
+      </Box>
+
+      {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
+      {O.mapWithDefault(accountData, <></>, ([account, network]) => (
+        <Flex
+          w="100%"
+          flexGrow={1}
+          h="100%"
+          flexDir="column"
+          bgColor="spacemesh.850"
+          p={[4, 12]}
+          borderRadius="xl"
+        >
+          {O.mapWithDefault(
+            currentAccount,
+            <Text color="yellow">Please switch account to view balance.</Text>,
+            () => (
+              <Flex alignItems="center">
+                <Text as="b" fontSize="4xl" title={`${balance} Smidge`}>
+                  {formatSmidge(balance)}
+                </Text>
                 <IconButton
                   ml={2}
                   size="sm"
-                  variant="outline"
+                  variant="whiteOutline"
                   disabled={isLoading}
                   icon={
                     isLoading ? (
@@ -156,53 +161,26 @@ function WalletScreen(): JSX.Element {
                   onClick={() => refreshData()}
                   verticalAlign="text-bottom"
                 />
-              </Text>
-              {O.mapWithDefault(
-                unlockedBalance,
-                // eslint-disable-next-line react/jsx-no-useless-fragment
-                <></>,
-                ({ available }) => (
-                  <Text
-                    fontSize="md"
-                    color="green.300"
-                    title={`${available} Smidge`}
-                  >
-                    <Icon
-                      as={IconLockOpen2}
-                      display="inline-block"
-                      boxSize={4}
-                      mr={1}
-                      mb={-0.5}
-                    />
-                    {formatSmidge(available)} available
-                  </Text>
-                )
-              )}
-            </>
-          )
-        )}
-      </Box>
-
-      {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
-      {O.mapWithDefault(accountData, <></>, ([account, network]) => (
-        <>
+              </Flex>
+            )
+          )}
           <ButtonGroup mt={2} mb={2} w="100%">
             <Button
-              w="50%"
-              h={14}
-              flexDirection="column"
-              p={2}
+              flexDirection="row"
               onClick={sendTxDisclosure.onOpen}
+              h="48px"
+              w="230px"
+              variant="white"
             >
               <IconSend />
               Send
             </Button>
             <Button
-              w="50%"
-              h={14}
-              flexDirection="column"
-              p={2}
+              flexDirection="row"
               onClick={receiveModalDisclosure.onOpen}
+              h="48px"
+              w="230px"
+              variant="white"
             >
               <IconQrcode />
               Receive
@@ -221,14 +199,12 @@ function WalletScreen(): JSX.Element {
             display="flex"
             flexGrow={1}
             flexDirection="column"
-            bgColor="blackAlpha.400"
             borderRadius={6}
-            colorScheme="green"
+            colorScheme="spacemesh"
             position="relative"
           >
             <Box
               borderBottomRadius={6}
-              bgGradient="linear(to-b, rgba(0,0,0,0), blackAlpha.400)"
               w="100%"
               h="100px"
               position="absolute"
@@ -264,7 +240,7 @@ function WalletScreen(): JSX.Element {
             layerDurationSec={network.layerDuration}
             layersPerEpoch={network.layersPerEpoch}
           />
-        </>
+        </Flex>
       ))}
       <PasswordAlert />
       <SendTxModal

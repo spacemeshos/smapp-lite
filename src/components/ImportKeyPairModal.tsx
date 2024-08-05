@@ -78,12 +78,12 @@ function ImportKeyPairModal({
     }
   );
   return (
-    <Modal isOpen={isOpen} onClose={close} isCentered>
+    <Modal isOpen={isOpen} onClose={close} isCentered size="lg">
       <Form control={control}>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
-          <ModalHeader>Import the Key Pair</ModalHeader>
+          <ModalHeader textAlign="center">Import the Key Pair</ModalHeader>
           <ModalBody>
             <Text mb={4}>
               Please set the name for your key and paste the secret key in the
@@ -100,6 +100,11 @@ function ImportKeyPairModal({
               })}
               errors={errors}
               isSubmitted={isSubmitted}
+              inputProps={{
+                border: '1px',
+                borderRadius: 'full',
+                _hover: { border: '1px', borderRadius: 'full' },
+              }}
             />
             <FormTextarea
               label="Secret key"
@@ -119,6 +124,11 @@ function ImportKeyPairModal({
               })}
               errors={errors}
               isSubmitted={isSubmitted}
+              textareaProps={{
+                border: '1px',
+                borderRadius: 'md',
+                _hover: { border: '1px', borderRadius: 'md' },
+              }}
             />
             <Text fontSize="xs" color="gray" mt={2} mb={2}>
               The secret key should be a hexadecimal string.
@@ -135,7 +145,7 @@ function ImportKeyPairModal({
             </Checkbox>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" onClick={submit} ml={2}>
+            <Button colorScheme="blue" onClick={submit} ml={2} variant="dark">
               Import
             </Button>
           </ModalFooter>

@@ -19,6 +19,7 @@ import {
 } from 'react-hook-form';
 
 import {
+  border,
   FormControl,
   FormErrorMessage,
   Input,
@@ -91,6 +92,9 @@ function FormAddressSelect<T extends FieldValues, FieldName extends Path<T>>({
       case Origin.Foreign:
         return (
           <Input
+            _hover={{ border: '1px', borderRadius: 'full' }}
+            border="1px"
+            borderRadius="full"
             {...register(fieldName, {
               required: isRequired ? 'Please pick the address' : false,
               value: (!defaultForeign
@@ -110,7 +114,12 @@ function FormAddressSelect<T extends FieldValues, FieldName extends Path<T>>({
       case Origin.Local:
       default:
         return (
-          <Select {...register(fieldName)}>
+          <Select
+            {...register(fieldName)}
+            border="1px"
+            borderRadius="full"
+            _hover={{ border: '1px', borderRadius: 'full' }}
+          >
             {accounts.map((acc) => (
               <option
                 key={`${acc.address}_${acc.displayName}`}

@@ -20,12 +20,14 @@ function PasswordInput({ placeholder = 'Enter password', register }: Props) {
   const toggleShow = () => setShow(!show);
 
   return (
-    <InputGroup size="md">
+    <InputGroup size="md" width={[200, 350]}>
       <Input
         pr={2}
         type={show ? 'text' : 'password'}
         placeholder={placeholder}
         {...register}
+        borderRadius="full"
+        borderColor="brand.darkGreen"
       />
       <InputRightElement width={10}>
         <IconButton
@@ -34,6 +36,7 @@ function PasswordInput({ placeholder = 'Enter password', register }: Props) {
           icon={show ? <IconEyeOff size={14} /> : <IconEye size={14} />}
           size="sm"
           onClick={toggleShow}
+          variant="ghost"
         />
       </InputRightElement>
     </InputGroup>

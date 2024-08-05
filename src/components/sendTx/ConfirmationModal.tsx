@@ -28,7 +28,7 @@ import {
 } from '@chakra-ui/react';
 import { StdPublicKeys } from '@spacemesh/sm-codec';
 import { MultiSigPart, SingleSig } from '@spacemesh/sm-codec/lib/codecs';
-import { IconChevronDown } from '@tabler/icons-react';
+import { IconArrowNarrowLeft, IconChevronDown } from '@tabler/icons-react';
 
 import { Bech32Address, HexString } from '../../types/common';
 import { KeyPairType, SafeKeyWithType } from '../../types/wallet';
@@ -319,14 +319,14 @@ function ConfirmationModal({
     if (!isMultiSig) {
       return (
         <ButtonGroup isAttached>
-          <Button colorScheme="blue" onClick={submit} ml={2} mr="1px">
+          <Button variant="dark" onClick={submit} ml={2} mr="1px">
             {hasSingleSig ? 'Publish' : 'Sign & Publish'}
           </Button>
           <Menu>
             <MenuButton
               as={IconButton}
               icon={<IconChevronDown />}
-              colorScheme="blue"
+              variant="dark"
               minW={8}
             />
             <MenuList>
@@ -383,11 +383,13 @@ function ConfirmationModal({
   const shouldSign = !isMultiSig || signatures?.length !== required;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader pb={0}>Verify transaction</ModalHeader>
+        <ModalHeader pt={0} textAlign="center" fontSize="xx-large">
+          Verify transaction
+        </ModalHeader>
         <ModalBody minH={0}>
           {isLedgerRejected && (
             <Text mb={2} color="red">
@@ -482,18 +484,13 @@ function ConfirmationModal({
             </>
           )}
         </ModalBody>
-        <ModalFooter>
-          <Box flexGrow={1}>
-            <PreviewDataRow
-              label="Fee"
-              value={
-                estimatedGas
-                  ? `${formatSmidge(BigInt(form.gasPrice) * estimatedGas)}`
-                  : 'Loading...'
-              }
-            />
-          </Box>
-          <Button onClick={onClose} ml={2}>
+        <ModalFooter justifyContent="space-between">
+          <Button
+            onClick={onClose}
+            ml={2}
+            variant="outlineWhite"
+            leftIcon={<IconArrowNarrowLeft />}
+          >
             Back
           </Button>
           {renderActions()}

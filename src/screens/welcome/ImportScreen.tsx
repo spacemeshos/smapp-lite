@@ -13,12 +13,15 @@ import {
   FormLabel,
   Input,
   Text,
+  Image,
+  CardHeader,
 } from '@chakra-ui/react';
 
 import BackButton from '../../components/BackButton';
 import PasswordInput from '../../components/PasswordInput';
 import useWallet from '../../store/useWallet';
 import { WalletFile } from '../../types/wallet';
+import logo from '../../assets/logo_white.svg';
 
 type FormValues = {
   password: string;
@@ -85,11 +88,14 @@ function ImportScreen(): JSX.Element {
 
   return (
     <Flex direction="column" alignItems="center" justifyContent="center">
-      <BackButton />
-      <Text fontSize="xl" mb={4} mt={2}>
-        Import wallet file
-      </Text>
-      <Card variant="outline" w="100%">
+      <Image src={logo} width={200} my={8} />
+
+      <Card fontSize="sm" marginY={4} paddingX={[10, 20]} paddingY={5}>
+        <CardHeader>
+          <Text fontSize="xl" mb={4} mt={2} textAlign="center">
+            Import wallet file
+          </Text>
+        </CardHeader>
         <CardBody textAlign="center">
           <Form>
             <Text mb={4}>
@@ -105,8 +111,8 @@ function ImportScreen(): JSX.Element {
             <Button
               size="lg"
               onClick={() => inputRef.current?.click()}
-              variant="solid"
-              colorScheme="green"
+              variant="dark"
+              bg="brand.darkGreen"
               mb={4}
             >
               Select wallet file
@@ -128,19 +134,16 @@ function ImportScreen(): JSX.Element {
               <PasswordInput register={register('password')} />
               <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
             </FormControl>
-            <Button
-              type="submit"
-              size="lg"
-              variant="solid"
-              mt={4}
-              width="100%"
-              onClick={onSubmit}
-            >
-              Import wallet
-            </Button>
           </Form>
         </CardBody>
       </Card>
+      <Flex width="100%" justifyContent="space-between" pt={10}>
+        <BackButton />
+
+        <Button type="submit" pt={2} pb={2} pl={4} pr={4} onClick={onSubmit}>
+          Import wallet
+        </Button>
+      </Flex>
     </Flex>
   );
 }

@@ -92,12 +92,14 @@ function ImportKeyFromLedgerModal({
   );
 
   return (
-    <Modal isOpen={isOpen} onClose={close} isCentered>
+    <Modal isOpen={isOpen} onClose={close} isCentered size="lg">
       <Form control={control}>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
-          <ModalHeader>Import Public Key from Ledger</ModalHeader>
+          <ModalHeader textAlign="center">
+            Import Public Key from Ledger
+          </ModalHeader>
           <ModalBody>
             <Text mb={4}>
               Only public key will be imported from the Ledger.
@@ -113,6 +115,11 @@ function ImportKeyFromLedgerModal({
               })}
               errors={errors}
               isSubmitted={isSubmitted}
+              inputProps={{
+                border: '1px',
+                borderRadius: 'full',
+                _hover: { border: '1px', borderRadius: 'full' },
+              }}
             />
             <FormInput
               label="Derivation Path"
@@ -130,6 +137,11 @@ function ImportKeyFromLedgerModal({
               })}
               errors={errors}
               isSubmitted={isSubmitted}
+              inputProps={{
+                border: '1px',
+                borderRadius: 'full',
+                _hover: { border: '1px', borderRadius: 'full' },
+              }}
             />
             <Checkbox
               size="lg"
@@ -141,7 +153,7 @@ function ImportKeyFromLedgerModal({
             </Checkbox>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" onClick={submit} ml={2}>
+            <Button colorScheme="blue" onClick={submit} ml={2} variant="dark">
               Import Public Key
             </Button>
           </ModalFooter>

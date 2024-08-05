@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   ButtonGroup,
+  Flex,
   IconButton,
   Image,
   ListItem,
@@ -42,11 +43,14 @@ function DeviceSelectionModal() {
       isOpen={modalConnect.isOpen}
       onClose={modalConnect.onClose}
       isCentered
+      size="xl"
     >
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader>Connect to Ledger Device</ModalHeader>
+        <ModalHeader textAlign="center" color="brand.darkGreen">
+          Connect to Ledger Device
+        </ModalHeader>
         <ModalBody minH={0} pb={6}>
           <Text mb={4}>
             Please turn on your Ledger device, unlock the PIN code, and pick the
@@ -63,29 +67,35 @@ function DeviceSelectionModal() {
           )}
           <ButtonGroup w="100%">
             <Button
-              colorScheme="blue"
               onClick={() => connectDevice(LedgerTransports.Bluetooth)}
               display="block"
               flex={1}
-              h={20}
+              h="60px"
+              px={12}
               isDisabled={!IS_SUPPORTED}
+              variant="dark"
             >
-              <IconBluetooth style={{ margin: 'auto' }} />
-              Bluetooth
+              <Flex alignItems="center" justifyItems="center" w="100%">
+                <IconBluetooth style={{ margin: 'auto' }} />
+                Bluetooth
+              </Flex>
               <Text fontSize="xx-small" mt={1}>
                 (Ledger Nano X)
               </Text>
             </Button>
             <Button
-              colorScheme="blue"
               onClick={() => connectDevice(LedgerTransports.WebUSB)}
               display="block"
               flex={1}
-              h={20}
+              h="60px"
+              px={12}
               isDisabled={!IS_SUPPORTED}
+              variant="dark"
             >
-              <IconUsb style={{ margin: 'auto' }} />
-              WebUSB
+              <Flex alignItems="center" justifyItems="center" w="100%">
+                <IconUsb />
+                WebUSB
+              </Flex>
               <Text fontSize="xx-small" mt={1}>
                 (Ledger Nano S or S Plus)
               </Text>
@@ -218,11 +228,12 @@ function NotConnected() {
   return (
     <>
       <IconButton
-        icon={<IconDeviceUsb size={BUTTON_ICON_SIZE} />}
+        icon={<IconDeviceUsb size={24} />}
         title="Connect a Hardware Wallet"
         aria-label="Connect a Hardware Wallet"
         ml={2}
         onClick={modalConnect.onOpen}
+        variant="dark"
       />
       <DeviceSelectionModal />
     </>
@@ -240,7 +251,7 @@ function Connected({ device }: { device: LedgerDevice }) {
   return (
     <>
       <IconButton
-        icon={<TransportIcon size={BUTTON_ICON_SIZE} color="green" />}
+        icon={<TransportIcon size={24} color="green" />}
         title="Disconnect a Hardware Wallet"
         aria-label="Disconnect a Hardware Wallet"
         ml={2}

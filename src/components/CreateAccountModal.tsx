@@ -153,7 +153,12 @@ function CreateAccountModal({
             />
             <FormInput
               label="Total amount"
-              inputProps={{ type: 'number' }}
+              inputProps={{
+                type: 'number',
+                border: '1px',
+                borderRadius: 'full',
+                _hover: { border: '1px', borderRadius: 'full' },
+              }}
               register={register('totalAmount', {
                 required: 'Please specify total amount locked in the vault',
               })}
@@ -162,7 +167,12 @@ function CreateAccountModal({
             />
             <FormInput
               label="Vesting start (layer number)"
-              inputProps={{ type: 'number' }}
+              inputProps={{
+                type: 'number',
+                border: '1px',
+                borderRadius: 'full',
+                _hover: { border: '1px', borderRadius: 'full' },
+              }}
               register={register('vestingStart', {
                 required: 'Please specify the epoch when the vesting starts',
                 valueAsNumber: true,
@@ -172,7 +182,12 @@ function CreateAccountModal({
             />
             <FormInput
               label="Vesting end (layer number)"
-              inputProps={{ type: 'number' }}
+              inputProps={{
+                type: 'number',
+                border: '1px',
+                borderRadius: 'full',
+                _hover: { border: '1px', borderRadius: 'full' },
+              }}
               register={register('vestingEnd', {
                 required: 'Please specify the epoch when the vesting ends',
                 valueAsNumber: true,
@@ -191,7 +206,12 @@ function CreateAccountModal({
             </Text>
             <FormInput
               label="Required amount of signatures"
-              inputProps={{ type: 'number' }}
+              inputProps={{
+                type: 'number',
+                border: '1px',
+                borderRadius: 'full',
+                _hover: { border: '1px', borderRadius: 'full' },
+              }}
               register={register('required', {
                 required: 'Please specify any number from 0 to 10',
                 valueAsNumber: true,
@@ -232,7 +252,12 @@ function CreateAccountModal({
             </Text>
             <FormInput
               label="Required amount of signatures"
-              inputProps={{ type: 'number' }}
+              inputProps={{
+                type: 'number',
+                border: '1px',
+                borderRadius: 'full',
+                _hover: { border: '1px', borderRadius: 'full' },
+              }}
               register={register('required', {
                 required: 'Please specify any number from 0 to 10',
                 valueAsNumber: true,
@@ -286,12 +311,12 @@ function CreateAccountModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">
       <Form control={control}>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
-          <ModalHeader>Create a new Account</ModalHeader>
+          <ModalHeader textAlign="center">Create a new Account</ModalHeader>
           <ModalBody minH={0}>
             <FormInput
               label="Name"
@@ -304,6 +329,11 @@ function CreateAccountModal({
               })}
               errors={errors}
               isSubmitted={isSubmitted}
+              inputProps={{
+                border: '1px',
+                borderRadius: 'full',
+                _hover: { border: '1px', borderRadius: 'full' },
+              }}
             />
             <FormSelect
               label="Account type"
@@ -319,12 +349,21 @@ function CreateAccountModal({
               errors={errors}
               isSubmitted={isSubmitted}
             />
-            <Card variant="outline">
-              <CardBody>{renderTemplateSpecificFields()}</CardBody>
+            <Card shadow={0}>
+              <CardBody
+                pt={2}
+                pr={0}
+                pb={1}
+                pl={0}
+                bg="brand.lightGray"
+                color="blackAlpha.800"
+              >
+                {renderTemplateSpecificFields()}
+              </CardBody>
             </Card>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" onClick={submit} ml={2}>
+            <Button onClick={submit} ml={2} variant="dark" w="full">
               Add
             </Button>
           </ModalFooter>

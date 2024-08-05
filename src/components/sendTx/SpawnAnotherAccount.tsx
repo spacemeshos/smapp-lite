@@ -5,7 +5,7 @@ import {
   UseFormUnregister,
 } from 'react-hook-form';
 
-import { FormControl, FormLabel, Select, Text } from '@chakra-ui/react';
+import { Flex, FormControl, FormLabel, Select, Text } from '@chakra-ui/react';
 import { StdTemplateKeys } from '@spacemesh/sm-codec';
 
 import { AccountWithAddress } from '../../types/wallet';
@@ -94,7 +94,7 @@ function SpawnAnotherAccount({
   };
 
   return (
-    <>
+    <Flex flexDir="column">
       <FormControl>
         <FormLabel>Please select account to spawn:</FormLabel>
         <Select onChange={selectAccount} value={selectedAddress}>
@@ -109,7 +109,7 @@ function SpawnAnotherAccount({
         </Select>
       </FormControl>
       {renderDetails()}
-    </>
+    </Flex>
   );
 }
 

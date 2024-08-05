@@ -19,6 +19,7 @@ function BackButton({ onClick = noop }: Props): JSX.Element {
         onClick();
         navigate(-1);
       }}
+      variant="ghostWhite"
     >
       Back
     </Button>

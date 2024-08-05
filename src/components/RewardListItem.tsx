@@ -29,47 +29,50 @@ function RewardListItem({
   layersPerEpoch,
 }: RewardListItemProps): JSX.Element {
   return (
-    <Card
-      mb={2}
-      bgColor="whiteAlpha.100"
-      _hover={{ bgColor: 'whiteAlpha.300' }}
-    >
+    <Card mb={2} bgColor="spacemesh.850" _hover={{ bgColor: 'spacemesh.900' }}>
       <CardBody p={2}>
-        <Flex mb={1}>
-          <Text flex={1} fontSize="sm" color="gray">
-            {formatTimestamp(
-              timestampByLayer(genesisTime, layerDurationSec, reward.layerPaid)
-            )}{' '}
-            (Layer {reward.layerPaid} in Epoch{' '}
-            {epochByLayer(layersPerEpoch, reward.layerPaid)})
-          </Text>
-          <ExplorerButton
-            dataType="rewards"
-            value={`0x${reward.smesher}/${reward.layerPaid}`}
-            v2
-            ml={1}
-          />
-        </Flex>
-
         <Flex alignItems="baseline">
           <Stat flex={2}>
-            <StatLabel fontSize="xx-small">Reward</StatLabel>
-            <StatNumber fontSize="sm" color="green">
+            <StatLabel fontSize="x-small" color="#F0F0F0EE">
+              Reward
+            </StatLabel>
+            <StatNumber fontSize="sm" color="brand.green">
               {formatSmidge(reward.rewardForLayer + reward.rewardForFees)}
+              <Flex mb={1}>
+                <Text flex={1} fontSize="xx-small" color="#B9B9B9">
+                  {formatTimestamp(
+                    timestampByLayer(
+                      genesisTime,
+                      layerDurationSec,
+                      reward.layerPaid
+                    )
+                  )}{' '}
+                  (Layer {reward.layerPaid} in Epoch{' '}
+                  {epochByLayer(layersPerEpoch, reward.layerPaid)})
+                </Text>
+              </Flex>
             </StatNumber>
           </Stat>
-          <Stat color="gray" flex={1}>
-            <StatLabel fontSize="xx-small">For layer</StatLabel>
+          <Stat flex={1} color="#B9B9B9">
+            <StatLabel fontSize="x-small">For layer</StatLabel>
             <StatNumber fontSize="sm">
               {formatSmidge(reward.rewardForLayer)}
             </StatNumber>
           </Stat>
-          <Stat color="gray" flex={1}>
-            <StatLabel fontSize="xx-small">For fees</StatLabel>
+          <Stat color="#B9B9B9" flex={1}>
+            <StatLabel fontSize="x-small">For fees</StatLabel>
             <StatNumber fontSize="sm">
               {formatSmidge(reward.rewardForFees)}
             </StatNumber>
           </Stat>
+
+          <ExplorerButton
+            dataType="rewards"
+            value={`0x${reward.smesher}/${reward.layerPaid}`}
+            v2
+            mt="auto"
+            mb="auto"
+          />
         </Flex>
       </CardBody>
     </Card>

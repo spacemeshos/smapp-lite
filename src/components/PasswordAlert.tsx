@@ -33,6 +33,7 @@ function PasswordAlert(): JSX.Element {
       isOpen={form.isOpen}
       onClose={form.onClose}
       isCentered
+      size="lg"
     >
       <AlertDialogOverlay />
       <AlertDialogContent>
@@ -63,21 +64,20 @@ function PasswordAlert(): JSX.Element {
                 {form.errors.password?.message}
               </FormErrorMessage>
             </FormControl>
-            <Checkbox {...form.register.remember}>
+            <Checkbox
+              {...form.register.remember}
+              borderColor="brand.darkGreen"
+              colorScheme="spacemesh"
+            >
               Remember password for next 5 minutes
             </Checkbox>
           </AlertDialogBody>
 
-          <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={form.onClose}>
+          <AlertDialogFooter justifyContent="space-between">
+            <Button ref={cancelRef} onClick={form.onClose} variant="dark">
               Cancel
             </Button>
-            <Button
-              type="submit"
-              colorScheme="purple"
-              onClick={form.onSubmit}
-              ml={3}
-            >
+            <Button type="submit" variant="dark" onClick={form.onSubmit} ml={3}>
               {form.actionLabel}
             </Button>
           </AlertDialogFooter>

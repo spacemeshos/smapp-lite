@@ -47,7 +47,18 @@ function UnlockScreen(): JSX.Element {
   const wipeAlert = useDisclosure();
 
   return (
-    <>
+    <Flex
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+      marginTop="auto"
+      marginBottom="auto"
+      paddingX={36}
+      paddingY={10}
+      borderRadius="xl"
+      gap={20}
+      bg="spacemesh.850"
+    >
       <Flex
         direction="column"
         alignItems="center"
@@ -55,18 +66,26 @@ function UnlockScreen(): JSX.Element {
         flexGrow={1}
         fontSize="3xl"
       >
-        <Text fontSize="xl" mb={4}>
-          Unlock wallet
+        <Text fontSize="xl" mb={12}>
+          Unlock Wallet
         </Text>
         <Form control={control}>
           <FormControl isInvalid={!!errors.password?.message}>
-            <FormLabel>Enter password:</FormLabel>
             <PasswordInput register={register('password')} />
             <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
           </FormControl>
-          <Button type="submit" mt={4} onClick={() => submit()} size="lg">
-            Unlock
-          </Button>
+          <Box display="flex" justifyContent="center" mt={4}>
+            <Button
+              type="submit"
+              mt={4}
+              px={10}
+              onClick={() => submit()}
+              size="md"
+              alignSelf="center"
+            >
+              Unlock
+            </Button>
+          </Box>
         </Form>
       </Flex>
       <Box mt={6} mb={2} textAlign="center" maxW={360}>
@@ -80,13 +99,13 @@ function UnlockScreen(): JSX.Element {
           onClick={wipeAlert.onOpen}
           colorScheme="red"
           size="sm"
-          variant="outline"
+          variant="white"
         >
           Wipe out
         </Button>
       </Box>
       <WipeOutAlert disclosure={wipeAlert} />
-    </>
+    </Flex>
   );
 }
 

@@ -167,7 +167,7 @@ export const getStatusColor = (status: TransactionState): string => {
     case 'TRANSACTION_STATE_MESH':
       return 'orange';
     case 'TRANSACTION_STATE_PROCESSED':
-      return 'green';
+      return 'brand.green';
     case 'TRANSACTION_STATE_UNSPECIFIED':
     default:
       return 'grey';

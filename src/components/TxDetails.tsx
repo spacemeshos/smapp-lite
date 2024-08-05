@@ -83,6 +83,8 @@ function Row({ label, value, isCopyable, explorer }: RowProps) {
               }}
               disabled={isCopied}
               icon={<CopyIcon />}
+              variant="whiteOutline"
+              border="1px"
               ml={1}
             />
           </Tooltip>

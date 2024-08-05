@@ -18,6 +18,7 @@ import WelcomeScreen from './screens/welcome/WelcomeScreen';
 import WelcomeWrapper from './screens/welcome/WelcomeWrapper';
 import useWallet from './store/useWallet';
 import theme from './theme';
+import Fonts from './theme/Fonts';
 
 function App(): JSX.Element {
   const { hasWallet, isWalletUnlocked } = useWallet();
@@ -104,6 +105,7 @@ function App(): JSX.Element {
 
   return (
     <ChakraProvider theme={theme}>
+      <Fonts />
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <IdleAlert />
       <Container
@@ -111,6 +113,7 @@ function App(): JSX.Element {
         flexDirection="column"
         alignItems="center"
         minH="100vh"
+        minW="100vw"
         p={4}
       >
         <RouterProvider router={router} />
