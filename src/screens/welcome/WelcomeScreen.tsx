@@ -18,12 +18,20 @@ function WelcomeScreen(): JSX.Element {
         flexDir="column"
       >
         <Text
-          fontSize="50px"
+          fontSize="30px"
+          textAlign="center"
+          fontFamily="Univers63"
+          color="brand.green"
+        >
+          THE OFFICIAL
+        </Text>
+        <Text
+          fontSize="45px"
           textAlign="center"
           fontFamily="Univers93"
           color="brand.green"
         >
-          PLACE FOR TEXT
+          SPACEMESH WALLET
         </Text>
 
         <Button
