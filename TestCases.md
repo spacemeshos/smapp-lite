@@ -46,28 +46,29 @@
 2. Check that the page displays a 24-word mnemonic phrase from the previous step.
 3. Check that the mnemonic phrase consists of 24 numbered slots, with 20 words correctly filled and 4 slots empty.
 4. Ensure the 4 missing words are listed above the grid for drag-and-drop.
-5. Verify the presence of a "Back" button.
-6. Verify the presence of a "Next Step" button.
-7. Verify that the 4 missing words can be dragged and dropped into the empty slots on the grid.
-8. Ensure that each word can only be placed in one slot.
-9. Ensure that only one word can be placed in one slot at a time. If there was already a word, it should pop out to the initial top position above the grid.
-10. Check that a word, once placed, remains in the slot unless dragged out again.
-11. Ensure the user can easily drag the word out of the incorrect slot and try again.
-12. Verify that correctly placing the words into their slots provides visual feedback.
-13. Ensure that an error message or visual indication is provided if the words are placed in the wrong slots.
+5. Verify that the 4 missing words can be dragged and dropped into the empty slots on the grid.
+6. Ensure that each word can only be placed in one slot.
+7. Ensure that only one word can be placed in one slot at a time. If there was already a word, it should pop out to the initial top position above the grid.
+8. Check that a word, once placed, remains in the slot unless dragged out again.
+9. Ensure that visually all words are inserted in the same way (with no additional space or visual changes)
+10. Ensure the user can easily drag the word out of the incorrect slot and try again.
+11. Verify that correctly placing the words into their slots provides visual feedback.
+12. Ensure that an error message or visual indication is provided if the words are placed in the wrong slots, and the "Next Step" button remains inactive.
 
 **Back button**
 
-1. Verify that clicking "Back" navigates the user back to the mnemonic phrase page.
-2. Ensure that the mnemonic phrase is retained when returning to the mnemonic phrase page.
-3. Ensure that clicking 'Back' clears all filled words and prompts the user to fill in the 4 words again.
+1. Verify the presence of a "Back" button.
+2. Verify that clicking "Back" navigates the user back to the mnemonic phrase page.
+3. Ensure that the mnemonic phrase is retained when returning to the mnemonic phrase page.
+4. Ensure that clicking 'Back' clears all filled words and prompts the user to fill in the 4 words again.
 
 **Next step button**
 
-1. Verify that clicking "Next Step" is only enabled when all 4 words are correctly placed in the grid.
-2. Ensure that clicking "Next Step" navigates the user to the next page i.e. password setup.
-3. Check behavior when attempting to click "Next Step" with only some of the words correctly placed.
-4. Ensure that clicking 'Next Step' clears all filled words and prompts the user to fill in the 4 words again.
+1. Verify the presence of a "Next Step" button.
+2. Verify that clicking "Next Step" is only enabled when all 4 words are correctly placed in the grid.
+3. Ensure that clicking "Next Step" navigates the user to the next page i.e. password setup.
+4. Check behavior when attempting to click "Next Step" with only some of the words correctly placed.
+5. Ensure that clicking 'Next Step' clears all filled words and prompts the user to fill in the 4 words again.
 
 ## Password Setup Page
 
@@ -77,16 +78,15 @@
 4. Verify that by default input is hidden and replaced by "*".
 5. Check that the page displays eye icon buttons for both input fields.
 6. Check that both input fields have the placeholder text "Enter password".
-7. Check that the page displays: "Back" button.
-8. Check that the page displays: Green "Create Wallet" button.
-9. Verify clicking the eye icon reveals the entered password in the "Set the password:" field.
-10. Verify clicking the eye icon reveals the entered password in the "Confirm the password:" field.
-11. Ensure clicking the eye icon again hides the password.
-12. Verify that the "Confirm the password:" field must match the "Set the password:" field.
-13. Verify an appropriate error message is shown if the passwords in the "Set the password" and "Confirm the password" fields do not match.
-14. Verify the system correctly handles and accepts special characters in the password fields.
-15. Verify that the password is securely transmitted and not exposed in any way.
-16. Ensure the app correctly handles password encryption and validation.
+7. Verify clicking the eye icon reveals the entered password in the "Set the password:" field.
+8. Verify clicking the eye icon reveals the entered password in the "Confirm the password:" field.
+9. Ensure clicking the eye icon again hides the password.
+10. Verify that the "Confirm the password:" field must match the "Set the password:" field.
+11. Verify an appropriate error message is shown if the passwords in the "Set the password" and "Confirm the password" fields do not match.
+12. Verify the system correctly handles and accepts special characters in the password fields.
+13. Verify that the password is securely transmitted and not exposed in any way.
+14. Ensure the app correctly handles password encryption and validation.
+15. Ensure that when the input field is focused, the password requirements info is shown -  "Password should contain at least 8 chars: letters in upper and lower cases, numbers, and special characters"
 
 **Password Requirements Validation**
 
@@ -101,17 +101,19 @@
 
 **Back Button**
 
-1. Verify clicking the "Back" button navigates the user back to the mnemonic confirmation page.
-2. Ensure that any entered passwords are not retained when navigating back.
+1. Check that the page displays: "Back" button.
+2. Verify clicking the "Back" button navigates the user back to the mnemonic confirmation page.
+3. Ensure that any entered passwords are not retained when navigating back.
 
 **Create Wallet Button**
 
-1. Verify the "Create Wallet" button is disabled if the password fields are empty or passwords do not meet requirements.
-2. Ensure the "Create Wallet" button is enabled only when both password fields are filled, match, and meet the requirements.
-3. Verify clicking the "Create Wallet" button with valid passwords successfully creates the wallet.
-4. Ensure the user is navigated to the wallet dashboard page upon successful wallet creation.
-5. Check behavior when clicking "Create Wallet" with both password fields empty.
-6. Check behavior when clicking "Create Wallet" with only one of the password fields filled.
+1. Check that the page displays: Green "Create Wallet" button.
+2. Verify the "Create Wallet" button is disabled if the password fields are empty or passwords do not meet requirements.
+3. Ensure the "Create Wallet" button is enabled only when both password fields are filled, match, and meet the requirements.
+4. Verify clicking the "Create Wallet" button with valid passwords successfully creates the wallet.
+5. Ensure the user is navigated to the wallet dashboard page upon successful wallet creation.
+6. Check behavior when clicking "Create Wallet" with both password fields empty.
+7. Check behavior when clicking "Create Wallet" with only one of the password fields filled.
 
 # Recover Your Wallet
 
@@ -174,7 +176,7 @@
 
 # Log in / Log out
 
-1. Verify that navigating to `https://wallet.spacemesh.io/` redirects instantly to `https://wallet.spacemesh.io/unlock`.
+1. With a wallet correctly set up, and logged out, verify that navigating to any valid link`https://wallet.spacemesh.io/#/[any-existing-path]` redirects instantly to `https://wallet.spacemesh.io/#/unlock`.
 2. Verify the login page loads successfully - displays the following elements: Input field to enter the password, "Unlock" button. Footer message with "Wipe out" button.
 3. Ensure the password input field accepts text input.
 4. Verify that the input field has the indication for password entry and that it's securely masked (dots or asteriks replace chars)
