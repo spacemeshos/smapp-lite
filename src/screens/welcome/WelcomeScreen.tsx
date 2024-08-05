@@ -6,7 +6,7 @@ import logo from '../../assets/logo_white.svg';
 function WelcomeScreen(): JSX.Element {
   return (
     <Flex flexDir="column" alignItems="center" height="100%">
-      <Image src={logo} width={200} mb={8} />
+      <Image src={logo} width={200} my={8} />
 
       <Flex
         justifySelf="center"
@@ -16,6 +16,7 @@ function WelcomeScreen(): JSX.Element {
         py={12}
         alignItems="center"
         flexDir="column"
+        marginTop="20%"
       >
         <Text
           fontSize="30px"

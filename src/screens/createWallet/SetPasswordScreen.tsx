@@ -54,7 +54,7 @@ function SetPasswordScreen(): JSX.Element {
 
   return (
     <Flex flexDir="column" alignItems="center">
-      <Image src={logo} width={200} mb={8} />
+      <Image src={logo} width={200} my={8} />
 
       <Card
         fontSize="sm"

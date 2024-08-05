@@ -52,6 +52,12 @@ function RewardListItem({
               {formatSmidge(reward.rewardForFees)}
             </StatNumber>
           </Stat>
+          <ExplorerButton
+            dataType="rewards"
+            value={`0x${reward.smesher}/${reward.layerPaid}`}
+            v2
+            ml={1}
+          />
         </Flex>
         <Flex mb={1}>
           <Text flex={1} fontSize="xx-small" color="#B9B9B9">
@@ -61,12 +67,6 @@ function RewardListItem({
             (Layer {reward.layerPaid} in Epoch{' '}
             {epochByLayer(layersPerEpoch, reward.layerPaid)})
           </Text>
-          <ExplorerButton
-            dataType="rewards"
-            value={`0x${reward.smesher}/${reward.layerPaid}`}
-            v2
-            ml={1}
-          />
         </Flex>
       </CardBody>
     </Card>

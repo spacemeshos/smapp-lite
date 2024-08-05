@@ -88,9 +88,9 @@ function ImportScreen(): JSX.Element {
 
   return (
     <Flex direction="column" alignItems="center" justifyContent="center">
-      <Image src={logo} width={200} mb={8} />
+      <Image src={logo} width={200} my={8} />
 
-      <Card variant="outline" w="100%">
+      <Card fontSize="sm" w="100%" padding={12} marginTop="20%">
         <CardHeader>
           <Text fontSize="xl" mb={4} mt={2} textAlign="center">
             Import wallet file
@@ -111,8 +111,8 @@ function ImportScreen(): JSX.Element {
             <Button
               size="lg"
               onClick={() => inputRef.current?.click()}
-              variant="solid"
-              colorScheme="green"
+              variant="dark"
+              bg="brand.darkGreen"
               mb={4}
             >
               Select wallet file
@@ -134,24 +134,16 @@ function ImportScreen(): JSX.Element {
               <PasswordInput register={register('password')} />
               <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
             </FormControl>
-
-            <Flex width="100%" justifyContent="space-between" pt={10}>
-              <BackButton />
-
-              <Button
-                type="submit"
-                pt={2}
-                pb={2}
-                pl={4}
-                pr={4}
-                onClick={onSubmit}
-              >
-                Import wallet
-              </Button>
-            </Flex>
           </Form>
         </CardBody>
       </Card>
+      <Flex width="100%" justifyContent="space-between" pt={10}>
+        <BackButton />
+
+        <Button type="submit" pt={2} pb={2} pl={4} pr={4} onClick={onSubmit}>
+          Import wallet
+        </Button>
+      </Flex>
     </Flex>
   );
 }

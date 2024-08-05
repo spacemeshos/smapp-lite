@@ -41,9 +41,9 @@ function RecoverMnemonicScreen(): JSX.Element {
 
   return (
     <Flex flexDir="column" alignItems="center">
-      <Image src={logo} width={200} mb={8} />
+      <Image src={logo} width={200} my={8} />
 
-      <Card fontSize="sm" w="100%">
+      <Card fontSize="sm" w="100%" padding={12} marginTop="20%">
         <CardHeader>
           <Text fontSize="xl" mb={4} mt={2} textAlign="center">
             Recover wallet from mnemonics
@@ -70,24 +70,16 @@ function RecoverMnemonicScreen(): JSX.Element {
               errors={errors}
               isSubmitted={isSubmitted}
             />
-
-            <Flex width="100%" justifyContent="space-between" pt={10}>
-              <BackButton />
-
-              <Button
-                type="submit"
-                pt={2}
-                pb={2}
-                pl={4}
-                pr={4}
-                onClick={onSubmit}
-              >
-                Next step
-              </Button>
-            </Flex>
           </Form>
         </CardBody>
       </Card>
+      <Flex width="100%" justifyContent="space-between" pt={10}>
+        <BackButton />
+
+        <Button type="submit" pt={2} pb={2} pl={4} pr={4} onClick={onSubmit}>
+          Next step
+        </Button>
+      </Flex>
     </Flex>
   );
 }

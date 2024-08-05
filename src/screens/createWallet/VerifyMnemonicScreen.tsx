@@ -103,7 +103,7 @@ function VerifyMnemonicScreen(): JSX.Element {
 
   return (
     <Flex flexDir="column" alignItems="center">
-      <Image src={logo} width={200} mb={8} />
+      <Image src={logo} width={200} my={8} />
 
       <DndProvider backend={HTML5Backend}>
         <Card fontSize="sm" marginY={4} paddingX={20} paddingY={5}>
