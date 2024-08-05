@@ -132,6 +132,7 @@ function FormAmountInput<T extends FieldValues>({
         <Input
           border="1px"
           borderRadius="full"
+          _hover={{ border: '1px', borderRadius: 'full' }}
           type="number"
           key={`display_input-${register.name}`}
           value={displayValue}

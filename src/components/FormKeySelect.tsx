@@ -66,6 +66,7 @@ function FormKeySelect<T extends FieldValues, FieldName extends Path<T>>({
           <Input
             border="1px"
             borderRadius="full"
+            _hover={{ border: '1px', borderRadius: 'full' }}
             {...register(fieldName, {
               required: isRequired ? 'Please pick the key' : false,
               validate: (val) =>
@@ -76,7 +77,12 @@ function FormKeySelect<T extends FieldValues, FieldName extends Path<T>>({
       case KeyType.Local:
       default:
         return (
-          <Select {...register(fieldName)} border="1px" borderRadius="full">
+          <Select
+            {...register(fieldName)}
+            border="1px"
+            borderRadius="full"
+            _hover={{ border: '1px', borderRadius: 'full' }}
+          >
             {keys.map((key) => (
               <option key={key.publicKey} value={key.publicKey}>
                 {key.displayName} ({getAbbreviatedHexString(key.publicKey)})

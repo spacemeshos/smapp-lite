@@ -109,7 +109,11 @@ function CreateKeyPairModal({
               })}
               errors={errors}
               isSubmitted={isSubmitted}
-              inputProps={{ border: '1px', borderRadius: 'full' }}
+              inputProps={{
+                border: '1px',
+                borderRadius: 'full',
+                _hover: { border: '1px', borderRadius: 'full' },
+              }}
             />
             <FormInput
               label="Derivation Path"
@@ -129,7 +133,11 @@ function CreateKeyPairModal({
               })}
               errors={errors}
               isSubmitted={isSubmitted}
-              inputProps={{ border: '1px', borderRadius: 'full' }}
+              inputProps={{
+                border: '1px',
+                borderRadius: 'full',
+                _hover: { border: '1px', borderRadius: 'full' },
+              }}
             />
             <Checkbox
               size="lg"

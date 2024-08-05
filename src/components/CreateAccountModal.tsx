@@ -157,6 +157,7 @@ function CreateAccountModal({
                 type: 'number',
                 border: '1px',
                 borderRadius: 'full',
+                _hover: { border: '1px', borderRadius: 'full' },
               }}
               register={register('totalAmount', {
                 required: 'Please specify total amount locked in the vault',
@@ -170,6 +171,7 @@ function CreateAccountModal({
                 type: 'number',
                 border: '1px',
                 borderRadius: 'full',
+                _hover: { border: '1px', borderRadius: 'full' },
               }}
               register={register('vestingStart', {
                 required: 'Please specify the epoch when the vesting starts',
@@ -184,6 +186,7 @@ function CreateAccountModal({
                 type: 'number',
                 border: '1px',
                 borderRadius: 'full',
+                _hover: { border: '1px', borderRadius: 'full' },
               }}
               register={register('vestingEnd', {
                 required: 'Please specify the epoch when the vesting ends',
@@ -207,6 +210,7 @@ function CreateAccountModal({
                 type: 'number',
                 border: '1px',
                 borderRadius: 'full',
+                _hover: { border: '1px', borderRadius: 'full' },
               }}
               register={register('required', {
                 required: 'Please specify any number from 0 to 10',
@@ -252,6 +256,7 @@ function CreateAccountModal({
                 type: 'number',
                 border: '1px',
                 borderRadius: 'full',
+                _hover: { border: '1px', borderRadius: 'full' },
               }}
               register={register('required', {
                 required: 'Please specify any number from 0 to 10',
@@ -324,7 +329,11 @@ function CreateAccountModal({
               })}
               errors={errors}
               isSubmitted={isSubmitted}
-              inputProps={{ border: '1px', borderRadius: 'full' }}
+              inputProps={{
+                border: '1px',
+                borderRadius: 'full',
+                _hover: { border: '1px', borderRadius: 'full' },
+              }}
             />
             <FormSelect
               label="Account type"

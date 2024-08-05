@@ -1,9 +1,11 @@
 import { extendTheme, StyleFunctionProps, ThemeConfig } from '@chakra-ui/react';
 import buttonTheme from './theme/button';
 import cardTheme from './theme/card';
+import checkboxTheme from './theme/checkbox';
 import drawerTheme from './theme/drawer';
 import menuTheme from './theme/menu';
 import modalTheme from './theme/modal';
+import radioTheme from './theme/radio';
 import tabsTheme from './theme/tabs';
 
 const config: ThemeConfig = {
@@ -48,6 +50,8 @@ const components = {
   Tabs: tabsTheme,
   Modal: modalTheme,
   Drawer: drawerTheme,
+  Checkbox: checkboxTheme,
+  Radio: radioTheme,
 };
 const theme = extendTheme({ config, colors, components, styles });
 

@@ -100,7 +100,11 @@ function ImportKeyPairModal({
               })}
               errors={errors}
               isSubmitted={isSubmitted}
-              inputProps={{ border: '1px', borderRadius: 'full' }}
+              inputProps={{
+                border: '1px',
+                borderRadius: 'full',
+                _hover: { border: '1px', borderRadius: 'full' },
+              }}
             />
             <FormTextarea
               label="Secret key"
@@ -120,7 +124,11 @@ function ImportKeyPairModal({
               })}
               errors={errors}
               isSubmitted={isSubmitted}
-              textareaProps={{ border: '1px', borderRadius: 'none' }}
+              textareaProps={{
+                border: '1px',
+                borderRadius: 'md',
+                _hover: { border: '1px', borderRadius: 'md' },
+              }}
             />
             <Text fontSize="xs" color="gray" mt={2} mb={2}>
               The secret key should be a hexadecimal string.
