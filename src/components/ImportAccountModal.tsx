@@ -150,7 +150,7 @@ function ImportAccountModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={close} isCentered>
+    <Modal isOpen={isOpen} onClose={close} isCentered size="lg">
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />

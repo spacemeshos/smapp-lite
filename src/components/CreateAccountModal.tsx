@@ -306,7 +306,7 @@ function CreateAccountModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">
       <Form control={control}>
         <ModalOverlay />
         <ModalContent>
