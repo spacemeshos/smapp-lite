@@ -12,7 +12,7 @@ function WelcomeScreen(): JSX.Element {
         justifySelf="center"
         bg="spacemesh.850"
         justifyItems="center"
-        px={24}
+        px={[0, 24]}
         py={12}
         alignItems="center"
         flexDir="column"

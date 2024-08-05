@@ -89,7 +89,7 @@ function CreateMnemonicScreen(): JSX.Element {
             width="100%"
             disabled={isCopied}
           >
-            {isCopied ? 'Mnemonic is copied to clipboard' : 'Copy to clipboard'}
+            {isCopied ? 'Copied to clipboard!' : 'Copy to clipboard'}
           </Button>
           <Text
             as="u"

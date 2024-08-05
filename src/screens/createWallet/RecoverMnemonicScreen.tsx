@@ -43,7 +43,13 @@ function RecoverMnemonicScreen(): JSX.Element {
     <Flex flexDir="column" alignItems="center">
       <Image src={logo} width={200} my={8} />
 
-      <Card fontSize="sm" w="100%" padding={[4, 12]} marginY={4}>
+      <Card
+        fontSize="sm"
+        marginY={4}
+        paddingX={[4, 20]}
+        paddingY={[5]}
+        w={['100%', 'fit']}
+      >
         <CardHeader>
           <Text fontSize="xl" mb={4} mt={2} textAlign="center">
             Recover wallet from mnemonics

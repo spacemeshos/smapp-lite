@@ -105,7 +105,13 @@ function VerifyMnemonicScreen(): JSX.Element {
       <Image src={logo} width={200} my={8} />
 
       <DndProvider backend={HTML5Backend}>
-        <Card fontSize="sm" marginY={4} paddingX={[10, 20]} paddingY={5}>
+        <Card
+          fontSize="sm"
+          marginY={4}
+          paddingX={[4, 20]}
+          paddingY={[5]}
+          w={['100%', 'fit']}
+        >
           <CardHeader pb={0} maxW="xl">
             <Text fontSize="lg" mb={4}>
               Let&apos;s verify that you have written down your seed phrase and
