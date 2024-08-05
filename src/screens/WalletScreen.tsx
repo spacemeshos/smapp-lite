@@ -108,7 +108,9 @@ function WalletScreen(): JSX.Element {
           <NetworkSelection />
           <MainMenu />
           <LockWallet />
+          {/*
           <HardwareWalletConnect />
+          */}
         </Box>
       </Flex>
 
