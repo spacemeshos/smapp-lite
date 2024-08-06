@@ -176,7 +176,7 @@
 
 # Log in / Log out
 
-1. With a wallet correctly set up, and logged out, verify that navigating to any valid link`https://wallet.spacemesh.io/#/[any-existing-path]` redirects instantly to `https://wallet.spacemesh.io/#/unlock`.
+1. With a wallet correctly set up, and logged out, verify that navigating to any valid link `https://wallet.spacemesh.io/#/[any-existing-path]` redirects instantly to `https://wallet.spacemesh.io/#/unlock`.
 2. Verify the login page loads successfully - displays the following elements: Input field to enter the password, "Unlock" button. Footer message with "Wipe out" button.
 3. Ensure the password input field accepts text input.
 4. Verify that the input field has the indication for password entry and that it's securely masked (dots or asteriks replace chars)
@@ -197,6 +197,112 @@
 19. Check behavior when the user's session expires: ensure the user is redirected to the login page and required to re-enter their password.
 20. Verify that the password is securely transmitted and not exposed in any way.
 21. Ensure the system correctly handles password encryption and validation.
+
+# Dashboard
+
+## Network Choice
+
+1. Verify the network choice dropdown is visible.
+2. Ensure the dropdown allows selection between Mainnet and Testnet.
+3. Verify the correct network is selected and displayed after changing the network.
+4. Test switching from Mainnet to Testnet and vice versa.
+5. Ensure that switching networks updates the relevant account and transaction data accordingly.
+
+## Settings Button
+
+1. Ensure the settings button is visible and clickable.
+2. Verify that clicking the settings button opens the configuration options menu.
+3. Verify that each configuration option can be selected.
+
+## Logout Button
+
+1. Ensure the logout button is visible and clickable.
+2. Verify that clicking the logout button logs the user out of the wallet session.
+3. Ensure the user is redirected to the login page upon logout.
+
+## Account Information Display
+
+1. Verify the account name and number are displayed correctly.
+2. Ensure the account name and number are updated when switching accounts.
+3. Ensure the copy button is visible next to the account number.
+4. Verify that clicking the copy button copies the account number to the clipboard.
+5. Check that a confirmation message or indication is shown after copying.
+6. Ensure the switch accounts button is visible and clickable.
+7. Verify that clicking the button allows switching between multiple accounts.
+8. Ensure the account information updates accordingly after switching accounts.
+
+## Balance Display
+
+1. Verify the account balance is displayed in a clear and readable font.
+2. Ensure the balance is accurate and updates correctly after transactions.
+3. Ensure the refresh button is visible next to the balance.
+4. Verify that clicking the refresh button updates the balance with the most recent information.
+
+## Send Button
+
+1. Ensure the send button is visible.
+2. Verify that clicking the send button opens a modal for inputting transaction details.
+
+## Receive Button
+
+1. Ensure the receive button is visible next to the send button.
+2. Verify that clicking the receive button opens a modal with the active account address.
+3. Verify that clicking the receive button generates a QR code.
+4. Check that the QR code represents the correct account information.
+
+## Transactions History Tab
+
+**Overview**
+
+1. Ensure the Transactions History tab is visible and clickable.
+2. Verify that all transaction details (ID, status, sender, recipient, amount, fee, nonce, layer, epoch) match the backend data accurately.
+3. Check that the transactions history shows correct and detailed information for each transaction.
+4. Check that the records are clickable and open a more detailed view.
+5. Ensure that each transaction includes details such as Arrow icon (left for outgoing, right for incoming, down for self-spawn transactions), Truncated transaction ID, Transaction type (spend/spawn), Date in the format: YYYY-MM-DD HH, Layer and Epoch information, Transaction amount, Transaction cost.
+6. Ensure that the arrow icons are displayed correctly for each transaction type.
+7. Verify that the arrow icons are orange while the transaction is being processed.
+8. Ensure the arrow icons turn green once the transaction is applied/confirmed.
+9. Verify that the transaction ID is truncated correctly.
+10. Ensure the transaction type is correctly displayed as either "spend" or "spawn."
+11. Verify that the date is displayed correctly.
+12. Ensure the layer and epoch information is displayed correctly next to the date, and the values are correct.
+13. Ensure the amount is formatted appropriately with the correct number of decimal places.
+14. Ensure that the transaction cost is displayed correctly.
+15. Verify that the tab displays an appropriate message when there are no transactions to show.
+16. Verify that the transactions history loads quickly and correclty, even with a large number of transactions.
+17. Ensure smooth scrolling through the list of transactions, especially with a large dataset.
+
+ **Details**
+
+1. Verify that clicking on a transaction row opens a sidebar showing detailed information about the transaction.
+2. Ensure the sidebar loads correctly and displays all the relevant information, correct for the given transaction.
+3. Ensure the full hexadecimal transaction ID is displayed correctly.
+4. Check that the transaction status is displayed with the correct text (e.g., Pending, Confirmed).
+5. Ensure the status color code corresponds correctly (e.g., orange for processing, green for confirmed).
+6. Verify that the sender's address is displayed correctly.
+7. Verify that the recipient's address is displayed correctly.
+8. Ensure the nonce value is displayed correctly.
+9. Verify that there are clickable explorer links next to the transaction ID, sender address, recipient address, layer, epoch and one general.
+10. Check that clicking the explorer link opens the transaction details in the explorer. (all buttons work, each button leads to the given detail page)
+11. Verify that there is a copy button next to the transaction ID, sender and recipient addresses.
+12. Verify that clicking the copy button copies the given detail to the clipboard.
+13. Check for a confirmation message or indication after copying
+14. Check behavior when network issues occur while loading the transaction details.
+15. Ensure the sidebar layout is clear and information is easy to read.
+
+## Rewards History Tab
+
+1. Ensure the Rewards History tab is visible and clickable.
+2. Verify that the Rewards History tab loads successfully.
+3. Check that the rewards history shows correct and detailed information for each reward.
+4. Ensure that each reward entry includes details such as Date and time in the format: YYYY-MM-DD HH, Layer and Epoch information, Reward amount, Reward for layer amount, Reward for fees amount. Explorer link/button.
+5. Verify that the layer and epoch information are displayed correctly next to the correct date and time.
+6. Ensure that the reward amounts are displayed correctly and formatted appropriately with the correct value and number of decimal places.
+7. Check that clicking the explorer link/button opens the reward details in the explorer.
+8. Verify that the tab displays an appropriate message when there are no rewards to show.
+9. Verify that the rewards history loads quickly, even with a large number of rewards.
+10. Ensure smooth scrolling through the list of rewards, especially with a large dataset.
+11. Verify that all reward details (date, layer, epoch, reward amounts) are accurately displayed as per the backend data.
 
 # Edge Cases
 
