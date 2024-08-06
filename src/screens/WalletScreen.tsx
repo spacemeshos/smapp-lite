@@ -164,6 +164,27 @@ function WalletScreen(): JSX.Element {
               </Flex>
             )
           )}
+          {O.mapWithDefault(
+            unlockedBalance,
+            // eslint-disable-next-line react/jsx-no-useless-fragment
+            <></>,
+            ({ available }) => (
+              <Text
+                fontSize="md"
+                color="green.300"
+                title={`${available} Smidge`}
+              >
+                <Icon
+                  as={IconLockOpen2}
+                  display="inline-block"
+                  boxSize={4}
+                  mr={1}
+                  mb={-0.5}
+                />
+                {formatSmidge(available)} available
+              </Text>
+            )
+          )}
           <ButtonGroup mt={2} mb={2} w="100%">
             <Button
               flexDirection="row"
