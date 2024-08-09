@@ -304,6 +304,51 @@
 10. Ensure smooth scrolling through the list of rewards, especially with a large dataset.
 11. Verify that all reward details (date, layer, epoch, reward amounts) are accurately displayed as per the backend data.
 
+# Settings
+
+## Backup Mnemonics
+
+1. Verify that the "Backup Mnemonics" button is visible in the settings menu.
+2. Ensure the button is clearly labeled and accessible.
+3. Verify that clicking the "Backup Mnemonics" button triggers a password prompt modal.
+4. Confirm that the modal includes an input field for the password, an option to remember the password for 5 minutes, and two buttons: "Cancel" and "Show Mnemonics."
+5. Verify that clicking the "Cancel" button closes the modal without displaying the mnemonics.
+6. Ensure no sensitive information is exposed after canceling.
+7. Verify that selecting the "Remember password for 5 minutes" option stores the password securely for 5 minutes.
+8. Ensure that during this period, no further password prompts are required for accessing sensitive information.
+9. Verify that entering an incorrect password prevents the mnemonics from being displayed.
+10. Ensure that an appropriate error message is shown on incorrect password.
+11. Ensure that the mnemonics are displayed correctly, either as a 12-word or 24-word seed phrase.
+12. Verify that the seed phrase matches the one generated during wallet creation.
+13. Verify that the "Copy" button is visible and functional.
+14. Ensure that clicking the "Copy" button copies the entire mnemonic phrase to the clipboard.
+15. Verify that the "OK" button is visible and functional.
+16. Ensure that clicking the "OK" button or the close (cross) button in the upper-right corner closes the modal.
+17. Ensure that once the modal is closed, the mnemonics are no longer accessible unless the process is repeated (with a password prompt if not within the 5-minute period).
+18. 
+
+
+## Export Wallet File
+
+1. Verify that the "Export Wallet File" button is visible in the settings menu.
+2. Ensure the button is clearly labeled and accessible.
+3. Verify that clicking the "Export Wallet File" button immediately triggers the download of the wallet JSON file.
+4. Ensure the file is saved in the user’s default download directory.
+5. Confirm that the downloaded wallet file is in the correct JSON format.
+6. Verify that the file contains the expected wallet data and is not corrupted.
+
+## Wipe Out
+
+1. Verify that the "Wipe Out" button is visible in the settings menu.
+2. Ensure the button is clearly labeled and has a distinct color.
+3. Verify that clicking the "Wipe Out" button triggers a modal.
+4. Confirm that the modal contains two buttons: "Cancel" and "Wipe Out."
+5. Verify that clicking the "Cancel" button closes the modal without performing any action.
+6. Ensure the wallet data remains intact after canceling.
+7. Verify that clicking the "Wipe Out" button within the modal deletes all wallet data.
+8. Ensure the user is logged out and redirected to the initial setup or login page.
+9. Confirm that there is no way to recover the wallet after confirming the wipe out
+
 # Edge Cases
 
 1. Verify that reloading the mnemonic phrase page generates a new mnemonic phrase.
