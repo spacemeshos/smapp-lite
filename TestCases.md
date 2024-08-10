@@ -306,6 +306,37 @@
 
 # Settings
 
+## Manage Keys & Accounts
+
+1. Verify that the "Manage Keys & Accounts" option is visible in the settings menu.
+2. Ensure the button is clearly labeled and accessible.
+3. Verify that clicking "Manage Keys & Accounts" opens a sidebar with two tabs: "Keys" and "Accounts."
+
+**Create a New Key**
+
+1. Ensure the "Create a New Key" button is visible and accessible in the "Keys" tab.
+2. Verify that clicking "Create a New Key" opens the modal with the following information: **Input Field:** Name, **Input Field:** Derivation Path, **Checkbox:** "Create SingleSig account automatically", **Button:** Add + a clear title/description.
+3. Verify that the Name input field accepts text input with no restrictions
+4. Ensure that the Derivation Path input field is pre-filled with the default value: `m/44'/540'/0'/0'/1'`.
+5. Verify that users can modify the derivation path and that it accepts valid BIP-32 paths only.
+6. Verify that the "Create SingleSig account automatically" checkbox is visible and functional.
+7. Ensure that this checkbox is checked by default.
+8. Verify that the "Add" button is enabled only when all required fields (Name and Derivation Path) are filled in.
+9. Ensure that clicking the "Add" button successfully creates a new key pair and adds it to the list of available keys.
+
+**Import from Ledger**
+
+1. Ensure the "Import from Ledger" button is visible and accessible in the "Keys" tab.
+2. Verify that clicking "Import from Ledger" opens the modal with the following information: **Input Field:** Name, **Input Field:** Derivation Path, **Checkbox:** "Create SingleSig account automatically", **Button:** Import Public Key + a clear title/description.
+3. Verify that the Name input field accepts text input with no restrictions.
+4. Ensure that the Derivation Path input field is pre-filled with the default value: `m/44'/540'/0'/0'/1'`.
+5. Verify that users can modify the derivation path and that it accepts valid BIP-32 paths only.
+6. Verify that the "Create SingleSig account automatically" checkbox is visible and functional.
+7. Ensure that this checkbox is checked by default.
+8. Verify that the "Import Public Key" button is enabled only when all required fields (Name and Derivation Path) are filled in and the ledger device is connected.
+9. Ensure that clicking the "Import Public Key" button successfully imports the public key from the Ledger and adds it to the list of available keys.
+10. 
+
 ## Backup Mnemonics
 
 1. Verify that the "Backup Mnemonics" button is visible in the settings menu.
@@ -325,8 +356,8 @@
 15. Verify that the "OK" button is visible and functional.
 16. Ensure that clicking the "OK" button or the close (cross) button in the upper-right corner closes the modal.
 17. Ensure that once the modal is closed, the mnemonics are no longer accessible unless the process is repeated (with a password prompt if not within the 5-minute period).
-18. 
-
+18. Verify behavior when the user repeatedly enters an incorrect password when trying to backup mnemonics.
+19. Ensure that after multiple failed attempts, a security measure is triggered (e.g., temporary lockout, captcha). (to implement?)
 
 ## Export Wallet File
 
@@ -336,6 +367,7 @@
 4. Ensure the file is saved in the user’s default download directory.
 5. Confirm that the downloaded wallet file is in the correct JSON format.
 6. Verify that the file contains the expected wallet data and is not corrupted.
+7. Ensure that if the wallet file export fails for any reason (e.g., disk space, permission issues), an appropriate error message is shown, and the user is prompted to try again.
 
 ## Wipe Out
 
