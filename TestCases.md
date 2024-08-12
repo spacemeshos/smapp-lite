@@ -208,6 +208,20 @@
 4. Test switching from Mainnet to Testnet and vice versa.
 5. Ensure that switching networks updates the relevant account and transaction data accordingly.
 
+## Connect the Ledger device
+
+1. Verify that the connect ledger device button is visible and clickable.
+2. Ensure that the button is accessible via the keyboard.
+3. Verify that clicking this button with no ledger device physically connected to the PC opens a modal with instructions on properly connecting a ledger.
+4. Verify that clicking this button with a ledger connected, but not logged in, opens a modal with instructions on properly connecting a ledger.
+5. Verify that clicking this button with a ledger connected, but without the Spacemesh app opened on the device, opens a modal with instructions on properly connecting a ledger.
+6. Ensure that clicking this button correctly connects to the ledger if we attempt with a ledger correctly plugged in, unlocked, and with the Spacemesh app opened.
+7. Ensure the button changes its look (currently green color and changed icon) after a successful connect process.
+8. Ensure the ledger stays connected until we disconnect it. The app does not lose the pairing for any random reason.
+9. Verify the behavior after the Spacemesh App is closed on the ledger while it's still connected to the lite wallet app (wallet should notice being disconnected? to be implemented?).
+10. Verify the behavior after the ledger is locked (i.e. being idle) while it's still connected to the lite wallet app (wallet should notice being disconnected? to be implemented?).
+11. Verify the behavior after the unplugged ledger while it's still connected to the lite wallet app (wallet should notice being disconnected? to be implemented?).
+
 ## Settings Button
 
 1. Ensure the settings button is visible and clickable.
@@ -311,6 +325,12 @@
 1. Verify that the "Manage Keys & Accounts" option is visible in the settings menu.
 2. Ensure the button is clearly labeled and accessible.
 3. Verify that clicking "Manage Keys & Accounts" opens a sidebar with two tabs: "Keys" and "Accounts."
+4. Verify that all elements within the "Manage Keys & Accounts" section are accessible via keyboard navigation (not the case currently, to be implemented?)
+5. Ensure all elements are accessible and usable on mobile devices.
+6. Verify that the "Manage Keys & Accounts" sidebar and modals are responsive and function correctly on various screen sizes and devices.
+7. Ensure the system prevents attempting to create or import keys with duplicate names and provides an appropriate error message.
+8. Ensure that invalid inputs (e.g., non-hexadecimal strings for secret keys, invalid characters in the name) are rejected with appropriate error messages.
+9. Ensure that all sensitive information (e.g., secret keys, passwords) is handled securely and is not exposed or accessible without proper authorization.
 
 **Create a New Key**
 
@@ -333,9 +353,11 @@
 5. Verify that users can modify the derivation path and that it accepts valid BIP-32 paths only.
 6. Verify that the "Create SingleSig account automatically" checkbox is visible and functional.
 7. Ensure that this checkbox is checked by default.
-8. Verify that the "Import Public Key" button is enabled only when all required fields (Name and Derivation Path) are filled in and the ledger device is connected.
-9. Ensure that clicking the "Import Public Key" button successfully imports the public key from the Ledger and adds it to the list of available keys.
-10. 
+8. Verify that the "Import Public Key" button is enabled only when all required fields (Name and Derivation Path) are filled in.
+9. Ensure that that clicking the "Import Public Key" button when the ledger is NOT connected, opens a "Connect to Ledger Device" modal.
+10. Ensure the process leaves no products if the ledger is NOT succesfully connected.
+11. Ensure that clicking the "Import Public Key" button when the ledger is connected, successfully imports the public key from the Ledger and adds it to the list of available keys.
+12. Confirm that the imported keys are correct, and match those in the leger.
 
 ## Backup Mnemonics
 
