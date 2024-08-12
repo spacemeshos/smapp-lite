@@ -208,6 +208,25 @@
 4. Test switching from Mainnet to Testnet and vice versa.
 5. Ensure that switching networks updates the relevant account and transaction data accordingly.
 
+# Session Timeout
+
+1. User remains idle for exactly 1 minute 30 seconds; verify that the countdown modal appears.
+2. User remains idle for exactly 2 minutes; verify that the wallet logs out automatically.
+3. User interacts with the app during the initial 1 minute 30 seconds; verify that the idle timer resets.
+4. User interacts with the app during the 30-second countdown; verify that the countdown modal disappears and the idle timer resets.
+5. User minimizes the app during the idle period; verify if the idle timer continues or pauses.
+6. Switch to a different tab or application, leaving the wallet tab open and idle. Countdown and logout should occur after 2 minutes of no activity in the wallet tab.
+7. Device goes to sleep during the idle period; verify behavior upon wake-up.
+8. Network connection is lost during the idle period; verify if the idle timer continues or pauses.
+9. Multiple tabs with wallet are open; verify the behavior when there's activity in one window - resets the idle timer in all?
+10. User switches to a different app or browser tab during the idle period; verify behavior.
+11. User has a slow or unstable internet connection; verify if this affects the idle timer.
+12. User logs out manually before the 2-minute idle period; verify that auto-logout does not occur.
+13. User receives a push notification during the idle period; verify if interacting with it resets the idle timer.
+14. Verify the session state upon re-login after an automatic log-out; ensure no data is lost or incorrectly retained.
+15. Browser-specific behaviors (e.g., Chrome, Firefox, Safari); verify consistency.
+16. Different device types (e.g., mobile vs. desktop); verify consistent behavior.
+
 ## Connect the Ledger device
 
 1. Verify that the connect ledger device button is visible and clickable.
