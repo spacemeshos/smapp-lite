@@ -374,10 +374,12 @@
 3. Verify that the Name input field accepts text input with no restrictions
 4. Ensure that the Derivation Path input field is pre-filled with the default value: `m/44'/540'/0'/0'/1'`.
 5. Verify that users can modify the derivation path and that it accepts valid BIP-32 paths only.
-6. Verify that the "Create SingleSig account automatically" checkbox is visible and functional.
+6. Verify that the "Create SingleSig account automatically" checkbox is visible and functional (if checked an account is created, if unchecked, no accounts created).
 7. Ensure that this checkbox is checked by default.
 8. Verify that the "Add" button is enabled only when all required fields (Name and Derivation Path) are filled in.
-9. Ensure that clicking the "Add" button successfully creates a new key pair and adds it to the list of available keys.
+9. Verify that clicking the "Add" button opens a password validation modal, having a functional input field for password and buttons to cancel and create keys.
+10. Ensure that clicking the "Create a new Key Pair" button successfully creates a new key pair and adds it to the list of available keys.
+11. Clicking cancel button should interrupt the process leaving no products, returning the user to the initial state.
 
 **Import from Ledger**
 
@@ -386,13 +388,16 @@
 3. Verify that the Name input field accepts text input with no restrictions.
 4. Ensure that the Derivation Path input field is pre-filled with the default value: `m/44'/540'/0'/0'/1'`.
 5. Verify that users can modify the derivation path and that it accepts valid BIP-32 paths only.
-6. Verify that the "Create SingleSig account automatically" checkbox is visible and functional.
+6. Verify that the "Create SingleSig account automatically" checkbox is visible and functional (if checked an account is created, if unchecked, no accounts created)
 7. Ensure that this checkbox is checked by default.
 8. Verify that the "Import Public Key" button is enabled only when all required fields (Name and Derivation Path) are filled in.
 9. Ensure that that clicking the "Import Public Key" button when the ledger is NOT connected, opens a "Connect to Ledger Device" modal.
 10. Ensure the process leaves no products if the ledger is NOT succesfully connected.
-11. Ensure that clicking the "Import Public Key" button when the ledger is connected, successfully imports the public key from the Ledger and adds it to the list of available keys.
-12. Confirm that the imported keys are correct, and match those in the leger.
+11. Ensure that that clicking the "Import Public Key" button when the ledger is connected, but the Spacemesh app is not opened, opens a "Reconnect to Ledger Device" modal.
+12. Ensure that clicking the "Import Public Key" button when the ledger is connected, successfully imports the public key from the Ledger and adds it to the list of available keys.
+13. Ensure that clicking the "Import Public Key from Ledger device" button when the ledger is connected, opens a password validation modal, having a functional input field for password and buttons to cancel and import pubkey from device.
+14. Clicking cancel button should interrupt the process leaving no products, returning the user to the initial state.
+15. Confirm that the imported keys are correct, and match those in the leger.
 
 ## Backup Mnemonics
 
