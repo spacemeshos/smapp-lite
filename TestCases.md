@@ -231,15 +231,31 @@
 
 1. Verify that the connect ledger device button is visible and clickable.
 2. Ensure that the button is accessible via the keyboard.
-3. Verify that clicking this button with no ledger device physically connected to the PC opens a modal with instructions on properly connecting a ledger.
-4. Verify that clicking this button with a ledger connected, but not logged in, opens a modal with instructions on properly connecting a ledger.
-5. Verify that clicking this button with a ledger connected, but without the Spacemesh app opened on the device, opens a modal with instructions on properly connecting a ledger.
-6. Ensure that clicking this button correctly connects to the ledger if we attempt with a ledger correctly plugged in, unlocked, and with the Spacemesh app opened.
-7. Ensure the button changes its look (currently green color and changed icon) after a successful connect process.
-8. Ensure the ledger stays connected until we disconnect it. The app does not lose the pairing for any random reason.
-9. Verify the behavior after the Spacemesh App is closed on the ledger while it's still connected to the lite wallet app (wallet should notice being disconnected? to be implemented?).
-10. Verify the behavior after the ledger is locked (i.e. being idle) while it's still connected to the lite wallet app (wallet should notice being disconnected? to be implemented?).
-11. Verify the behavior after the unplugged ledger while it's still connected to the lite wallet app (wallet should notice being disconnected? to be implemented?).
+3. Verify that clicking the "Connect to the Ledger" button opens a modal with options to choose the connection type.
+4. Ensure the modal displays two connection options: "Bluetooth" for Ledger Nano X and "USB" for Ledger Nano S and S+.
+5. Verify that selecting the Bluetooth option initiates the process to connect via Bluetooth.
+6. Ensure that the wallet begins searching for available Bluetooth devices.
+7. Verify that selecting the USB option prompts the browser to display a modal for connected USB devices.
+8. Verify that clicking this button with no ledger device physically connected to the PC opens anyway a browser modal with USB devices.
+9. Verify that clicking this button with a ledger connected, but not logged in, opens anyway a browser modal with USB devices. (locked ledger=undetectable)
+10. Verify that clicking this button with a ledger connected, but without the Spacemesh app opened on the device, opens a modal with instructions on properly connecting a ledger.
+11. Check that the modal with instructions contains also 2 functional buttons - disconnect/cancel and reconnect/retry.
+12. Verify that clicking the "Disconnect" button in the above mentioned modal cancels the connection attempt and returns the user to the previous state.
+13. Ensure that clicking the "Reconnect" button prompts the wallet to check for the device connection again.
+14. Ensure that clicking this button correctly connects to the ledger if we attempt with a ledger correctly plugged in, unlocked, and with the Spacemesh app opened.
+15. Ensure that the wallet recognizes the connected Ledger device.
+16. Ensure the button changes its look (currently green color and changed icon) after a successful connect process.
+17. Verify that once connected, all Ledger-related actions (e.g., signing transactions, exporting keys) become available.
+18. Ensure that the wallet can communicate with the Ledger device to perform these actions.
+19. Ensure the ledger stays connected until we disconnect it. The app does not lose the pairing for any random reason.
+20. Verify behavior when the connection process takes too long or times out.
+21. Verify the behavior after the Spacemesh App is closed on the ledger while it's still connected to the lite wallet app (wallet should notice being disconnected? to be implemented?).
+22. Verify the behavior after the ledger is locked (i.e. being idle) while it's still connected to the lite wallet app (wallet should notice being disconnected? to be implemented?).
+23. Verify the behavior after the unplugged ledger while it's still connected to the lite wallet app (wallet should notice being disconnected? to be implemented?).
+24. Verify behavior when multiple Ledger devices are connected to the PC.
+25. Verify behavior when Bluetooth connection is attempted but fails due to distance, interference, or device issues.
+26. Ensure that all prompts, modals, and messages provide clear instructions and guidance to the user during the connection process.
+27. Ensure that the communication between the wallet and the Ledger device is secure, with no sensitive data exposed during the connection process.
 
 ## Settings Button
 
