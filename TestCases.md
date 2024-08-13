@@ -198,16 +198,6 @@
 20. Verify that the password is securely transmitted and not exposed in any way.
 21. Ensure the system correctly handles password encryption and validation.
 
-# Dashboard
-
-## Network Choice
-
-1. Verify the network choice dropdown is visible.
-2. Ensure the dropdown allows selection between Mainnet and Testnet.
-3. Verify the correct network is selected and displayed after changing the network.
-4. Test switching from Mainnet to Testnet and vice versa.
-5. Ensure that switching networks updates the relevant account and transaction data accordingly.
-
 # Session Timeout
 
 1. User remains idle for exactly 1 minute 30 seconds; verify that the countdown modal appears.
@@ -227,26 +217,36 @@
 15. Browser-specific behaviors (e.g., Chrome, Firefox, Safari); verify consistency.
 16. Different device types (e.g., mobile vs. desktop); verify consistent behavior.
 
+# Dashboard
+
+## Network Choice
+
+1. Verify the network choice dropdown is visible.
+2. Ensure the dropdown allows selection between Mainnet and Testnet.
+3. Verify the correct network is selected and displayed after changing the network.
+4. Test switching from Mainnet to Testnet and vice versa.
+5. Ensure that switching networks updates the relevant account and transaction data accordingly.
+
 ## Connect the Ledger device
 
 1. Verify that the connect ledger device button is visible and clickable.
 2. Ensure that the button is accessible via the keyboard.
 3. Verify that clicking the "Connect to the Ledger" button opens a modal with options to choose the connection type.
 4. Ensure the modal displays two connection options: "Bluetooth" for Ledger Nano X and "USB" for Ledger Nano S and S+.
-5. Verify that selecting the Bluetooth option initiates the process to connect via Bluetooth.
+5. Verify that selecting the Bluetooth option initiates the process of connecting via Bluetooth.
 6. Ensure that the wallet begins searching for available Bluetooth devices.
 7. Verify that selecting the USB option prompts the browser to display a modal for connected USB devices.
 8. Verify that clicking this button with no ledger device physically connected to the PC opens anyway a browser modal with USB devices.
 9. Verify that clicking this button with a ledger connected, but not logged in, opens anyway a browser modal with USB devices. (locked ledger=undetectable)
 10. Verify that clicking this button with a ledger connected, but without the Spacemesh app opened on the device, opens a modal with instructions on properly connecting a ledger.
-11. Check that the modal with instructions contains also 2 functional buttons - disconnect/cancel and reconnect/retry.
-12. Verify that clicking the "Disconnect" button in the above mentioned modal cancels the connection attempt and returns the user to the previous state.
+11. Check that the modal with instructions also contains 2 functional buttons - disconnect/cancel and reconnect/retry.
+12. Verify that clicking the "Disconnect" button in the above-mentioned modal cancels the connection attempt and returns the user to the previous state.
 13. Ensure that clicking the "Reconnect" button prompts the wallet to check for the device connection again.
 14. Ensure that clicking this button correctly connects to the ledger if we attempt with a ledger correctly plugged in, unlocked, and with the Spacemesh app opened.
 15. Ensure that the wallet recognizes the connected Ledger device.
 16. Ensure the button changes its look (currently green color and changed icon) after a successful connect process.
 17. Verify that once connected, all Ledger-related actions (e.g., signing transactions, exporting keys) become available.
-18. Ensure that the wallet can communicate with the Ledger device to perform these actions.
+18. Ensure the wallet can communicate with the Ledger device to perform these actions.
 19. Ensure the ledger stays connected until we disconnect it. The app does not lose the pairing for any random reason.
 20. Verify behavior when the connection process takes too long or times out.
 21. Verify the behavior after the Spacemesh App is closed on the ledger while it's still connected to the lite wallet app (wallet should notice being disconnected? to be implemented?).
@@ -318,7 +318,7 @@
 13. Ensure the amount is formatted appropriately with the correct number of decimal places.
 14. Ensure that the transaction cost is displayed correctly.
 15. Verify that the tab displays an appropriate message when there are no transactions to show.
-16. Verify that the transactions history loads quickly and correclty, even with a large number of transactions.
+16. Verify that the transactions history loads quickly and correctly, even with a large number of transactions.
 17. Ensure smooth scrolling through the list of transactions, especially with a large dataset.
 
  **Details**
@@ -331,9 +331,9 @@
 6. Verify that the sender's address is displayed correctly.
 7. Verify that the recipient's address is displayed correctly.
 8. Ensure the nonce value is displayed correctly.
-9. Verify that there are clickable explorer links next to the transaction ID, sender address, recipient address, layer, epoch and one general.
+9. Verify that there are clickable explorer links next to the transaction ID, sender address, recipient address, layer, epoch, and one general.
 10. Check that clicking the explorer link opens the transaction details in the explorer. (all buttons work, each button leads to the given detail page)
-11. Verify that there is a copy button next to the transaction ID, sender and recipient addresses.
+11. Verify that there is a copy button next to the transaction ID, sender, and recipient addresses.
 12. Verify that clicking the copy button copies the given detail to the clipboard.
 13. Check for a confirmation message or indication after copying
 14. Check behavior when network issues occur while loading the transaction details.
@@ -372,31 +372,31 @@
 1. Ensure the "Create a New Key" button is visible and accessible in the "Keys" tab.
 2. Verify that clicking "Create a New Key" opens the modal with the following information: **Input Field:** Name, **Input Field:** Derivation Path, **Checkbox:** "Create SingleSig account automatically", **Button:** Add + a clear title/description.
 3. Verify that the Name input field accepts text input with no restrictions
-4. Ensure that the Derivation Path input field is pre-filled with the default value: `m/44'/540'/0'/0'/1'`.
+4. Ensure the Derivation Path input field is pre-filled with the default value: `m/44'/540'/0'/0'/1'`.
 5. Verify that users can modify the derivation path and that it accepts valid BIP-32 paths only.
-6. Verify that the "Create SingleSig account automatically" checkbox is visible and functional (if checked an account is created, if unchecked, no accounts created).
+6. Verify that the "Create SingleSig account automatically" checkbox is visible and functional (if checked an account is created, if unchecked, no accounts are created).
 7. Ensure that this checkbox is checked by default.
 8. Verify that the "Add" button is enabled only when all required fields (Name and Derivation Path) are filled in.
 9. Verify that clicking the "Add" button opens a password validation modal, having a functional input field for password and buttons to cancel and create keys.
 10. Ensure that clicking the "Create a new Key Pair" button successfully creates a new key pair and adds it to the list of available keys.
-11. Clicking cancel button should interrupt the process leaving no products, returning the user to the initial state.
+11. Clicking the cancel button should interrupt the process leaving no products and returning the user to the initial state.
 
 **Import from Ledger**
 
 1. Ensure the "Import from Ledger" button is visible and accessible in the "Keys" tab.
 2. Verify that clicking "Import from Ledger" opens the modal with the following information: **Input Field:** Name, **Input Field:** Derivation Path, **Checkbox:** "Create SingleSig account automatically", **Button:** Import Public Key + a clear title/description.
 3. Verify that the Name input field accepts text input with no restrictions.
-4. Ensure that the Derivation Path input field is pre-filled with the default value: `m/44'/540'/0'/0'/1'`.
+4. Ensure the Derivation Path input field is pre-filled with the default value: `m/44'/540'/0'/0'/1'`.
 5. Verify that users can modify the derivation path and that it accepts valid BIP-32 paths only.
-6. Verify that the "Create SingleSig account automatically" checkbox is visible and functional (if checked an account is created, if unchecked, no accounts created)
+6. Verify that the "Create SingleSig account automatically" checkbox is visible and functional (if checked an account is created, if unchecked, no accounts are created)
 7. Ensure that this checkbox is checked by default.
 8. Verify that the "Import Public Key" button is enabled only when all required fields (Name and Derivation Path) are filled in.
-9. Ensure that that clicking the "Import Public Key" button when the ledger is NOT connected, opens a "Connect to Ledger Device" modal.
-10. Ensure the process leaves no products if the ledger is NOT succesfully connected.
-11. Ensure that that clicking the "Import Public Key" button when the ledger is connected, but the Spacemesh app is not opened, opens a "Reconnect to Ledger Device" modal.
+9. Ensure that clicking the "Import Public Key" button when the ledger is NOT connected, opens a "Connect to Ledger Device" modal.
+10. Ensure the process leaves no products if the ledger is NOT successfully connected.
+11. Ensure that clicking the "Import Public Key" button when the ledger is connected, but the Spacemesh app is not opened, opens a "Reconnect to Ledger Device" modal.
 12. Ensure that clicking the "Import Public Key" button when the ledger is connected, successfully imports the public key from the Ledger and adds it to the list of available keys.
-13. Ensure that clicking the "Import Public Key from Ledger device" button when the ledger is connected, opens a password validation modal, having a functional input field for password and buttons to cancel and import pubkey from device.
-14. Clicking cancel button should interrupt the process leaving no products, returning the user to the initial state.
+13. Ensure that clicking the "Import Public Key from Ledger device" button when the ledger is connected, opens a password validation modal, having a functional input field for password and buttons to cancel and import pubkey from the device.
+14. Clicking the cancel button should interrupt the process leaving no products, returning the user to the initial state.
 15. Confirm that the imported keys are correct, and match those in the leger.
 
 ## Backup Mnemonics
@@ -410,7 +410,7 @@
 7. Verify that selecting the "Remember password for 5 minutes" option stores the password securely for 5 minutes.
 8. Ensure that during this period, no further password prompts are required for accessing sensitive information.
 9. Verify that entering an incorrect password prevents the mnemonics from being displayed.
-10. Ensure that an appropriate error message is shown on incorrect password.
+10. Ensure that an appropriate error message is shown on the incorrect password.
 11. Ensure that the mnemonics are displayed correctly, either as a 12-word or 24-word seed phrase.
 12. Verify that the seed phrase matches the one generated during wallet creation.
 13. Verify that the "Copy" button is visible and functional.
@@ -418,7 +418,7 @@
 15. Verify that the "OK" button is visible and functional.
 16. Ensure that clicking the "OK" button or the close (cross) button in the upper-right corner closes the modal.
 17. Ensure that once the modal is closed, the mnemonics are no longer accessible unless the process is repeated (with a password prompt if not within the 5-minute period).
-18. Verify behavior when the user repeatedly enters an incorrect password when trying to backup mnemonics.
+18. Verify behavior when the user repeatedly enters an incorrect password when trying to back up mnemonics.
 19. Ensure that after multiple failed attempts, a security measure is triggered (e.g., temporary lockout, captcha). (to implement?)
 
 ## Export Wallet File
