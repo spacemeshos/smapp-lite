@@ -151,8 +151,13 @@ const useHardwareWallet = (): UseHardwareWalletHook => {
   const resetDevice = async () => {
     setDevice(null);
     setConnectionError(null);
-    if (device?.transport) {
-      await device.transport.close();
+    try {
+      if (device?.transport) {
+        await device.transport.close();
+      }
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log('Cannot close Transport', err);
     }
   };
 
