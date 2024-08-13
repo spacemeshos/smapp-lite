@@ -217,6 +217,23 @@
 15. Browser-specific behaviors (e.g., Chrome, Firefox, Safari); verify consistency.
 16. Different device types (e.g., mobile vs. desktop); verify consistent behavior.
 
+# Remember Password for 5 Minutes
+
+1. Verify that the "Remember password for the next 5 minutes" checkbox is unchecked by default in every password validation modal.
+2. Ensure the checkbox is visible and clearly labeled in the password validation modal.
+3. Verify that clicking the checkbox changes its state to checked.
+4. Ensure that clicking the checkbox again toggles it back to unchecked.
+5. Enter the correct password with the checkbox unchecked. Ensure that after submitting the password, subsequent password validation requests within 5 minutes still prompt the user for the password.
+6. Enter the correct password with the checkbox checked. Ensure that after submitting the password, subsequent password validation requests within 5 minutes do not prompt the user for the password.
+7. Verify that once the password is remembered (checkbox checked), it remains valid for exactly 5 minutes.
+8. Ensure that after 5 minutes, the user is prompted to re-enter the password for any subsequent actions requiring validation.
+9. Perform multiple actions that would normally require password validation within the 5-minute window after checking the checkbox. Verify that none of these actions prompt the user to re-enter the password.
+10. After checking the checkbox and validating the password, log out of the wallet and log back in within 5 minutes. Verify that the user is prompted to enter the password again, as the session should reset the remember password feature.
+11. Open the wallet in a new tab or window after checking the checkbox and validating the password in the original tab. Verify that the password is not remembered in the new tab/window.
+12. After checking the checkbox and validating the password, refresh the browser or tab within 5 minutes. Verify that the password is not remembered, and the user is prompted to enter the password again.
+13. Close the browser or tab after checking the checkbox and validating the password, then reopen it within 5 minutes. Verify that the password is not remembered, and the user is prompted to enter the password again.
+14. Verify that the remembered password is stored securely and is not accessible through the browser’s developer tools or in local storage. Ensure that the remembered password is not exposed in any logs or network requests.
+
 # Dashboard
 
 ## Network Choice
