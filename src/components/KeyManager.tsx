@@ -176,8 +176,12 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
               </TabList>
               <TabPanels display="flex" flex={1} flexDir="column" fontSize="sm">
                 <TabPanel display="flex" flexDir="column">
-                  <ButtonGroup size="sm" spacing={2} mb={4}>
-                    <Button onClick={createKeyPairModal.onOpen} variant="white">
+                  <Flex mb={4} gap={2} flexDir={['column', 'row']}>
+                    <Button
+                      onClick={createKeyPairModal.onOpen}
+                      variant="white"
+                      size="sm"
+                    >
                       <IconPlus size={BUTTON_ICON_SIZE} />
                       <Text as="span" ml={1}>
                         Create new key
@@ -186,19 +190,24 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                     <Button
                       onClick={importFromLedgerModal.onOpen}
                       variant="white"
+                      size="sm"
                     >
                       <IconDeviceUsb size={BUTTON_ICON_SIZE} />
                       <Text as="span" ml={1}>
                         Import from Ledger
                       </Text>
                     </Button>
-                    <Button onClick={importKeyPairModal.onOpen} variant="white">
+                    <Button
+                      onClick={importKeyPairModal.onOpen}
+                      variant="white"
+                      size="sm"
+                    >
                       <IconFileImport size={BUTTON_ICON_SIZE} />
                       <Text as="span" ml={1}>
                         Import secret key
                       </Text>
                     </Button>
-                  </ButtonGroup>
+                  </Flex>
                   <Box flex={1}>
                     {(wallet?.keychain ?? []).map((key) => (
                       <Box
@@ -257,20 +266,28 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                   </Box>
                 </TabPanel>
                 <TabPanel display="flex" flexDir="column">
-                  <ButtonGroup size="sm" spacing={2} mb={4}>
-                    <Button onClick={createAccountModal.onOpen} variant="white">
+                  <Flex mb={4} gap={2} flexDir={['column', 'row']}>
+                    <Button
+                      onClick={createAccountModal.onOpen}
+                      variant="white"
+                      size="sm"
+                    >
                       <IconPlus size={BUTTON_ICON_SIZE} />
                       <Text as="span" ml={1}>
                         Create new account
                       </Text>
                     </Button>
-                    <Button onClick={importAccountModal.onOpen} variant="white">
+                    <Button
+                      onClick={importAccountModal.onOpen}
+                      variant="white"
+                      size="sm"
+                    >
                       <IconFileImport size={BUTTON_ICON_SIZE} />
                       <Text as="span" ml={1}>
                         Import account
                       </Text>
                     </Button>
-                  </ButtonGroup>
+                  </Flex>
                   <Box flex={1}>
                     {accounts.map((acc) => {
                       const keys = getKeysByAccount(acc);
