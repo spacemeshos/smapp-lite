@@ -39,7 +39,7 @@ function PasswordAlert(): JSX.Element {
       <AlertDialogContent>
         <Form control={form.control}>
           <AlertDialogCloseButton />
-          <AlertDialogHeader fontSize="lg" fontWeight="bold">
+          <AlertDialogHeader fontSize="lg" fontWeight="bold" textAlign="center">
             Password required
           </AlertDialogHeader>
 

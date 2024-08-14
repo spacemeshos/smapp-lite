@@ -104,10 +104,8 @@ function WalletScreen(): JSX.Element {
           <Flex>
             <MainMenu />
             <LockWallet />
+            <HardwareWalletConnect />
           </Flex>
-          {/*
-          <HardwareWalletConnect />
-          */}
         </Flex>
       </Flex>
 

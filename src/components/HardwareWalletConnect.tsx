@@ -68,16 +68,16 @@ function DeviceSelectionModal() {
           <ButtonGroup w="100%">
             <Button
               onClick={() => connectDevice(LedgerTransports.Bluetooth)}
-              display="block"
               flex={1}
               h="60px"
-              px={12}
               isDisabled={!IS_SUPPORTED}
               variant="dark"
+              display="flex"
+              flexDir="column"
             >
-              <Flex alignItems="center" justifyItems="center" w="100%">
-                <IconBluetooth style={{ margin: 'auto' }} />
-                Bluetooth
+              <Flex alignItems="center" justifyContent="center" w="100%">
+                <IconBluetooth />
+                <Text>Bluetooth</Text>
               </Flex>
               <Text fontSize="xx-small" mt={1}>
                 (Ledger Nano X)
@@ -85,16 +85,16 @@ function DeviceSelectionModal() {
             </Button>
             <Button
               onClick={() => connectDevice(LedgerTransports.WebUSB)}
-              display="block"
               flex={1}
               h="60px"
-              px={12}
               isDisabled={!IS_SUPPORTED}
               variant="dark"
+              display="flex"
+              flexDir="column"
             >
-              <Flex alignItems="center" justifyItems="center" w="100%">
+              <Flex alignItems="center" justifyContent="center" w="100%">
                 <IconUsb />
-                WebUSB
+                <Text>WebUSB</Text>
               </Flex>
               <Text fontSize="xx-small" mt={1}>
                 (Ledger Nano S or S Plus)
@@ -231,7 +231,7 @@ function NotConnected() {
         icon={<IconDeviceUsb size={24} />}
         title="Connect a Hardware Wallet"
         aria-label="Connect a Hardware Wallet"
-        ml={2}
+        m={2}
         onClick={modalConnect.onOpen}
         variant="dark"
       />
@@ -254,7 +254,7 @@ function Connected({ device }: { device: LedgerDevice }) {
         icon={<TransportIcon size={24} color="green" />}
         title="Disconnect a Hardware Wallet"
         aria-label="Disconnect a Hardware Wallet"
-        ml={2}
+        m={2}
         onClick={resetDevice}
       />
       <DeviceReconnectModal />

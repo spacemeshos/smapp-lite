@@ -7,7 +7,6 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
-  FormLabel,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -53,7 +52,7 @@ function UnlockScreen(): JSX.Element {
       justifyContent="center"
       marginTop="auto"
       marginBottom="auto"
-      paddingX={36}
+      px={[0, 36]}
       paddingY={10}
       borderRadius="xl"
       gap={20}
