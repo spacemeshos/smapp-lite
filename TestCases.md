@@ -208,7 +208,7 @@
 6. Switch to a different tab or application, leaving the wallet tab open and idle. Countdown and logout should occur after 2 minutes of no activity in the wallet tab.
 7. Device goes to sleep during the idle period; verify behavior upon wake-up.
 8. Network connection is lost during the idle period; verify if the idle timer continues or pauses.
-9. Multiple tabs with wallet are open; verify the behavior when there's activity in one window - resets the idle timer in all?
+9. Multiple tabs with wallet are open; verify the behavior when there's activity in one window - do not reset the idle timer in all, it is session specific.
 10. User switches to a different app or browser tab during the idle period; verify behavior.
 11. User has a slow or unstable internet connection; verify if this affects the idle timer.
 12. User logs out manually before the 2-minute idle period; verify that auto-logout does not occur.
@@ -436,7 +436,6 @@
 16. Ensure that clicking the "OK" button or the close (cross) button in the upper-right corner closes the modal.
 17. Ensure that once the modal is closed, the mnemonics are no longer accessible unless the process is repeated (with a password prompt if not within the 5-minute period).
 18. Verify behavior when the user repeatedly enters an incorrect password when trying to back up mnemonics.
-19. Ensure that after multiple failed attempts, a security measure is triggered (e.g., temporary lockout, captcha). (to implement?)
 
 ## Export Wallet File
 
