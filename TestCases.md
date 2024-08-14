@@ -2,9 +2,9 @@
 
 1. Verify the main page loads successfully.
 2. Check that the main page displays three buttons: "Create New Wallet," "Recover Your Wallet," and "Import Wallet File."
-3. Ensure "Create New Wallet" button is visible and clickable.
-4. Ensure "Recover Your Wallet" button is visible and clickable.
-5. Ensure "Import Wallet File" button is visible and clickable.
+3. Ensure the "Create New Wallet" button is visible and clickable.
+4. Ensure the "Recover Your Wallet" button is visible and clickable.
+5. Ensure the "Import Wallet File" button is visible and clickable.
 
 # Create New Wallet
 
@@ -107,7 +107,7 @@
 
 **Create Wallet Button**
 
-1. Check that the page displays: Green "Create Wallet" button.
+1. Check that the page displays the green "Create Wallet" button.
 2. Verify the "Create Wallet" button is disabled if the password fields are empty or passwords do not meet requirements.
 3. Ensure the "Create Wallet" button is enabled only when both password fields are filled, match, and meet the requirements.
 4. Verify clicking the "Create Wallet" button with valid passwords successfully creates the wallet.
@@ -118,8 +118,8 @@
 # Recover Your Wallet
 
 1. Verify the "Recover wallet from mnemonics" page loads successfully.
-2. Check that the page displays the following elements: "Back" button, "Next Step" button.
-3. Check that the page displays: Input field with the note "Please put your 12-word or 24-word mnemonic" above it.
+2. Check that the page displays the following elements: the "Back" button, the "Next Step" button.
+3. Check that the page displays the input field with the note "Please put your 12-word or 24-word mnemonic" above it.
 4. Ensure the input field accepts text input.
 5. Verify the input field does not have a placeholder text.
 6. Verify that the input field accepts exactly 12 or 24 words.
@@ -150,16 +150,16 @@
 4. Check that the file selection dialog allows the user to select a wallet file.
 5. Ensure that only valid wallet file types can be selected (i.e., .json).
 6. Ensure the "Setup password" page is visible and meets all the requirements described in the [Password Setup Page](#password-setup-page)
-7. Verify the "Import wallet" button throws an error if no file is selected or password field is empty.
-8. Ensure the "Import wallet" button func is enabled only when a file is selected and the password field is filled.
+7. Verify the "Import wallet" button throws an error if no file is selected or the password field is empty.
+8. Ensure the "Import wallet" button function is enabled only when a file is selected and the password field is filled.
 9. Verify that clicking the "Import wallet" button with a valid wallet file and correct password successfully imports the wallet.
 10. Ensure the user is navigated to the wallet dashboard or success confirmation page upon successful wallet import.
 11. Verify behavior when an invalid wallet file type is selected.
-12. Ensure an appropriate error message is shown on invalid file.
+12. Ensure an appropriate error message is shown on an invalid file.
 13. Verify behavior when the wrong password is entered for the selected wallet file.
 14. Ensure an appropriate error message is shown on the incorrect.
 15. Check behavior when clicking "Import wallet" with the password field empty.
-16. Ensure an appropriate error message is shown on empty password.
+16. Ensure an appropriate error message is shown on the empty password.
 17. Check behavior when clicking "Import wallet" without selecting a wallet file.
 18. Ensure an appropriate error message is shown on no file selection.
 19. Verify behavior when the user opens the file selection dialog but cancels the selection.
@@ -179,8 +179,8 @@
 1. With a wallet correctly set up, and logged out, verify that navigating to any valid link `https://wallet.spacemesh.io/#/[any-existing-path]` redirects instantly to `https://wallet.spacemesh.io/#/unlock`.
 2. Verify the login page loads successfully - displays the following elements: Input field to enter the password, "Unlock" button. Footer message with "Wipe out" button.
 3. Ensure the password input field accepts text input.
-4. Verify that the input field has the indication for password entry and that it's securely masked (dots or asteriks replace chars)
-5. Check the eye icon, ensure it unmasks the password input.
+4. Verify that the input field has the indication for password entry and that it's securely masked (dots or asterisks replace chars)
+5. Check the eye icon, and ensure it unmasks the password input.
 6. Verify the "Unlock" button is disabled if the password field is empty.
 7. Ensure the "Unlock" button is enabled when a password is entered.
 8. Verify that entering the correct password and clicking the "Unlock" button logs the user in.
@@ -191,7 +191,7 @@
 13. Check that the confirmation dialog asks the user to confirm the wipe-out action.
 14. Ensure that confirming the wipe-out action deletes the current wallet data and navigates the user to the appropriate page for creating or recovering a wallet.
 15. Verify that canceling the wipe-out action keeps the current wallet data intact and returns the user to the login page.
-16. Verify that the log out button is visible in the upper right corner of the wallet overview screen (currently "lock" icon).
+16. Verify that the log-out button is visible in the upper right corner of the wallet overview screen (currently "lock" icon).
 17. Ensure the "lock" button is clickable.
 18. Check that clicking the "lock" button logs the user out and redirects them to the login page.
 19. Check behavior when the user's session expires: ensure the user is redirected to the login page and required to re-enter their password.
@@ -208,7 +208,7 @@
 6. Switch to a different tab or application, leaving the wallet tab open and idle. Countdown and logout should occur after 2 minutes of no activity in the wallet tab.
 7. Device goes to sleep during the idle period; verify behavior upon wake-up.
 8. Network connection is lost during the idle period; verify if the idle timer continues or pauses.
-9. Multiple tabs with wallet are open; verify the behavior when there's activity in one window - do not reset the idle timer in all, it is session specific.
+9. Multiple tabs with wallet are open; verify the behavior when there's an activity in one window - do not reset the idle timer in all, it is session specific.
 10. User switches to a different app or browser tab during the idle period; verify behavior.
 11. User has a slow or unstable internet connection; verify if this affects the idle timer.
 12. User logs out manually before the 2-minute idle period; verify that auto-logout does not occur.
@@ -295,14 +295,14 @@
 5. Check that a confirmation message or indication is shown after copying.
 6. Ensure the switch accounts button is visible and clickable.
 7. Verify that clicking the button allows switching between multiple accounts.
-8. Ensure the account information updates accordingly after switching accounts.
+8. Ensure the account information updated accordingly after switching accounts.
 
 ## Balance Display
 
 1. Verify the account balance is displayed in a clear and readable font.
-2. Ensure the balance is accurate and updates correctly after transactions.
+2. Ensure the balance is accurate and updated correctly after transactions.
 3. Ensure the refresh button is visible next to the balance.
-4. Verify that clicking the refresh button updates the balance with the most recent information.
+4. Verify that clicking the "Refresh" button updates the balance with the most recent information.
 
 ## Send Button
 
@@ -322,9 +322,9 @@
 
 1. Ensure the Transactions History tab is visible and clickable.
 2. Verify that all transaction details (ID, status, sender, recipient, amount, fee, nonce, layer, epoch) match the backend data accurately.
-3. Check that the transactions history shows correct and detailed information for each transaction.
+3. Check that the transactions' history shows correct and detailed information for each transaction.
 4. Check that the records are clickable and open a more detailed view.
-5. Ensure that each transaction includes details such as Arrow icon (left for outgoing, right for incoming, down for self-spawn transactions), Truncated transaction ID, Transaction type (spend/spawn), Date in the format: YYYY-MM-DD HH, Layer and Epoch information, Transaction amount, Transaction cost.
+5. Ensure that each transaction includes details such as the "Arrow" icon (left for outgoing, right for incoming, down for self-spawn transactions), Truncated transaction ID, Transaction type (spend/spawn), Date in the format: YYYY-MM-DD HH, Layer and Epoch information, Transaction amount, Transaction cost.
 6. Ensure that the arrow icons are displayed correctly for each transaction type.
 7. Verify that the arrow icons are orange while the transaction is being processed.
 8. Ensure the arrow icons turn green once the transaction is applied/confirmed.
@@ -335,7 +335,7 @@
 13. Ensure the amount is formatted appropriately with the correct number of decimal places.
 14. Ensure that the transaction cost is displayed correctly.
 15. Verify that the tab displays an appropriate message when there are no transactions to show.
-16. Verify that the transactions history loads quickly and correctly, even with a large number of transactions.
+16. Verify that the transactions' history loads quickly and correctly, even with a large number of transactions.
 17. Ensure smooth scrolling through the list of transactions, especially with a large dataset.
 
  **Details**
@@ -457,7 +457,7 @@
 6. Ensure the wallet data remains intact after canceling.
 7. Verify that clicking the "Wipe Out" button within the modal deletes all wallet data.
 8. Ensure the user is logged out and redirected to the initial setup or login page.
-9. Confirm that there is no way to recover the wallet after confirming the wipe out
+9. Confirm that there is no way to recover the wallet after confirming the wipeout
 
 # Edge Cases
 
