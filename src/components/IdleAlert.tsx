@@ -61,6 +61,7 @@ function IdleAlert(): JSX.Element {
   useEffect(() => {
     if (shouldLockWallet) {
       lockWallet();
+      setShouldLockWallet(false);
     }
   }, [shouldLockWallet, lockWallet]);
 
