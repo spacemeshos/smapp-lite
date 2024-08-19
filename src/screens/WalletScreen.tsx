@@ -93,7 +93,7 @@ function WalletScreen(): JSX.Element {
     <Flex
       direction="column"
       alignItems="center"
-      justifyContent="center"
+      justifyContent="flex-start"
       flexGrow={1}
       w="100%"
       p={{ base: 0, md: 8 }}

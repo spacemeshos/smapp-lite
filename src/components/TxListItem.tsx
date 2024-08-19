@@ -79,8 +79,7 @@ function TxListItem({
   return (
     <Card
       mb={2}
-      bgColor="spacemesh.850"
-      _hover={{ cursor: 'pointer', bgColor: 'spacemesh.900' }}
+      _hover={{ cursor: 'pointer', bgColor: 'spacemesh.850' }}
       onClick={() => onClick(tx)}
     >
       <CardBody p={4}>

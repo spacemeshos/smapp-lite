@@ -29,7 +29,7 @@ function RewardListItem({
   layersPerEpoch,
 }: RewardListItemProps): JSX.Element {
   return (
-    <Card mb={2} bgColor="spacemesh.850" _hover={{ bgColor: 'spacemesh.900' }}>
+    <Card mb={2} _hover={{ bgColor: 'spacemesh.850' }}>
       <CardBody p={2}>
         <Flex alignItems="baseline">
           <Stat flex={2}>
@@ -39,7 +39,7 @@ function RewardListItem({
             <StatNumber fontSize="sm" color="brand.green">
               {formatSmidge(reward.rewardForLayer + reward.rewardForFees)}
               <Flex mb={1}>
-                <Text flex={1} fontSize="xx-small" color="#B9B9B9">
+                <Text flex={1} fontSize="xx-small" color="#B9B9B9" pr={2}>
                   {formatTimestamp(
                     timestampByLayer(
                       genesisTime,
@@ -55,13 +55,13 @@ function RewardListItem({
           </Stat>
           <Stat flex={1} color="#B9B9B9">
             <StatLabel fontSize="x-small">For layer</StatLabel>
-            <StatNumber fontSize="sm">
+            <StatNumber fontSize="sm" pr={2}>
               {formatSmidge(reward.rewardForLayer)}
             </StatNumber>
           </Stat>
           <Stat color="#B9B9B9" flex={1}>
             <StatLabel fontSize="x-small">For fees</StatLabel>
-            <StatNumber fontSize="sm">
+            <StatNumber fontSize="sm" pr={2}>
               {formatSmidge(reward.rewardForFees)}
             </StatNumber>
           </Stat>
