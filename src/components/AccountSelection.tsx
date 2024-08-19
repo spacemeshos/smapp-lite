@@ -5,6 +5,7 @@ import {
   MenuItemOption,
   MenuList,
   MenuOptionGroup,
+  useBreakpointValue,
 } from '@chakra-ui/react';
 import { IconChevronDown } from '@tabler/icons-react';
 
@@ -24,17 +25,17 @@ function AccountSelection(): JSX.Element {
   const { selectedAccount, selectAccount } = useWallet();
   const hrp = useCurrentHRP();
   const accounts = useAccountsList(hrp);
+  const mobile = useBreakpointValue({ base: true, md: false }) ?? true;
 
   return (
     <Menu>
       <MenuButton
         as={Button}
-        variant="dark"
-        textTransform="uppercase"
-        fontSize="small"
+        variant="green"
+        fontSize={{ base: '18px', md: '22px' }}
         float="right"
-        rightIcon={<IconChevronDown />}
-        my={2}
+        rightIcon={<IconChevronDown size={mobile ? 14 : 24} />}
+        px={0}
       >
         {accounts[selectedAccount]?.displayName}
       </MenuButton>

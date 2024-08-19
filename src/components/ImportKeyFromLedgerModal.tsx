@@ -118,7 +118,9 @@ function ImportKeyFromLedgerModal({
               inputProps={{
                 border: '1px',
                 borderRadius: 'full',
+                borderColor: 'brand.darkGreen',
                 _hover: { border: '1px', borderRadius: 'full' },
+                _focus: { borderColor: 'brand.green' },
               }}
             />
             <FormInput
@@ -140,7 +142,9 @@ function ImportKeyFromLedgerModal({
               inputProps={{
                 border: '1px',
                 borderRadius: 'full',
+                borderColor: 'brand.darkGreen',
                 _hover: { border: '1px', borderRadius: 'full' },
+                _focus: { borderColor: 'brand.green' },
               }}
             />
             <Checkbox
@@ -153,7 +157,7 @@ function ImportKeyFromLedgerModal({
             </Checkbox>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" onClick={submit} ml={2} variant="dark">
+            <Button onClick={submit} ml={2} variant="dark">
               Import Public Key
             </Button>
           </ModalFooter>

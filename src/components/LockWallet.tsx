@@ -1,17 +1,19 @@
-import { IconButton } from '@chakra-ui/react';
+import { IconButton, useBreakpointValue } from '@chakra-ui/react';
 import { IconLock } from '@tabler/icons-react';
 
 import useLockWallet from '../hooks/useLockWallet';
 
 function LockWallet(): JSX.Element {
   const lockWallet = useLockWallet();
+  const mobile = useBreakpointValue({ base: true, md: false }) ?? true;
 
   return (
     <IconButton
       aria-label="Lock wallet"
-      icon={<IconLock />}
+      icon={<IconLock size={mobile ? 14 : 24} />}
       onClick={lockWallet}
-      m={2}
+      mx={mobile ? 0 : 2}
+      px={mobile ? 0 : 2}
       variant="dark"
     />
   );

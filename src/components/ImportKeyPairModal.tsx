@@ -103,7 +103,9 @@ function ImportKeyPairModal({
               inputProps={{
                 border: '1px',
                 borderRadius: 'full',
+                borderColor: 'brand.darkGreen',
                 _hover: { border: '1px', borderRadius: 'full' },
+                _focus: { borderColor: 'brand.green' },
               }}
             />
             <FormTextarea
@@ -127,7 +129,9 @@ function ImportKeyPairModal({
               textareaProps={{
                 border: '1px',
                 borderRadius: 'md',
+                borderColor: 'brand.darkGreen',
                 _hover: { border: '1px', borderRadius: 'md' },
+                _focus: { borderColor: 'brand.green' },
               }}
             />
             <Text fontSize="xs" color="gray" mt={2} mb={2}>
@@ -145,7 +149,7 @@ function ImportKeyPairModal({
             </Checkbox>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" onClick={submit} ml={2} variant="dark">
+            <Button onClick={submit} ml={2} variant="dark">
               Import
             </Button>
           </ModalFooter>

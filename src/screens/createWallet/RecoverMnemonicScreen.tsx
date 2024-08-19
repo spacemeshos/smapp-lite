@@ -7,18 +7,18 @@ import {
   CardBody,
   CardHeader,
   Flex,
-  Text,
   Image,
+  Text,
 } from '@chakra-ui/react';
 import { validateMnemonic } from '@scure/bip39';
 import { wordlist } from '@scure/bip39/wordlists/english';
 
+import logo from '../../assets/logo_white.svg';
 import BackButton from '../../components/BackButton';
 import FormTextarea from '../../components/FormTextarea';
 import { normalizeMnemonic } from '../../utils/mnemonic';
 
 import { useWalletCreation } from './WalletCreationContext';
-import logo from '../../assets/logo_white.svg';
 
 type FormValues = {
   mnemonic: string;
@@ -46,9 +46,9 @@ function RecoverMnemonicScreen(): JSX.Element {
       <Card
         fontSize="sm"
         marginY={4}
-        paddingX={[4, 20]}
-        paddingY={[5]}
-        w={['100%', 'fit']}
+        paddingX={{ base: 4, md: 20 }}
+        paddingY={5}
+        w={{ base: '100%', md: 'fit' }}
       >
         <CardHeader>
           <Text fontSize="xl" mb={4} mt={2} textAlign="center">
@@ -82,7 +82,7 @@ function RecoverMnemonicScreen(): JSX.Element {
       <Flex width="100%" justifyContent="space-between" pt={10}>
         <BackButton />
 
-        <Button type="submit" pt={2} pb={2} pl={4} pr={4} onClick={onSubmit}>
+        <Button type="submit" paddingY={2} paddingX={4} onClick={onSubmit}>
           Next step
         </Button>
       </Flex>

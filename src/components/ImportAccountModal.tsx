@@ -182,6 +182,9 @@ function ImportAccountModal({
               value={displayName}
               border="1px"
               borderRadius="full"
+              borderColor="brand.darkGreen"
+              _hover={{ border: '1px', borderRadius: 'full' }}
+              _focus={{ borderColor: 'brand.green' }}
             />
           </FormControl>
           {accountData && (

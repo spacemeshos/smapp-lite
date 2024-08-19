@@ -5,23 +5,26 @@ import { useNavigate } from 'react-router-dom';
 
 import {
   Box,
+  BoxProps,
   Button,
   Card,
   CardBody,
   CardHeader,
   Flex,
+  Image,
   SimpleGrid,
   Tag,
   Text,
-  Image,
+  useBreakpointValue,
 } from '@chakra-ui/react';
 import { D } from '@mobily/ts-belt';
 import { IconArrowNarrowRight } from '@tabler/icons-react';
+
+import logo from '../../assets/logo_white.svg';
 import BackButton from '../../components/BackButton';
 import getRandomIndexes from '../../utils/getRandomIndexes';
 
 import { useWalletCreation } from './WalletCreationContext';
-import logo from '../../assets/logo_white.svg';
 
 type DraggableItem = {
   word: string;
@@ -40,6 +43,7 @@ function VerifyMnemonicScreen(): JSX.Element {
   const [slots, setSlots] = useState<Record<number, number | null>>(
     indexesToCheck.reduce((acc, nextId) => ({ ...acc, [nextId]: null }), {})
   );
+  const columns = useBreakpointValue({ base: 2, md: 3 }) ?? 2;
 
   useEffect(() => {
     if (words.length < 12) {
@@ -101,24 +105,38 @@ function VerifyMnemonicScreen(): JSX.Element {
     Object.entries(slots).every(([k, v]) => parseInt(k, 10) === v);
 
   return (
-    <Flex flexDir="column" alignItems="center">
+    <Flex
+      flexDir="column"
+      alignItems="center"
+      w={{ base: '100%', md: '75%' }}
+      maxW="4xl"
+    >
       <Image src={logo} width={200} my={8} />
 
       <DndProvider backend={HTML5Backend}>
         <Card
           fontSize="sm"
           marginY={4}
-          paddingX={[4, 20]}
-          paddingY={[5]}
-          w={['100%', 'fit']}
+          padding={0}
+          w={{ base: '100%', md: '90%' }}
         >
-          <CardHeader pb={0} maxW="xl">
-            <Text fontSize="lg" mb={4}>
+          <CardHeader pb={0} textAlign="center">
+            <Text
+              mb={4}
+              fontSize={{ base: '16px', md: '20px' }}
+              fontFamily="Univers65"
+              textAlign="center"
+            >
               Let&apos;s verify that you have written down your seed phrase and
               will able to recover your accounts/funds later if needed.
             </Text>
 
-            <Text mb={2} textAlign="center">
+            <Text
+              mb={2}
+              fontSize={{ base: '11px', md: '14px' }}
+              fontFamily="Univers65"
+              textAlign="center"
+            >
               Please, place the missing words on their places:
             </Text>
             <SimpleGrid columns={[2, 4]} width="100%" alignItems="center">
@@ -136,11 +154,24 @@ function VerifyMnemonicScreen(): JSX.Element {
             </SimpleGrid>
           </CardHeader>
           <CardBody paddingY={10}>
-            <SimpleGrid columns={[2, null, 3]} spacing="0px">
+            <SimpleGrid columns={columns} spacing="0px">
               {words.map((word, idx) => {
                 const isSlot = indexesToCheck.includes(idx);
+
+                const isLeftColumn = idx % columns === 0;
+                const isRightColumn = (idx + 1) % columns === 0;
+                const isTopRow = idx < columns;
+                const isBottomRow = idx >= words.length - columns;
+
                 if (isSlot) {
                   const placedWord = slots[idx];
+                  const boxProps: BoxProps = {
+                    borderTopWidth: isTopRow ? '0px' : '1px',
+                    borderBottomWidth: isBottomRow ? '0px' : '1px',
+                    borderLeftWidth: isLeftColumn ? '0px' : '1px',
+                    borderRightWidth: isRightColumn ? '0px' : '1px',
+                    borderColor: 'brand.lightAlphaGray',
+                  };
                   return (
                     <DroppableBox
                       // eslint-disable-next-line react/no-array-index-key
@@ -149,6 +180,7 @@ function VerifyMnemonicScreen(): JSX.Element {
                       }`}
                       slot={idx}
                       hasWordInside={!!placedWord}
+                      boxProps={boxProps}
                     >
                       {placedWord !== null && placedWord !== undefined ? (
                         <DraggableTag
@@ -162,7 +194,11 @@ function VerifyMnemonicScreen(): JSX.Element {
                           full
                         />
                       ) : (
-                        <Text as="span" fontSize="xx-small">
+                        <Text
+                          as="span"
+                          fontFamily="Univers55"
+                          fontSize={{ base: '11px', md: '14px' }}
+                        >
                           {idx + 1}.{' '}
                         </Text>
                       )}
@@ -173,15 +209,22 @@ function VerifyMnemonicScreen(): JSX.Element {
                   <Box
                     // eslint-disable-next-line react/no-array-index-key
                     key={`${idx}_${word}`}
-                    borderWidth={1}
-                    borderColor="spacemesh.900"
-                    p={2}
-                    bg={isSlot ? 'spacemesh.900' : 'spacemesh.850'}
+                    borderTopWidth={isTopRow ? '0px' : '1px'}
+                    borderBottomWidth={isBottomRow ? '0px' : '1px'}
+                    borderLeftWidth={isLeftColumn ? '0px' : '1px'}
+                    borderRightWidth={isRightColumn ? '0px' : '1px'}
+                    borderColor="brand.lightAlphaGray"
+                    p={{ base: 2, md: 4 }}
+                    bg="brand.darkGreen"
                     _hover={
                       isSlot ? { background: 'blackAlpha.300' } : undefined
                     }
                   >
-                    <Text as="span" fontSize="xx-small">
+                    <Text
+                      as="span"
+                      fontFamily="Univers55"
+                      fontSize={{ base: '11px', md: '14px' }}
+                    >
                       {idx + 1}.{' '}
                     </Text>
                     {word}
@@ -202,6 +245,7 @@ function VerifyMnemonicScreen(): JSX.Element {
           onClick={() => {
             navigate('/create/set-password');
           }}
+          variant={allWordsPlaced ? 'ghostWhite' : 'ghostGray'}
         >
           Next step
         </Button>
@@ -246,8 +290,7 @@ function DraggableTag({
     ? {
         display: 'block',
         width: '100%',
-        height: '100%',
-        p: 2,
+        p: 0,
       }
     : {
         p: 2,
@@ -257,7 +300,7 @@ function DraggableTag({
   return (
     <Tag
       ref={dragRef}
-      bg="brand.darkGreen"
+      bg="transparent"
       color="brand.green"
       borderColor="brand.green"
       borderWidth={placed ? '0px' : '2px'}
@@ -266,18 +309,28 @@ function DraggableTag({
       opacity={isDragging ? 0.5 : 1}
       userSelect="none"
       minW={placed ? 0 : 24}
-      fontSize="md"
+      fontSize={{ base: '11px', md: '14px' }}
       alignItems="center"
       justifyContent="center"
       onClick={() => placeWord(index, from)}
       {...fullStyles}
     >
       {full && typeof from === 'number' && (
-        <Text as="span" fontSize="xx-small">
+        <Text
+          as="span"
+          fontFamily="Univers55"
+          fontSize={{ base: '11px', md: '14px' }}
+        >
           {from + 1}.{' '}
         </Text>
       )}
-      {word}
+      <Text
+        as="span"
+        fontFamily="Univers55"
+        fontSize={{ base: '11px', md: '14px' }}
+      >
+        {word}
+      </Text>
     </Tag>
   );
 }
@@ -285,12 +338,14 @@ function DraggableTag({
 type DroppableBoxProps = PropsWithChildren<{
   slot: SlotIndex;
   hasWordInside: boolean;
+  boxProps: BoxProps;
 }>;
 
 function DroppableBox({
   slot,
   children = '',
   hasWordInside,
+  boxProps,
 }: DroppableBoxProps): JSX.Element {
   const [{ isOver }, dropRef] = useDrop(() => ({
     accept: 'word',
@@ -303,10 +358,9 @@ function DroppableBox({
   return (
     <Box
       ref={dropRef}
-      borderWidth={1}
-      borderColor="spacemesh.900"
-      bg={isOver ? 'spacemesh.900' : 'spacemesh.900'}
-      p={hasWordInside ? 0 : 2}
+      {...boxProps}
+      bg={hasWordInside ? 'spacemesh.850' : 'brand.darkGreen'}
+      p={{ base: 2, md: 4 }}
     >
       {children}
     </Box>

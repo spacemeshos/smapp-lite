@@ -1,4 +1,5 @@
 import { extendTheme, StyleFunctionProps, ThemeConfig } from '@chakra-ui/react';
+
 import buttonTheme from './theme/button';
 import cardTheme from './theme/card';
 import checkboxTheme from './theme/checkbox';
@@ -32,6 +33,7 @@ const colors = {
     green: '#3AFFA7',
     lightGreen: '#F6FFEC',
     lightGray: '#F0F0F0',
+    lightAlphaGray: '#F0F0F0EE',
   },
 };
 

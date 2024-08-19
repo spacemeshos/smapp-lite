@@ -7,21 +7,21 @@ import {
   Button,
   Card,
   CardBody,
+  CardHeader,
   Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
+  Image,
   Input,
   Text,
-  Image,
-  CardHeader,
 } from '@chakra-ui/react';
 
+import logo from '../../assets/logo_white.svg';
 import BackButton from '../../components/BackButton';
 import PasswordInput from '../../components/PasswordInput';
 import useWallet from '../../store/useWallet';
 import { WalletFile } from '../../types/wallet';
-import logo from '../../assets/logo_white.svg';
 
 type FormValues = {
   password: string;

@@ -59,7 +59,16 @@ function PasswordAlert(): JSX.Element {
               mt={2}
               mb={2}
             >
-              <PasswordInput register={form.register.password} />
+              <PasswordInput
+                register={form.register.password}
+                inputProps={{
+                  border: '1px',
+                  borderRadius: 'full',
+                  borderColor: 'brand.darkGreen',
+                  _hover: { border: '1px', borderRadius: 'full' },
+                  _focus: { borderColor: 'brand.green' },
+                }}
+              />
               <FormErrorMessage>
                 {form.errors.password?.message}
               </FormErrorMessage>

@@ -7,7 +7,8 @@ const { definePartsStyle, defineMultiStyleConfig } =
 const baseStyle = definePartsStyle({
   // define the part you're going to style
   container: {
-    backgroundColor: 'spacemesh.850',
+    backgroundColor: 'brand.darkGreen',
+    shadow: 'none',
   },
   header: {
     paddingBottom: '2px',

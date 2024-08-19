@@ -157,7 +157,9 @@ function CreateAccountModal({
                 type: 'number',
                 border: '1px',
                 borderRadius: 'full',
+                borderColor: 'brand.darkGreen',
                 _hover: { border: '1px', borderRadius: 'full' },
+                _focus: { borderColor: 'brand.green' },
               }}
               register={register('totalAmount', {
                 required: 'Please specify total amount locked in the vault',
@@ -171,7 +173,9 @@ function CreateAccountModal({
                 type: 'number',
                 border: '1px',
                 borderRadius: 'full',
+                borderColor: 'brand.darkGreen',
                 _hover: { border: '1px', borderRadius: 'full' },
+                _focus: { borderColor: 'brand.green' },
               }}
               register={register('vestingStart', {
                 required: 'Please specify the epoch when the vesting starts',
@@ -186,7 +190,9 @@ function CreateAccountModal({
                 type: 'number',
                 border: '1px',
                 borderRadius: 'full',
+                borderColor: 'brand.darkGreen',
                 _hover: { border: '1px', borderRadius: 'full' },
+                _focus: { borderColor: 'brand.green' },
               }}
               register={register('vestingEnd', {
                 required: 'Please specify the epoch when the vesting ends',
@@ -210,7 +216,9 @@ function CreateAccountModal({
                 type: 'number',
                 border: '1px',
                 borderRadius: 'full',
+                borderColor: 'brand.darkGreen',
                 _hover: { border: '1px', borderRadius: 'full' },
+                _focus: { borderColor: 'brand.green' },
               }}
               register={register('required', {
                 required: 'Please specify any number from 0 to 10',
@@ -256,7 +264,9 @@ function CreateAccountModal({
                 type: 'number',
                 border: '1px',
                 borderRadius: 'full',
+                borderColor: 'brand.darkGreen',
                 _hover: { border: '1px', borderRadius: 'full' },
+                _focus: { borderColor: 'brand.green' },
               }}
               register={register('required', {
                 required: 'Please specify any number from 0 to 10',
@@ -332,7 +342,9 @@ function CreateAccountModal({
               inputProps={{
                 border: '1px',
                 borderRadius: 'full',
+                borderColor: 'brand.darkGreen',
                 _hover: { border: '1px', borderRadius: 'full' },
+                _focus: { borderColor: 'brand.green' },
               }}
             />
             <FormSelect

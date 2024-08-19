@@ -49,28 +49,29 @@ function UnlockScreen(): JSX.Element {
     <Flex
       direction="column"
       alignItems="center"
-      justifyContent="center"
-      marginTop="auto"
-      marginBottom="auto"
-      px={[0, 36]}
-      paddingY={10}
-      borderRadius="xl"
-      gap={20}
-      bg="spacemesh.850"
+      justifyContent="space-around"
+      minH="90vh"
     >
       <Flex
         direction="column"
         alignItems="center"
         justifyContent="center"
         flexGrow={1}
-        fontSize="3xl"
       >
-        <Text fontSize="xl" mb={12}>
+        <Text
+          fontSize="xl"
+          mb={12}
+          fontFamily="Univers65"
+          size={{ base: '16px', md: '20px' }}
+        >
           Unlock Wallet
         </Text>
         <Form control={control}>
           <FormControl isInvalid={!!errors.password?.message}>
-            <PasswordInput register={register('password')} />
+            <PasswordInput
+              register={register('password')}
+              inputProps={{ minW: '300px' }}
+            />
             <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
           </FormControl>
           <Box display="flex" justifyContent="center" mt={4}>
@@ -87,7 +88,7 @@ function UnlockScreen(): JSX.Element {
           </Box>
         </Form>
       </Flex>
-      <Box mt={6} mb={2} textAlign="center" maxW={360}>
+      <Box mt={6} mb={2} textAlign="center" maxW="75%">
         <Text fontSize="xs" mb={2}>
           If you want to open another wallet file or re-create it from mnemonic,
           please wipe out the current wallet first.
@@ -98,7 +99,7 @@ function UnlockScreen(): JSX.Element {
           onClick={wipeAlert.onOpen}
           colorScheme="red"
           size="sm"
-          variant="white"
+          variant="whiteOutline"
         >
           Wipe out
         </Button>

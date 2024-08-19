@@ -16,14 +16,18 @@ const solid = defineStyle({
 const dark = defineStyle({
   textColor: 'brand.lightGray',
   fillColor: 'brand.lightGray',
-  borderColor: 'spacemesh.850',
-  bgColor: 'spacemesh.850',
-  borderWidth: '2px',
+  bgColor: 'brand.darkGreen',
   borderRadius: 'full',
   _hover: {
-    borderColor: 'spacemesh.800',
-    bgColor: 'spacemesh.800',
+    textColor: 'brand.green',
+    fillColor: 'brand.green',
   },
+});
+
+const green = defineStyle({
+  textColor: 'brand.green',
+  fillColor: 'brand.green',
+  bgColor: 'brand.darkGreen',
 });
 
 const outline = defineStyle({
@@ -89,6 +93,14 @@ const ghost = defineStyle({
 const ghostWhite = defineStyle({
   borderRadius: 'full',
   color: '#F0F0F0EE',
+  _hover: {
+    color: 'brand.green',
+  },
+});
+
+const ghostGray = defineStyle({
+  borderRadius: 'full',
+  color: '#7D7B7B',
 });
 
 const buttonTheme = defineStyleConfig({
@@ -100,9 +112,11 @@ const buttonTheme = defineStyleConfig({
     outline,
     ghost,
     ghostWhite,
+    ghostGray,
     danger,
     white,
     dark,
+    green,
     whiteOutline,
   },
 });

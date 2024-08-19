@@ -9,17 +9,19 @@ import {
   CardFooter,
   CardHeader,
   Flex,
+  Image,
   SimpleGrid,
   Text,
-  Image,
+  useBreakpointValue,
 } from '@chakra-ui/react';
-import { useCopyToClipboard } from '@uidotdev/usehooks';
 import { IconArrowNarrowRight } from '@tabler/icons-react';
+import { useCopyToClipboard } from '@uidotdev/usehooks';
+
+import logo from '../../assets/logo_white.svg';
 import BackButton from '../../components/BackButton';
 import useWallet from '../../store/useWallet';
 
 import { useWalletCreation } from './WalletCreationContext';
-import logo from '../../assets/logo_white.svg';
 
 function CreateMnemonicScreen(): JSX.Element {
   const { generateMnemonic } = useWallet();
@@ -28,6 +30,7 @@ function CreateMnemonicScreen(): JSX.Element {
   const [isCopied, setIsCopied] = useState(false);
   const [, copy] = useCopyToClipboard();
   const navigate = useNavigate();
+  const columns = useBreakpointValue({ base: 2, md: 3 }) ?? 2;
 
   let timeout: ReturnType<typeof setTimeout>;
 
@@ -44,47 +47,104 @@ function CreateMnemonicScreen(): JSX.Element {
   };
 
   return (
-    <Flex flexDir="column" alignItems="center">
+    <Flex
+      flexDir="column"
+      alignItems="center"
+      w={{ base: '100%', md: '75%' }}
+      maxW="4xl"
+    >
       <Image src={logo} width={200} my={8} />
 
-      <Card fontSize="sm" marginY={4} paddingX={[10, 20]} paddingY={[5]}>
-        <CardHeader pb={0}>
+      <Card
+        fontSize="sm"
+        marginY={4}
+        padding={0}
+        w={{ base: '100%', md: '90%' }}
+      >
+        <CardHeader pb={0} textAlign="center">
           <Text
-            fontSize="28px"
             color="brand.green"
             mb={4}
             textAlign="center"
-            fontFamily="Univers65"
+            fontSize={{ base: '24px', md: '30px' }}
+            fontFamily="Univers63"
           >
             Create a new wallet
           </Text>
-          <Text as="b" fontSize="16px" textAlign="center">
+          <Text
+            as="b"
+            textAlign="center"
+            color="brand.lightGray"
+            fontSize={{ base: '16px', md: '20px' }}
+            fontFamily="Univers65"
+          >
             Please, save the mnemonic to the safe place and do not share with
             anyone.
           </Text>
         </CardHeader>
         <CardBody paddingY={10}>
-          <SimpleGrid columns={[2, null, 3]} spacing="0px">
-            {mnemonic.split(' ').map((word, idx) => (
-              <Box
-                // eslint-disable-next-line react/no-array-index-key
-                key={`${idx}_${word}`}
-                borderWidth={1}
-                borderColor="spacemesh.900"
-                bg="spacemesh.850"
-                p={2}
-              >
-                <Text as="span" fontSize="xx-small">
-                  {idx + 1}.{' '}
-                </Text>
-                {word}
-              </Box>
-            ))}
+          <SimpleGrid columns={columns} spacing="0px">
+            {mnemonic.split(' ').map((word, idx) => {
+              const isLeftColumn = idx % columns === 0;
+              const isRightColumn = (idx + 1) % columns === 0;
+              const isTopRow = idx < columns;
+              const isBottomRow = idx >= mnemonic.split(' ').length - columns;
+
+              return (
+                <Box
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={`${idx}_${word}`}
+                  borderTopWidth={isTopRow ? '0px' : '1px'}
+                  borderBottomWidth={isBottomRow ? '0px' : '1px'}
+                  borderLeftWidth={isLeftColumn ? '0px' : '1px'}
+                  borderRightWidth={isRightColumn ? '0px' : '1px'}
+                  borderColor="brand.lightAlphaGray"
+                  p={{ base: 2, md: 4 }}
+                >
+                  <Text
+                    as="span"
+                    color="brand.lightAlphaGray"
+                    fontFamily="Univers55"
+                    fontSize={{ base: '12px', md: '14px' }}
+                  >
+                    {idx + 1}.{' '}
+                  </Text>
+                  {word}
+                </Box>
+              );
+            })}
           </SimpleGrid>
         </CardBody>
+
         <CardFooter pt={0} flexDirection="column">
+          <Flex flexDir="column" display={{ base: 'flex', md: 'none' }}>
+            <Button
+              variant="solid"
+              onClick={onCopyClick}
+              width="100%"
+              disabled={isCopied}
+            >
+              {isCopied ? 'Copied to clipboard!' : 'Copy to clipboard'}
+            </Button>
+            <Text
+              as="u"
+              onClick={regenerateMnemonic}
+              paddingX={4}
+              paddingY={2}
+              textAlign="center"
+              cursor="pointer"
+            >
+              Generate new mnemonics
+            </Text>
+          </Flex>
+        </CardFooter>
+      </Card>
+
+      <Flex width="100%" justifyContent="space-between">
+        <BackButton />
+        <Flex flexDir="column" display={{ base: 'none', md: 'flex' }}>
           <Button
-            variant="white"
+            variant="solid"
             onClick={onCopyClick}
             width="100%"
             disabled={isCopied}
@@ -94,30 +154,23 @@ function CreateMnemonicScreen(): JSX.Element {
           <Text
             as="u"
             onClick={regenerateMnemonic}
-            pt={2}
-            pb={2}
-            pl={4}
-            pr={4}
+            paddingX={4}
+            paddingY={2}
             textAlign="center"
             cursor="pointer"
           >
             Generate new mnemonics
           </Text>
-        </CardFooter>
-      </Card>
-
-      <Flex width="100%" justifyContent="space-between">
-        <BackButton />
+        </Flex>
         <Button
           rightIcon={<IconArrowNarrowRight />}
-          pt={2}
-          pb={2}
-          pl={4}
-          pr={4}
+          paddingX={4}
+          paddingY={2}
           onClick={() => {
             ctx.setMnemonic(mnemonic);
             navigate('/create/verify-mnemonic');
           }}
+          variant="ghostWhite"
         >
           Next step
         </Button>

@@ -5,6 +5,7 @@ import {
   IconButton,
   Input,
   InputGroup,
+  InputProps,
   InputRightElement,
 } from '@chakra-ui/react';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
@@ -12,22 +13,29 @@ import { IconEye, IconEyeOff } from '@tabler/icons-react';
 type Props = {
   placeholder?: string;
   register: ReturnType<UseFormRegister<FieldValues>>;
+  inputProps?: InputProps;
 };
 
-function PasswordInput({ placeholder = 'Enter password', register }: Props) {
+function PasswordInput({
+  placeholder = 'Enter password',
+  register,
+  inputProps = {},
+}: Props) {
   const [show, setShow] = useState(false);
 
   const toggleShow = () => setShow(!show);
 
   return (
-    <InputGroup size="md" w="100%">
+    <InputGroup size="md" w={['100%']}>
       <Input
         pr={2}
         type={show ? 'text' : 'password'}
         placeholder={placeholder}
         {...register}
         borderRadius="full"
-        borderColor="brand.darkGreen"
+        borderColor="brand.lightGray"
+        fontSize="small"
+        {...inputProps}
       />
       <InputRightElement width={10}>
         <IconButton

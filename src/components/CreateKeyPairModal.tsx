@@ -112,7 +112,9 @@ function CreateKeyPairModal({
               inputProps={{
                 border: '1px',
                 borderRadius: 'full',
+                borderColor: 'brand.darkGreen',
                 _hover: { border: '1px', borderRadius: 'full' },
+                _focus: { borderColor: 'brand.green' },
               }}
             />
             <FormInput
@@ -136,7 +138,9 @@ function CreateKeyPairModal({
               inputProps={{
                 border: '1px',
                 borderRadius: 'full',
+                borderColor: 'brand.darkGreen',
                 _hover: { border: '1px', borderRadius: 'full' },
+                _focus: { borderColor: 'brand.green' },
               }}
             />
             <Checkbox

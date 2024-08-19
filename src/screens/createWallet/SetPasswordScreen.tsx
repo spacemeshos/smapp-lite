@@ -3,6 +3,7 @@ import { Form, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import {
+  Box,
   Button,
   Card,
   CardBody,
@@ -11,17 +12,17 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Text,
   Image,
-  Box,
+  Text,
 } from '@chakra-ui/react';
 import { IconArrowNarrowRight } from '@tabler/icons-react';
+
+import logo from '../../assets/logo_white.svg';
 import BackButton from '../../components/BackButton';
 import PasswordInput from '../../components/PasswordInput';
 import useWallet from '../../store/useWallet';
 
 import { useWalletCreation } from './WalletCreationContext';
-import logo from '../../assets/logo_white.svg';
 
 type FormValues = {
   password: string;
@@ -57,18 +58,22 @@ function SetPasswordScreen(): JSX.Element {
   });
 
   return (
-    <Flex flexDir="column" alignItems="center">
+    <Flex
+      flexDir="column"
+      alignItems="center"
+      w={{ base: '100%', md: '75%' }}
+      maxW="4xl"
+    >
       <Image src={logo} width={200} my={8} />
 
       <Card
         fontSize="sm"
         marginY={4}
-        paddingX={[4, 20]}
-        paddingY={[5]}
-        w={['100%', 'fit']}
+        padding={0}
+        w={{ base: '100%', md: '50%' }}
       >
-        <CardHeader>
-          <Text fontSize="xl" mb={4} mt={2} textAlign="center">
+        <CardHeader mb={20} mt={4} textAlign="center">
+          <Text fontSize="xl" as="b">
             Final step to access your wallet
           </Text>
         </CardHeader>
@@ -79,8 +84,10 @@ function SetPasswordScreen(): JSX.Element {
               isInvalid={isSubmitted && !!errors.password?.message}
               mb={4}
             >
-              <Flex w="100%" flexDir="column" alignItems="center">
-                <FormLabel>Set the password:</FormLabel>
+              <Flex w="100%" flexDir="column">
+                <FormLabel color="brand.lightAlphaGray" fontSize="small">
+                  Set the password:
+                </FormLabel>
                 <PasswordInput
                   register={register('password', {
                     required: {
@@ -121,8 +128,10 @@ function SetPasswordScreen(): JSX.Element {
               isInvalid={isSubmitted && !!errors.confirm?.message}
               mb={4}
             >
-              <Flex w="100%" flexDir="column" alignItems="center">
-                <FormLabel>Confirm the password:</FormLabel>
+              <Flex w="100%" flexDir="column">
+                <FormLabel color="brand.lightAlphaGray" fontSize="small">
+                  Confirm the password:
+                </FormLabel>
                 <PasswordInput
                   register={register('confirm', {
                     validate: (val, { password }) => {
@@ -152,7 +161,7 @@ function SetPasswordScreen(): JSX.Element {
           </Form>
         </CardBody>
       </Card>
-      <Flex width="100%" justifyContent="flex-start">
+      <Flex width="100%" justifyContent="flex-start" mt={12}>
         <BackButton onClick={reset} />
       </Flex>
     </Flex>

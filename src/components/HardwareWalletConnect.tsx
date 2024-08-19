@@ -16,6 +16,7 @@ import {
   OrderedList,
   Spacer,
   Text,
+  useBreakpointValue,
 } from '@chakra-ui/react';
 import { O } from '@mobily/ts-belt';
 import {
@@ -225,13 +226,14 @@ function WrongDeviceModal() {
 
 function NotConnected() {
   const { modalConnect } = useHardwareWallet();
+  const mobile = useBreakpointValue({ base: true, md: false }) ?? true;
   return (
     <>
       <IconButton
-        icon={<IconDeviceUsb size={24} />}
+        icon={<IconDeviceUsb size={mobile ? 14 : 24} />}
         title="Connect a Hardware Wallet"
         aria-label="Connect a Hardware Wallet"
-        m={2}
+        mx={mobile ? 0 : 2}
         onClick={modalConnect.onOpen}
         variant="dark"
       />
@@ -242,7 +244,7 @@ function NotConnected() {
 
 function Connected({ device }: { device: LedgerDevice }) {
   const { resetDevice } = useHardwareWallet();
-
+  const mobile = useBreakpointValue({ base: true, md: false }) ?? true;
   const TransportIcon =
     device.transportType === LedgerTransports.Bluetooth
       ? IconBluetoothConnected
@@ -251,10 +253,10 @@ function Connected({ device }: { device: LedgerDevice }) {
   return (
     <>
       <IconButton
-        icon={<TransportIcon size={24} color="green" />}
+        icon={<TransportIcon size={mobile ? 14 : 24} color="green" />}
         title="Disconnect a Hardware Wallet"
         aria-label="Disconnect a Hardware Wallet"
-        m={2}
+        mx={mobile ? 0 : 2}
         onClick={resetDevice}
       />
       <DeviceReconnectModal />

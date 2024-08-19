@@ -14,6 +14,7 @@ import {
   TabPanels,
   Tabs,
   Text,
+  useBreakpointValue,
   useDisclosure,
 } from '@chakra-ui/react';
 import { O, pipe } from '@mobily/ts-belt';
@@ -52,6 +53,7 @@ function WalletScreen(): JSX.Element {
   const { getCurrentNetwork } = useNetworks();
   const { getAccountData } = useAccountData();
   const currentNetwork = getCurrentNetwork();
+  const mobile = useBreakpointValue({ base: true, md: false }) ?? true;
 
   const txDisclosure = useDisclosure();
   const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
@@ -89,40 +91,59 @@ function WalletScreen(): JSX.Element {
 
   return (
     <Flex
-      w="100%"
       direction="column"
       alignItems="center"
       justifyContent="center"
       flexGrow={1}
-      p={[2, 12]}
+      w="100%"
+      p={{ base: 0, md: 8 }}
     >
-      <Flex alignItems="start" flexDir="row" width="100%" fontSize="sm">
-        <AccountSelection />
-        <Spacer />
-        <Flex flexDir={['column', 'row']} alignItems="end">
-          <NetworkSelection />
-          <Flex>
+      <Flex
+        flexDir="column"
+        alignItems="start"
+        borderBottomWidth={1}
+        borderColor="brand.lightGray"
+        mb={2}
+        w="100%"
+      >
+        <Flex alignItems="center" flexDir="row" w="100%">
+          <AccountSelection />
+          <Spacer />
+          <Flex display={{ base: 'flex', md: 'none' }} alignItems="end">
             <MainMenu />
             <LockWallet />
             <HardwareWalletConnect />
+            <NetworkSelection />
+          </Flex>
+        </Flex>
+
+        <Flex alignItems="center" flexDir="row" fontSize="sm" w="100%">
+          <Box w="100%" fontSize="sm" borderRadius={6}>
+            {O.mapWithDefault(
+              currentAccount,
+              <Text color="yellow">
+                Please switch account to view balance.
+              </Text>,
+              (account) => (
+                <Text fontSize={{ base: '12px', md: '16px' }}>
+                  {account.address}
+                  <CopyButton value={account.address} />
+                </Text>
+              )
+            )}
+          </Box>
+
+          <Spacer />
+          <Flex display={{ base: 'none', md: 'flex' }} alignItems="end">
+            <MainMenu />
+            <LockWallet />
+            <HardwareWalletConnect />
+            <NetworkSelection />
           </Flex>
         </Flex>
       </Flex>
 
       <NodeStatusBadge />
-
-      <Box mt={2} p={4} w="100%" fontSize="sm" borderRadius={6}>
-        {O.mapWithDefault(
-          currentAccount,
-          <Text color="yellow">Please switch account to view balance.</Text>,
-          (account) => (
-            <Text>
-              {account.address}
-              <CopyButton value={account.address} />
-            </Text>
-          )
-        )}
-      </Box>
 
       {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
       {O.mapWithDefault(accountData, <></>, ([account, network]) => (
@@ -131,8 +152,7 @@ function WalletScreen(): JSX.Element {
           flexGrow={1}
           h="100%"
           flexDir="column"
-          bgColor="spacemesh.850"
-          p={[4, 12]}
+          py={[4, 12]}
           borderRadius="xl"
         >
           {O.mapWithDefault(
@@ -140,19 +160,23 @@ function WalletScreen(): JSX.Element {
             <Text color="yellow">Please switch account to view balance.</Text>,
             () => (
               <Flex alignItems="center">
-                <Text as="b" fontSize="4xl" title={`${balance} Smidge`}>
+                <Text
+                  as="b"
+                  fontSize={{ base: '32px', md: '40px' }}
+                  title={`${balance} Smidge`}
+                >
                   {formatSmidge(balance)}
                 </Text>
                 <IconButton
-                  ml={2}
-                  size="sm"
+                  ml={4}
+                  width={mobile ? '21px' : '27px'}
                   variant="whiteOutline"
                   disabled={isLoading}
                   icon={
                     isLoading ? (
                       <Spinner size="sm" />
                     ) : (
-                      <IconRefresh width={18} />
+                      <IconRefresh width={mobile ? '20px' : '24px'} />
                     )
                   }
                   aria-label="Refresh balance"
