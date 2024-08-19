@@ -60,7 +60,7 @@
 1. Verify the presence of a "Back" button.
 2. Verify that clicking "Back" navigates the user back to the mnemonic phrase page.
 3. Ensure that the mnemonic phrase is retained when returning to the mnemonic phrase page.
-4. Ensure that clicking 'Back' clears all filled words and prompts the user to fill in the 4 words again.
+4. Ensure that clicking 'Back' clears all filled words and prompts the user to fill in the 4 (different each time) words again.
 
 **Next step button**
 
@@ -200,18 +200,18 @@
 
 # Session Timeout
 
-1. User remains idle for exactly 1 minute 30 seconds; verify that the countdown modal appears.
-2. User remains idle for exactly 2 minutes; verify that the wallet logs out automatically.
-3. User interacts with the app during the initial 1 minute 30 seconds; verify that the idle timer resets.
+1. User remains idle for exactly 2 minutes; verify that the countdown modal appears.
+2. User remains idle for exactly 2 minutes and 30 seconds; verify that the wallet logs out automatically.
+3. User interacts with the app during the initial 2 minutes; verify that the idle timer resets.
 4. User interacts with the app during the 30-second countdown; verify that the countdown modal disappears and the idle timer resets.
 5. User minimizes the app during the idle period; verify if the idle timer continues or pauses.
-6. Switch to a different tab or application, leaving the wallet tab open and idle. Countdown and logout should occur after 2 minutes of no activity in the wallet tab.
+6. Switch to a different tab or application, leaving the wallet tab open and idle. Countdown and logout should occur after 2 minutes and 30 seconds of no activity in the wallet tab.
 7. Device goes to sleep during the idle period; verify behavior upon wake-up.
 8. Network connection is lost during the idle period; verify if the idle timer continues or pauses.
 9. Multiple tabs with wallet are open; verify the behavior when there's an activity in one window - do not reset the idle timer in all, it is session specific.
 10. User switches to a different app or browser tab during the idle period; verify behavior.
 11. User has a slow or unstable internet connection; verify if this affects the idle timer.
-12. User logs out manually before the 2-minute idle period; verify that auto-logout does not occur.
+12. User logs out manually before the 2-minute 30-second idle period; verify that auto-logout does not occur.
 13. User receives a push notification during the idle period; verify if interacting with it resets the idle timer.
 14. Verify the session state upon re-login after an automatic log-out; ensure no data is lost or incorrectly retained.
 15. Browser-specific behaviors (e.g., Chrome, Firefox, Safari); verify consistency.
@@ -253,13 +253,13 @@
 5. Verify that selecting the Bluetooth option initiates the process of connecting via Bluetooth.
 6. Ensure that the wallet begins searching for available Bluetooth devices.
 7. Verify that selecting the USB option prompts the browser to display a modal for connected USB devices.
-8. Verify that clicking this button with no ledger device physically connected to the PC opens anyway a browser modal with USB devices.
-9. Verify that clicking this button with a ledger connected, but not logged in, opens anyway a browser modal with USB devices. (locked ledger=undetectable)
+8. Verify that clicking this button with no ledger device physically connected to the PC opens a browser modal with USB devices anyway.
+9. Verify that clicking this button with a ledger connected but not logged in opens a browser modal with USB devices. (locked ledger=undetectable)
 10. Verify that clicking this button with a ledger connected, but without the Spacemesh app opened on the device, opens a modal with instructions on properly connecting a ledger.
 11. Check that the modal with instructions also contains 2 functional buttons - disconnect/cancel and reconnect/retry.
 12. Verify that clicking the "Disconnect" button in the above-mentioned modal cancels the connection attempt and returns the user to the previous state.
 13. Ensure that clicking the "Reconnect" button prompts the wallet to check for the device connection again.
-14. Ensure that clicking this button correctly connects to the ledger if we attempt with a ledger correctly plugged in, unlocked, and with the Spacemesh app opened.
+14. Ensure that clicking this button correctly connects to the ledger if we attempt to do so with a ledger that is correctly plugged in, unlocked, and with the Spacemesh app opened.
 15. Ensure that the wallet recognizes the connected Ledger device.
 16. Ensure the button changes its look (currently green color and changed icon) after a successful connect process.
 17. Verify that once connected, all Ledger-related actions (e.g., signing transactions, exporting keys) become available.
