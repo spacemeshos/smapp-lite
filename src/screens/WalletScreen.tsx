@@ -125,7 +125,7 @@ function WalletScreen(): JSX.Element {
                 Please switch account to view balance.
               </Text>,
               (account) => (
-                <Flex>
+                <Flex alignItems="center">
                   <Text fontSize={{ base: '12px', md: '16px' }} noOfLines={1}>
                     {account.address}
                   </Text>
@@ -154,7 +154,7 @@ function WalletScreen(): JSX.Element {
           flexGrow={1}
           h="100%"
           flexDir="column"
-          py={[4, 12]}
+          py={{ base: 4, md: 12 }}
           borderRadius="xl"
         >
           {O.mapWithDefault(

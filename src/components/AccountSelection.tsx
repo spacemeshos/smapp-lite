@@ -36,6 +36,7 @@ function AccountSelection(): JSX.Element {
         float="right"
         rightIcon={<IconChevronDown size={mobile ? 14 : 24} />}
         px={0}
+        noOfLines={1}
       >
         {accounts[selectedAccount]?.displayName}
       </MenuButton>
