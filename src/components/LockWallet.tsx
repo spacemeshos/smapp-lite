@@ -10,10 +10,11 @@ function LockWallet(): JSX.Element {
   return (
     <IconButton
       aria-label="Lock wallet"
-      icon={<IconLock size={mobile ? 14 : 24} />}
+      icon={<IconLock size={mobile ? 20 : 24} />}
+      size="sm"
       onClick={lockWallet}
-      mx={mobile ? 0 : 2}
-      px={mobile ? 0 : 2}
+      m={mobile ? 0 : 2}
+      p={mobile ? 0 : 2}
       variant="dark"
     />
   );

@@ -230,10 +230,12 @@ function NotConnected() {
   return (
     <>
       <IconButton
-        icon={<IconDeviceUsb size={mobile ? 14 : 24} />}
+        icon={<IconDeviceUsb size={mobile ? 20 : 24} />}
+        size="sm"
         title="Connect a Hardware Wallet"
         aria-label="Connect a Hardware Wallet"
-        mx={mobile ? 0 : 2}
+        m={mobile ? 0 : 2}
+        p={mobile ? 0 : 2}
         onClick={modalConnect.onOpen}
         variant="dark"
       />
@@ -253,10 +255,12 @@ function Connected({ device }: { device: LedgerDevice }) {
   return (
     <>
       <IconButton
-        icon={<TransportIcon size={mobile ? 14 : 24} color="green" />}
+        icon={<TransportIcon size={mobile ? 20 : 24} color="green" />}
+        size="sm"
         title="Disconnect a Hardware Wallet"
         aria-label="Disconnect a Hardware Wallet"
-        mx={mobile ? 0 : 2}
+        m={mobile ? 0 : 2}
+        p={mobile ? 0 : 2}
         onClick={resetDevice}
       />
       <DeviceReconnectModal />

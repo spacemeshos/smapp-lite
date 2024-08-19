@@ -125,10 +125,12 @@ function WalletScreen(): JSX.Element {
                 Please switch account to view balance.
               </Text>,
               (account) => (
-                <Text fontSize={{ base: '12px', md: '16px' }}>
-                  {account.address}
+                <Flex>
+                  <Text fontSize={{ base: '12px', md: '16px' }} noOfLines={1}>
+                    {account.address}
+                  </Text>
                   <CopyButton value={account.address} />
-                </Text>
+                </Flex>
               )
             )}
           </Box>

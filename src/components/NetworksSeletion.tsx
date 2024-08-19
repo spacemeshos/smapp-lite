@@ -47,8 +47,10 @@ function NetworkSelection(): JSX.Element {
             )
           }
           rightIcon={mobile ? <div /> : <IconChevronDown />}
-          mx={[0, 2]}
+          m={mobile ? 0 : 2}
+          p={mobile ? 0 : 2}
           fontSize={mobile ? 'x-small' : 'sm'}
+          size="sm"
           variant="dark"
         >
           {O.mapWithDefault(currentNetwork, 'No network', (net) => net.name)}

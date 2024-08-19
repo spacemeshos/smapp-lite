@@ -32,11 +32,11 @@ function MainMenu(): JSX.Element {
         <MenuButton
           as={IconButton}
           aria-label="Settings"
-          icon={<IconSettings size={mobile ? 14 : 20} />}
-          fontSize="sm"
+          icon={<IconSettings size={mobile ? 20 : 24} />}
+          size="sm"
           variant="dark"
-          mx={mobile ? 0 : 2}
-          px={mobile ? 0 : 2}
+          m={mobile ? 0 : 2}
+          p={mobile ? 0 : 2}
         />
         <MenuList>
           <MenuItem onClick={keyManagerDrawer.onOpen}>
