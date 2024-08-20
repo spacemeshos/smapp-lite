@@ -384,6 +384,8 @@
 8. Ensure that invalid inputs (e.g., non-hexadecimal strings for secret keys, invalid characters in the name) are rejected with appropriate error messages.
 9. Ensure that all sensitive information (e.g., secret keys, passwords) is handled securely and is not exposed or accessible without proper authorization.
 
+### Keys
+
 **Create a New Key**
 
 1. Ensure the "Create a New Key" button is visible and accessible in the "Keys" tab.
@@ -447,6 +449,27 @@
 27. Ensure that pasted keys are correctly handled, including any potential hidden characters (e.g., leading/trailing spaces).
 28. Network disconnection during the import process: Verify that the system handles the error gracefully and prompts the user to retry or cancel the import.
 29. Test the import secret key functionality on mobile devices. Ensure the modal, input fields, and buttons are responsive and usable on smaller screens.
+
+### Accounts
+
+1. Verify that the Accounts tab loads successfully when selected.
+2. Ensure the tab displays a list of all accounts currently in the wallet.
+3. Verify that each account in the list is displayed with the following, correct elements: Name, Address with copy and explorer button, Public key, Export account button, SingleSig or MultiSig account badge, Local or Hardware key badge.
+4. Ensure that clicking the copy button copies the full address to the clipboard. Confirm that a confirmation message or indication is shown after copying.
+5. Verify that clicking the explorer button opens the account’s details in the explorer in a new tab.
+6. Verify that clicking the "Export Account" button triggers the export process: downloading the account's correct data into a .account file.
+7. Verify that each account is labeled with a badge indicating whether it is a SingleSig or MultiSig account. Ensure the badge is displayed correctly and matches the account’s configuration.
+8. Verify that each account is labeled with a badge indicating whether it is associated with a local key or a hardware key. Ensure the badge is displayed correctly and accurately reflects the account’s origin.
+
+**Create New Account**
+
+1. Verify that the "Create New Account" button is visible and accessible at the top of the Accounts list.
+2. Ensure that clicking the "Create New Account" button opens a modal for account creation.
+
+**Import Account**
+
+1. Verify that the "Import Account" button is visible and accessible at the top of the Accounts list.
+2. Ensure that clicking the "Import Account" button opens a modal for account import
 
 ## Backup Mnemonics
 
