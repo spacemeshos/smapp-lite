@@ -416,6 +416,35 @@
 14. Clicking the cancel button should interrupt the process leaving no products, returning the user to the initial state.
 15. Confirm that the imported keys are correct, and match those in the leger.
 
+**Import Secret Key**
+
+1. Ensure the "Import Secret Key" button is visible and accessible in the "Keys" tab.
+2. Verify that clicking the "Import Secret Key" button opens the modal with the correct title and fields (Input Fields: Name and Secret Key, Checkbox: Create SingleSig account automatically, Buttons: "Import" and "x" for close)
+3. Verify that clicking the "x" button in the upper right corner closes the modal without importing the key.
+4. Ensure that any entered data is not saved if the modal is closed this way.
+5. Verify that the Name input field accepts text input.
+6. Verify that leaving the Name field empty while attempting to import triggers an error message and prevents the import.
+7. Verify that the Secret Key input field accepts text input and checks for valid hexadecimal strings.
+8. Ensure the field rejects input that is not a hexadecimal string and triggers an appropriate error message.
+9. Verify that leaving the Secret Key field empty while attempting to import triggers an error message and prevents the import.
+10. Enter an invalid secret key format (e.g., non-hexadecimal characters, too short or too long). Ensure that the modal displays an error message indicating that the key is not valid and prevents the import.
+11. Enter a valid hexadecimal string in the Secret Key input field. Verify that the system does not display any errors and allows the user to proceed with the import.
+12. Enter a secret key that is already present in the wallet. Verify that the modal displays a message indicating that the key is a duplicate and prevents the import.
+13. Enter a new secret key that is not already present in the wallet. Ensure that the system allows the import process to continue.
+14. Verify that the "Create SingleSig account automatically" checkbox is checked by default.
+15. Ensure that checking and unchecking the checkbox works correctly and reflects the intended action (i.e., whether or not to create a SingleSig account automatically).
+16. Verify that the "Import" button remains disabled if either the Name or Secret Key fields are empty.
+17. Ensure that the "Import" button becomes enabled only when both fields are filled with valid data (valid name and valid secret key).
+18. Verify that clicking the "Import" button with a valid name and secret key triggers the password validation step.
+19. Ensure no errors occur if the key is valid and unique.
+20. Enter the correct wallet password and confirm. Ensure the secret key is successfully imported, and the key is displayed on the list.
+21. Enter an incorrect password and attempt to confirm. Verify that the system displays an error message indicating the incorrect password and does not proceed with the import.
+22. After successful import, ensure that key management actions (e.g., copy public key, export secret key) are available for the newly imported key.
+23. Refresh the browser or tab during the import process (before password validation). Verify that the process is canceled and no key is imported.
+24. Allow the session to timeout during the import process (e.g., while entering password). Ensure that the system logs the user out or requires re-authentication, and no key is imported.
+25. Verify that the imported secret key is stored securely within the wallet’s key management system and is not exposed in logs or through other vulnerabilities.
+26. Ensure that sensitive data, such as the secret key, is not stored in the browser’s local storage or accessible through developer tools.
+
 ## Backup Mnemonics
 
 1. Verify that the "Backup Mnemonics" button is visible in the settings menu.
