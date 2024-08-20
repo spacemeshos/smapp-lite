@@ -444,6 +444,9 @@
 24. Allow the session to timeout during the import process (e.g., while entering password). Ensure that the system logs the user out or requires re-authentication, and no key is imported.
 25. Verify that the imported secret key is stored securely within the wallet’s key management system and is not exposed in logs or through other vulnerabilities.
 26. Ensure that sensitive data, such as the secret key, is not stored in the browser’s local storage or accessible through developer tools.
+27. Ensure that pasted keys are correctly handled, including any potential hidden characters (e.g., leading/trailing spaces).
+28. Network disconnection during the import process: Verify that the system handles the error gracefully and prompts the user to retry or cancel the import.
+29. Test the import secret key functionality on mobile devices. Ensure the modal, input fields, and buttons are responsive and usable on smaller screens.
 
 ## Backup Mnemonics
 
