@@ -187,7 +187,7 @@ function CreateAccountModal({
           <>
             <Text fontWeight="bold">Vesting Account</Text>
             <Text fontSize="sm" mb={1}>
-              It is used to drain vaults by companies?..
+              It is used to drain Vault Accounts
             </Text>
             <FormInput
               label="Required amount of signatures"
