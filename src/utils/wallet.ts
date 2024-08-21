@@ -13,18 +13,11 @@ import {
   WalletSecretsEncrypted,
 } from '../types/wallet';
 
-import {
-  constructAesGcmIv,
-  decrypt,
-  encrypt,
-  KDF_DKLEN,
-  KDF_ITERATIONS,
-  pbkdf2Key,
-} from './aes-gcm';
+import { decrypt, encrypt } from './aes-gcm';
 import { generateAddress } from './bech32';
 import Bip32KeyDerivation from './bip32';
 import { getISODate } from './datetime';
-import { fromHexString, toHexString } from './hexString';
+import { toHexString } from './hexString';
 import {
   AnySpawnArguments,
   convertSpawnArgumentsForEncoding,
@@ -142,20 +135,8 @@ export const decryptWallet = async (
   password: string
 ): Promise<WalletSecrets> => {
   const dc = new TextDecoder();
-  const key = await pbkdf2Key(
-    password,
-    fromHexString(crypto.kdfparams.salt),
-    crypto.kdfparams.dklen,
-    crypto.kdfparams.iterations
-  );
   try {
-    const decryptedRaw = dc.decode(
-      await decrypt(
-        key,
-        fromHexString(crypto.cipherParams.iv),
-        fromHexString(crypto.cipherText)
-      )
-    );
+    const decryptedRaw = dc.decode(await decrypt(crypto, password));
     const decrypted = JSON.parse(decryptedRaw) as WalletSecrets;
     return decrypted;
   } catch (err) {
@@ -166,28 +147,8 @@ export const decryptWallet = async (
 export const encryptWallet = async (
   secrets: WalletSecrets,
   password: string
-): Promise<WalletSecretsEncrypted> => {
-  const ec = new TextEncoder();
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-  const key = await pbkdf2Key(password, salt);
-  const plaintext = ec.encode(JSON.stringify(secrets));
-  const iv = await constructAesGcmIv(key, plaintext);
-  const cipherText = await encrypt(key, iv, plaintext);
-  return {
-    cipher: 'AES-GCM',
-    cipherText: toHexString(cipherText),
-    cipherParams: {
-      iv: toHexString(iv),
-    },
-    kdf: 'PBKDF2',
-    kdfparams: {
-      dklen: KDF_DKLEN,
-      hash: 'SHA-512',
-      salt: toHexString(salt),
-      iterations: KDF_ITERATIONS,
-    },
-  };
-};
+): Promise<WalletSecretsEncrypted> =>
+  encrypt(JSON.stringify(secrets), password);
 
 export const safeKeyForAccount = (acc: AccountWithAddress) =>
   `${acc.address}_${acc.displayName.replace(/\s/g, '_')}`;

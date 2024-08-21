@@ -1,9 +1,36 @@
+import * as aes from 'aes-js';
+
+import { HexString } from '../types/common';
+
+import { fromHexString, toHexString } from './hexString';
+
 const { subtle } = crypto;
 
-export const KDF_DKLEN = 256;
-export const KDF_ITERATIONS = 120000;
+export const CIPHER = 'AES-GCM';
+export const KDF = 'PBKDF2';
 
-export const pbkdf2Key = async (
+//
+const KDF_DKLEN = 256;
+const KDF_ITERATIONS = 120000;
+
+//
+export interface GCMEncrypted {
+  cipher: typeof CIPHER;
+  cipherParams: {
+    iv: HexString;
+  };
+  kdf: typeof KDF;
+  kdfparams: {
+    dklen: number;
+    hash: 'SHA-512';
+    iterations: number;
+    salt: HexString;
+  };
+  cipherText: string;
+}
+
+//
+const pbkdf2Key = async (
   pass: string,
   salt: Uint8Array,
   dklen = KDF_DKLEN,
@@ -32,7 +59,7 @@ export const pbkdf2Key = async (
   return key;
 };
 
-export const constructAesGcmIv = async (
+const constructAesGcmIv = async (
   key: CryptoKey,
   input: Uint8Array
 ): Promise<Uint8Array> => {
@@ -54,27 +81,51 @@ export const constructAesGcmIv = async (
 };
 
 export const encrypt = async (
-  key: CryptoKey,
-  iv: Uint8Array,
-  plaintext: Uint8Array
-): Promise<Uint8Array> => {
-  const ciphertext = await subtle.encrypt(
-    {
-      name: 'AES-GCM',
-      iv,
-      tagLength: 128,
-    },
-    key,
-    plaintext
+  plaintext: string,
+  password: string,
+  dklen = KDF_DKLEN,
+  iterations = KDF_ITERATIONS
+): Promise<GCMEncrypted> => {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const key = await pbkdf2Key(password, salt);
+  const plainTextBytes = aes.utils.utf8.toBytes(plaintext);
+  const iv = await constructAesGcmIv(key, plainTextBytes);
+  const cipherText = new Uint8Array(
+    await subtle.encrypt(
+      {
+        name: 'AES-GCM',
+        iv,
+        tagLength: 128,
+      },
+      key,
+      plainTextBytes
+    )
   );
-  return new Uint8Array(ciphertext);
+
+  return {
+    cipher: CIPHER,
+    cipherText: toHexString(cipherText),
+    cipherParams: {
+      iv: toHexString(iv),
+    },
+    kdf: KDF,
+    kdfparams: {
+      hash: 'SHA-512',
+      salt: toHexString(salt),
+      dklen,
+      iterations,
+    },
+  };
 };
 
 export const decrypt = async (
-  key: CryptoKey,
-  iv: Uint8Array,
-  ciphertext: Uint8Array
+  encryptedMessage: GCMEncrypted,
+  password: string
 ): Promise<Uint8Array> => {
+  const salt = fromHexString(encryptedMessage.kdfparams.salt);
+  const iv = fromHexString(encryptedMessage.cipherParams.iv);
+  const cipherText = fromHexString(encryptedMessage.cipherText);
+  const key = await pbkdf2Key(password, salt);
   const plaintext = await subtle.decrypt(
     {
       name: 'AES-GCM',
@@ -82,7 +133,7 @@ export const decrypt = async (
       tagLength: 128,
     },
     key,
-    ciphertext
+    cipherText
   );
   return new Uint8Array(plaintext);
 };
