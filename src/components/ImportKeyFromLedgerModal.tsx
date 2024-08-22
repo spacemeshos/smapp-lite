@@ -12,7 +12,6 @@ import {
   ModalOverlay,
   Text,
 } from '@chakra-ui/react';
-import { StdPublicKeys } from '@spacemesh/sm-codec';
 
 import useHardwareWallet from '../store/useHardwareWallet';
 import usePassword from '../store/usePassword';
@@ -36,7 +35,7 @@ function ImportKeyFromLedgerModal({
   isOpen,
   onClose,
 }: ImportKeyFromLedgerModalProps): JSX.Element {
-  const { addForeignKey, createAccount } = useWallet();
+  const { addForeignKey } = useWallet();
   const { withPassword } = usePassword();
   const { checkDeviceConnection, connectedDevice, modalConnect } =
     useHardwareWallet();
@@ -67,18 +66,11 @@ function ImportKeyFromLedgerModal({
       const publicKey = await connectedDevice.actions.getPubKey(path);
       const success = await withPassword(
         async (password) => {
-          const key = await addForeignKey(
+          await addForeignKey(
             { displayName, path, publicKey },
-            password
+            password,
+            createSingleSig
           );
-          if (createSingleSig) {
-            await createAccount(
-              displayName,
-              StdPublicKeys.SingleSig,
-              { PublicKey: key.publicKey },
-              password
-            );
-          }
           return true;
         },
         'Import PublicKey from Ledger device',

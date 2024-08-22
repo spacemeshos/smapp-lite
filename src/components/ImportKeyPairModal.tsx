@@ -12,7 +12,6 @@ import {
   ModalOverlay,
   Text,
 } from '@chakra-ui/react';
-import { StdPublicKeys } from '@spacemesh/sm-codec';
 
 import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
@@ -38,7 +37,7 @@ function ImportKeyPairModal({
   onClose,
   keys,
 }: ImportKeyPairModalProps): JSX.Element {
-  const { importKeyPair, createAccount } = useWallet();
+  const { importKeyPair } = useWallet();
   const { withPassword } = usePassword();
   const {
     register,
@@ -57,15 +56,12 @@ function ImportKeyPairModal({
     async ({ displayName, secretKey, createSingleSig }) => {
       const success = await withPassword(
         async (password) => {
-          const key = await importKeyPair(displayName, secretKey, password);
-          if (createSingleSig) {
-            await createAccount(
-              displayName,
-              StdPublicKeys.SingleSig,
-              { PublicKey: key.publicKey },
-              password
-            );
-          }
+          await importKeyPair(
+            displayName,
+            secretKey,
+            password,
+            createSingleSig
+          );
           return true;
         },
         'Importing the Key Pair',

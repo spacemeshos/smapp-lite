@@ -13,7 +13,6 @@ import {
   ModalOverlay,
   Text,
 } from '@chakra-ui/react';
-import { StdPublicKeys } from '@spacemesh/sm-codec';
 
 import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
@@ -36,7 +35,7 @@ function CreateKeyPairModal({
   isOpen,
   onClose,
 }: CreateKeyPairModalProps): JSX.Element {
-  const { createKeyPair, createAccount, wallet } = useWallet();
+  const { createKeyPair, wallet } = useWallet();
   const { withPassword } = usePassword();
   const {
     register,
@@ -55,15 +54,7 @@ function CreateKeyPairModal({
     async ({ displayName, path, createSingleSig }) => {
       const success = await withPassword(
         async (password) => {
-          const key = await createKeyPair(displayName, path, password);
-          if (createSingleSig) {
-            await createAccount(
-              displayName,
-              StdPublicKeys.SingleSig,
-              { PublicKey: key.publicKey },
-              password
-            );
-          }
+          await createKeyPair(displayName, path, password, createSingleSig);
           return true;
         },
         'Create a new Key Pair',
