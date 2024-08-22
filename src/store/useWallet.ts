@@ -35,6 +35,7 @@ import {
   generateMnemonic,
 } from '../utils/wallet';
 import { isLegacySecrets, migrateSecrets } from '../utils/wallet.legacy';
+import { isGCMEncrypted } from '../utils/aes-gcm';
 
 type WalletData = {
   meta: WalletMeta;
@@ -146,9 +147,10 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
             crypto: migratedSecrets,
           }),
         });
-        const secretsToStore = isLegacySecrets(secrets)
-          ? await encryptWallet(migratedSecrets, password)
-          : wallet.crypto;
+        const secretsToStore =
+          isLegacySecrets(secrets) || isGCMEncrypted(wallet.crypto)
+            ? await encryptWallet(migratedSecrets, password)
+            : wallet.crypto;
 
         saveToLocalStorage(WALLET_STORE_KEY, {
           meta: wallet.meta,
