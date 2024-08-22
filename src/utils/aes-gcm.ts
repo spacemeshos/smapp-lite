@@ -29,6 +29,17 @@ export interface GCMEncrypted {
   cipherText: string;
 }
 
+export const isGCMEncrypted = (data: unknown): data is GCMEncrypted =>
+  typeof data === 'object' &&
+  data !== null &&
+  'cipher' in data &&
+  data.cipher === CIPHER &&
+  'cipherParams' in data &&
+  'kdf' in data &&
+  data.kdf === KDF &&
+  'kdfparams' in data &&
+  'cipherText' in data;
+
 //
 const pbkdf2Key = async (
   pass: string,
@@ -121,12 +132,13 @@ export const encrypt = async (
 export const decrypt = async (
   encryptedMessage: GCMEncrypted,
   password: string
-): Promise<Uint8Array> => {
+): Promise<string> => {
+  const dc = new TextDecoder();
   const salt = fromHexString(encryptedMessage.kdfparams.salt);
   const iv = fromHexString(encryptedMessage.cipherParams.iv);
   const cipherText = fromHexString(encryptedMessage.cipherText);
   const key = await pbkdf2Key(password, salt);
-  const plaintext = await subtle.decrypt(
+  const decryptedBytes = await subtle.decrypt(
     {
       name: 'AES-GCM',
       iv,
@@ -135,5 +147,5 @@ export const decrypt = async (
     key,
     cipherText
   );
-  return new Uint8Array(plaintext);
+  return dc.decode(decryptedBytes);
 };

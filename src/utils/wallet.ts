@@ -5,7 +5,6 @@ import { StdTemplateKeys, StdTemplates } from '@spacemesh/sm-codec';
 import { Bech32Address } from '../types/common';
 import {
   AccountWithAddress,
-  Contact,
   KeyPair,
   Wallet,
   WalletMeta,
@@ -13,7 +12,12 @@ import {
   WalletSecretsEncrypted,
 } from '../types/wallet';
 
-import { decrypt, encrypt } from './aes-gcm';
+import {
+  decrypt as decryptArgon2,
+  encrypt,
+  isArgon2Encrypted,
+} from './aes-ctr-argon2';
+import { decrypt as decryptGCM, isGCMEncrypted } from './aes-gcm';
 import { generateAddress } from './bech32';
 import Bip32KeyDerivation from './bip32';
 import { getISODate } from './datetime';
@@ -74,43 +78,6 @@ export const createWallet = (
 };
 
 //
-// KeyPairs
-//
-
-export const addKeyPair = (wallet: Wallet, keypair: KeyPair): Wallet => ({
-  ...wallet,
-  crypto: {
-    ...wallet.crypto,
-    keys: [...wallet.crypto.keys, keypair],
-  },
-});
-
-// TODO: editKeyPair, removeKeyPair
-// TODO: addAccount, editAccount, removeAccount
-
-export const generateNewKeyPair = (wallet: Wallet, name?: string): Wallet => {
-  const index = wallet.crypto.accounts.length;
-  return addKeyPair(
-    wallet,
-    createKeyPair(name || `Account ${index}`, wallet.crypto.mnemonic, index)
-  );
-};
-
-//
-// Contacts
-//
-
-export const addContact = (wallet: Wallet, contact: Contact): Wallet => ({
-  ...wallet,
-  crypto: {
-    ...wallet.crypto,
-    contacts: [...wallet.crypto.contacts, contact],
-  },
-});
-
-// TODO: editContact, removeContact
-
-//
 // Derive Account from KeyPair
 //
 
@@ -130,13 +97,25 @@ export const computeAddress = <TK extends StdTemplateKeys>(
 //
 // Encryption / decryption
 //
+const decryptAnyWallet = async (
+  crypto: WalletSecretsEncrypted,
+  password: string
+): Promise<string> => {
+  if (isArgon2Encrypted(crypto)) {
+    return decryptArgon2(crypto, password);
+  }
+  if (isGCMEncrypted(crypto)) {
+    return decryptGCM(crypto, password);
+  }
+  throw new Error('Unsupported encryption format');
+};
+
 export const decryptWallet = async (
   crypto: WalletSecretsEncrypted,
   password: string
 ): Promise<WalletSecrets> => {
-  const dc = new TextDecoder();
   try {
-    const decryptedRaw = dc.decode(await decrypt(crypto, password));
+    const decryptedRaw = await decryptAnyWallet(crypto, password);
     const decrypted = JSON.parse(decryptedRaw) as WalletSecrets;
     return decrypted;
   } catch (err) {

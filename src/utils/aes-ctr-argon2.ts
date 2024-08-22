@@ -16,7 +16,7 @@ const ARGON2_PARALLELISM = 1;
 const ARGON2_HASH_LENGTH = 32; // 256 bits
 
 //
-type EncryptedMessage = {
+export type Argon2Encrypted = {
   cipher: typeof CIPHER;
   cipherParams: { iv: HexString };
   kdf: typeof KDF;
@@ -30,6 +30,18 @@ type EncryptedMessage = {
   mac: HexString;
 };
 
+export const isArgon2Encrypted = (data: unknown): data is Argon2Encrypted =>
+  typeof data === 'object' &&
+  data !== null &&
+  'cipher' in data &&
+  data.cipher === CIPHER &&
+  'cipherParams' in data &&
+  'kdf' in data &&
+  data.kdf === KDF &&
+  'kdfparams' in data &&
+  'cipherText' in data &&
+  'mac' in data;
+
 //
 export const getRandomBytes = (length: number): Uint8Array =>
   crypto.getRandomValues(new Uint8Array(length));
@@ -41,7 +53,7 @@ export const encrypt = async (
   iterations = ARGON2_ITERATIONS,
   memorySize = ARGON2_MEMORY,
   parallelism = ARGON2_PARALLELISM
-): Promise<EncryptedMessage> => {
+): Promise<Argon2Encrypted> => {
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const argon2key = await argon2id({
     password,
@@ -85,9 +97,9 @@ const decryptHmac = (plaintext: string, key: Uint8Array) => {
 };
 
 export const decrypt = async (
-  encryptedMsg: EncryptedMessage,
+  encryptedMsg: Argon2Encrypted,
   password: string
-) => {
+): Promise<string> => {
   const salt = fromHexString(encryptedMsg.kdfparams.salt);
   const argon2key = await argon2id({
     ...encryptedMsg.kdfparams,

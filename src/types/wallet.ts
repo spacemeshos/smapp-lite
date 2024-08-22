@@ -1,6 +1,8 @@
+import { Argon2Encrypted } from '../utils/aes-ctr-argon2';
+import { GCMEncrypted } from '../utils/aes-gcm';
 import { AnySpawnArguments } from '../utils/templates';
 
-import { Bech32Address, HexString } from './common';
+import { Bech32Address } from './common';
 
 export type KeyMeta = {
   displayName: string;
@@ -69,20 +71,7 @@ export interface Wallet {
   crypto: WalletSecrets;
 }
 
-export interface WalletSecretsEncrypted {
-  cipher: 'AES-GCM';
-  cipherParams: {
-    iv: HexString;
-  };
-  kdf: 'PBKDF2';
-  kdfparams: {
-    dklen: number;
-    hash: 'SHA-512';
-    iterations: number;
-    salt: HexString;
-  };
-  cipherText: string;
-}
+export type WalletSecretsEncrypted = GCMEncrypted | Argon2Encrypted;
 
 // Encrypted Wallet representation on the filesystem
 export interface WalletFile {
