@@ -99,7 +99,7 @@ function UnlockScreen(): JSX.Element {
           </Box>
         </Form>
       </Flex>
-      <Box mb={2} textAlign="center" width={380}>
+      <Box mb={8} textAlign="center" width={380}>
         <Text fontSize="xs" mb={2}>
           If you want to open another wallet file or re-create it from mnemonic,
           please wipe out the current wallet first.
