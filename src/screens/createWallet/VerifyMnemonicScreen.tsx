@@ -99,8 +99,9 @@ function VerifyMnemonicScreen(): JSX.Element {
     }
     return moveWord(wordIndex, 'bank', from);
   };
+  const allWordsPlaced = wordsInBank.length === 0;
 
-  const allWordsPlaced =
+  const allWordsPlacedCorrectly =
     wordsInBank.length === 0 &&
     Object.entries(slots).every(([k, v]) => parseInt(k, 10) === v);
 
@@ -191,13 +192,13 @@ function VerifyMnemonicScreen(): JSX.Element {
                           from={idx}
                           moveWord={moveWord}
                           placeWord={placeWord}
-                          full
+                          allWordsPlaced={allWordsPlaced}
+                          allWordsPlacedCorrectly={allWordsPlacedCorrectly}
                         />
                       ) : (
                         <Text
-                          as="span"
                           fontFamily="Univers55"
-                          fontSize={{ base: '11px', md: '14px' }}
+                          fontSize={{ base: '12px', md: '14px' }}
                         >
                           {idx + 1}.{' '}
                         </Text>
@@ -221,13 +222,11 @@ function VerifyMnemonicScreen(): JSX.Element {
                     }
                   >
                     <Text
-                      as="span"
                       fontFamily="Univers55"
-                      fontSize={{ base: '11px', md: '14px' }}
+                      fontSize={{ base: '12px', md: '14px' }}
                     >
-                      {idx + 1}.{' '}
+                      {idx + 1}. {word}
                     </Text>
-                    {word}
                   </Box>
                 );
               })}
@@ -241,11 +240,11 @@ function VerifyMnemonicScreen(): JSX.Element {
 
         <Button
           rightIcon={<IconArrowNarrowRight />}
-          isDisabled={!allWordsPlaced}
+          isDisabled={!allWordsPlacedCorrectly}
           onClick={() => {
             navigate('/create/set-password');
           }}
-          variant={allWordsPlaced ? 'ghostWhite' : 'ghostGray'}
+          variant={allWordsPlacedCorrectly ? 'solid' : 'ghostGray'}
         >
           Next step
         </Button>
@@ -259,7 +258,8 @@ type DraggableTagProps = {
   moveWord: (wordIndex: number, slot: SlotIndex, from: SlotIndex) => void;
   placeWord: (wordIndex: number, from: SlotIndex) => void;
   from: SlotIndex;
-  full?: boolean;
+  allWordsPlaced?: boolean;
+  allWordsPlacedCorrectly?: boolean;
 } & DraggableItem;
 
 // Sub components
@@ -270,7 +270,9 @@ function DraggableTag({
   moveWord,
   placeWord,
   from,
-  full = false,
+
+  allWordsPlaced = false,
+  allWordsPlacedCorrectly = false,
 }: DraggableTagProps): JSX.Element {
   const [{ isDragging }, dragRef] = useDrag(() => ({
     type: 'word',
@@ -286,51 +288,50 @@ function DraggableTag({
     }),
   }));
 
-  const fullStyles = full
+  const fullStyles = placed
     ? {
-        display: 'block',
-        width: '100%',
         p: 0,
+        m: 0,
+        minW: 0,
+        borderWidth: '0px',
+        minH: 19,
       }
     : {
         p: 2,
-        m: 1,
+        m: 2,
+        minW: 24,
+        borderWidth: '2px',
+        minH: 19,
       };
 
   return (
     <Tag
       ref={dragRef}
       bg="transparent"
-      color="brand.green"
+      color={
+        placed && allWordsPlaced && !allWordsPlacedCorrectly
+          ? 'brand.red'
+          : 'brand.green'
+      }
       borderColor="brand.green"
-      borderWidth={placed ? '0px' : '2px'}
       borderRadius="full"
       cursor={isDragging ? 'grabbing' : 'grab'}
       opacity={isDragging ? 0.5 : 1}
       userSelect="none"
-      minW={placed ? 0 : 24}
-      fontSize={{ base: '11px', md: '14px' }}
       alignItems="center"
       justifyContent="center"
       onClick={() => placeWord(index, from)}
       {...fullStyles}
     >
-      {full && typeof from === 'number' && (
-        <Text
-          as="span"
-          fontFamily="Univers55"
-          fontSize={{ base: '11px', md: '14px' }}
-        >
-          {from + 1}.{' '}
+      {placed && typeof from === 'number' ? (
+        <Text fontFamily="Univers55" fontSize={{ base: '12px', md: '14px' }}>
+          {from + 1}. {word}
+        </Text>
+      ) : (
+        <Text fontFamily="Univers55" fontSize={{ base: '12px', md: '14px' }}>
+          {word}
         </Text>
       )}
-      <Text
-        as="span"
-        fontFamily="Univers55"
-        fontSize={{ base: '11px', md: '14px' }}
-      >
-        {word}
-      </Text>
     </Tag>
   );
 }
@@ -359,7 +360,7 @@ function DroppableBox({
     <Box
       ref={dropRef}
       {...boxProps}
-      bg={hasWordInside ? 'spacemesh.850' : 'brand.darkGreen'}
+      bg={hasWordInside ? '#0B221C' : 'brand.darkGreen'}
       p={{ base: 2, md: 4 }}
     >
       {children}

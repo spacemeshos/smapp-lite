@@ -82,6 +82,16 @@ function CreateMnemonicScreen(): JSX.Element {
             anyone.
           </Text>
         </CardHeader>
+        <Text
+          as="u"
+          onClick={regenerateMnemonic}
+          paddingX={4}
+          paddingY={2}
+          textAlign="center"
+          cursor="pointer"
+        >
+          Generate new mnemonics
+        </Text>
         <CardBody paddingY={10}>
           <SimpleGrid columns={columns} spacing="0px">
             {mnemonic.split(' ').map((word, idx) => {
@@ -119,23 +129,14 @@ function CreateMnemonicScreen(): JSX.Element {
         <CardFooter pt={0} flexDirection="column">
           <Flex flexDir="column" display={{ base: 'flex', md: 'none' }}>
             <Button
-              variant="solid"
+              variant="ghostWhite"
               onClick={onCopyClick}
               width="100%"
               disabled={isCopied}
+              as="u"
             >
               {isCopied ? 'Copied to clipboard!' : 'Copy to clipboard'}
             </Button>
-            <Text
-              as="u"
-              onClick={regenerateMnemonic}
-              paddingX={4}
-              paddingY={2}
-              textAlign="center"
-              cursor="pointer"
-            >
-              Generate new mnemonics
-            </Text>
           </Flex>
         </CardFooter>
       </Card>
@@ -144,23 +145,14 @@ function CreateMnemonicScreen(): JSX.Element {
         <BackButton />
         <Flex flexDir="column" display={{ base: 'none', md: 'flex' }}>
           <Button
-            variant="solid"
+            variant="ghostWhite"
             onClick={onCopyClick}
             width="100%"
             disabled={isCopied}
+            as="u"
           >
             {isCopied ? 'Copied to clipboard!' : 'Copy to clipboard'}
           </Button>
-          <Text
-            as="u"
-            onClick={regenerateMnemonic}
-            paddingX={4}
-            paddingY={2}
-            textAlign="center"
-            cursor="pointer"
-          >
-            Generate new mnemonics
-          </Text>
         </Flex>
         <Button
           rightIcon={<IconArrowNarrowRight />}
@@ -170,7 +162,7 @@ function CreateMnemonicScreen(): JSX.Element {
             ctx.setMnemonic(mnemonic);
             navigate('/create/verify-mnemonic');
           }}
-          variant="ghostWhite"
+          variant="solid"
         >
           Next step
         </Button>

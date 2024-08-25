@@ -444,6 +444,7 @@ function ConfirmationModal({
               >
                 <FormLabel>Sign transaction using key:</FormLabel>
                 <Select
+                  variant="whitePill"
                   {...register('signWith', {
                     value: eligibleKeys[0]?.publicKey,
                     required:

@@ -1,10 +1,7 @@
 import { Box, Card, CardBody, Flex, Icon, Text } from '@chakra-ui/react';
 import { StdMethods } from '@spacemesh/sm-codec';
 import {
-  IconArrowBigDownFilled,
-  IconArrowBigLeftFilled,
   IconArrowBigLeftLinesFilled,
-  IconArrowBigRightFilled,
   IconArrowNarrowDown,
   IconArrowNarrowLeft,
   IconArrowNarrowRight,
@@ -14,7 +11,7 @@ import {
 import { Bech32Address } from '../types/common';
 import { Transaction } from '../types/tx';
 import { getAbbreviatedHexString } from '../utils/abbr';
-import { formatTimestamp, formatTimestampTx } from '../utils/datetime';
+import { formatTimestampTx } from '../utils/datetime';
 import { epochByLayer, timestampByLayer } from '../utils/layers';
 import { formatSmidge } from '../utils/smh';
 import { getStatusColor, getTxBalance, getTxType, TxType } from '../utils/tx';

@@ -24,11 +24,11 @@ function FormInputViewOnly({
 }: Props): JSX.Element {
   return (
     <Box mt={2} mb={2}>
-      <FormLabel fontSize="sm" mb={0}>
+      <FormLabel fontSize="sm" mb={0} textAlign="center">
         {label}
       </FormLabel>
       <InputGroup>
-        <Input isDisabled {...inputProps} value={value} />
+        <Input isDisabled {...inputProps} value={value} fontSize="sm" />
         {inputAddon}
       </InputGroup>
       {children}

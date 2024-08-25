@@ -57,7 +57,7 @@ function WelcomeScreen(): JSX.Element {
           Already have one?
         </Text>
 
-        <Flex gap={2} mt={4} justifyContent="flex-end" alignItems="center">
+        <Flex gap={2} justifyContent="flex-end" alignItems="center">
           <Text
             as={Link}
             to="/create/recover"
@@ -90,13 +90,13 @@ function WelcomeScreen(): JSX.Element {
           </Text>
         </Flex>
 
-        <Text width={290} pt={8}>
+        <Text width={340} pt={8}>
           <Text
             as="b"
             color="brand.lightAlphaGray"
             fontFamily="Univers65"
             fontWeight={700}
-            fontSize="md"
+            fontSize={{ base: '13px', md: '16px' }}
           >
             The app securely stores your encrypted Wallet file on your device.
           </Text>

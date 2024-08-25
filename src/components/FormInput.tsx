@@ -57,7 +57,7 @@ function FormInput<T extends FieldValues>({
         )}
       </FormLabel>
       <InputGroup>
-        <Input {...inputProps} {...register} />
+        <Input {...inputProps} {...register} variant="whitePill" />
         {inputAddon}
       </InputGroup>
       {children}

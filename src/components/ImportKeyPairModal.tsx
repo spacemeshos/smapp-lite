@@ -100,13 +100,6 @@ function ImportKeyPairModal({
               })}
               errors={errors}
               isSubmitted={isSubmitted}
-              inputProps={{
-                border: '1px',
-                borderRadius: 'full',
-                borderColor: 'brand.darkGreen',
-                _hover: { border: '1px', borderRadius: 'full' },
-                _focus: { borderColor: 'brand.green' },
-              }}
             />
             <FormTextarea
               label="Secret key"
@@ -131,7 +124,10 @@ function ImportKeyPairModal({
                 borderRadius: 'md',
                 borderColor: 'brand.darkGreen',
                 _hover: { border: '1px', borderRadius: 'md' },
-                _focus: { borderColor: 'brand.green' },
+                _focus: {
+                  borderColor: 'spacemesh.400',
+                  boxShadow: 'none',
+                },
               }}
             />
             <Text fontSize="xs" color="gray" mt={2} mb={2}>

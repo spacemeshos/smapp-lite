@@ -4,11 +4,9 @@ import { createMultiStyleConfigHelpers } from '@chakra-ui/react';
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(tabsAnatomy.keys);
 
-// define the base component styles
 const baseStyle = definePartsStyle({
-  // define the part you're going to style
   tab: {
-    fontWeight: 'semibold', // change the font weight
+    fontWeight: 'semibold',
     _selected: {
       color: 'brand.green',
     },
@@ -19,6 +17,5 @@ const baseStyle = definePartsStyle({
   },
 });
 
-// export the component theme
 const tabsTheme = defineMultiStyleConfig({ baseStyle });
 export default tabsTheme;

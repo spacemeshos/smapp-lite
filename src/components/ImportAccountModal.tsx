@@ -180,11 +180,7 @@ function ImportAccountModal({
               type="text"
               onChange={(e) => setDisplayName(e.target.value)}
               value={displayName}
-              border="1px"
-              borderRadius="full"
-              borderColor="brand.darkGreen"
-              _hover={{ border: '1px', borderRadius: 'full' }}
-              _focus={{ borderColor: 'brand.green' }}
+              variant="whitePill"
             />
           </FormControl>
           {accountData && (

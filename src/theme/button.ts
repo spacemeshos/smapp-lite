@@ -93,6 +93,7 @@ const ghost = defineStyle({
 const ghostWhite = defineStyle({
   borderRadius: 'full',
   color: '#F0F0F0EE',
+  cursor: 'pointer',
   _hover: {
     color: 'brand.green',
   },

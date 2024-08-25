@@ -3,7 +3,6 @@ import { Form, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import {
-  Box,
   Button,
   Card,
   CardBody,
@@ -89,6 +88,15 @@ function SetPasswordScreen(): JSX.Element {
                   Set the password:
                 </FormLabel>
                 <PasswordInput
+                  inputProps={
+                    isSubmitted && !!errors.password?.message
+                      ? {
+                          borderColor: 'brand.red',
+                          _hover: { borderColor: 'brand.red' },
+                          _focus: { borderColor: 'brand.red' },
+                        }
+                      : {}
+                  }
                   register={register('password', {
                     required: {
                       value: true,
@@ -119,7 +127,9 @@ function SetPasswordScreen(): JSX.Element {
                   })}
                 />
                 {errors.password?.message && (
-                  <FormErrorMessage>{errors.password.message}</FormErrorMessage>
+                  <FormErrorMessage textColor="brand.red">
+                    {errors.password.message}
+                  </FormErrorMessage>
                 )}
               </Flex>
             </FormControl>
@@ -133,6 +143,15 @@ function SetPasswordScreen(): JSX.Element {
                   Confirm the password:
                 </FormLabel>
                 <PasswordInput
+                  inputProps={
+                    isSubmitted && !!errors.password?.message
+                      ? {
+                          borderColor: 'brand.red',
+                          _hover: { borderColor: 'brand.red' },
+                          _focus: { borderColor: 'brand.red' },
+                        }
+                      : {}
+                  }
                   register={register('confirm', {
                     validate: (val, { password }) => {
                       if (val !== password) {
@@ -144,7 +163,9 @@ function SetPasswordScreen(): JSX.Element {
                   })}
                 />
                 {errors.confirm?.message && (
-                  <FormErrorMessage>{errors.confirm.message}</FormErrorMessage>
+                  <FormErrorMessage textColor="brand.red">
+                    {errors.confirm.message}
+                  </FormErrorMessage>
                 )}
               </Flex>
             </FormControl>

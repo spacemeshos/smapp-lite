@@ -7,7 +7,7 @@ const { definePartsStyle, defineMultiStyleConfig } =
 const baseStyle = definePartsStyle({
   control: {
     border: '1px',
-    padding: 1, // change the padding of the control
+    padding: 1,
     _checked: {
       bg: 'brand.lightGray',
       borderColor: 'brand.darkGreen',

@@ -5,7 +5,6 @@ const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(cardAnatomy.keys);
 
 const baseStyle = definePartsStyle({
-  // define the part you're going to style
   container: {
     backgroundColor: 'brand.darkGreen',
     shadow: 'none',

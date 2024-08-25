@@ -32,9 +32,8 @@ function PasswordInput({
         type={show ? 'text' : 'password'}
         placeholder={placeholder}
         {...register}
-        borderRadius="full"
-        borderColor="brand.lightGray"
         fontSize="small"
+        variant="darkPill"
         {...inputProps}
       />
       <InputRightElement width={10}>

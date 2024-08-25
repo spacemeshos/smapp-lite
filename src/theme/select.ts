@@ -1,18 +1,25 @@
 import { selectAnatomy } from '@chakra-ui/anatomy';
-import { createMultiStyleConfigHelpers, defineStyle } from '@chakra-ui/react';
+import { createMultiStyleConfigHelpers } from '@chakra-ui/react';
 
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(selectAnatomy.keys);
 
-const outline = definePartsStyle({
+const whitePill = definePartsStyle({
   field: {
+    border: '1px solid',
+    borderColor: 'spacemesh.900',
+    background: 'brand.lightGray',
     borderRadius: 'full',
-    borderColor: 'blackAlpha.800',
+    paddingLeft: 4,
+    paddingRight: 4,
+    _focus: {
+      borderColor: 'spacemesh.400',
+    },
   },
 });
 
 const selectTheme = defineMultiStyleConfig({
-  variants: { outline },
+  variants: { whitePill },
 });
 
 export default selectTheme;

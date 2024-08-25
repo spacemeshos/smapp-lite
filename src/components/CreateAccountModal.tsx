@@ -155,11 +155,6 @@ function CreateAccountModal({
               label="Total amount"
               inputProps={{
                 type: 'number',
-                border: '1px',
-                borderRadius: 'full',
-                borderColor: 'brand.darkGreen',
-                _hover: { border: '1px', borderRadius: 'full' },
-                _focus: { borderColor: 'brand.green' },
               }}
               register={register('totalAmount', {
                 required: 'Please specify total amount locked in the vault',
@@ -169,14 +164,6 @@ function CreateAccountModal({
             />
             <FormInput
               label="Vesting start (layer number)"
-              inputProps={{
-                type: 'number',
-                border: '1px',
-                borderRadius: 'full',
-                borderColor: 'brand.darkGreen',
-                _hover: { border: '1px', borderRadius: 'full' },
-                _focus: { borderColor: 'brand.green' },
-              }}
               register={register('vestingStart', {
                 required: 'Please specify the epoch when the vesting starts',
                 valueAsNumber: true,
@@ -186,14 +173,6 @@ function CreateAccountModal({
             />
             <FormInput
               label="Vesting end (layer number)"
-              inputProps={{
-                type: 'number',
-                border: '1px',
-                borderRadius: 'full',
-                borderColor: 'brand.darkGreen',
-                _hover: { border: '1px', borderRadius: 'full' },
-                _focus: { borderColor: 'brand.green' },
-              }}
               register={register('vestingEnd', {
                 required: 'Please specify the epoch when the vesting ends',
                 valueAsNumber: true,
@@ -212,14 +191,6 @@ function CreateAccountModal({
             </Text>
             <FormInput
               label="Required amount of signatures"
-              inputProps={{
-                type: 'number',
-                border: '1px',
-                borderRadius: 'full',
-                borderColor: 'brand.darkGreen',
-                _hover: { border: '1px', borderRadius: 'full' },
-                _focus: { borderColor: 'brand.green' },
-              }}
               register={register('required', {
                 required: 'Please specify any number from 0 to 10',
                 valueAsNumber: true,
@@ -260,14 +231,6 @@ function CreateAccountModal({
             </Text>
             <FormInput
               label="Required amount of signatures"
-              inputProps={{
-                type: 'number',
-                border: '1px',
-                borderRadius: 'full',
-                borderColor: 'brand.darkGreen',
-                _hover: { border: '1px', borderRadius: 'full' },
-                _focus: { borderColor: 'brand.green' },
-              }}
               register={register('required', {
                 required: 'Please specify any number from 0 to 10',
                 valueAsNumber: true,
@@ -339,13 +302,6 @@ function CreateAccountModal({
               })}
               errors={errors}
               isSubmitted={isSubmitted}
-              inputProps={{
-                border: '1px',
-                borderRadius: 'full',
-                borderColor: 'brand.darkGreen',
-                _hover: { border: '1px', borderRadius: 'full' },
-                _focus: { borderColor: 'brand.green' },
-              }}
             />
             <FormSelect
               label="Account type"

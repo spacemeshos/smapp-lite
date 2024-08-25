@@ -47,13 +47,7 @@ function FormSelect<T extends FieldValues>({
         </FormLabel>
       )}
       <InputGroup>
-        <Select
-          {...inputProps}
-          {...register}
-          border="1px"
-          borderRadius="full"
-          _hover={{ border: '1px', borderRadius: 'full' }}
-        >
+        <Select {...inputProps} {...register} variant="whitePill">
           {options.map(({ value, label: optLabel, disabled }) => (
             <option key={value} value={value} disabled={!!disabled}>
               {optLabel}

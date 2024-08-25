@@ -97,7 +97,11 @@ function SpawnAnotherAccount({
     <Flex flexDir="column">
       <FormControl>
         <FormLabel>Please select account to spawn:</FormLabel>
-        <Select onChange={selectAccount} value={selectedAddress}>
+        <Select
+          variant="whitePill"
+          onChange={selectAccount}
+          value={selectedAddress}
+        >
           {accounts.map((acc) => (
             <option
               key={`${acc.address}_${acc.displayName}`}

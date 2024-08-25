@@ -1,12 +1,14 @@
-import { extendTheme, StyleFunctionProps, ThemeConfig } from '@chakra-ui/react';
+import { extendTheme, ThemeConfig } from '@chakra-ui/react';
 
 import buttonTheme from './theme/button';
 import cardTheme from './theme/card';
 import checkboxTheme from './theme/checkbox';
 import drawerTheme from './theme/drawer';
+import inputTheme from './theme/input';
 import menuTheme from './theme/menu';
 import modalTheme from './theme/modal';
 import radioTheme from './theme/radio';
+import selectTheme from './theme/select';
 import tabsTheme from './theme/tabs';
 
 const config: ThemeConfig = {
@@ -34,6 +36,7 @@ const colors = {
     lightGreen: '#F6FFEC',
     lightGray: '#F0F0F0',
     lightAlphaGray: '#F0F0F0EE',
+    red: '#F54E4E',
   },
 };
 
@@ -54,6 +57,8 @@ const components = {
   Drawer: drawerTheme,
   Checkbox: checkboxTheme,
   Radio: radioTheme,
+  Input: inputTheme,
+  Select: selectTheme,
 };
 const theme = extendTheme({ config, colors, components, styles });
 

@@ -1192,11 +1192,6 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                     label="Gas Price"
                     inputProps={{
                       type: 'number',
-                      border: '1px',
-                      borderRadius: 'full',
-                      paddingLeft: 4,
-                      paddingRight: 4,
-                      _hover: { border: '1px', borderRadius: 'full' },
                     }}
                     register={register('gasPrice', {
                       value: 1,
@@ -1230,11 +1225,6 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                     label="Nonce"
                     inputProps={{
                       type: 'number',
-                      border: '1px',
-                      borderRadius: 'full',
-                      paddingLeft: 4,
-                      paddingRight: 4,
-                      _hover: { border: '1px', borderRadius: 'full' },
                     }}
                     register={register('nonce', {
                       value: 1,

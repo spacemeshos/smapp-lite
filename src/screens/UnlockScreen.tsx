@@ -70,9 +70,20 @@ function UnlockScreen(): JSX.Element {
           <FormControl isInvalid={!!errors.password?.message}>
             <PasswordInput
               register={register('password')}
-              inputProps={{ minW: '300px' }}
+              inputProps={
+                errors.password?.message
+                  ? {
+                      minW: '300px',
+                      borderColor: 'brand.red',
+                      _hover: { borderColor: 'brand.red' },
+                      _focus: { borderColor: 'brand.red' },
+                    }
+                  : { minW: '300px' }
+              }
             />
-            <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
+            <FormErrorMessage textColor="brand.red">
+              {errors.password?.message}
+            </FormErrorMessage>
           </FormControl>
           <Box display="flex" justifyContent="center" mt={4}>
             <Button
@@ -88,7 +99,7 @@ function UnlockScreen(): JSX.Element {
           </Box>
         </Form>
       </Flex>
-      <Box mt={6} mb={2} textAlign="center" maxW="75%">
+      <Box mb={2} textAlign="center" width={380}>
         <Text fontSize="xs" mb={2}>
           If you want to open another wallet file or re-create it from mnemonic,
           please wipe out the current wallet first.

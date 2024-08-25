@@ -33,7 +33,6 @@ import useHardwareWallet, {
   LedgerDevice,
   LedgerTransports,
 } from '../store/useHardwareWallet';
-import { BUTTON_ICON_SIZE } from '../utils/constants';
 import { noop } from '../utils/func';
 
 // Child Components
