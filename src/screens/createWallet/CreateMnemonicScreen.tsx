@@ -108,7 +108,7 @@ function CreateMnemonicScreen(): JSX.Element {
                   borderBottomWidth={isBottomRow ? '0px' : '1px'}
                   borderLeftWidth={isLeftColumn ? '0px' : '1px'}
                   borderRightWidth={isRightColumn ? '0px' : '1px'}
-                  borderColor="whiteAlpha.400"
+                  borderColor="whiteAlpha.200"
                   p={{ base: 2, md: 4 }}
                 >
                   <Text
