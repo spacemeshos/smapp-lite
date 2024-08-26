@@ -2,7 +2,7 @@ import fileDownload from 'js-file-download';
 import { create } from 'zustand';
 
 import * as bip39 from '@scure/bip39';
-import { StdTemplateKeys } from '@spacemesh/sm-codec';
+import { StdPublicKeys, StdTemplateKeys } from '@spacemesh/sm-codec';
 
 import { HexString } from '../types/common';
 import {
@@ -35,6 +35,7 @@ import {
   generateMnemonic,
 } from '../utils/wallet';
 import { isLegacySecrets, migrateSecrets } from '../utils/wallet.legacy';
+import { isGCMEncrypted } from '../utils/aes-gcm';
 
 type WalletData = {
   meta: WalletMeta;
@@ -64,20 +65,28 @@ type WalletActions = {
   // Operations with secrets
   loadWalletWithSecrets: (password: string) => Promise<Wallet>;
   showMnemonics: (password: string) => Promise<string>;
-  addKeyPair: (keypair: AnyKey, password: string) => void;
+  addKeyPair: (
+    keypair: AnyKey,
+    password: string,
+    withSingleSig?: boolean,
+    prevWallet?: Wallet | null
+  ) => void;
   addForeignKey: (
     key: { displayName: string; path: string; publicKey: HexString },
-    password: string
+    password: string,
+    withSingleSig?: boolean
   ) => Promise<SafeKey>;
   createKeyPair: (
     displayName: string,
     path: string,
-    password: string
+    password: string,
+    withSingleSig?: boolean
   ) => Promise<SafeKey>;
   importKeyPair: (
     displayName: string,
     secretKey: HexString,
-    password: string
+    password: string,
+    withSingleSig?: boolean
   ) => Promise<SafeKey>;
   revealSecretKey: (
     publicKey: HexString,
@@ -138,9 +147,10 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
             crypto: migratedSecrets,
           }),
         });
-        const secretsToStore = isLegacySecrets(secrets)
-          ? await encryptWallet(migratedSecrets, password)
-          : wallet.crypto;
+        const secretsToStore =
+          isLegacySecrets(secrets) || isGCMEncrypted(wallet.crypto)
+            ? await encryptWallet(migratedSecrets, password)
+            : wallet.crypto;
 
         saveToLocalStorage(WALLET_STORE_KEY, {
           meta: wallet.meta,
@@ -203,12 +213,31 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
       const wallet = await get().loadWalletWithSecrets(password);
       return wallet.crypto.mnemonic;
     },
-    addKeyPair: async (keypair, password) => {
-      const wallet = await get().loadWalletWithSecrets(password);
+    addKeyPair: async (
+      keypair,
+      password,
+      withSingleSig = false,
+      prevWallet = null
+    ) => {
+      const wallet =
+        prevWallet || (await get().loadWalletWithSecrets(password));
+      const accounts = withSingleSig
+        ? [
+            ...wallet.crypto.accounts,
+            {
+              displayName: keypair.displayName,
+              templateAddress: StdPublicKeys.SingleSig,
+              spawnArguments: {
+                PublicKey: keypair.publicKey,
+              },
+            },
+          ]
+        : wallet.crypto.accounts;
       // Preparing secret part of the wallet
       const newSecrets = {
         ...wallet.crypto,
         keys: [...wallet.crypto.keys, keypair],
+        accounts,
       };
       // Updating App state
       set({
@@ -223,16 +252,21 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
         crypto: await encryptWallet(newSecrets, password),
       });
     },
-    addForeignKey: async (key, password) => {
+    addForeignKey: async (key, password, withSingleSig = false) => {
       const newKeyPair: ForeignKey = {
         ...key,
         created: getISODate(),
         origin: KeyOrigin.Ledger,
       };
-      await get().addKeyPair(newKeyPair, password);
+      await get().addKeyPair(newKeyPair, password, withSingleSig);
       return ensafeKeyPair(newKeyPair);
     },
-    createKeyPair: async (displayName, path, password) => {
+    createKeyPair: async (
+      displayName,
+      path,
+      password,
+      withSingleSig = false
+    ) => {
       const wallet = await get().loadWalletWithSecrets(password);
       // Creating new key pair
       const seed = await bip39.mnemonicToSeedSync(wallet.crypto.mnemonic);
@@ -244,10 +278,15 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
         publicKey: toHexString(keys.publicKey),
         secretKey: toHexString(keys.secretKey),
       };
-      await get().addKeyPair(kp, password);
+      await get().addKeyPair(kp, password, withSingleSig, wallet);
       return ensafeKeyPair(kp);
     },
-    importKeyPair: async (displayName, secretKey, password) => {
+    importKeyPair: async (
+      displayName,
+      secretKey,
+      password,
+      withSingleSig = false
+    ) => {
       const trimmed = secretKey.replace(/^0x/, '');
       const kp: LocalKey = {
         displayName,
@@ -255,7 +294,7 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
         publicKey: trimmed.slice(64),
         secretKey: trimmed,
       };
-      await get().addKeyPair(kp, password);
+      await get().addKeyPair(kp, password, withSingleSig);
       return ensafeKeyPair(kp);
     },
     revealSecretKey: async (publicKey, password) => {

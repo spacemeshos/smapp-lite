@@ -5,7 +5,6 @@ import { StdTemplateKeys, StdTemplates } from '@spacemesh/sm-codec';
 import { Bech32Address } from '../types/common';
 import {
   AccountWithAddress,
-  Contact,
   KeyPair,
   Wallet,
   WalletMeta,
@@ -14,17 +13,15 @@ import {
 } from '../types/wallet';
 
 import {
-  constructAesGcmIv,
-  decrypt,
+  decrypt as decryptArgon2,
   encrypt,
-  KDF_DKLEN,
-  KDF_ITERATIONS,
-  pbkdf2Key,
-} from './aes-gcm';
+  isArgon2Encrypted,
+} from './aes-ctr-argon2';
+import { decrypt as decryptGCM, isGCMEncrypted } from './aes-gcm';
 import { generateAddress } from './bech32';
 import Bip32KeyDerivation from './bip32';
 import { getISODate } from './datetime';
-import { fromHexString, toHexString } from './hexString';
+import { toHexString } from './hexString';
 import {
   AnySpawnArguments,
   convertSpawnArgumentsForEncoding,
@@ -81,43 +78,6 @@ export const createWallet = (
 };
 
 //
-// KeyPairs
-//
-
-export const addKeyPair = (wallet: Wallet, keypair: KeyPair): Wallet => ({
-  ...wallet,
-  crypto: {
-    ...wallet.crypto,
-    keys: [...wallet.crypto.keys, keypair],
-  },
-});
-
-// TODO: editKeyPair, removeKeyPair
-// TODO: addAccount, editAccount, removeAccount
-
-export const generateNewKeyPair = (wallet: Wallet, name?: string): Wallet => {
-  const index = wallet.crypto.accounts.length;
-  return addKeyPair(
-    wallet,
-    createKeyPair(name || `Account ${index}`, wallet.crypto.mnemonic, index)
-  );
-};
-
-//
-// Contacts
-//
-
-export const addContact = (wallet: Wallet, contact: Contact): Wallet => ({
-  ...wallet,
-  crypto: {
-    ...wallet.crypto,
-    contacts: [...wallet.crypto.contacts, contact],
-  },
-});
-
-// TODO: editContact, removeContact
-
-//
 // Derive Account from KeyPair
 //
 
@@ -137,25 +97,25 @@ export const computeAddress = <TK extends StdTemplateKeys>(
 //
 // Encryption / decryption
 //
+const decryptAnyWallet = async (
+  crypto: WalletSecretsEncrypted,
+  password: string
+): Promise<string> => {
+  if (isArgon2Encrypted(crypto)) {
+    return decryptArgon2(crypto, password);
+  }
+  if (isGCMEncrypted(crypto)) {
+    return decryptGCM(crypto, password);
+  }
+  throw new Error('Unsupported encryption format');
+};
+
 export const decryptWallet = async (
   crypto: WalletSecretsEncrypted,
   password: string
 ): Promise<WalletSecrets> => {
-  const dc = new TextDecoder();
-  const key = await pbkdf2Key(
-    password,
-    fromHexString(crypto.kdfparams.salt),
-    crypto.kdfparams.dklen,
-    crypto.kdfparams.iterations
-  );
   try {
-    const decryptedRaw = dc.decode(
-      await decrypt(
-        key,
-        fromHexString(crypto.cipherParams.iv),
-        fromHexString(crypto.cipherText)
-      )
-    );
+    const decryptedRaw = await decryptAnyWallet(crypto, password);
     const decrypted = JSON.parse(decryptedRaw) as WalletSecrets;
     return decrypted;
   } catch (err) {
@@ -166,28 +126,8 @@ export const decryptWallet = async (
 export const encryptWallet = async (
   secrets: WalletSecrets,
   password: string
-): Promise<WalletSecretsEncrypted> => {
-  const ec = new TextEncoder();
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-  const key = await pbkdf2Key(password, salt);
-  const plaintext = ec.encode(JSON.stringify(secrets));
-  const iv = await constructAesGcmIv(key, plaintext);
-  const cipherText = await encrypt(key, iv, plaintext);
-  return {
-    cipher: 'AES-GCM',
-    cipherText: toHexString(cipherText),
-    cipherParams: {
-      iv: toHexString(iv),
-    },
-    kdf: 'PBKDF2',
-    kdfparams: {
-      dklen: KDF_DKLEN,
-      hash: 'SHA-512',
-      salt: toHexString(salt),
-      iterations: KDF_ITERATIONS,
-    },
-  };
-};
+): Promise<WalletSecretsEncrypted> =>
+  encrypt(JSON.stringify(secrets), password);
 
 export const safeKeyForAccount = (acc: AccountWithAddress) =>
   `${acc.address}_${acc.displayName.replace(/\s/g, '_')}`;

@@ -13,6 +13,7 @@ import { useDisclosure } from '@chakra-ui/react';
 
 import { MINUTE } from '../utils/constants';
 import { noop } from '../utils/func';
+import { postpone } from '../utils/promises';
 
 const REMEMBER_PASSWORD_TIME = 5 * MINUTE;
 
@@ -123,16 +124,20 @@ const usePassword = (): UsePasswordReturnType => {
       );
       return;
     }
-    try {
-      const res = await passwordCallback(password);
-      setPassword(password, remember);
-      _onClose();
-      setValue('password', '');
-      reset();
-      eventEmitter.emit('success', res);
-    } catch (err) {
-      setError('password', { message: 'Incorrect password' });
-    }
+    await postpone(async () => {
+      // We need to postpone it for one tick to allow
+      // the form to re-render before start checking the password
+      try {
+        const res = await passwordCallback(password);
+        setPassword(password, remember);
+        _onClose();
+        setValue('password', '');
+        reset();
+        eventEmitter.emit('success', res);
+      } catch (err) {
+        setError('password', { message: 'Incorrect password' });
+      }
+    }, 1);
   });
 
   const onClose = () => {

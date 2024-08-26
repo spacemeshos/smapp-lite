@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Form, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -32,8 +33,10 @@ function UnlockScreen(): JSX.Element {
     reset,
     formState: { errors },
   } = useForm<FormValues>();
+  const [isLoading, setIsLoading] = useState(false);
 
   const submit = handleSubmit(async (data) => {
+    setIsLoading(true);
     const success = await unlockWallet(data.password);
     if (!success) {
       setError('password', { type: 'value', message: 'Invalid password' });
@@ -41,6 +44,7 @@ function UnlockScreen(): JSX.Element {
     }
     setValue('password', '');
     reset();
+    setIsLoading(false);
     navigate('/wallet');
   });
 
@@ -64,8 +68,14 @@ function UnlockScreen(): JSX.Element {
             <PasswordInput register={register('password')} />
             <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
           </FormControl>
-          <Button type="submit" mt={4} onClick={() => submit()} size="lg">
-            Unlock
+          <Button
+            type="submit"
+            mt={4}
+            onClick={() => submit()}
+            size="lg"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Unlocking...' : 'Unlock'}
           </Button>
         </Form>
       </Flex>
