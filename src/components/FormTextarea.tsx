@@ -44,7 +44,9 @@ function FormTextarea<T extends FieldValues>({
       <Textarea {...textareaProps} {...register} />
       {children}
       {error?.message && (
-        <FormErrorMessage>{error.message as ReactNode}</FormErrorMessage>
+        <FormErrorMessage textColor="brand.red">
+          {error.message as ReactNode}
+        </FormErrorMessage>
       )}
     </FormControl>
   );

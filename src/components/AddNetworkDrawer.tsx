@@ -140,7 +140,9 @@ function AddNetworkDrawer({ isOpen, onClose }: Props): JSX.Element {
               }
             >
               {!!apiError && (
-                <FormHelperText color="red">{apiError}</FormHelperText>
+                <FormHelperText textColor="brand.red">
+                  {apiError}
+                </FormHelperText>
               )}
             </FormInput>
             <FormInput

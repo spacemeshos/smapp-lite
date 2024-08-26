@@ -465,7 +465,9 @@ function ConfirmationModal({
                   <option value={EXTERNAL}>External signature</option>
                 </Select>
                 {errors.signWith?.message && (
-                  <FormErrorMessage>{errors.signWith.message}</FormErrorMessage>
+                  <FormErrorMessage textColor="brand.red">
+                    {errors.signWith.message}
+                  </FormErrorMessage>
                 )}
               </FormControl>
               {/* TODO: Add REF field for External signature of MultiSig TX */}

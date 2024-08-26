@@ -69,7 +69,7 @@ function PasswordAlert(): JSX.Element {
                   _focus: { borderColor: 'brand.green' },
                 }}
               />
-              <FormErrorMessage>
+              <FormErrorMessage textColor="brand.red">
                 {form.errors.password?.message}
               </FormErrorMessage>
             </FormControl>

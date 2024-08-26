@@ -156,7 +156,9 @@ function FormAddressSelect<T extends FieldValues, FieldName extends Path<T>>({
           {children}
         </InputGroup>
         {error?.message && (
-          <FormErrorMessage>{error.message as ReactNode}</FormErrorMessage>
+          <FormErrorMessage textColor="brand.red">
+            {error.message as ReactNode}
+          </FormErrorMessage>
         )}
       </FormControl>
     </>

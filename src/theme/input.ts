@@ -26,6 +26,7 @@ const whitePill = definePartsStyle({
     borderColor: 'spacemesh.900',
     background: 'brand.lightGray',
     borderRadius: 'full',
+    textColor: 'black',
     paddingLeft: 4,
     paddingRight: 4,
     _focus: {
