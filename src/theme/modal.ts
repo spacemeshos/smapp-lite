@@ -10,8 +10,9 @@ const baseStyle = definePartsStyle({
   },
   dialog: {
     color: 'black',
-    paddingX: [2, 12],
-    paddingY: [2, 16],
+    paddingX: [2, 8],
+    paddingTop: [2, 12],
+    paddingBottom: [2, 8],
     borderRadius: '2xl',
     bg: `brand.lightGray`,
   },
