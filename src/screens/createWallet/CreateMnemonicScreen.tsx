@@ -108,12 +108,12 @@ function CreateMnemonicScreen(): JSX.Element {
                   borderBottomWidth={isBottomRow ? '0px' : '1px'}
                   borderLeftWidth={isLeftColumn ? '0px' : '1px'}
                   borderRightWidth={isRightColumn ? '0px' : '1px'}
-                  borderColor="brand.lightAlphaGray"
+                  borderColor="whiteAlpha.400"
                   p={{ base: 2, md: 4 }}
                 >
                   <Text
                     as="span"
-                    color="brand.lightAlphaGray"
+                    color="whiteAlpha.400"
                     fontFamily="Univers55"
                     fontSize={{ base: '12px', md: '14px' }}
                   >

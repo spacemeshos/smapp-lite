@@ -171,7 +171,7 @@ function VerifyMnemonicScreen(): JSX.Element {
                     borderBottomWidth: isBottomRow ? '0px' : '1px',
                     borderLeftWidth: isLeftColumn ? '0px' : '1px',
                     borderRightWidth: isRightColumn ? '0px' : '1px',
-                    borderColor: 'brand.lightAlphaGray',
+                    borderColor: 'whiteAlpha.200',
                   };
                   return (
                     <DroppableBox
@@ -199,6 +199,8 @@ function VerifyMnemonicScreen(): JSX.Element {
                         <Text
                           fontFamily="Univers55"
                           fontSize={{ base: '12px', md: '14px' }}
+                          color="whiteAlpha.400"
+                          minH="20px"
                         >
                           {idx + 1}.{' '}
                         </Text>
@@ -207,27 +209,35 @@ function VerifyMnemonicScreen(): JSX.Element {
                   );
                 }
                 return (
-                  <Box
+                  <Flex
                     // eslint-disable-next-line react/no-array-index-key
                     key={`${idx}_${word}`}
                     borderTopWidth={isTopRow ? '0px' : '1px'}
                     borderBottomWidth={isBottomRow ? '0px' : '1px'}
                     borderLeftWidth={isLeftColumn ? '0px' : '1px'}
                     borderRightWidth={isRightColumn ? '0px' : '1px'}
-                    borderColor="brand.lightAlphaGray"
+                    borderColor="whiteAlpha.200"
                     p={{ base: 2, md: 4 }}
                     bg="brand.darkGreen"
                     _hover={
                       isSlot ? { background: 'blackAlpha.300' } : undefined
                     }
+                    gap={1}
                   >
                     <Text
                       fontFamily="Univers55"
                       fontSize={{ base: '12px', md: '14px' }}
+                      color="whiteAlpha.400"
                     >
-                      {idx + 1}. {word}
+                      {idx + 1}.
                     </Text>
-                  </Box>
+                    <Text
+                      fontFamily="Univers55"
+                      fontSize={{ base: '12px', md: '14px' }}
+                    >
+                      {word}
+                    </Text>
+                  </Flex>
                 );
               })}
             </SimpleGrid>
@@ -294,14 +304,14 @@ function DraggableTag({
         m: 0,
         minW: 0,
         borderWidth: '0px',
-        minH: 19,
+        minH: '20px',
       }
     : {
         p: 2,
         m: 2,
         minW: 24,
         borderWidth: '2px',
-        minH: 19,
+        minH: '20px',
       };
 
   return (
