@@ -23,14 +23,14 @@ const darkPill = definePartsStyle({
 const whitePill = definePartsStyle({
   field: {
     border: '1px solid',
-    borderColor: 'spacemesh.900',
-    background: 'brand.lightGray',
+    borderColor: 'brand.lightGray',
+    bg: 'brand.modalGreen',
     borderRadius: 'full',
-    textColor: 'black',
+    textColor: 'brand.lightGray',
     paddingLeft: 4,
     paddingRight: 4,
     _focus: {
-      borderColor: 'spacemesh.400',
+      borderColor: 'brand.lightGray',
     },
   },
 });

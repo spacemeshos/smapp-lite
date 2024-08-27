@@ -120,14 +120,14 @@ function ImportKeyPairModal({
               errors={errors}
               isSubmitted={isSubmitted}
               textareaProps={{
-                bg: 'brand.lightGray',
-                color: 'black',
                 border: '1px',
                 borderRadius: 'md',
-                borderColor: 'brand.darkGreen',
+                borderColor: 'brand.lightGray',
+                textColor: 'brand.lightGray',
+                bg: 'brand.modalGreen',
                 _hover: { border: '1px', borderRadius: 'md' },
                 _focus: {
-                  borderColor: 'spacemesh.400',
+                  borderColor: 'brand.lightGray',
                   boxShadow: 'none',
                 },
               }}

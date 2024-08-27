@@ -6,15 +6,15 @@ const { definePartsStyle, defineMultiStyleConfig } =
 
 const whitePill = definePartsStyle({
   field: {
-    color: 'black',
+    textColor: 'brand.lightGray',
     border: '1px solid',
-    borderColor: 'spacemesh.900',
-    background: 'brand.lightGray',
+    borderColor: 'brand.lightGray',
+    bg: 'brand.modalGreen',
     borderRadius: 'full',
     paddingLeft: 4,
     paddingRight: 4,
     _focus: {
-      borderColor: 'spacemesh.400',
+      borderColor: 'brand.lightGray',
     },
   },
 });

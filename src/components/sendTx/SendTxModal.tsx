@@ -1104,7 +1104,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={close} isCentered size="lg">
+      <Modal isOpen={isOpen} onClose={close} isCentered size="2xl">
         <Form control={control}>
           <input
             type="hidden"
