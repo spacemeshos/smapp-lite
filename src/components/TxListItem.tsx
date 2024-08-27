@@ -75,8 +75,9 @@ function TxListItem({
       : 'Unknown fee';
   return (
     <Card
-      mb={2}
-      _hover={{ cursor: 'pointer', bgColor: 'spacemesh.850' }}
+      py={1}
+      _hover={{ cursor: 'pointer', bgColor: 'brand.modalGreen' }}
+      borderBottom="2px solid #25322F"
       onClick={() => onClick(tx)}
     >
       <CardBody p={4}>

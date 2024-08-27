@@ -33,6 +33,7 @@ const colors = {
   brand: {
     darkGreen: '#061A14',
     green: '#3AFFA7',
+    modalGreen: '#25322F',
     lightGreen: '#F6FFEC',
     lightGray: '#F0F0F0',
     lightAlphaGray: '#F0F0F0EE',

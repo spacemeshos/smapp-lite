@@ -14,7 +14,7 @@ function PreviewDataRow({
 }: PreviewDataRowProps) {
   return (
     <Box mb={2}>
-      <Text fontSize="xs" color="gray.600" {...labelProps}>
+      <Text fontSize="xs" color="gray.400" {...labelProps}>
         {label}
       </Text>
       <Text fontSize="sm" {...valueProps}>

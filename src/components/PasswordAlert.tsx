@@ -62,11 +62,7 @@ function PasswordAlert(): JSX.Element {
               <PasswordInput
                 register={form.register.password}
                 inputProps={{
-                  border: '1px',
-                  borderRadius: 'full',
-                  borderColor: 'brand.darkGreen',
-                  _hover: { border: '1px', borderRadius: 'full' },
-                  _focus: { borderColor: 'brand.green' },
+                  variant: 'whitePill',
                 }}
               />
               <FormErrorMessage textColor="brand.red">
@@ -83,10 +79,15 @@ function PasswordAlert(): JSX.Element {
           </AlertDialogBody>
 
           <AlertDialogFooter justifyContent="space-between">
-            <Button ref={cancelRef} onClick={form.onClose} variant="dark">
+            <Button ref={cancelRef} onClick={form.onClose} variant="whiteModal">
               Cancel
             </Button>
-            <Button type="submit" variant="dark" onClick={form.onSubmit} ml={3}>
+            <Button
+              type="submit"
+              variant="whiteModal"
+              onClick={form.onSubmit}
+              ml={3}
+            >
               {form.actionLabel}
             </Button>
           </AlertDialogFooter>

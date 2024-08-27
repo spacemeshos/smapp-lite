@@ -1,6 +1,6 @@
 import { defineStyle, defineStyleConfig } from '@chakra-ui/react';
 
-const solid = defineStyle({
+const green = defineStyle({
   bgGradient: 'linear(87.93deg, #3AFFA7 2.84%, #55E8E2 97.16%)',
   textColor: 'brand.darkGreen',
   borderWidth: '2px',
@@ -13,35 +13,10 @@ const solid = defineStyle({
   },
 });
 
-const dark = defineStyle({
-  textColor: 'brand.lightGray',
-  fillColor: 'brand.lightGray',
-  bgColor: 'brand.darkGreen',
-  borderRadius: 'full',
-  _hover: {
-    textColor: 'brand.green',
-    fillColor: 'brand.green',
-  },
-});
-
-const green = defineStyle({
+const ghostGreen = defineStyle({
   textColor: 'brand.green',
   fillColor: 'brand.green',
   bgColor: 'brand.darkGreen',
-});
-
-const outline = defineStyle({
-  bg: 'brand.darkGreen',
-  borderColor: 'brand.green',
-  borderWidth: '2px',
-  textColor: 'brand.green',
-  borderRadius: 'full',
-  _hover: {
-    bg: 'brand.darkGreen',
-    borderColor: 'brand.green',
-    borderWidth: '2px',
-    textColor: 'brand.green',
-  },
 });
 
 const white = defineStyle({
@@ -52,6 +27,29 @@ const white = defineStyle({
   borderRadius: 'full',
   _hover: {
     bg: 'brand.darkGreen',
+    borderColor: '#F0F0F0EE',
+    borderWidth: '2px',
+    textColor: '#F0F0F0EE',
+  },
+});
+
+const ghostWhite = defineStyle({
+  borderRadius: 'full',
+  color: '#F0F0F0EE',
+  cursor: 'pointer',
+  _hover: {
+    color: 'brand.green',
+  },
+});
+
+const whiteModal = defineStyle({
+  bg: '#F0F0F0EE',
+  borderColor: '#F0F0F0EE',
+  borderWidth: '2px',
+  textColor: 'brand.modalGreen',
+  borderRadius: 'full',
+  _hover: {
+    bg: 'brand.modalGreen',
     borderColor: '#F0F0F0EE',
     borderWidth: '2px',
     textColor: '#F0F0F0EE',
@@ -86,17 +84,33 @@ const danger = defineStyle({
   },
 });
 
-const ghost = defineStyle({
+const dark = defineStyle({
+  textColor: 'brand.lightGray',
+  fillColor: 'brand.lightGray',
+  bgColor: 'brand.darkGreen',
   borderRadius: 'full',
+  _hover: {
+    textColor: 'brand.green',
+    fillColor: 'brand.green',
+  },
 });
 
-const ghostWhite = defineStyle({
+const outline = defineStyle({
+  bg: 'brand.darkGreen',
+  borderColor: 'brand.green',
+  borderWidth: '2px',
+  textColor: 'brand.green',
   borderRadius: 'full',
-  color: '#F0F0F0EE',
-  cursor: 'pointer',
   _hover: {
-    color: 'brand.green',
+    bg: 'brand.darkGreen',
+    borderColor: 'brand.green',
+    borderWidth: '2px',
+    textColor: 'brand.green',
   },
+});
+
+const ghost = defineStyle({
+  borderRadius: 'full',
 });
 
 const ghostGray = defineStyle({
@@ -109,16 +123,13 @@ const buttonTheme = defineStyleConfig({
     colorScheme: 'spacemesh',
   },
   variants: {
-    solid,
-    outline,
-    ghost,
-    ghostWhite,
-    ghostGray,
-    danger,
-    white,
-    dark,
     green,
+    ghostGreen,
+    white,
+    ghostWhite,
+    whiteModal,
     whiteOutline,
+    danger,
   },
 });
 

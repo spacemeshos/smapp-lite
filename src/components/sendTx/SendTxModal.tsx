@@ -1121,7 +1121,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             <ModalCloseButton />
             <ModalHeader pt={0} textAlign="center" fontSize="x-large">
               Send a transaction
-              <Text fontSize="xs" color="blackAlpha.800">
+              <Text fontSize="xs">
                 Or you can
                 <TxFileReader
                   multiple
@@ -1131,7 +1131,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                   <Button
                     variant="link"
                     as="u"
-                    color="blackAlpha.800"
+                    color="brand.lightGray"
                     size="xs"
                     p={1}
                     isDisabled={
@@ -1178,8 +1178,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                       pr={0}
                       pb={1}
                       pl={0}
-                      bg="brand.lightGray"
-                      color="blackAlpha.800"
+                      bg="brand.modalGreen"
+                      color="brand.lightGray"
                     >
                       {renderTemplateSpecificFields(curAcc)}
                     </CardBody>
@@ -1264,7 +1264,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             <ModalFooter justifyContent="center">
               <Button
                 px={12}
-                variant="dark"
+                variant="whiteModal"
                 onClick={submit}
                 isDisabled={isCurrentVaultAccount}
               >

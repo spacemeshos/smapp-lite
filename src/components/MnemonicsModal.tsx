@@ -62,15 +62,11 @@ function MnemonicsModal(): JSX.Element {
             isDisabled={isCopied}
             onClick={() => onCopy(mnemonics)}
             w={20}
+            variant="whiteModal"
           >
             {isCopied ? 'Copied' : 'Copy'}
           </Button>
-          <Button
-            colorScheme="blue"
-            onClick={closeMnemonicsModal}
-            ml={2}
-            variant="dark"
-          >
+          <Button onClick={closeMnemonicsModal} ml={2} variant="whiteModal">
             OK
           </Button>
         </ModalFooter>

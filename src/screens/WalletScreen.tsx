@@ -151,11 +151,12 @@ function WalletScreen(): JSX.Element {
       {O.mapWithDefault(accountData, <></>, ([account, network]) => (
         <Flex
           w="100%"
+          maxW="5xl"
           flexGrow={1}
           h="100%"
           flexDir="column"
-          py={{ base: 4, md: 12 }}
-          borderRadius="xl"
+          align="center"
+          py={{ base: 4, md: 8 }}
         >
           {O.mapWithDefault(
             currentAccount,
@@ -209,7 +210,7 @@ function WalletScreen(): JSX.Element {
               </Text>
             )
           )}
-          <ButtonGroup mt={2} mb={2} w="100%">
+          <ButtonGroup mt={2} mb={2}>
             <Button
               flexDirection="row"
               onClick={sendTxDisclosure.onOpen}
@@ -248,17 +249,7 @@ function WalletScreen(): JSX.Element {
             colorScheme="spacemesh"
             position="relative"
           >
-            <Box
-              borderBottomRadius={6}
-              w="100%"
-              h="100px"
-              position="absolute"
-              bottom={0}
-              left={0}
-              right={0}
-              userSelect="none"
-            />
-            <TabList h={14}>
+            <TabList h={14} justifyContent="center" border="none">
               <Tab>Transactions</Tab>
               <Tab>Rewards</Tab>
             </TabList>

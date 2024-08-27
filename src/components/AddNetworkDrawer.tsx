@@ -211,10 +211,10 @@ function AddNetworkDrawer({ isOpen, onClose }: Props): JSX.Element {
           </DrawerBody>
 
           <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={close}>
+            <Button variant="whiteModal" mr={3} onClick={close}>
               Cancel
             </Button>
-            <Button type="submit" colorScheme="green" onClick={onSubmit}>
+            <Button type="submit" variant="whiteModal" onClick={onSubmit}>
               Save
             </Button>
           </DrawerFooter>

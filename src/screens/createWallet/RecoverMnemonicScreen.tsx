@@ -82,7 +82,13 @@ function RecoverMnemonicScreen(): JSX.Element {
       <Flex width="100%" justifyContent="space-between" pt={10}>
         <BackButton />
 
-        <Button type="submit" paddingY={2} paddingX={4} onClick={onSubmit}>
+        <Button
+          type="submit"
+          paddingY={2}
+          paddingX={4}
+          onClick={onSubmit}
+          variant="green"
+        >
           Next step
         </Button>
       </Flex>

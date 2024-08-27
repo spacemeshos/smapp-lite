@@ -162,7 +162,7 @@ function CreateMnemonicScreen(): JSX.Element {
             ctx.setMnemonic(mnemonic);
             navigate('/create/verify-mnemonic');
           }}
-          variant="solid"
+          variant="green"
         >
           Next step
         </Button>

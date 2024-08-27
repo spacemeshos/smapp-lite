@@ -109,10 +109,8 @@ function ImportScreen(): JSX.Element {
               onChange={readFile}
             />
             <Button
-              size="lg"
               onClick={() => inputRef.current?.click()}
-              variant="dark"
-              bg="brand.darkGreen"
+              variant="whiteModal"
               mb={4}
             >
               Select wallet file
@@ -140,7 +138,15 @@ function ImportScreen(): JSX.Element {
       <Flex width="100%" justifyContent="space-between" pt={10}>
         <BackButton />
 
-        <Button type="submit" pt={2} pb={2} pl={4} pr={4} onClick={onSubmit}>
+        <Button
+          variant="green"
+          type="submit"
+          pt={2}
+          pb={2}
+          pl={4}
+          pr={4}
+          onClick={onSubmit}
+        >
           Import wallet
         </Button>
       </Flex>

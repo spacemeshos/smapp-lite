@@ -254,7 +254,7 @@ function VerifyMnemonicScreen(): JSX.Element {
           onClick={() => {
             navigate('/create/set-password');
           }}
-          variant={allWordsPlacedCorrectly ? 'solid' : 'ghostGray'}
+          variant={allWordsPlacedCorrectly ? 'green' : 'ghostGray'}
         >
           Next step
         </Button>

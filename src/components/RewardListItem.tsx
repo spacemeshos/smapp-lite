@@ -29,7 +29,11 @@ function RewardListItem({
   layersPerEpoch,
 }: RewardListItemProps): JSX.Element {
   return (
-    <Card mb={2} _hover={{ bgColor: 'spacemesh.850' }}>
+    <Card
+      py={1}
+      _hover={{ cursor: 'pointer', bgColor: 'brand.modalGreen' }}
+      borderBottom="2px solid #25322F"
+    >
       <CardBody p={2}>
         <Flex alignItems="baseline">
           <Stat flex={2}>

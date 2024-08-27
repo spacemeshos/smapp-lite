@@ -28,7 +28,13 @@ function FormInputViewOnly({
         {label}
       </FormLabel>
       <InputGroup>
-        <Input isDisabled {...inputProps} value={value} fontSize="sm" />
+        <Input
+          isDisabled
+          {...inputProps}
+          value={value}
+          fontSize="sm"
+          borderRadius="full"
+        />
         {inputAddon}
       </InputGroup>
       {children}

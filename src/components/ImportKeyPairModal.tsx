@@ -120,6 +120,8 @@ function ImportKeyPairModal({
               errors={errors}
               isSubmitted={isSubmitted}
               textareaProps={{
+                bg: 'brand.lightGray',
+                color: 'black',
                 border: '1px',
                 borderRadius: 'md',
                 borderColor: 'brand.darkGreen',
@@ -145,7 +147,7 @@ function ImportKeyPairModal({
             </Checkbox>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={submit} ml={2} variant="dark">
+            <Button onClick={submit} ml={2} variant="whiteModal">
               Import
             </Button>
           </ModalFooter>

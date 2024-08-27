@@ -319,14 +319,14 @@ function ConfirmationModal({
     if (!isMultiSig) {
       return (
         <ButtonGroup isAttached>
-          <Button variant="dark" onClick={submit} ml={2} mr="1px">
+          <Button variant="whiteModal" onClick={submit} ml={2} mr="1px">
             {hasSingleSig ? 'Publish' : 'Sign & Publish'}
           </Button>
           <Menu>
             <MenuButton
               as={IconButton}
               icon={<IconChevronDown />}
-              variant="dark"
+              variant="whiteModal"
               minW={8}
             />
             <MenuList>
@@ -491,7 +491,7 @@ function ConfirmationModal({
           <Button
             onClick={onClose}
             ml={2}
-            variant="outlineWhite"
+            variant="whiteModal"
             leftIcon={<IconArrowNarrowLeft />}
           >
             Back

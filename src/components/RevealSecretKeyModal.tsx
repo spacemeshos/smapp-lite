@@ -35,9 +35,9 @@ function RevealSecretKey(): JSX.Element {
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader>Secret Key</ModalHeader>
+        <ModalHeader textAlign="center">Secret Key</ModalHeader>
         <ModalBody>
-          <Text mb={4}>
+          <Text mb={4} textAlign="center">
             This is the secret key for account &quot;
             {secretKey?.displayName ?? ''}&quot;.
           </Text>
@@ -57,10 +57,11 @@ function RevealSecretKey(): JSX.Element {
             isDisabled={isCopied}
             onClick={() => onCopy(secretKey?.secretKey ?? '')}
             w={20}
+            variant="whiteModal"
           >
             {isCopied ? 'Copied' : 'Copy'}
           </Button>
-          <Button colorScheme="blue" onClick={closeSecretKeyModal} ml={2}>
+          <Button variant="whiteModal" onClick={closeSecretKeyModal} ml={2}>
             Close
           </Button>
         </ModalFooter>

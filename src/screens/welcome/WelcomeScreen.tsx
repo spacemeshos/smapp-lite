@@ -44,6 +44,7 @@ function WelcomeScreen(): JSX.Element {
           rightIcon={<IconArrowNarrowRight />}
           fontFamily="Univers55"
           fontWeight={400}
+          variant="green"
         >
           Create new wallet
         </Button>

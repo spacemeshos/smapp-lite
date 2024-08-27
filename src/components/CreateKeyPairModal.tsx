@@ -143,7 +143,7 @@ function CreateKeyPairModal({
               colorScheme="blue"
               onClick={submit}
               ml={2}
-              variant="dark"
+              variant="whiteModal"
               px={10}
             >
               Add

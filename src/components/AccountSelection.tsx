@@ -31,12 +31,13 @@ function AccountSelection(): JSX.Element {
     <Menu>
       <MenuButton
         as={Button}
-        variant="green"
+        variant="ghostGreen"
         fontSize={{ base: '18px', md: '22px' }}
         float="right"
         rightIcon={<IconChevronDown size={mobile ? 14 : 24} />}
         px={0}
         noOfLines={1}
+        justifyContent="center"
       >
         {accounts[selectedAccount]?.displayName}
       </MenuButton>

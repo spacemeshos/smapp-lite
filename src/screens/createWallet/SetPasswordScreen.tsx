@@ -172,7 +172,7 @@ function SetPasswordScreen(): JSX.Element {
             <Flex width="100%" justifyContent="center" pt={10}>
               <Button
                 type="submit"
-                colorScheme="green"
+                variant="green"
                 onClick={onSubmit}
                 rightIcon={<IconArrowNarrowRight />}
               >

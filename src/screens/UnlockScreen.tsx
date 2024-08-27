@@ -93,6 +93,7 @@ function UnlockScreen(): JSX.Element {
               onClick={() => submit()}
               size="md"
               alignSelf="center"
+              variant="green"
             >
               Unlock
             </Button>
@@ -106,12 +107,7 @@ function UnlockScreen(): JSX.Element {
           <br />
           <strong>Please, ensure that you have saved the mnemonic.</strong>
         </Text>
-        <Button
-          onClick={wipeAlert.onOpen}
-          colorScheme="red"
-          size="sm"
-          variant="whiteOutline"
-        >
+        <Button onClick={wipeAlert.onOpen} size="sm" variant="whiteOutline">
           Wipe out
         </Button>
       </Box>

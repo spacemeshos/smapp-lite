@@ -40,7 +40,11 @@ function WipeOutAlert({ disclosure }: WipeOutAlertProps): JSX.Element {
           </AlertDialogBody>
 
           <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={disclosure.onClose} variant="dark">
+            <Button
+              ref={cancelRef}
+              onClick={disclosure.onClose}
+              variant="whiteModal"
+            >
               Cancel
             </Button>
             <Button

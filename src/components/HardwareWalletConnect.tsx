@@ -48,11 +48,9 @@ function DeviceSelectionModal() {
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader textAlign="center" color="brand.darkGreen">
-          Connect to Ledger Device
-        </ModalHeader>
+        <ModalHeader textAlign="center">Connect to Ledger Device</ModalHeader>
         <ModalBody minH={0} pb={6}>
-          <Text mb={4}>
+          <Text mb={8} textAlign="center">
             Please turn on your Ledger device, unlock the PIN code, and pick the
             connection type:
           </Text>
@@ -71,7 +69,7 @@ function DeviceSelectionModal() {
               flex={1}
               h="60px"
               isDisabled={!IS_SUPPORTED}
-              variant="dark"
+              variant="whiteModal"
               display="flex"
               flexDir="column"
             >
@@ -88,7 +86,7 @@ function DeviceSelectionModal() {
               flex={1}
               h="60px"
               isDisabled={!IS_SUPPORTED}
-              variant="dark"
+              variant="whiteModal"
               display="flex"
               flexDir="column"
             >

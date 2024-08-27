@@ -6,11 +6,11 @@ const { definePartsStyle, defineMultiStyleConfig } =
 
 const baseStyle = definePartsStyle({
   overlay: {
-    bg: 'blackAlpha.300',
+    bg: 'blackAlpha.400',
   },
   dialog: {
-    borderRadius: 'md',
-    bg: `brand.darkGreen`,
+    borderRadius: 'none',
+    bg: `brand.modalGreen`,
   },
 });
 

@@ -323,15 +323,15 @@ function CreateAccountModal({
                 pr={0}
                 pb={1}
                 pl={0}
-                bg="brand.lightGray"
-                color="blackAlpha.800"
+                bg="brand.modalGreen"
+                color="brand.lightGray"
               >
                 {renderTemplateSpecificFields()}
               </CardBody>
             </Card>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={submit} ml={2} variant="dark" w="full">
+            <Button onClick={submit} variant="whiteModal" w="full">
               Add
             </Button>
           </ModalFooter>

@@ -165,9 +165,8 @@ function ImportAccountModal({
             onChange={readAccountFile}
           />
           <Button
-            size="lg"
             onClick={() => inputRef.current?.click()}
-            variant="dark"
+            variant="whiteModal"
             mb={4}
           >
             Select account file
@@ -206,7 +205,12 @@ function ImportAccountModal({
           )}
         </ModalBody>
         <ModalFooter>
-          <Button variant="dark" onClick={submit} ml={2} isDisabled={!!error}>
+          <Button
+            variant="whiteModal"
+            onClick={submit}
+            ml={2}
+            isDisabled={!!error}
+          >
             Import
           </Button>
         </ModalFooter>

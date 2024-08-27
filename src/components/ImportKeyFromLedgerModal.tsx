@@ -143,7 +143,7 @@ function ImportKeyFromLedgerModal({
             </Checkbox>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={submit} ml={2} variant="dark">
+            <Button onClick={submit} ml={2} variant="whiteModal">
               Import Public Key
             </Button>
           </ModalFooter>
