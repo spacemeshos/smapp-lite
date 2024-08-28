@@ -392,7 +392,7 @@ function ConfirmationModal({
         </ModalHeader>
         <ModalBody minH={0}>
           {isLedgerRejected && (
-            <Text mb={2} color="red">
+            <Text mb={2} color="brand.red" textAlign="center">
               Transaction rejected by Ledger
             </Text>
           )}

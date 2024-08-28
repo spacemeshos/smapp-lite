@@ -167,12 +167,14 @@ function DeviceApprovalModal() {
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader>Sign Transaction on Ledger Device</ModalHeader>
+        <ModalHeader textAlign="center">
+          Sign Transaction on Ledger Device
+        </ModalHeader>
         <ModalBody minH={0} pb={6}>
           <Text>
             Please verify the transaction on your Ledger device and select
             either &quot;Approve&quot; or &quot;Reject&quot; option.
-            <Image src={ledgerLogo} width={100} mt={6} />
+            <Image src={ledgerLogo} width={100} mt={6} mx="auto" />
           </Text>
         </ModalBody>
       </ModalContent>
@@ -252,13 +254,15 @@ function Connected({ device }: { device: LedgerDevice }) {
   return (
     <>
       <IconButton
-        icon={<TransportIcon size={mobile ? 20 : 24} color="green" />}
+        icon={<TransportIcon size={mobile ? 20 : 24} />}
         size="sm"
         title="Disconnect a Hardware Wallet"
         aria-label="Disconnect a Hardware Wallet"
-        m={mobile ? 0 : 2}
-        p={mobile ? 0 : 2}
+        m={mobile ? 1 : 2}
+        p={mobile ? 0 : 0}
         onClick={resetDevice}
+        variant="white"
+        aspectRatio="1"
       />
       <DeviceReconnectModal />
       <DeviceApprovalModal />

@@ -130,6 +130,7 @@ const buttonTheme = defineStyleConfig({
     whiteModal,
     whiteOutline,
     danger,
+    outline,
   },
 });
 

@@ -210,12 +210,13 @@ function WalletScreen(): JSX.Element {
               </Text>
             )
           )}
-          <ButtonGroup mt={2} mb={2}>
+          <ButtonGroup mt={2} mb={2} w="full" justifyContent="center">
             <Button
               flexDirection="row"
               onClick={sendTxDisclosure.onOpen}
               h="48px"
-              w="230px"
+              w="full"
+              maxW="223px"
               variant="white"
             >
               <IconSend />
@@ -225,7 +226,8 @@ function WalletScreen(): JSX.Element {
               flexDirection="row"
               onClick={receiveModalDisclosure.onOpen}
               h="48px"
-              w="230px"
+              w="full"
+              maxW="223px"
               variant="white"
             >
               <IconQrcode />
