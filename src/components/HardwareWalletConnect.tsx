@@ -123,9 +123,9 @@ function DeviceReconnectModal() {
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader>Reconnect to Ledger Device</ModalHeader>
+        <ModalHeader textAlign="center">Reconnect to Ledger Device</ModalHeader>
         <ModalBody minH={0} pb={6}>
-          <Text mb={4} color="red">
+          <Text mb={4} color="brand.red" textAlign="center">
             Cannot get access to the Hardware Wallet:
             <br />
             {connectionError}
@@ -142,14 +142,14 @@ function DeviceReconnectModal() {
         </ModalBody>
         <ModalFooter>
           <Button
-            variant="outline"
+            variant="whiteModal"
             colorScheme="red"
             onClick={disconnectAndClose}
           >
             Disconnect
           </Button>
           <Spacer />
-          <Button colorScheme="blue" onClick={reconnectDevice}>
+          <Button variant="whiteModal" onClick={reconnectDevice}>
             <IconRefresh style={{ margin: 'auto' }} />
             Reconnect
           </Button>
