@@ -1,32 +1,47 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function useWindowFocus(timeout = 0) {
   const [focused, setFocused] = useState(true);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [blurTime, setBlurTime] = useState(0);
 
   useEffect(() => {
-    const focusHandler = () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        const now = Date.now();
+        setBlurTime(now);
+      } else {
+        setBlurTime(0);
+        setFocused(true);
       }
+    };
+
+    const handleFocus = () => {
+      setBlurTime(0);
       setFocused(true);
     };
-    const blurHandler = () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      timeoutRef.current = setTimeout(() => {
+
+    const handleBlur = () => {
+      const now = Date.now();
+      setBlurTime(now);
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+    window.addEventListener('blur', handleBlur);
+
+    const interval = setInterval(() => {
+      if (blurTime !== 0 && Date.now() - blurTime > timeout) {
         setFocused(false);
-        timeoutRef.current = null;
-      }, timeout);
-    };
-    window.addEventListener('focus', focusHandler);
-    window.addEventListener('blur', blurHandler);
+      }
+    }, 1000);
+
     return () => {
-      window.removeEventListener('focus', focusHandler);
-      window.removeEventListener('blur', blurHandler);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('blur', handleBlur);
+      clearInterval(interval);
     };
-  }, [timeout]);
+  }, [timeout, blurTime]);
 
   return focused;
 }

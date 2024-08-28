@@ -33,15 +33,21 @@ type DraggableItem = {
 
 type SlotIndex = number | 'bank';
 
+type Slots = {
+  bank: number[];
+  [key: number]: number | null;
+};
+
 function VerifyMnemonicScreen(): JSX.Element {
   const ctx = useWalletCreation();
   const navigate = useNavigate();
 
   const words = useMemo(() => ctx.mnemonic.split(' '), [ctx.mnemonic]);
   const [indexesToCheck, setIndexesToCheck] = useState<number[]>([]);
-  const [wordsInBank, setWordsInBank] = useState<number[]>([]);
-  const [slots, setSlots] = useState<Record<number, number | null>>(
-    indexesToCheck.reduce((acc, nextId) => ({ ...acc, [nextId]: null }), {})
+  const [slots, setSlots] = useState<Slots>(
+    indexesToCheck.reduce((acc, nextId) => ({ ...acc, [nextId]: null }), {
+      bank: [],
+    } as Slots)
   );
   const columns = useBreakpointValue({ base: 2, md: 3 }) ?? 2;
 
@@ -51,37 +57,33 @@ function VerifyMnemonicScreen(): JSX.Element {
     } else {
       const selectedWords = getRandomIndexes(words, 4);
       setIndexesToCheck(selectedWords);
-      setWordsInBank(selectedWords);
+      setSlots({ bank: selectedWords });
     }
   }, [words, navigate]);
 
-  const moveWord = (
-    wordIndex: number,
-    slotIndex: SlotIndex,
-    from: SlotIndex
-  ) => {
-    if (slotIndex === from) return;
-    if (slotIndex === 'bank') {
+  const moveWord = (wordIndex: number, to: SlotIndex, from: SlotIndex) => {
+    if (to === from) return;
+    if (to === 'bank') {
       if (from === 'bank') return;
       // Back to bank
       setSlots((prev) => ({
         ...D.deleteKey(prev, from),
+        bank: [...prev.bank, wordIndex],
       }));
-      setWordsInBank((prev) => [...prev, wordIndex]);
     } else {
       setSlots((prev) => {
         // Move to slot
-        const existingWord = prev[slotIndex];
-        const fromExisting = existingWord ? { [from]: existingWord } : {};
+        const existingWord = prev[to];
+        const addWord = typeof existingWord === 'number' ? [existingWord] : [];
         return {
-          ...(from === 'bank' ? prev : D.deleteKey(prev, from)),
-          ...fromExisting,
-          [slotIndex]: wordIndex,
-        };
+          ...prev,
+          [to]: wordIndex,
+          [from]:
+            from === 'bank'
+              ? [...prev.bank.filter((x) => x !== wordIndex), ...addWord]
+              : existingWord ?? null,
+        } as Slots;
       });
-      if (from === 'bank') {
-        setWordsInBank((prev) => prev.filter((v) => v !== wordIndex));
-      }
     }
   };
 
@@ -99,11 +101,13 @@ function VerifyMnemonicScreen(): JSX.Element {
     }
     return moveWord(wordIndex, 'bank', from);
   };
-  const allWordsPlaced = wordsInBank.length === 0;
+  const allWordsPlaced = slots.bank.length === 0;
 
   const allWordsPlacedCorrectly =
-    wordsInBank.length === 0 &&
-    Object.entries(slots).every(([k, v]) => parseInt(k, 10) === v);
+    slots.bank.length === 0 &&
+    Object.entries(slots)
+      .filter(([k]) => k !== 'bank')
+      .every(([k, v]) => parseInt(k, 10) === v);
 
   return (
     <Flex
@@ -141,7 +145,7 @@ function VerifyMnemonicScreen(): JSX.Element {
               Please, place the missing words on their places:
             </Text>
             <SimpleGrid columns={[2, 4]} width="100%" alignItems="center">
-              {wordsInBank.map((wordIndex) => (
+              {slots.bank.map((wordIndex) => (
                 <DraggableTag
                   placed={false}
                   key={`word_${words[wordIndex]}}`}

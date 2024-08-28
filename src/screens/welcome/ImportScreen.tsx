@@ -22,6 +22,7 @@ import BackButton from '../../components/BackButton';
 import PasswordInput from '../../components/PasswordInput';
 import useWallet from '../../store/useWallet';
 import { WalletFile } from '../../types/wallet';
+import { postpone } from '../../utils/promises';
 
 type FormValues = {
   password: string;
@@ -41,6 +42,7 @@ function ImportScreen(): JSX.Element {
   } = useForm<FormValues>();
   const { openWallet } = useWallet();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const readFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -78,11 +80,18 @@ function ImportScreen(): JSX.Element {
       setError('root', { type: 'manual', message: 'No wallet file loaded' });
       return;
     }
-    const success = await openWallet(walletFileContent, password);
+    setIsLoading(true);
+    const success = await postpone(
+      // We need to postpone it for one tick
+      // to allow component to re-render
+      () => openWallet(walletFileContent, password),
+      1
+    );
     if (!success) {
       setError('password', { type: 'value', message: 'Invalid password' });
       return;
     }
+    setIsLoading(false);
     navigate('/wallet');
   });
 
@@ -146,8 +155,9 @@ function ImportScreen(): JSX.Element {
           pl={4}
           pr={4}
           onClick={onSubmit}
+          disabled={isLoading}
         >
-          Import wallet
+          {isLoading ? 'Importing...' : 'Import wallet'}
         </Button>
       </Flex>
     </Flex>

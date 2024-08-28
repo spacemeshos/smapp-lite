@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Form } from 'react-hook-form';
 
 import {
@@ -21,11 +21,18 @@ import usePassword from '../store/usePassword';
 import PasswordInput from './PasswordInput';
 
 function PasswordAlert(): JSX.Element {
+  const [isLoading, setIsLoading] = useState(false);
   const { form } = usePassword();
   const cancelRef = useRef<HTMLButtonElement>(null);
   if (!form.register.password || !form.register.remember) {
     throw new Error('PasswordAlert: password or remember is not registered');
   }
+
+  const onSubmit = async () => {
+    setIsLoading(true);
+    await form.onSubmit();
+    setIsLoading(false);
+  };
 
   return (
     <AlertDialog
@@ -85,10 +92,11 @@ function PasswordAlert(): JSX.Element {
             <Button
               type="submit"
               variant="whiteModal"
-              onClick={form.onSubmit}
+              onClick={onSubmit}
               ml={3}
+              disabled={isLoading}
             >
-              {form.actionLabel}
+              {isLoading ? 'Checking password...' : form.actionLabel}
             </Button>
           </AlertDialogFooter>
         </Form>
