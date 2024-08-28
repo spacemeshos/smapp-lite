@@ -3315,6 +3315,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/aes-js@npm:^3.1.4":
+  version: 3.1.4
+  resolution: "@types/aes-js@npm:3.1.4"
+  checksum: 10c0/622b63b751d5bc3f1666b90078f72f7a5063f9762612fccceba54ff8277ad20b148676bfdf1a54450133f62aaf52f53bbaece686cfc648237fc4b2ac4f81c9df
+  languageName: node
+  linkType: hard
+
 "@types/aria-query@npm:^5.0.1":
   version: 5.0.4
   resolution: "@types/aria-query@npm:5.0.4"
@@ -3369,6 +3376,13 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 10c0/16c748ce01cb3b3ea5947950acd695569c0daa8da62cc7e0eb98b15c4d7f812f95c079fe2c853325509f8aa73cfd388390319ae4621c8dfb21eeacb63accdb25
+  languageName: node
+  linkType: hard
+
+"@types/crypto-js@npm:^4.2.2":
+  version: 4.2.2
+  resolution: "@types/crypto-js@npm:4.2.2"
+  checksum: 10c0/760a2078f36f2a3a1089ef367b0d13229876adcf4bcd6e8824d00d9e9bfad8118dc7e6a3cc66322b083535e12be3a29044ccdc9603bfb12519ff61551a3322c6
   languageName: node
   linkType: hard
 
@@ -3827,6 +3841,13 @@ __metadata:
   bin:
     acorn: bin/acorn
   checksum: 10c0/51fb26cd678f914e13287e886da2d7021f8c2bc0ccc95e03d3e0447ee278dd3b40b9c57dc222acd5881adcf26f3edc40901a4953403232129e3876793cd17386
+  languageName: node
+  linkType: hard
+
+"aes-js@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "aes-js@npm:3.1.2"
+  checksum: 10c0/2568cc67af66fd9d41de25dc73d49ae810269c7648bbb1928b9f84d8fd6ddb4e39ed506d1be6794f5ffd567aadea75fc6895ef34d2b70b764f539f72a6a2baeb
   languageName: node
   linkType: hard
 
@@ -5182,6 +5203,13 @@ __metadata:
     randombytes: "npm:^2.0.0"
     randomfill: "npm:^1.0.3"
   checksum: 10c0/0c20198886576050a6aa5ba6ae42f2b82778bfba1753d80c5e7a090836890dc372bdc780986b2568b4fb8ed2a91c958e61db1f0b6b1cc96af4bd03ffc298ba92
+  languageName: node
+  linkType: hard
+
+"crypto-js@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "crypto-js@npm:4.2.0"
+  checksum: 10c0/8fbdf9d56f47aea0794ab87b0eb9833baf80b01a7c5c1b0edc7faf25f662fb69ab18dc2199e2afcac54670ff0cd9607a9045a3f7a80336cccd18d77a55b9fdf0
   languageName: node
   linkType: hard
 
@@ -7042,6 +7070,13 @@ __metadata:
     inherits: "npm:^2.0.1"
     safe-buffer: "npm:^5.0.1"
   checksum: 10c0/a13357dccb3827f0bb0b56bf928da85c428dc8670f6e4a1c7265e4f1653ce02d69030b40fd01b0f1d218a995a066eea279cded9cec72d207b593bcdfe309c2f0
+  languageName: node
+  linkType: hard
+
+"hash-wasm@npm:^4.11.0":
+  version: 4.11.0
+  resolution: "hash-wasm@npm:4.11.0"
+  checksum: 10c0/ddf87ed2319fc7c9ba745fffccbf008a80e931b5913b4eef42b038efc10705e48458e2bf528601f78142774108dd7b151341721ce05aca9c431179fe5cefbb72
   languageName: node
   linkType: hard
 
@@ -11238,6 +11273,8 @@ __metadata:
     "@tanstack/react-virtual": "npm:^3.3.0"
     "@testing-library/jest-dom": "npm:^5.16.2"
     "@testing-library/react": "npm:^13.4.0"
+    "@types/aes-js": "npm:^3.1.4"
+    "@types/crypto-js": "npm:^4.2.2"
     "@types/jest": "npm:^29.2.6"
     "@types/react": "npm:^18.0.27"
     "@types/react-dom": "npm:^18.0.10"
@@ -11247,7 +11284,9 @@ __metadata:
     "@vitejs/plugin-react": "npm:^3.0.1"
     "@zondax/ledger-js": "npm:^0.10.0"
     "@zondax/ledger-spacemesh": "npm:^0.2.2"
+    aes-js: "npm:^3.1.2"
     bech32: "npm:^2.0.0"
+    crypto-js: "npm:^4.2.0"
     cz-conventional-changelog: "npm:3.3.0"
     detect-browser: "npm:^5.3.0"
     eslint: "npm:^8.9.0"
@@ -11261,6 +11300,7 @@ __metadata:
     eslint-plugin-simple-import-sort: "npm:^9.0.0"
     eventemitter3: "npm:^5.0.1"
     framer-motion: "npm:^8.5.2"
+    hash-wasm: "npm:^4.11.0"
     husky: "npm:^8.0.3"
     identity-obj-proxy: "npm:^3.0.0"
     install: "npm:^0.13.0"
