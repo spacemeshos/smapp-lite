@@ -91,7 +91,6 @@ function FormAddressSelect<T extends FieldValues, FieldName extends Path<T>>({
       case Origin.Foreign:
         return (
           <Input
-            variant="whitePill"
             {...register(fieldName, {
               required: isRequired ? 'Please pick the address' : false,
               value: (!defaultForeign
@@ -111,7 +110,7 @@ function FormAddressSelect<T extends FieldValues, FieldName extends Path<T>>({
       case Origin.Local:
       default:
         return (
-          <Select {...register(fieldName)} variant="whitePill">
+          <Select {...register(fieldName)}>
             {accounts.map((acc) => (
               <option
                 key={`${acc.address}_${acc.displayName}`}

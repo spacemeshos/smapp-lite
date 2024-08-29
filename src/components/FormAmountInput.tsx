@@ -130,7 +130,6 @@ function FormAmountInput<T extends FieldValues>({
       <Input type="hidden" {...register} />
       <InputGroup>
         <Input
-          variant="whitePill"
           type="number"
           key={`display_input-${register.name}`}
           value={displayValue}
