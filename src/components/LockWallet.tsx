@@ -16,7 +16,7 @@ function LockWallet(): JSX.Element {
       onClick={lockWallet}
       m={{ base: 0, md: 2 }}
       p={{ base: 0, md: 2 }}
-      variant="dark"
+      variant="ghostWhite"
     />
   );
 }

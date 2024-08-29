@@ -53,7 +53,7 @@ function NetworkSelection(): JSX.Element {
           p={{ base: 0, md: 2 }}
           fontSize={{ base: 'sm', md: 'md' }}
           size="sm"
-          variant="dark"
+          variant="ghostWhite"
         >
           {O.mapWithDefault(currentNetwork, 'No network', (net) => net.name)}
         </MenuButton>

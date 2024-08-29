@@ -238,7 +238,7 @@ function NotConnected() {
         m={{ base: 0, md: 2 }}
         p={{ base: 0, md: 2 }}
         onClick={modalConnect.onOpen}
-        variant="dark"
+        variant="ghostWhite"
       />
       <DeviceSelectionModal />
     </>

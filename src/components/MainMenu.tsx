@@ -35,7 +35,7 @@ function MainMenu(): JSX.Element {
           aria-label="Settings"
           icon={<IconSettings size={iconSize} />}
           size="sm"
-          variant="dark"
+          variant="ghostWhite"
           m={{ base: 0, md: 2 }}
           p={{ base: 0, md: 2 }}
         />

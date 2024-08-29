@@ -230,7 +230,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                             textTransform="uppercase"
                             gap={1}
                             onClick={() => revealSecretKey(key)}
-                            variant="dark"
+                            variant="ghostWhite"
                           >
                             <IconKey size={12} />
                             Export secret key
@@ -311,7 +311,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                             textTransform="uppercase"
                             gap={1}
                             onClick={() => exportAccount(acc)}
-                            variant="dark"
+                            variant="ghostWhite"
                           >
                             <IconKey size={12} />
                             Export account
