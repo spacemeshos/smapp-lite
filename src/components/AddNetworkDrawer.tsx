@@ -160,7 +160,12 @@ function AddNetworkDrawer({ isOpen, onClose }: Props): JSX.Element {
               isSubmitted={isSubmitted}
             />
 
-            <Text fontSize="xx-small" color="grey" mt={4}>
+            <Text
+              fontSize="x-small"
+              color="brand.gray"
+              mt={6}
+              textAlign="center"
+            >
               Next fields should be filled automatically by the API.
             </Text>
 
