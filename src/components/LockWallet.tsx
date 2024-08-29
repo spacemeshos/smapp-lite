@@ -5,7 +5,7 @@ import useLockWallet from '../hooks/useLockWallet';
 
 function LockWallet(): JSX.Element {
   const lockWallet = useLockWallet();
-  const iconSize = useBreakpointValue({ base: 20, md: 24 }, { ssr: false });
+  const iconSize = useBreakpointValue({ base: 20, md: 28 }, { ssr: false });
 
   return (
     <IconButton

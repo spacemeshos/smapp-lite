@@ -24,7 +24,7 @@ function MainMenu(): JSX.Element {
 
   const keyManagerDrawer = useDisclosure();
   const { revealMnemonics } = useMnemonics();
-  const iconSize = useBreakpointValue({ base: 20, md: 24 }, { ssr: false });
+  const iconSize = useBreakpointValue({ base: 20, md: 28 }, { ssr: false });
 
   return (
     <>

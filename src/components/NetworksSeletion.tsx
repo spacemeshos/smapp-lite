@@ -51,7 +51,7 @@ function NetworkSelection(): JSX.Element {
           rightIcon={mobile ? <div /> : <IconChevronDown />}
           m={{ base: 0, md: 2 }}
           p={{ base: 0, md: 2 }}
-          fontSize={{ base: 'x-small', md: 'sm' }}
+          fontSize={{ base: '13px', md: '20px' }}
           size="sm"
           variant="dark"
         >

@@ -225,7 +225,7 @@ function WrongDeviceModal() {
 
 function NotConnected() {
   const { modalConnect } = useHardwareWallet();
-  const iconSize = useBreakpointValue({ base: 20, md: 24 }, { ssr: false });
+  const iconSize = useBreakpointValue({ base: 20, md: 28 }, { ssr: false });
 
   return (
     <>
@@ -246,7 +246,7 @@ function NotConnected() {
 
 function Connected({ device }: { device: LedgerDevice }) {
   const { resetDevice } = useHardwareWallet();
-  const iconSize = useBreakpointValue({ base: 20, md: 24 }, { ssr: false });
+  const iconSize = useBreakpointValue({ base: 20, md: 28 }, { ssr: false });
 
   const TransportIcon =
     device.transportType === LedgerTransports.Bluetooth

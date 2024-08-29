@@ -38,6 +38,7 @@ function AccountSelection(): JSX.Element {
         px={0}
         noOfLines={1}
         justifyContent="center"
+        display="flex"
       >
         {accounts[selectedAccount]?.displayName ?? 'Switch account'}
       </MenuButton>
