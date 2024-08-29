@@ -89,7 +89,7 @@ function VerifyMnemonicScreen(): JSX.Element {
         .sort((a, b) => a - b)
         .filter((k) => !occupiedSlots.includes(String(k)));
       const nextFreeSlot = freeSlots[0];
-      if (!nextFreeSlot) {
+      if (nextFreeSlot === undefined) {
         throw new Error('Cannot find next empty slot');
       }
       return moveWord(wordIndex, nextFreeSlot, from);
