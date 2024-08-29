@@ -34,6 +34,7 @@ function PasswordInput({
         {...register}
         fontSize="small"
         variant="darkPill"
+        _placeholder={{ color: 'brand.darkGray' }}
         {...inputProps}
       />
       <InputRightElement width={10} borderRadius="full">
