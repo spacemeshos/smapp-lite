@@ -43,7 +43,7 @@ function AccountSelection(): JSX.Element {
       >
         {accounts[selectedAccount]?.displayName ?? 'Switch account'}
       </MenuButton>
-      <MenuList minWidth={240} maxW="100vw" maxH="80vh" overflow="auto">
+      <MenuList minWidth={240} maxW="100vw">
         <MenuOptionGroup
           type="radio"
           value={String(selectedAccount)}
