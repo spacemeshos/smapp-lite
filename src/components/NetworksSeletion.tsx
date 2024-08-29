@@ -29,8 +29,8 @@ function NetworkSelection(): JSX.Element {
   const currentNetwork = getCurrentNetwork();
   const { status } = useNetworkStatus();
 
-  const mobile = useBreakpointValue({ base: true, md: false }) ?? false;
   const iconSize = useBreakpointValue({ base: 8, md: 14 }, { ssr: false });
+  const chevronSize = useBreakpointValue({ base: 14, md: 24 }, { ssr: false });
 
   return (
     <>
@@ -48,7 +48,7 @@ function NetworkSelection(): JSX.Element {
               <IconCircleDotted size={iconSize} color="orange" />
             )
           }
-          rightIcon={mobile ? <div /> : <IconChevronDown />}
+          rightIcon={<IconChevronDown size={chevronSize} />}
           m={{ base: 0, md: 2 }}
           p={{ base: 0, md: 2 }}
           fontSize={{ base: '13px', md: '20px' }}
