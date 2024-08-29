@@ -49,7 +49,7 @@ function DeviceSelectionModal() {
       <ModalContent>
         <ModalCloseButton />
         <ModalHeader textAlign="center">Connect to Ledger Device</ModalHeader>
-        <ModalBody minH={0} pb={6}>
+        <ModalBody pb={6}>
           <Text mb={8} textAlign="center">
             Please turn on your Ledger device, unlock the PIN code, and pick the
             connection type:
@@ -124,7 +124,7 @@ function DeviceReconnectModal() {
       <ModalContent>
         <ModalCloseButton />
         <ModalHeader textAlign="center">Reconnect to Ledger Device</ModalHeader>
-        <ModalBody minH={0} pb={6}>
+        <ModalBody pb={6}>
           <Text mb={4} color="brand.red" textAlign="center">
             Cannot get access to the Hardware Wallet:
             <br />
@@ -170,7 +170,7 @@ function DeviceApprovalModal() {
         <ModalHeader textAlign="center">
           Sign Transaction on Ledger Device
         </ModalHeader>
-        <ModalBody minH={0} pb={6}>
+        <ModalBody pb={6}>
           <Text>
             Please verify the transaction on your Ledger device and select
             either &quot;Approve&quot; or &quot;Reject&quot; option.
@@ -198,7 +198,7 @@ function WrongDeviceModal() {
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Wrong Ledger device is connected</ModalHeader>
-        <ModalBody minH={0} pb={6}>
+        <ModalBody pb={6}>
           <Text>
             Connected Ledger device does not have required public key to sign
             this transaction. Please, connect the proper Ledger device and try

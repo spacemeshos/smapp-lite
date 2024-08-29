@@ -390,7 +390,7 @@ function ConfirmationModal({
         <ModalHeader pt={0} textAlign="center" fontSize="xx-large">
           Verify transaction
         </ModalHeader>
-        <ModalBody minH={0}>
+        <ModalBody>
           {isLedgerRejected && (
             <Text mb={2} color="brand.red" textAlign="center">
               Transaction rejected by Ledger

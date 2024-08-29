@@ -10,11 +10,14 @@ const baseStyle = definePartsStyle({
   },
   dialog: {
     color: 'brand.lightGray',
-    paddingX: [2, 8],
-    paddingTop: [2, 12],
-    paddingBottom: [2, 8],
+    paddingX: [2, 6],
+    paddingTop: [6, 8],
+    paddingBottom: [4, 6],
+    marginX: 2,
     borderRadius: '2xl',
     bg: `brand.modalGreen`,
+    maxH: '90vh',
+    overflowY: 'auto',
   },
 });
 

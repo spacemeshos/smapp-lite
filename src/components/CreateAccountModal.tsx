@@ -292,7 +292,7 @@ function CreateAccountModal({
         <ModalContent>
           <ModalCloseButton />
           <ModalHeader textAlign="center">Create a new Account</ModalHeader>
-          <ModalBody minH={0}>
+          <ModalBody>
             <FormInput
               label="Name"
               register={register('displayName', {
