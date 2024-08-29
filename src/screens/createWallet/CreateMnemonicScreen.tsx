@@ -93,36 +93,30 @@ function CreateMnemonicScreen(): JSX.Element {
           Generate new mnemonics
         </Text>
         <CardBody paddingY={10}>
-          <SimpleGrid columns={columns} spacing="0px">
-            {mnemonic.split(' ').map((word, idx) => {
-              const isLeftColumn = idx % columns === 0;
-              const isRightColumn = (idx + 1) % columns === 0;
-              const isTopRow = idx < columns;
-              const isBottomRow = idx >= mnemonic.split(' ').length - columns;
-
-              return (
-                <Box
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={`${idx}_${word}`}
-                  borderTopWidth={isTopRow ? '0px' : '1px'}
-                  borderBottomWidth={isBottomRow ? '0px' : '1px'}
-                  borderLeftWidth={isLeftColumn ? '0px' : '1px'}
-                  borderRightWidth={isRightColumn ? '0px' : '1px'}
-                  borderColor="whiteAlpha.200"
-                  p={{ base: 2, md: 4 }}
+          <SimpleGrid
+            columns={columns}
+            spacing="0px"
+            gap={1}
+            bg="whiteAlpha.200"
+          >
+            {mnemonic.split(' ').map((word, idx) => (
+              <Box
+                // eslint-disable-next-line react/no-array-index-key
+                key={`${idx}_${word}`}
+                bg="brand.darkGreen"
+                p={{ base: 2, md: 4 }}
+              >
+                <Text
+                  as="span"
+                  color="whiteAlpha.400"
+                  fontFamily="Univers55"
+                  fontSize={{ base: '12px', md: '14px' }}
                 >
-                  <Text
-                    as="span"
-                    color="whiteAlpha.400"
-                    fontFamily="Univers55"
-                    fontSize={{ base: '12px', md: '14px' }}
-                  >
-                    {idx + 1}.{' '}
-                  </Text>
-                  {word}
-                </Box>
-              );
-            })}
+                  {idx + 1}.{' '}
+                </Text>
+                {word}
+              </Box>
+            ))}
           </SimpleGrid>
         </CardBody>
 

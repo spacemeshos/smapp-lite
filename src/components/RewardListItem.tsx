@@ -32,18 +32,24 @@ function RewardListItem({
     <Card
       py={1}
       _hover={{ cursor: 'pointer', bgColor: 'brand.modalGreen' }}
-      borderBottom="2px solid #25322F"
+      borderBottom="2px solid"
+      borderColor="brand.modalGreen"
     >
       <CardBody p={2}>
         <Flex alignItems="baseline">
           <Stat flex={2}>
-            <StatLabel fontSize="x-small" color="#F0F0F0EE">
+            <StatLabel fontSize="x-small" color="brand.gray">
               Reward
             </StatLabel>
             <StatNumber fontSize="sm" color="brand.green">
               {formatSmidge(reward.rewardForLayer + reward.rewardForFees)}
               <Flex mb={1}>
-                <Text flex={1} fontSize="xx-small" color="#B9B9B9" pr={2}>
+                <Text
+                  flex={1}
+                  fontSize="xx-small"
+                  color="brand.darkGray"
+                  pr={2}
+                >
                   {formatTimestamp(
                     timestampByLayer(
                       genesisTime,
@@ -57,13 +63,13 @@ function RewardListItem({
               </Flex>
             </StatNumber>
           </Stat>
-          <Stat flex={1} color="#B9B9B9">
+          <Stat flex={1} color="brand.gray">
             <StatLabel fontSize="x-small">For layer</StatLabel>
             <StatNumber fontSize="sm" pr={2}>
               {formatSmidge(reward.rewardForLayer)}
             </StatNumber>
           </Stat>
-          <Stat color="#B9B9B9" flex={1}>
+          <Stat color="brand.gray" flex={1}>
             <StatLabel fontSize="x-small">For fees</StatLabel>
             <StatNumber fontSize="sm" pr={2}>
               {formatSmidge(reward.rewardForFees)}

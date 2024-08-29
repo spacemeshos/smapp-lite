@@ -77,26 +77,27 @@ function TxListItem({
     <Card
       py={1}
       _hover={{ cursor: 'pointer', bgColor: 'brand.modalGreen' }}
-      borderBottom="2px solid #25322F"
+      borderBottom="2px solid"
+      borderColor="brand.modalGreen"
       onClick={() => onClick(tx)}
     >
       <CardBody p={4}>
         <Flex>
           <Box flex={1}>
-            <Text fontSize="sm" mb={1}>
+            <Text fontSize="sm" mb={1} color="brand.lightGray">
               <TxIcon tx={tx} host={host} />
               {getAbbreviatedHexString(tx.id)}
               <Text
                 as="span"
                 fontSize="xx-small"
                 textTransform="uppercase"
-                color="#B9B9B9"
+                color="brand.gray"
                 ml={2}
               >
                 {tx.template.methodName}
               </Text>
             </Text>
-            <Text fontSize="xx-small" color="#B9B9B9" mt={1}>
+            <Text fontSize="xx-small" color="brand.darkGray" mt={1}>
               {tx.layer ? (
                 <>
                   {formatTimestampTx(
@@ -125,7 +126,7 @@ function TxListItem({
             >
               {txBalance !== null && formatSmidge(txBalance)}
             </Text>
-            <Text color="#B9B9B9" fontSize="xx-small" title="Fee" mb="2px">
+            <Text color="brand.gray" fontSize="xx-small" title="Fee" mb="2px">
               {fee}
             </Text>
           </Flex>

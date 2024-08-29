@@ -25,7 +25,7 @@ function AccountSelection(): JSX.Element {
   const { selectedAccount, selectAccount } = useWallet();
   const hrp = useCurrentHRP();
   const accounts = useAccountsList(hrp);
-  const mobile = useBreakpointValue({ base: true, md: false }) ?? true;
+  const iconSize = useBreakpointValue({ base: 14, md: 24 }, { ssr: false });
 
   return (
     <Menu>
@@ -34,12 +34,12 @@ function AccountSelection(): JSX.Element {
         variant="ghostGreen"
         fontSize={{ base: '18px', md: '22px' }}
         float="right"
-        rightIcon={<IconChevronDown size={mobile ? 14 : 24} />}
+        rightIcon={<IconChevronDown size={iconSize} />}
         px={0}
         noOfLines={1}
         justifyContent="center"
       >
-        {accounts[selectedAccount]?.displayName}
+        {accounts[selectedAccount]?.displayName ?? 'Switch account'}
       </MenuButton>
       <MenuList minWidth={240} maxW="100vw" maxH="80vh" overflow="auto">
         <MenuOptionGroup

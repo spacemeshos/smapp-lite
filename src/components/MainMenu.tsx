@@ -24,7 +24,7 @@ function MainMenu(): JSX.Element {
 
   const keyManagerDrawer = useDisclosure();
   const { revealMnemonics } = useMnemonics();
-  const mobile = useBreakpointValue({ base: true, md: false }) ?? true;
+  const iconSize = useBreakpointValue({ base: 20, md: 24 }, { ssr: false });
 
   return (
     <>
@@ -32,11 +32,11 @@ function MainMenu(): JSX.Element {
         <MenuButton
           as={IconButton}
           aria-label="Settings"
-          icon={<IconSettings size={mobile ? 20 : 24} />}
+          icon={<IconSettings size={iconSize} />}
           size="sm"
           variant="dark"
-          m={mobile ? 0 : 2}
-          p={mobile ? 0 : 2}
+          m={{ base: 0, md: 2 }}
+          p={{ base: 0, md: 2 }}
         />
         <MenuList>
           <MenuItem onClick={keyManagerDrawer.onOpen}>

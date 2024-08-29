@@ -99,14 +99,14 @@ function ImportScreen(): JSX.Element {
     <Flex direction="column" alignItems="center" justifyContent="center">
       <Image src={logo} width={200} my={8} />
 
-      <Card fontSize="sm" marginY={4} paddingX={[10, 20]} paddingY={5}>
-        <CardHeader>
-          <Text fontSize="xl" mb={4} mt={2} textAlign="center">
-            Import wallet file
-          </Text>
-        </CardHeader>
-        <CardBody textAlign="center">
-          <Form>
+      <Form>
+        <Card fontSize="sm" marginY={4} paddingX={[10, 20]} paddingY={5}>
+          <CardHeader>
+            <Text fontSize="xl" mb={4} mt={2} textAlign="center">
+              Import wallet file
+            </Text>
+          </CardHeader>
+          <CardBody textAlign="center">
             <Text mb={4}>
               Please choose the wallet file you want to import.
             </Text>
@@ -141,25 +141,25 @@ function ImportScreen(): JSX.Element {
               <PasswordInput register={register('password')} />
               <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
             </FormControl>
-          </Form>
-        </CardBody>
-      </Card>
-      <Flex width="100%" justifyContent="space-between" pt={10}>
-        <BackButton />
+          </CardBody>
+        </Card>
+        <Flex width="100%" justifyContent="space-between" pt={10}>
+          <BackButton />
 
-        <Button
-          variant="green"
-          type="submit"
-          pt={2}
-          pb={2}
-          pl={4}
-          pr={4}
-          onClick={onSubmit}
-          disabled={isLoading}
-        >
-          {isLoading ? 'Importing...' : 'Import wallet'}
-        </Button>
-      </Flex>
+          <Button
+            variant="green"
+            type="submit"
+            pt={2}
+            pb={2}
+            pl={4}
+            pr={4}
+            onClick={onSubmit}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Importing...' : 'Import wallet'}
+          </Button>
+        </Flex>
+      </Form>
     </Flex>
   );
 }

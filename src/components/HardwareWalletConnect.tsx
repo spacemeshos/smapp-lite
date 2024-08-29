@@ -225,16 +225,17 @@ function WrongDeviceModal() {
 
 function NotConnected() {
   const { modalConnect } = useHardwareWallet();
-  const mobile = useBreakpointValue({ base: true, md: false }) ?? true;
+  const iconSize = useBreakpointValue({ base: 20, md: 24 }, { ssr: false });
+
   return (
     <>
       <IconButton
-        icon={<IconDeviceUsb size={mobile ? 20 : 24} />}
+        icon={<IconDeviceUsb size={iconSize} />}
         size="sm"
         title="Connect a Hardware Wallet"
         aria-label="Connect a Hardware Wallet"
-        m={mobile ? 0 : 2}
-        p={mobile ? 0 : 2}
+        m={{ base: 0, md: 2 }}
+        p={{ base: 0, md: 2 }}
         onClick={modalConnect.onOpen}
         variant="dark"
       />
@@ -245,7 +246,8 @@ function NotConnected() {
 
 function Connected({ device }: { device: LedgerDevice }) {
   const { resetDevice } = useHardwareWallet();
-  const mobile = useBreakpointValue({ base: true, md: false }) ?? true;
+  const iconSize = useBreakpointValue({ base: 20, md: 24 }, { ssr: false });
+
   const TransportIcon =
     device.transportType === LedgerTransports.Bluetooth
       ? IconBluetoothConnected
@@ -254,12 +256,12 @@ function Connected({ device }: { device: LedgerDevice }) {
   return (
     <>
       <IconButton
-        icon={<TransportIcon size={mobile ? 20 : 24} />}
+        icon={<TransportIcon size={iconSize} />}
         size="sm"
         title="Disconnect a Hardware Wallet"
         aria-label="Disconnect a Hardware Wallet"
-        m={mobile ? 1 : 2}
-        p={mobile ? 0 : 0}
+        m={{ base: 1, md: 2 }}
+        p={0}
         onClick={resetDevice}
         variant="white"
         aspectRatio="1"

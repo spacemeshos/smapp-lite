@@ -36,14 +36,14 @@ function PasswordInput({
         variant="darkPill"
         {...inputProps}
       />
-      <InputRightElement width={10}>
+      <InputRightElement width={10} borderRadius="full">
         <IconButton
           aria-label={show ? 'Hide password' : 'Show password'}
           title={show ? 'Hide password' : 'Show password'}
           icon={show ? <IconEyeOff size={14} /> : <IconEye size={14} />}
           size="sm"
           onClick={toggleShow}
-          variant="ghost"
+          variant="ghostWhite"
         />
       </InputRightElement>
     </InputGroup>

@@ -153,9 +153,7 @@ function CreateAccountModal({
             />
             <FormInput
               label="Total amount"
-              inputProps={{
-                type: 'number',
-              }}
+              inputProps={{ type: 'number' }}
               register={register('totalAmount', {
                 required: 'Please specify total amount locked in the vault',
               })}
@@ -164,6 +162,7 @@ function CreateAccountModal({
             />
             <FormInput
               label="Vesting start (layer number)"
+              inputProps={{ type: 'number' }}
               register={register('vestingStart', {
                 required: 'Please specify the epoch when the vesting starts',
                 valueAsNumber: true,
@@ -173,6 +172,7 @@ function CreateAccountModal({
             />
             <FormInput
               label="Vesting end (layer number)"
+              inputProps={{ type: 'number' }}
               register={register('vestingEnd', {
                 required: 'Please specify the epoch when the vesting ends',
                 valueAsNumber: true,
@@ -191,6 +191,7 @@ function CreateAccountModal({
             </Text>
             <FormInput
               label="Required amount of signatures"
+              inputProps={{ type: 'number' }}
               register={register('required', {
                 required: 'Please specify any number from 0 to 10',
                 valueAsNumber: true,
@@ -231,6 +232,7 @@ function CreateAccountModal({
             </Text>
             <FormInput
               label="Required amount of signatures"
+              inputProps={{ type: 'number' }}
               register={register('required', {
                 required: 'Please specify any number from 0 to 10',
                 valueAsNumber: true,

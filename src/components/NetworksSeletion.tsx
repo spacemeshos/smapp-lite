@@ -29,7 +29,9 @@ function NetworkSelection(): JSX.Element {
   const currentNetwork = getCurrentNetwork();
   const { status } = useNetworkStatus();
 
-  const mobile = useBreakpointValue({ base: true, md: false }) ?? true;
+  const mobile = useBreakpointValue({ base: true, md: false }) ?? false;
+  const iconSize = useBreakpointValue({ base: 8, md: 14 }, { ssr: false });
+
   return (
     <>
       <AddNetworkDrawer isOpen={isOpen} onClose={onClose} />
@@ -39,17 +41,17 @@ function NetworkSelection(): JSX.Element {
           leftIcon={
             // eslint-disable-next-line no-nested-ternary
             status?.isSynced ? (
-              <IconCircleFilled size={mobile ? 8 : 14} color="#3AFFA7" />
+              <IconCircleFilled size={iconSize} color="#3AFFA7" />
             ) : O.isNone(currentNetwork) ? (
-              <IconCircleFilled size={mobile ? 8 : 14} color="red" />
+              <IconCircleFilled size={iconSize} color="red" />
             ) : (
-              <IconCircleDotted size={mobile ? 8 : 14} color="orange" />
+              <IconCircleDotted size={iconSize} color="orange" />
             )
           }
           rightIcon={mobile ? <div /> : <IconChevronDown />}
-          m={mobile ? 0 : 2}
-          p={mobile ? 0 : 2}
-          fontSize={mobile ? 'x-small' : 'sm'}
+          m={{ base: 0, md: 2 }}
+          p={{ base: 0, md: 2 }}
+          fontSize={{ base: 'x-small', md: 'sm' }}
           size="sm"
           variant="dark"
         >

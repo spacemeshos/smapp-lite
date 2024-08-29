@@ -5,16 +5,16 @@ import useLockWallet from '../hooks/useLockWallet';
 
 function LockWallet(): JSX.Element {
   const lockWallet = useLockWallet();
-  const mobile = useBreakpointValue({ base: true, md: false }) ?? true;
+  const iconSize = useBreakpointValue({ base: 20, md: 24 }, { ssr: false });
 
   return (
     <IconButton
       aria-label="Lock wallet"
-      icon={<IconLock size={mobile ? 20 : 24} />}
+      icon={<IconLock size={iconSize} />}
       size="sm"
       onClick={lockWallet}
-      m={mobile ? 0 : 2}
-      p={mobile ? 0 : 2}
+      m={{ base: 0, md: 2 }}
+      p={{ base: 0, md: 2 }}
       variant="dark"
     />
   );

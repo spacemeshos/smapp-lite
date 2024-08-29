@@ -53,7 +53,6 @@ function WalletScreen(): JSX.Element {
   const { getCurrentNetwork } = useNetworks();
   const { getAccountData } = useAccountData();
   const currentNetwork = getCurrentNetwork();
-  const mobile = useBreakpointValue({ base: true, md: false }) ?? true;
 
   const txDisclosure = useDisclosure();
   const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
@@ -81,6 +80,11 @@ function WalletScreen(): JSX.Element {
     accountData,
     '0',
     ([account]) => account.state.current.balance
+  );
+
+  const refreshIconSize = useBreakpointValue(
+    { base: '20px', md: '24px' },
+    { ssr: false }
   );
 
   const unlockedBalance = useVaultBalance(
@@ -172,14 +176,14 @@ function WalletScreen(): JSX.Element {
                 </Text>
                 <IconButton
                   ml={4}
-                  width={mobile ? '21px' : '27px'}
+                  width={{ base: '21px', md: '27px' }}
                   variant="whiteOutline"
                   disabled={isLoading}
                   icon={
                     isLoading ? (
                       <Spinner size="sm" />
                     ) : (
-                      <IconRefresh width={mobile ? '20px' : '24px'} />
+                      <IconRefresh width={refreshIconSize} />
                     )
                   }
                   aria-label="Refresh balance"
@@ -248,7 +252,6 @@ function WalletScreen(): JSX.Element {
             flexGrow={1}
             flexDirection="column"
             borderRadius={6}
-            colorScheme="spacemesh"
             position="relative"
           >
             <TabList h={14} justifyContent="center" border="none">

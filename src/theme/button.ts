@@ -84,17 +84,6 @@ const danger = defineStyle({
   },
 });
 
-const dark = defineStyle({
-  textColor: 'brand.lightGray',
-  fillColor: 'brand.lightGray',
-  bgColor: 'brand.darkGreen',
-  borderRadius: 'full',
-  _hover: {
-    textColor: 'brand.green',
-    fillColor: 'brand.green',
-  },
-});
-
 const outline = defineStyle({
   bg: 'brand.darkGreen',
   borderColor: 'brand.green',
@@ -109,19 +98,7 @@ const outline = defineStyle({
   },
 });
 
-const ghost = defineStyle({
-  borderRadius: 'full',
-});
-
-const ghostGray = defineStyle({
-  borderRadius: 'full',
-  color: '#7D7B7B',
-});
-
 const buttonTheme = defineStyleConfig({
-  defaultProps: {
-    colorScheme: 'spacemesh',
-  },
   variants: {
     green,
     ghostGreen,

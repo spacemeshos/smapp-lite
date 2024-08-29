@@ -17,7 +17,7 @@ function CopyButton({ value }: CopyButtonProps): JSX.Element {
   return (
     <Tooltip label="Copied" isOpen={isCopied}>
       <IconButton
-        variant="outlineWhite"
+        variant="ghostWhite"
         aria-label="Copy to clipboard"
         size="xs"
         onClick={() => {

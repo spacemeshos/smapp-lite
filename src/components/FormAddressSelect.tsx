@@ -137,12 +137,8 @@ function FormAddressSelect<T extends FieldValues, FieldName extends Path<T>>({
         mb={1}
       >
         <Stack direction="row">
-          <Radio variant="greenDot" value={Origin.Local}>
-            Local Address
-          </Radio>
-          <Radio variant="greenDot" value={Origin.Foreign}>
-            Foreign Address
-          </Radio>
+          <Radio value={Origin.Local}>Local Address</Radio>
+          <Radio value={Origin.Foreign}>Foreign Address</Radio>
         </Stack>
       </RadioGroup>
       <FormControl

@@ -112,7 +112,7 @@ function App(): JSX.Element {
         flexDirection="column"
         alignItems="center"
         minH="100vh"
-        minW="100vw"
+        w="100vw"
         p={4}
       >
         <RouterProvider router={router} />

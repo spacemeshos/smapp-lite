@@ -116,6 +116,7 @@ function ImportKeyPairModal({
               errors={errors}
               isSubmitted={isSubmitted}
               textareaProps={{
+                height: '7em',
                 border: '1px',
                 borderRadius: 'md',
                 borderColor: 'brand.lightGray',

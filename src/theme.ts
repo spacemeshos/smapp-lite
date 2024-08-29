@@ -17,19 +17,6 @@ const config: ThemeConfig = {
 };
 
 const colors = {
-  spacemesh: {
-    50: '#3AFFA7',
-    100: '#34E596',
-    200: '#2ECB86',
-    300: '#28B175',
-    400: '#229764',
-    500: '#1C7D54',
-    600: '#166343',
-    700: '#104933',
-    800: '#0A2F22',
-    850: '#091F19',
-    900: '#061A14',
-  },
   brand: {
     darkGreen: '#061A14',
     green: '#3AFFA7',
@@ -37,6 +24,8 @@ const colors = {
     lightGreen: '#F6FFEC',
     lightGray: '#F0F0F0',
     lightAlphaGray: '#F0F0F0EE',
+    gray: '#B9B9B9',
+    darkGray: '#7D7B7B',
     red: '#F54E4E',
   },
 };

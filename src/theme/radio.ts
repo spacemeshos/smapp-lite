@@ -4,39 +4,37 @@ import { createMultiStyleConfigHelpers } from '@chakra-ui/react';
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(radioAnatomy.keys);
 
-const variants = {
-  greenDot: definePartsStyle({
-    control: {
-      borderRadius: 'full',
-      borderWidth: '2px',
-      borderStyle: 'solid',
-      borderColor: 'spacemesh.500',
+const baseStyle = definePartsStyle({
+  control: {
+    borderRadius: 'full',
+    borderWidth: '2px',
+    borderStyle: 'solid',
+    borderColor: 'brand.green',
+    background: 'brand.lightGray',
+
+    _checked: {
+      borderColor: 'brand.green',
       background: 'brand.lightGray',
+      color: 'black',
 
-      _checked: {
-        borderColor: 'spacemesh.500',
-        background: 'brand.lightGray',
-        color: 'spacemesh.700',
-
-        _focus: {
-          borderColor: 'spacemesh.500',
-          background: 'brand.lightGray',
-          boxShadow: 'none',
-        },
-
-        _hover: {
-          borderColor: 'spacemesh.500',
-          background: 'brand.lightGray',
-        },
-      },
       _focus: {
-        borderColor: 'spacemesh.500',
+        borderColor: 'brand.green',
         background: 'brand.lightGray',
         boxShadow: 'none',
       },
-    },
-  }),
-};
 
-const radioTheme = defineMultiStyleConfig({ variants });
+      _hover: {
+        borderColor: 'brand.green',
+        background: 'brand.lightGray',
+      },
+    },
+    _focus: {
+      borderColor: 'brand.green',
+      background: 'brand.lightGray',
+      boxShadow: 'none',
+    },
+  },
+});
+
+const radioTheme = defineMultiStyleConfig({ baseStyle });
 export default radioTheme;

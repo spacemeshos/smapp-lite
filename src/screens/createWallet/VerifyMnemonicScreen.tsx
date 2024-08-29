@@ -159,24 +159,18 @@ function VerifyMnemonicScreen(): JSX.Element {
             </SimpleGrid>
           </CardHeader>
           <CardBody paddingY={10}>
-            <SimpleGrid columns={columns} spacing="0px">
+            <SimpleGrid
+              columns={columns}
+              spacing="0px"
+              gap={1}
+              bg="whiteAlpha.200"
+            >
               {words.map((word, idx) => {
                 const isSlot = indexesToCheck.includes(idx);
 
-                const isLeftColumn = idx % columns === 0;
-                const isRightColumn = (idx + 1) % columns === 0;
-                const isTopRow = idx < columns;
-                const isBottomRow = idx >= words.length - columns;
-
                 if (isSlot) {
                   const placedWord = slots[idx];
-                  const boxProps: BoxProps = {
-                    borderTopWidth: isTopRow ? '0px' : '1px',
-                    borderBottomWidth: isBottomRow ? '0px' : '1px',
-                    borderLeftWidth: isLeftColumn ? '0px' : '1px',
-                    borderRightWidth: isRightColumn ? '0px' : '1px',
-                    borderColor: 'whiteAlpha.200',
-                  };
+
                   return (
                     <DroppableBox
                       // eslint-disable-next-line react/no-array-index-key
@@ -185,7 +179,6 @@ function VerifyMnemonicScreen(): JSX.Element {
                       }`}
                       slot={idx}
                       hasWordInside={!!placedWord}
-                      boxProps={boxProps}
                     >
                       {placedWord !== null && placedWord !== undefined ? (
                         <DraggableTag
@@ -216,11 +209,6 @@ function VerifyMnemonicScreen(): JSX.Element {
                   <Flex
                     // eslint-disable-next-line react/no-array-index-key
                     key={`${idx}_${word}`}
-                    borderTopWidth={isTopRow ? '0px' : '1px'}
-                    borderBottomWidth={isBottomRow ? '0px' : '1px'}
-                    borderLeftWidth={isLeftColumn ? '0px' : '1px'}
-                    borderRightWidth={isRightColumn ? '0px' : '1px'}
-                    borderColor="whiteAlpha.200"
                     p={{ base: 2, md: 4 }}
                     bg="brand.darkGreen"
                     _hover={
@@ -353,14 +341,12 @@ function DraggableTag({
 type DroppableBoxProps = PropsWithChildren<{
   slot: SlotIndex;
   hasWordInside: boolean;
-  boxProps: BoxProps;
 }>;
 
 function DroppableBox({
   slot,
   children = '',
   hasWordInside,
-  boxProps,
 }: DroppableBoxProps): JSX.Element {
   const [{ isOver }, dropRef] = useDrop(() => ({
     accept: 'word',
@@ -373,7 +359,6 @@ function DroppableBox({
   return (
     <Box
       ref={dropRef}
-      {...boxProps}
       bg={hasWordInside ? '#0B221C' : 'brand.darkGreen'}
       p={{ base: 2, md: 4 }}
     >

@@ -146,7 +146,7 @@ function FormAmountInput<T extends FieldValues>({
             onClick={toggleUnits}
             icon={<IconSwitchHorizontal size={16} />}
             ml={1}
-            variant="outlineWhite"
+            variant="ghostWhite"
           />
         </InputRightElement>
       </InputGroup>

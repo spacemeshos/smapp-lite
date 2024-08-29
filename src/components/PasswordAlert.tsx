@@ -76,11 +76,7 @@ function PasswordAlert(): JSX.Element {
                 {form.errors.password?.message}
               </FormErrorMessage>
             </FormControl>
-            <Checkbox
-              {...form.register.remember}
-              borderColor="brand.darkGreen"
-              colorScheme="spacemesh"
-            >
+            <Checkbox {...form.register.remember} borderColor="brand.darkGreen">
               Remember password for next 5 minutes
             </Checkbox>
           </AlertDialogBody>
