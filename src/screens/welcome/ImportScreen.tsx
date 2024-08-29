@@ -7,14 +7,17 @@ import {
   Button,
   Card,
   CardBody,
+  CardHeader,
   Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
+  Image,
   Input,
   Text,
 } from '@chakra-ui/react';
 
+import logo from '../../assets/logo_white.svg';
 import BackButton from '../../components/BackButton';
 import PasswordInput from '../../components/PasswordInput';
 import useWallet from '../../store/useWallet';
@@ -94,13 +97,16 @@ function ImportScreen(): JSX.Element {
 
   return (
     <Flex direction="column" alignItems="center" justifyContent="center">
-      <BackButton />
-      <Text fontSize="xl" mb={4} mt={2}>
-        Import wallet file
-      </Text>
-      <Card variant="outline" w="100%">
-        <CardBody textAlign="center">
-          <Form>
+      <Image src={logo} width={200} my={8} />
+
+      <Form>
+        <Card fontSize="sm" marginY={4} paddingX={[10, 20]} paddingY={5}>
+          <CardHeader>
+            <Text fontSize="xl" mb={4} mt={2} textAlign="center">
+              Import wallet file
+            </Text>
+          </CardHeader>
+          <CardBody textAlign="center">
             <Text mb={4}>
               Please choose the wallet file you want to import.
             </Text>
@@ -112,10 +118,8 @@ function ImportScreen(): JSX.Element {
               onChange={readFile}
             />
             <Button
-              size="lg"
               onClick={() => inputRef.current?.click()}
-              variant="solid"
-              colorScheme="green"
+              variant="whiteModal"
               mb={4}
             >
               Select wallet file
@@ -137,20 +141,25 @@ function ImportScreen(): JSX.Element {
               <PasswordInput register={register('password')} />
               <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
             </FormControl>
-            <Button
-              type="submit"
-              size="lg"
-              variant="solid"
-              mt={4}
-              width="100%"
-              onClick={onSubmit}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Importing...' : 'Import wallet'}
-            </Button>
-          </Form>
-        </CardBody>
-      </Card>
+          </CardBody>
+        </Card>
+        <Flex width="100%" justifyContent="space-between" pt={10}>
+          <BackButton />
+
+          <Button
+            variant="green"
+            type="submit"
+            pt={2}
+            pb={2}
+            pl={4}
+            pr={4}
+            onClick={onSubmit}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Importing...' : 'Import wallet'}
+          </Button>
+        </Flex>
+      </Form>
     </Flex>
   );
 }

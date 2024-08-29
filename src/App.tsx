@@ -1,7 +1,7 @@
 import React from 'react';
 import { createHashRouter, redirect, RouterProvider } from 'react-router-dom';
 
-import { ChakraProvider, ColorModeScript, Container } from '@chakra-ui/react';
+import { ChakraProvider, ColorModeScript, Flex } from '@chakra-ui/react';
 
 import IdleAlert from './components/IdleAlert';
 import CreateMnemonicScreen from './screens/createWallet/CreateMnemonicScreen';
@@ -17,6 +17,7 @@ import ImportScreen from './screens/welcome/ImportScreen';
 import WelcomeScreen from './screens/welcome/WelcomeScreen';
 import WelcomeWrapper from './screens/welcome/WelcomeWrapper';
 import useWallet from './store/useWallet';
+import Fonts from './theme/Fonts';
 import theme from './theme';
 
 function App(): JSX.Element {
@@ -104,17 +105,18 @@ function App(): JSX.Element {
 
   return (
     <ChakraProvider theme={theme}>
+      <Fonts />
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <IdleAlert />
-      <Container
-        display="flex"
+      <Flex
         flexDirection="column"
         alignItems="center"
         minH="100vh"
+        w="100vw"
         p={4}
       >
         <RouterProvider router={router} />
-      </Container>
+      </Flex>
     </ChakraProvider>
   );
 }

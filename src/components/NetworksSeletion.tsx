@@ -7,6 +7,7 @@ import {
   MenuItemOption,
   MenuList,
   MenuOptionGroup,
+  useBreakpointValue,
   useDisclosure,
 } from '@chakra-ui/react';
 import { O } from '@mobily/ts-belt';
@@ -28,6 +29,9 @@ function NetworkSelection(): JSX.Element {
   const currentNetwork = getCurrentNetwork();
   const { status } = useNetworkStatus();
 
+  const mobile = useBreakpointValue({ base: true, md: false }) ?? false;
+  const iconSize = useBreakpointValue({ base: 8, md: 14 }, { ssr: false });
+
   return (
     <>
       <AddNetworkDrawer isOpen={isOpen} onClose={onClose} />
@@ -37,15 +41,19 @@ function NetworkSelection(): JSX.Element {
           leftIcon={
             // eslint-disable-next-line no-nested-ternary
             status?.isSynced ? (
-              <IconCircleFilled size={14} color="green" />
+              <IconCircleFilled size={iconSize} color="#3AFFA7" />
             ) : O.isNone(currentNetwork) ? (
-              <IconCircleFilled size={14} color="red" />
+              <IconCircleFilled size={iconSize} color="red" />
             ) : (
-              <IconCircleDotted size={14} color="orange" />
+              <IconCircleDotted size={iconSize} color="orange" />
             )
           }
-          rightIcon={<IconChevronDown />}
-          fontSize="sm"
+          rightIcon={mobile ? <div /> : <IconChevronDown />}
+          m={{ base: 0, md: 2 }}
+          p={{ base: 0, md: 2 }}
+          fontSize={{ base: '13px', md: '20px' }}
+          size="sm"
+          variant="dark"
         >
           {O.mapWithDefault(currentNetwork, 'No network', (net) => net.name)}
         </MenuButton>

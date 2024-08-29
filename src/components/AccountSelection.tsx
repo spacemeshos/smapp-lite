@@ -5,7 +5,9 @@ import {
   MenuItemOption,
   MenuList,
   MenuOptionGroup,
+  useBreakpointValue,
 } from '@chakra-ui/react';
+import { IconChevronDown } from '@tabler/icons-react';
 
 import { useCurrentHRP } from '../hooks/useNetworkSelectors';
 import { useAccountsList } from '../hooks/useWalletSelectors';
@@ -23,19 +25,22 @@ function AccountSelection(): JSX.Element {
   const { selectedAccount, selectAccount } = useWallet();
   const hrp = useCurrentHRP();
   const accounts = useAccountsList(hrp);
+  const iconSize = useBreakpointValue({ base: 14, md: 24 }, { ssr: false });
 
   return (
     <Menu>
       <MenuButton
         as={Button}
-        variant="outline"
-        ml={2}
-        mb={2}
-        textTransform="uppercase"
-        fontSize="xx-small"
+        variant="ghostGreen"
+        fontSize={{ base: '18px', md: '22px' }}
         float="right"
+        rightIcon={<IconChevronDown size={iconSize} />}
+        px={0}
+        noOfLines={1}
+        justifyContent="center"
+        display="flex"
       >
-        Switch
+        {accounts[selectedAccount]?.displayName ?? 'Switch account'}
       </MenuButton>
       <MenuList minWidth={240} maxW="100vw" maxH="80vh" overflow="auto">
         <MenuOptionGroup

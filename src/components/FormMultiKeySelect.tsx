@@ -75,6 +75,7 @@ function FormMultiKeySelect<
             onClick={() => remove(index)}
             aria-label="Remove party"
             ml={2}
+            variant="ghostWhite"
           />
         </FormKeySelect>
       ))}
@@ -82,6 +83,8 @@ function FormMultiKeySelect<
         type="button"
         onClick={() => addEmptyField()}
         isDisabled={fields.length >= MAX_MULTISIG_AMOUNT}
+        variant="whiteModal"
+        w="full"
       >
         <IconPlus size={BUTTON_ICON_SIZE} />
         <Text as="span" ml={1}>

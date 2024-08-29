@@ -43,19 +43,19 @@ function ReceiveModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader>Receive funds</ModalHeader>
+        <ModalHeader textAlign="center">Receive funds</ModalHeader>
         <ModalBody>
-          <Text fontSize="sm" mb={4}>
+          <Text fontSize="sm" mb={4} textAlign="center">
             {account.address}
             <CopyButton value={account.address} />
           </Text>
           <QRCode
-            bgColor="var(--chakra-colors-gray-700)"
-            fgColor="var(--chakra-colors-gray-300)"
+            bgColor="var(--chakra-colors-brand-lightGray)"
+            fgColor="var(--chakra-colors-blackAlpha-500)"
             style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
             value={account.address}
           />
@@ -64,11 +64,13 @@ function ReceiveModal({
           <Button
             isDisabled={isCopied}
             onClick={onCopyClick(account.address)}
-            w={20}
+            mr={2}
+            w="50%"
+            variant="whiteModal"
           >
             {isCopied ? 'Copied' : 'Copy'}
           </Button>
-          <Button colorScheme="blue" onClick={onClose} ml={2}>
+          <Button variant="whiteModal" onClick={onClose} ml={2} w="50%">
             OK
           </Button>
         </ModalFooter>

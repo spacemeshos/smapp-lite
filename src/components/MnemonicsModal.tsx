@@ -35,7 +35,7 @@ function MnemonicsModal(): JSX.Element {
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader>Backup mnemonics</ModalHeader>
+        <ModalHeader textAlign="center">Backup mnemonics</ModalHeader>
         <ModalBody>
           <Text mb={4}>
             Please keep your mnemonics secret and do not share with anyone. They
@@ -48,6 +48,7 @@ function MnemonicsModal(): JSX.Element {
             readOnly
             rows={4}
             resize="none"
+            borderColor="brand.darkGreen"
           />
           <Text fontSize="xs" color="gray" mt={2}>
             We recommend you to remember mnemonics and not store them on your
@@ -55,15 +56,17 @@ function MnemonicsModal(): JSX.Element {
             safe place.
           </Text>
         </ModalBody>
+
         <ModalFooter>
           <Button
             isDisabled={isCopied}
             onClick={() => onCopy(mnemonics)}
             w={20}
+            variant="whiteModal"
           >
             {isCopied ? 'Copied' : 'Copy'}
           </Button>
-          <Button colorScheme="blue" onClick={closeMnemonicsModal} ml={2}>
+          <Button onClick={closeMnemonicsModal} ml={2} variant="whiteModal">
             OK
           </Button>
         </ModalFooter>

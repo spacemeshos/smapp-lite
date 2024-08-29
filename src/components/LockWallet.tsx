@@ -1,17 +1,21 @@
-import { IconButton } from '@chakra-ui/react';
+import { IconButton, useBreakpointValue } from '@chakra-ui/react';
 import { IconLock } from '@tabler/icons-react';
 
 import useLockWallet from '../hooks/useLockWallet';
 
 function LockWallet(): JSX.Element {
   const lockWallet = useLockWallet();
+  const iconSize = useBreakpointValue({ base: 20, md: 28 }, { ssr: false });
 
   return (
     <IconButton
       aria-label="Lock wallet"
-      icon={<IconLock />}
+      icon={<IconLock size={iconSize} />}
+      size="sm"
       onClick={lockWallet}
-      ml={2}
+      m={{ base: 0, md: 2 }}
+      p={{ base: 0, md: 2 }}
+      variant="dark"
     />
   );
 }

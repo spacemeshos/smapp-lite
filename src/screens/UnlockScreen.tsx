@@ -8,7 +8,6 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
-  FormLabel,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -51,52 +50,75 @@ function UnlockScreen(): JSX.Element {
   const wipeAlert = useDisclosure();
 
   return (
-    <>
+    <Flex
+      direction="column"
+      alignItems="center"
+      justifyContent="space-around"
+      minH="90vh"
+    >
       <Flex
         direction="column"
         alignItems="center"
         justifyContent="center"
         flexGrow={1}
-        fontSize="3xl"
       >
-        <Text fontSize="xl" mb={4}>
-          Unlock wallet
+        <Text
+          fontSize="xl"
+          mb={12}
+          fontFamily="Univers65"
+          size={{ base: '16px', md: '20px' }}
+        >
+          Unlock Wallet
         </Text>
         <Form control={control}>
           <FormControl isInvalid={!!errors.password?.message}>
-            <FormLabel>Enter password:</FormLabel>
-            <PasswordInput register={register('password')} />
-            <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
+            <PasswordInput
+              register={register('password')}
+              inputProps={
+                errors.password?.message
+                  ? {
+                      minW: '300px',
+                      borderColor: 'brand.red',
+                      _hover: { borderColor: 'brand.red' },
+                      _focus: { borderColor: 'brand.red' },
+                    }
+                  : { minW: '300px' }
+              }
+            />
+            <FormErrorMessage textColor="brand.red">
+              {errors.password?.message}
+            </FormErrorMessage>
           </FormControl>
-          <Button
-            type="submit"
-            mt={4}
-            onClick={() => submit()}
-            size="lg"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Unlocking...' : 'Unlock'}
-          </Button>
+
+          <Box display="flex" justifyContent="center" mt={4}>
+            <Button
+              type="submit"
+              mt={4}
+              px={10}
+              onClick={() => submit()}
+              size="md"
+              alignSelf="center"
+              variant="green"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Unlocking...' : 'Unlock'}
+            </Button>
+          </Box>
         </Form>
       </Flex>
-      <Box mt={6} mb={2} textAlign="center" maxW={360}>
+      <Box mb={8} textAlign="center" width={380}>
         <Text fontSize="xs" mb={2}>
           If you want to open another wallet file or re-create it from mnemonic,
           please wipe out the current wallet first.
           <br />
           <strong>Please, ensure that you have saved the mnemonic.</strong>
         </Text>
-        <Button
-          onClick={wipeAlert.onOpen}
-          colorScheme="red"
-          size="sm"
-          variant="outline"
-        >
+        <Button onClick={wipeAlert.onOpen} size="sm" variant="whiteOutline">
           Wipe out
         </Button>
       </Box>
       <WipeOutAlert disclosure={wipeAlert} />
-    </>
+    </Flex>
   );
 }
 

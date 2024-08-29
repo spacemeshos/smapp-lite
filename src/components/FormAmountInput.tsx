@@ -130,6 +130,7 @@ function FormAmountInput<T extends FieldValues>({
       <Input type="hidden" {...register} />
       <InputGroup>
         <Input
+          variant="whitePill"
           type="number"
           key={`display_input-${register.name}`}
           value={displayValue}
@@ -145,11 +146,14 @@ function FormAmountInput<T extends FieldValues>({
             onClick={toggleUnits}
             icon={<IconSwitchHorizontal size={16} />}
             ml={1}
+            variant="ghostWhite"
           />
         </InputRightElement>
       </InputGroup>
       {error?.message && (
-        <FormErrorMessage>{error.message as ReactNode}</FormErrorMessage>
+        <FormErrorMessage textColor="brand.red">
+          {error.message as ReactNode}
+        </FormErrorMessage>
       )}
     </FormControl>
   );

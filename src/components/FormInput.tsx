@@ -57,12 +57,14 @@ function FormInput<T extends FieldValues>({
         )}
       </FormLabel>
       <InputGroup>
-        <Input {...inputProps} {...register} />
+        <Input {...inputProps} {...register} variant="whitePill" />
         {inputAddon}
       </InputGroup>
       {children}
       {error?.message && (
-        <FormErrorMessage>{error.message as ReactNode}</FormErrorMessage>
+        <FormErrorMessage textColor="brand.red">
+          {error.message as ReactNode}
+        </FormErrorMessage>
       )}
     </FormControl>
   );

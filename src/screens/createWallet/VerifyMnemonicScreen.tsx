@@ -5,16 +5,22 @@ import { useNavigate } from 'react-router-dom';
 
 import {
   Box,
+  BoxProps,
   Button,
   Card,
   CardBody,
   CardHeader,
+  Flex,
+  Image,
   SimpleGrid,
   Tag,
   Text,
+  useBreakpointValue,
 } from '@chakra-ui/react';
 import { D } from '@mobily/ts-belt';
+import { IconArrowNarrowRight } from '@tabler/icons-react';
 
+import logo from '../../assets/logo_white.svg';
 import BackButton from '../../components/BackButton';
 import getRandomIndexes from '../../utils/getRandomIndexes';
 
@@ -43,6 +49,7 @@ function VerifyMnemonicScreen(): JSX.Element {
       bank: [],
     } as Slots)
   );
+  const columns = useBreakpointValue({ base: 2, md: 3 }) ?? 2;
 
   useEffect(() => {
     if (words.length < 12) {
@@ -94,41 +101,76 @@ function VerifyMnemonicScreen(): JSX.Element {
     }
     return moveWord(wordIndex, 'bank', from);
   };
+  const allWordsPlaced = slots.bank.length === 0;
 
-  const allWordsPlaced =
+  const allWordsPlacedCorrectly =
     slots.bank.length === 0 &&
     Object.entries(slots)
       .filter(([k]) => k !== 'bank')
       .every(([k, v]) => parseInt(k, 10) === v);
 
   return (
-    <>
-      <BackButton />
-      <Text fontSize="lg" mb={4}>
-        Let&apos;s verify that you have written down your seed phrase and will
-        able to recover your accounts/funds later if needed.
-      </Text>
+    <Flex
+      flexDir="column"
+      alignItems="center"
+      w={{ base: '100%', md: '75%' }}
+      maxW="4xl"
+    >
+      <Image src={logo} width={200} my={8} />
+
       <DndProvider backend={HTML5Backend}>
-        <Card fontSize="sm" margin={[4, null]} borderRadius="xl" w="100%">
-          <CardHeader pb={0}>
-            <Text mb={2}>Please, place the missing words on their places:</Text>
-            {slots.bank.map((wordIndex) => (
-              <DraggableTag
-                key={`word_${words[wordIndex]}}`}
-                word={words[wordIndex] ?? ''}
-                index={wordIndex}
-                from="bank"
-                moveWord={moveWord}
-                placeWord={placeWord}
-              />
-            ))}
+        <Card
+          fontSize="sm"
+          marginY={4}
+          padding={0}
+          w={{ base: '100%', md: '90%' }}
+        >
+          <CardHeader pb={0} textAlign="center">
+            <Text
+              mb={4}
+              fontSize={{ base: '16px', md: '20px' }}
+              fontFamily="Univers65"
+              textAlign="center"
+            >
+              Let&apos;s verify that you have written down your seed phrase and
+              will able to recover your accounts/funds later if needed.
+            </Text>
+
+            <Text
+              mb={2}
+              fontSize={{ base: '11px', md: '14px' }}
+              fontFamily="Univers65"
+              textAlign="center"
+            >
+              Please, place the missing words on their places:
+            </Text>
+            <SimpleGrid columns={[2, 4]} width="100%" alignItems="center">
+              {slots.bank.map((wordIndex) => (
+                <DraggableTag
+                  placed={false}
+                  key={`word_${words[wordIndex]}}`}
+                  word={words[wordIndex] ?? ''}
+                  index={wordIndex}
+                  from="bank"
+                  moveWord={moveWord}
+                  placeWord={placeWord}
+                />
+              ))}
+            </SimpleGrid>
           </CardHeader>
-          <CardBody>
-            <SimpleGrid columns={[2, null, 3]} spacing="10px">
+          <CardBody paddingY={10}>
+            <SimpleGrid
+              columns={columns}
+              spacing="0px"
+              gap={1}
+              bg="whiteAlpha.200"
+            >
               {words.map((word, idx) => {
                 const isSlot = indexesToCheck.includes(idx);
+
                 if (isSlot) {
                   const placedWord = slots[idx];
+
                   return (
                     <DroppableBox
                       // eslint-disable-next-line react/no-array-index-key
@@ -140,16 +182,23 @@ function VerifyMnemonicScreen(): JSX.Element {
                     >
                       {placedWord !== null && placedWord !== undefined ? (
                         <DraggableTag
+                          placed
                           key={`word_${words[placedWord]}`}
                           word={words[placedWord] ?? ''}
                           index={placedWord}
                           from={idx}
                           moveWord={moveWord}
                           placeWord={placeWord}
-                          full
+                          allWordsPlaced={allWordsPlaced}
+                          allWordsPlacedCorrectly={allWordsPlacedCorrectly}
                         />
                       ) : (
-                        <Text as="span" fontSize="xx-small">
+                        <Text
+                          fontFamily="Univers55"
+                          fontSize={{ base: '12px', md: '14px' }}
+                          color="whiteAlpha.400"
+                          minH="20px"
+                        >
                           {idx + 1}.{' '}
                         </Text>
                       )}
@@ -157,56 +206,75 @@ function VerifyMnemonicScreen(): JSX.Element {
                   );
                 }
                 return (
-                  <Box
+                  <Flex
                     // eslint-disable-next-line react/no-array-index-key
                     key={`${idx}_${word}`}
-                    borderRadius="md"
-                    borderWidth={1}
-                    borderColor="whiteAlpha.800"
-                    bg={isSlot ? 'blackAlpha.50' : 'whiteAlpha.50'}
+                    p={{ base: 2, md: 4 }}
+                    bg="brand.darkGreen"
                     _hover={
                       isSlot ? { background: 'blackAlpha.300' } : undefined
                     }
-                    p={2}
+                    gap={1}
                   >
-                    <Text as="span" fontSize="xx-small">
-                      {idx + 1}.{' '}
+                    <Text
+                      fontFamily="Univers55"
+                      fontSize={{ base: '12px', md: '14px' }}
+                      color="whiteAlpha.400"
+                    >
+                      {idx + 1}.
                     </Text>
-                    {word}
-                  </Box>
+                    <Text
+                      fontFamily="Univers55"
+                      fontSize={{ base: '12px', md: '14px' }}
+                    >
+                      {word}
+                    </Text>
+                  </Flex>
                 );
               })}
             </SimpleGrid>
           </CardBody>
         </Card>
       </DndProvider>
-      <Button
-        isDisabled={!allWordsPlaced}
-        onClick={() => {
-          navigate('/create/set-password');
-        }}
-      >
-        Next step
-      </Button>
-    </>
+
+      <Flex width="100%" justifyContent="space-between">
+        <BackButton />
+
+        <Button
+          rightIcon={<IconArrowNarrowRight />}
+          isDisabled={!allWordsPlacedCorrectly}
+          onClick={() => {
+            navigate('/create/set-password');
+          }}
+          variant={allWordsPlacedCorrectly ? 'green' : 'ghostGray'}
+        >
+          Next step
+        </Button>
+      </Flex>
+    </Flex>
   );
 }
 
 type DraggableTagProps = {
+  placed: boolean;
   moveWord: (wordIndex: number, slot: SlotIndex, from: SlotIndex) => void;
   placeWord: (wordIndex: number, from: SlotIndex) => void;
   from: SlotIndex;
-  full?: boolean;
+  allWordsPlaced?: boolean;
+  allWordsPlacedCorrectly?: boolean;
 } & DraggableItem;
 
 // Sub components
 function DraggableTag({
+  placed,
   word,
   index,
   moveWord,
   placeWord,
   from,
-  full = false,
+
+  allWordsPlaced = false,
+  allWordsPlacedCorrectly = false,
 }: DraggableTagProps): JSX.Element {
   const [{ isDragging }, dragRef] = useDrag(() => ({
     type: 'word',
@@ -222,35 +290,50 @@ function DraggableTag({
     }),
   }));
 
-  const fullStyles = full
+  const fullStyles = placed
     ? {
-        display: 'block',
-        width: '100%',
-        height: '100%',
-        p: 2,
+        p: 0,
+        m: 0,
+        minW: 0,
+        borderWidth: '0px',
+        minH: '20px',
       }
     : {
         p: 2,
-        m: 1,
+        m: 2,
+        minW: 24,
+        borderWidth: '2px',
+        minH: '20px',
       };
 
   return (
     <Tag
       ref={dragRef}
-      colorScheme="purple"
+      bg="transparent"
+      color={
+        placed && allWordsPlaced && !allWordsPlacedCorrectly
+          ? 'brand.red'
+          : 'brand.green'
+      }
+      borderColor="brand.green"
+      borderRadius="full"
       cursor={isDragging ? 'grabbing' : 'grab'}
       opacity={isDragging ? 0.5 : 1}
       userSelect="none"
-      fontSize="md"
+      alignItems="center"
+      justifyContent="center"
       onClick={() => placeWord(index, from)}
       {...fullStyles}
     >
-      {full && typeof from === 'number' && (
-        <Text as="span" fontSize="xx-small">
-          {from + 1}.{' '}
+      {placed && typeof from === 'number' ? (
+        <Text fontFamily="Univers55" fontSize={{ base: '12px', md: '14px' }}>
+          {from + 1}. {word}
+        </Text>
+      ) : (
+        <Text fontFamily="Univers55" fontSize={{ base: '12px', md: '14px' }}>
+          {word}
         </Text>
       )}
-      {word}
     </Tag>
   );
 }
@@ -276,11 +359,8 @@ function DroppableBox({
   return (
     <Box
       ref={dropRef}
-      borderRadius="md"
-      borderWidth={1}
-      borderColor="gray.200"
-      bg={isOver ? 'blackAlpha.700' : 'blackAlpha.50'}
-      p={hasWordInside ? 0 : 2}
+      bg={hasWordInside ? '#0B221C' : 'brand.darkGreen'}
+      p={{ base: 2, md: 4 }}
     >
       {children}
     </Box>

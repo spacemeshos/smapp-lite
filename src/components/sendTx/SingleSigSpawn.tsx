@@ -26,7 +26,7 @@ function SingleSigSpawn({
 
   return (
     <>
-      <Text fontSize="sm" mb={1}>
+      <Text fontSize="sm" mb={1} textAlign="center">
         Spawn arguments are taken from Account settings.
       </Text>
       <FormInputViewOnly label="Public Key" value={args.PublicKey} />

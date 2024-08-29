@@ -55,6 +55,8 @@ function ExplorerButton({
       target="_blank"
       icon={<IconWorldSearch size={iconSize} />}
       {...buttonProps}
+      variant="whiteOutline"
+      border="1px"
     />
   );
 }

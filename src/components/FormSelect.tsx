@@ -47,7 +47,7 @@ function FormSelect<T extends FieldValues>({
         </FormLabel>
       )}
       <InputGroup>
-        <Select {...inputProps} {...register}>
+        <Select {...inputProps} {...register} variant="whitePill">
           {options.map(({ value, label: optLabel, disabled }) => (
             <option key={value} value={value} disabled={!!disabled}>
               {optLabel}
@@ -57,7 +57,9 @@ function FormSelect<T extends FieldValues>({
       </InputGroup>
       {children}
       {error?.message && (
-        <FormErrorMessage>{error.message as ReactNode}</FormErrorMessage>
+        <FormErrorMessage textColor="brand.red">
+          {error.message as ReactNode}
+        </FormErrorMessage>
       )}
     </FormControl>
   );

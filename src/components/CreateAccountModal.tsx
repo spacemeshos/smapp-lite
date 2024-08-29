@@ -286,12 +286,12 @@ function CreateAccountModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">
       <Form control={control}>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
-          <ModalHeader>Create a new Account</ModalHeader>
+          <ModalHeader textAlign="center">Create a new Account</ModalHeader>
           <ModalBody minH={0}>
             <FormInput
               label="Name"
@@ -319,12 +319,21 @@ function CreateAccountModal({
               errors={errors}
               isSubmitted={isSubmitted}
             />
-            <Card variant="outline">
-              <CardBody>{renderTemplateSpecificFields()}</CardBody>
+            <Card shadow={0}>
+              <CardBody
+                pt={2}
+                pr={0}
+                pb={1}
+                pl={0}
+                bg="brand.modalGreen"
+                color="brand.lightGray"
+              >
+                {renderTemplateSpecificFields()}
+              </CardBody>
             </Card>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" onClick={submit} ml={2}>
+            <Button onClick={submit} variant="whiteModal" w="full">
               Add
             </Button>
           </ModalFooter>

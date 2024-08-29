@@ -1,17 +1,17 @@
 import { Box, Card, CardBody, Flex, Icon, Text } from '@chakra-ui/react';
 import { StdMethods } from '@spacemesh/sm-codec';
 import {
-  IconArrowBigDownFilled,
-  IconArrowBigLeftFilled,
   IconArrowBigLeftLinesFilled,
-  IconArrowBigRightFilled,
+  IconArrowNarrowDown,
+  IconArrowNarrowLeft,
+  IconArrowNarrowRight,
   IconQuestionMark,
 } from '@tabler/icons-react';
 
 import { Bech32Address } from '../types/common';
 import { Transaction } from '../types/tx';
 import { getAbbreviatedHexString } from '../utils/abbr';
-import { formatTimestamp } from '../utils/datetime';
+import { formatTimestampTx } from '../utils/datetime';
 import { epochByLayer, timestampByLayer } from '../utils/layers';
 import { formatSmidge } from '../utils/smh';
 import { getStatusColor, getTxBalance, getTxType, TxType } from '../utils/tx';
@@ -30,15 +30,15 @@ function TxIcon({ tx, host }: { tx: Transaction; host: Bech32Address }) {
   const IconComponent = (() => {
     switch (tx.template.method) {
       case StdMethods.Spawn:
-        return IconArrowBigDownFilled;
+        return IconArrowNarrowDown;
       case StdMethods.Spend: {
         switch (getTxType(tx, host)) {
           case TxType.Received:
-            return IconArrowBigRightFilled;
+            return IconArrowNarrowRight;
           case TxType.Spent:
           case TxType.Self:
           default:
-            return IconArrowBigLeftFilled;
+            return IconArrowNarrowLeft;
         }
       }
       case StdMethods.Drain:
@@ -75,34 +75,35 @@ function TxListItem({
       : 'Unknown fee';
   return (
     <Card
-      mb={2}
-      bgColor="whiteAlpha.100"
-      _hover={{ cursor: 'pointer', bgColor: 'whiteAlpha.300' }}
+      py={1}
+      _hover={{ cursor: 'pointer', bgColor: 'brand.modalGreen' }}
+      borderBottom="2px solid"
+      borderColor="brand.modalGreen"
       onClick={() => onClick(tx)}
     >
-      <CardBody p={2}>
+      <CardBody p={4}>
         <Flex>
           <Box flex={1}>
-            <Text fontSize="sm" mb={1}>
+            <Text fontSize="sm" mb={1} color="brand.lightGray">
               <TxIcon tx={tx} host={host} />
               {getAbbreviatedHexString(tx.id)}
               <Text
                 as="span"
                 fontSize="xx-small"
                 textTransform="uppercase"
-                color="grey"
+                color="brand.gray"
                 ml={2}
               >
                 {tx.template.methodName}
               </Text>
             </Text>
-            <Text fontSize="xx-small" color="gray" mt={1}>
+            <Text fontSize="xx-small" color="brand.darkGray" mt={1}>
               {tx.layer ? (
                 <>
-                  {formatTimestamp(
+                  {formatTimestampTx(
                     timestampByLayer(genesisTime, layerDurationSec, tx.layer)
                   )}{' '}
-                  (Layer {tx.layer} in Epoch{' '}
+                  | (Layer {tx.layer} in Epoch{' '}
                   {epochByLayer(layersPerEpoch, tx.layer)})
                 </>
               ) : (
@@ -112,6 +113,7 @@ function TxListItem({
           </Box>
           <Flex flexDirection="column" textAlign="right">
             <Text
+              as="b"
               flex={1}
               color={
                 // eslint-disable-next-line no-nested-ternary
@@ -119,12 +121,12 @@ function TxListItem({
                   ? 'gray'
                   : txBalance < BigInt(0)
                   ? 'red.600'
-                  : 'green'
+                  : 'brand.green'
               }
             >
               {txBalance !== null && formatSmidge(txBalance)}
             </Text>
-            <Text color="gray" fontSize="xx-small" title="Fee" mb="2px">
+            <Text color="brand.gray" fontSize="xx-small" title="Fee" mb="2px">
               {fee}
             </Text>
           </Flex>

@@ -150,11 +150,11 @@ function ImportAccountModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={close} isCentered>
+    <Modal isOpen={isOpen} onClose={close} isCentered size="lg">
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader>Import Account</ModalHeader>
+        <ModalHeader textAlign="center">Import Account</ModalHeader>
         <ModalBody textAlign="center">
           <Text mb={4}>Please select the account file to import.</Text>
           <Input
@@ -165,10 +165,8 @@ function ImportAccountModal({
             onChange={readAccountFile}
           />
           <Button
-            size="lg"
             onClick={() => inputRef.current?.click()}
-            variant="solid"
-            colorScheme="green"
+            variant="whiteModal"
             mb={4}
           >
             Select account file
@@ -181,6 +179,7 @@ function ImportAccountModal({
               type="text"
               onChange={(e) => setDisplayName(e.target.value)}
               value={displayName}
+              variant="whitePill"
             />
           </FormControl>
           {accountData && (
@@ -207,7 +206,7 @@ function ImportAccountModal({
         </ModalBody>
         <ModalFooter>
           <Button
-            colorScheme="blue"
+            variant="whiteModal"
             onClick={submit}
             ml={2}
             isDisabled={!!error}

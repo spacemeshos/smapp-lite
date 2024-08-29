@@ -1,10 +1,19 @@
 import { Form, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import { Button, Card, CardBody, Text } from '@chakra-ui/react';
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Flex,
+  Image,
+  Text,
+} from '@chakra-ui/react';
 import { validateMnemonic } from '@scure/bip39';
 import { wordlist } from '@scure/bip39/wordlists/english';
 
+import logo from '../../assets/logo_white.svg';
 import BackButton from '../../components/BackButton';
 import FormTextarea from '../../components/FormTextarea';
 import { normalizeMnemonic } from '../../utils/mnemonic';
@@ -31,12 +40,21 @@ function RecoverMnemonicScreen(): JSX.Element {
   });
 
   return (
-    <>
-      <BackButton />
-      <Text fontSize="xl" mb={4} mt={2}>
-        Recover wallet from mnemonics
-      </Text>
-      <Card fontSize="sm" borderRadius="xl" w="100%">
+    <Flex flexDir="column" alignItems="center">
+      <Image src={logo} width={200} my={8} />
+
+      <Card
+        fontSize="sm"
+        marginY={4}
+        paddingX={{ base: 4, md: 20 }}
+        paddingY={5}
+        w={{ base: '100%', md: 'fit' }}
+      >
+        <CardHeader>
+          <Text fontSize="xl" mb={4} mt={2} textAlign="center">
+            Recover wallet from mnemonics
+          </Text>
+        </CardHeader>
         <CardBody>
           <Form control={control}>
             <FormTextarea
@@ -58,21 +76,23 @@ function RecoverMnemonicScreen(): JSX.Element {
               errors={errors}
               isSubmitted={isSubmitted}
             />
-
-            <Button
-              type="submit"
-              pt={2}
-              pb={2}
-              pl={4}
-              pr={4}
-              onClick={onSubmit}
-            >
-              Next step
-            </Button>
           </Form>
         </CardBody>
       </Card>
-    </>
+      <Flex width="100%" justifyContent="space-between" pt={10}>
+        <BackButton />
+
+        <Button
+          type="submit"
+          paddingY={2}
+          paddingX={4}
+          onClick={onSubmit}
+          variant="green"
+        >
+          Next step
+        </Button>
+      </Flex>
+    </Flex>
   );
 }
 

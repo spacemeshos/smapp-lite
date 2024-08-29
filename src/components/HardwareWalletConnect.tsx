@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   ButtonGroup,
+  Flex,
   IconButton,
   Image,
   ListItem,
@@ -15,6 +16,7 @@ import {
   OrderedList,
   Spacer,
   Text,
+  useBreakpointValue,
 } from '@chakra-ui/react';
 import { O } from '@mobily/ts-belt';
 import {
@@ -31,7 +33,6 @@ import useHardwareWallet, {
   LedgerDevice,
   LedgerTransports,
 } from '../store/useHardwareWallet';
-import { BUTTON_ICON_SIZE } from '../utils/constants';
 import { noop } from '../utils/func';
 
 // Child Components
@@ -42,13 +43,14 @@ function DeviceSelectionModal() {
       isOpen={modalConnect.isOpen}
       onClose={modalConnect.onClose}
       isCentered
+      size="xl"
     >
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader>Connect to Ledger Device</ModalHeader>
+        <ModalHeader textAlign="center">Connect to Ledger Device</ModalHeader>
         <ModalBody minH={0} pb={6}>
-          <Text mb={4}>
+          <Text mb={8} textAlign="center">
             Please turn on your Ledger device, unlock the PIN code, and pick the
             connection type:
           </Text>
@@ -63,29 +65,35 @@ function DeviceSelectionModal() {
           )}
           <ButtonGroup w="100%">
             <Button
-              colorScheme="blue"
               onClick={() => connectDevice(LedgerTransports.Bluetooth)}
-              display="block"
               flex={1}
-              h={20}
+              h="60px"
               isDisabled={!IS_SUPPORTED}
+              variant="whiteModal"
+              display="flex"
+              flexDir="column"
             >
-              <IconBluetooth style={{ margin: 'auto' }} />
-              Bluetooth
+              <Flex alignItems="center" justifyContent="center" w="100%">
+                <IconBluetooth />
+                <Text>Bluetooth</Text>
+              </Flex>
               <Text fontSize="xx-small" mt={1}>
                 (Ledger Nano X)
               </Text>
             </Button>
             <Button
-              colorScheme="blue"
               onClick={() => connectDevice(LedgerTransports.WebUSB)}
-              display="block"
               flex={1}
-              h={20}
+              h="60px"
               isDisabled={!IS_SUPPORTED}
+              variant="whiteModal"
+              display="flex"
+              flexDir="column"
             >
-              <IconUsb style={{ margin: 'auto' }} />
-              WebUSB
+              <Flex alignItems="center" justifyContent="center" w="100%">
+                <IconUsb />
+                <Text>WebUSB</Text>
+              </Flex>
               <Text fontSize="xx-small" mt={1}>
                 (Ledger Nano S or S Plus)
               </Text>
@@ -115,9 +123,9 @@ function DeviceReconnectModal() {
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader>Reconnect to Ledger Device</ModalHeader>
+        <ModalHeader textAlign="center">Reconnect to Ledger Device</ModalHeader>
         <ModalBody minH={0} pb={6}>
-          <Text mb={4} color="red">
+          <Text mb={4} color="brand.red" textAlign="center">
             Cannot get access to the Hardware Wallet:
             <br />
             {connectionError}
@@ -134,14 +142,14 @@ function DeviceReconnectModal() {
         </ModalBody>
         <ModalFooter>
           <Button
-            variant="outline"
+            variant="whiteModal"
             colorScheme="red"
             onClick={disconnectAndClose}
           >
             Disconnect
           </Button>
           <Spacer />
-          <Button colorScheme="blue" onClick={reconnectDevice}>
+          <Button variant="whiteModal" onClick={reconnectDevice}>
             <IconRefresh style={{ margin: 'auto' }} />
             Reconnect
           </Button>
@@ -159,12 +167,14 @@ function DeviceApprovalModal() {
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
-        <ModalHeader>Sign Transaction on Ledger Device</ModalHeader>
+        <ModalHeader textAlign="center">
+          Sign Transaction on Ledger Device
+        </ModalHeader>
         <ModalBody minH={0} pb={6}>
           <Text>
             Please verify the transaction on your Ledger device and select
             either &quot;Approve&quot; or &quot;Reject&quot; option.
-            <Image src={ledgerLogo} width={100} mt={6} />
+            <Image src={ledgerLogo} width={100} mt={6} mx="auto" />
           </Text>
         </ModalBody>
       </ModalContent>
@@ -215,14 +225,19 @@ function WrongDeviceModal() {
 
 function NotConnected() {
   const { modalConnect } = useHardwareWallet();
+  const iconSize = useBreakpointValue({ base: 20, md: 28 }, { ssr: false });
+
   return (
     <>
       <IconButton
-        icon={<IconDeviceUsb size={BUTTON_ICON_SIZE} />}
+        icon={<IconDeviceUsb size={iconSize} />}
+        size="sm"
         title="Connect a Hardware Wallet"
         aria-label="Connect a Hardware Wallet"
-        ml={2}
+        m={{ base: 0, md: 2 }}
+        p={{ base: 0, md: 2 }}
         onClick={modalConnect.onOpen}
+        variant="dark"
       />
       <DeviceSelectionModal />
     </>
@@ -231,6 +246,7 @@ function NotConnected() {
 
 function Connected({ device }: { device: LedgerDevice }) {
   const { resetDevice } = useHardwareWallet();
+  const iconSize = useBreakpointValue({ base: 20, md: 28 }, { ssr: false });
 
   const TransportIcon =
     device.transportType === LedgerTransports.Bluetooth
@@ -240,11 +256,15 @@ function Connected({ device }: { device: LedgerDevice }) {
   return (
     <>
       <IconButton
-        icon={<TransportIcon size={BUTTON_ICON_SIZE} color="green" />}
+        icon={<TransportIcon size={iconSize} />}
+        size="sm"
         title="Disconnect a Hardware Wallet"
         aria-label="Disconnect a Hardware Wallet"
-        ml={2}
+        m={{ base: 1, md: 2 }}
+        p={0}
         onClick={resetDevice}
+        variant="white"
+        aspectRatio="1"
       />
       <DeviceReconnectModal />
       <DeviceApprovalModal />

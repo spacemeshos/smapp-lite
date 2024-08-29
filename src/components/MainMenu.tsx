@@ -5,9 +5,10 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  useBreakpointValue,
   useDisclosure,
 } from '@chakra-ui/react';
-import { IconMenu2 } from '@tabler/icons-react';
+import { IconSettings } from '@tabler/icons-react';
 
 import useMnemonics from '../hooks/useMnemonics';
 import useWallet from '../store/useWallet';
@@ -23,6 +24,7 @@ function MainMenu(): JSX.Element {
 
   const keyManagerDrawer = useDisclosure();
   const { revealMnemonics } = useMnemonics();
+  const iconSize = useBreakpointValue({ base: 20, md: 28 }, { ssr: false });
 
   return (
     <>
@@ -30,8 +32,11 @@ function MainMenu(): JSX.Element {
         <MenuButton
           as={IconButton}
           aria-label="Settings"
-          icon={<IconMenu2 />}
-          fontSize="sm"
+          icon={<IconSettings size={iconSize} />}
+          size="sm"
+          variant="dark"
+          m={{ base: 0, md: 2 }}
+          p={{ base: 0, md: 2 }}
         />
         <MenuList>
           <MenuItem onClick={keyManagerDrawer.onOpen}>

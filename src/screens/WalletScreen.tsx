@@ -14,6 +14,7 @@ import {
   TabPanels,
   Tabs,
   Text,
+  useBreakpointValue,
   useDisclosure,
 } from '@chakra-ui/react';
 import { O, pipe } from '@mobily/ts-belt';
@@ -81,6 +82,11 @@ function WalletScreen(): JSX.Element {
     ([account]) => account.state.current.balance
   );
 
+  const refreshIconSize = useBreakpointValue(
+    { base: '20px', md: '24px' },
+    { ssr: false }
+  );
+
   const unlockedBalance = useVaultBalance(
     currentAccount,
     currentNetwork,
@@ -91,118 +97,142 @@ function WalletScreen(): JSX.Element {
     <Flex
       direction="column"
       alignItems="center"
-      justifyContent="center"
+      justifyContent="flex-start"
       flexGrow={1}
-      width="100%"
+      w="100%"
+      p={{ base: 0, md: 8 }}
     >
       <Flex
-        // justifyContent="space-between"
-        alignItems="center"
-        width="100%"
-        fontSize="sm"
+        flexDir="column"
+        alignItems="start"
+        borderBottomWidth={1}
+        borderColor="brand.lightGray"
+        mb={2}
+        w="100%"
       >
-        <NetworkSelection />
-        <HardwareWalletConnect />
-        <Spacer />
-        <Box>
-          <MainMenu />
-          <LockWallet />
-        </Box>
+        <Flex alignItems="center" flexDir="row" w="100%">
+          <AccountSelection />
+          <Spacer />
+          <Flex display={{ base: 'flex', md: 'none' }} alignItems="end">
+            <MainMenu />
+            <LockWallet />
+            <HardwareWalletConnect />
+            <NetworkSelection />
+          </Flex>
+        </Flex>
+
+        <Flex alignItems="center" flexDir="row" fontSize="sm" w="100%">
+          <Box w="100%" fontSize="sm" borderRadius={6}>
+            {O.mapWithDefault(
+              currentAccount,
+              <Text color="yellow">
+                Please switch account to view balance.
+              </Text>,
+              (account) => (
+                <Flex alignItems="center">
+                  <Text fontSize={{ base: '12px', md: '16px' }} noOfLines={1}>
+                    {account.address}
+                  </Text>
+                  <CopyButton value={account.address} />
+                </Flex>
+              )
+            )}
+          </Box>
+
+          <Spacer />
+          <Flex display={{ base: 'none', md: 'flex' }} alignItems="end">
+            <MainMenu />
+            <LockWallet />
+            <HardwareWalletConnect />
+            <NetworkSelection />
+          </Flex>
+        </Flex>
       </Flex>
 
       <NodeStatusBadge />
 
-      <Box
-        mt={2}
-        p={4}
-        w="100%"
-        fontSize="sm"
-        bgColor="blackAlpha.400"
-        borderRadius={6}
-      >
-        <AccountSelection />
-
-        <Text fontWeight="bold" color="green.300">
+      {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
+      {O.mapWithDefault(accountData, <></>, ([account, network]) => (
+        <Flex
+          w="100%"
+          maxW="5xl"
+          flexGrow={1}
+          h="100%"
+          flexDir="column"
+          align="center"
+          py={{ base: 4, md: 8 }}
+        >
           {O.mapWithDefault(
             currentAccount,
-            'No account',
-            (acc) => acc.displayName
-          )}
-        </Text>
-        {O.mapWithDefault(
-          currentAccount,
-          <Text color="yellow">Please switch account to view balance.</Text>,
-          (account) => (
-            <>
-              <Text>
-                {account.address}
-                <CopyButton value={account.address} />
-              </Text>
-              <Text fontSize="3xl" mt={4} title={`${balance} Smidge`}>
-                {formatSmidge(balance)}
+            <Text color="yellow">Please switch account to view balance.</Text>,
+            () => (
+              <Flex alignItems="center">
+                <Text
+                  as="b"
+                  fontSize={{ base: '32px', md: '40px' }}
+                  title={`${balance} Smidge`}
+                >
+                  {formatSmidge(balance)}
+                </Text>
                 <IconButton
-                  ml={2}
-                  size="sm"
-                  variant="outline"
+                  ml={4}
+                  width={{ base: '21px', md: '27px' }}
+                  variant="whiteOutline"
                   disabled={isLoading}
                   icon={
                     isLoading ? (
                       <Spinner size="sm" />
                     ) : (
-                      <IconRefresh width={18} />
+                      <IconRefresh width={refreshIconSize} />
                     )
                   }
                   aria-label="Refresh balance"
                   onClick={() => refreshData()}
                   verticalAlign="text-bottom"
                 />
+              </Flex>
+            )
+          )}
+          {O.mapWithDefault(
+            unlockedBalance,
+            // eslint-disable-next-line react/jsx-no-useless-fragment
+            <></>,
+            ({ available }) => (
+              <Text
+                fontSize="md"
+                color="green.300"
+                title={`${available} Smidge`}
+              >
+                <Icon
+                  as={IconLockOpen2}
+                  display="inline-block"
+                  boxSize={4}
+                  mr={1}
+                  mb={-0.5}
+                />
+                {formatSmidge(available)} available
               </Text>
-              {O.mapWithDefault(
-                unlockedBalance,
-                // eslint-disable-next-line react/jsx-no-useless-fragment
-                <></>,
-                ({ available }) => (
-                  <Text
-                    fontSize="md"
-                    color="green.300"
-                    title={`${available} Smidge`}
-                  >
-                    <Icon
-                      as={IconLockOpen2}
-                      display="inline-block"
-                      boxSize={4}
-                      mr={1}
-                      mb={-0.5}
-                    />
-                    {formatSmidge(available)} available
-                  </Text>
-                )
-              )}
-            </>
-          )
-        )}
-      </Box>
-
-      {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
-      {O.mapWithDefault(accountData, <></>, ([account, network]) => (
-        <>
-          <ButtonGroup mt={2} mb={2} w="100%">
+            )
+          )}
+          <ButtonGroup mt={2} mb={2} w="full" justifyContent="center">
             <Button
-              w="50%"
-              h={14}
-              flexDirection="column"
-              p={2}
+              flexDirection="row"
               onClick={sendTxDisclosure.onOpen}
+              h="48px"
+              w="full"
+              maxW="223px"
+              variant="white"
             >
               <IconSend />
               Send
             </Button>
             <Button
-              w="50%"
-              h={14}
-              flexDirection="column"
-              p={2}
+              flexDirection="row"
               onClick={receiveModalDisclosure.onOpen}
+              h="48px"
+              w="full"
+              maxW="223px"
+              variant="white"
             >
               <IconQrcode />
               Receive
@@ -221,23 +251,10 @@ function WalletScreen(): JSX.Element {
             display="flex"
             flexGrow={1}
             flexDirection="column"
-            bgColor="blackAlpha.400"
             borderRadius={6}
-            colorScheme="green"
             position="relative"
           >
-            <Box
-              borderBottomRadius={6}
-              bgGradient="linear(to-b, rgba(0,0,0,0), blackAlpha.400)"
-              w="100%"
-              h="100px"
-              position="absolute"
-              bottom={0}
-              left={0}
-              right={0}
-              userSelect="none"
-            />
-            <TabList h={14}>
+            <TabList h={14} justifyContent="center" border="none">
               <Tab>Transactions</Tab>
               <Tab>Rewards</Tab>
             </TabList>
@@ -264,7 +281,7 @@ function WalletScreen(): JSX.Element {
             layerDurationSec={network.layerDuration}
             layersPerEpoch={network.layersPerEpoch}
           />
-        </>
+        </Flex>
       ))}
       <PasswordAlert />
       <SendTxModal

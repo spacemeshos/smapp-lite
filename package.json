@@ -22,8 +22,10 @@
     "cz": "cz"
   },
   "dependencies": {
+    "@chakra-ui/anatomy": "^2.2.2",
     "@chakra-ui/icons": "^2.0.17",
     "@chakra-ui/react": "^2.4.9",
+    "@chakra-ui/styled-system": "^2.9.2",
     "@emotion/react": "^11.8.1",
     "@emotion/styled": "^11.8.1",
     "@hookform/resolvers": "^3.4.0",

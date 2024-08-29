@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { CopyIcon } from '@chakra-ui/icons';
-import { IconButton, Tooltip } from '@chakra-ui/react';
+import { IconButton, Tooltip, useBreakpointValue } from '@chakra-ui/react';
 import { useCopyToClipboard } from '@uidotdev/usehooks';
+import { IconCopy } from '@tabler/icons-react';
 
 type CopyButtonProps = {
   value: string;
@@ -11,12 +11,14 @@ type CopyButtonProps = {
 function CopyButton({ value }: CopyButtonProps): JSX.Element {
   const [isCopied, setIsCopied] = useState(false);
   const [, copy] = useCopyToClipboard();
+  const iconSize = useBreakpointValue({ base: 14, md: 18 }, { ssr: false });
 
   let timeout: ReturnType<typeof setTimeout>;
 
   return (
     <Tooltip label="Copied" isOpen={isCopied}>
       <IconButton
+        variant="ghostWhite"
         aria-label="Copy to clipboard"
         size="xs"
         onClick={() => {
@@ -28,7 +30,7 @@ function CopyButton({ value }: CopyButtonProps): JSX.Element {
           }, 5000);
         }}
         disabled={isCopied}
-        icon={<CopyIcon />}
+        icon={<IconCopy size={iconSize} />}
         ml={1}
       />
     </Tooltip>
