@@ -1,6 +1,4 @@
-import { useState } from 'react';
-
-import { CheckCircleIcon, CopyIcon } from '@chakra-ui/icons';
+import { CheckCircleIcon } from '@chakra-ui/icons';
 import {
   Box,
   Drawer,
@@ -11,12 +9,9 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Flex,
-  IconButton,
   Text,
-  Tooltip,
   UseDisclosureReturn,
 } from '@chakra-ui/react';
-import { useCopyToClipboard } from '@uidotdev/usehooks';
 
 import { Transaction } from '../types/tx';
 import { generateAddress } from '../utils/bech32';
@@ -37,6 +32,7 @@ import {
   isVestingSpawnTransaction,
 } from '../utils/tx';
 
+import CopyButton from './CopyButton';
 import ExplorerButton from './ExplorerButton';
 
 type RowProps =
@@ -54,11 +50,6 @@ type RowProps =
     };
 
 function Row({ label, value, isCopyable, explorer }: RowProps) {
-  const [isCopied, setIsCopied] = useState(false);
-  const [, copy] = useCopyToClipboard();
-
-  let timeout: ReturnType<typeof setTimeout>;
-
   return (
     <Box mb={2}>
       <Text fontSize="xx-small" color="gray" userSelect="none">
@@ -68,27 +59,7 @@ function Row({ label, value, isCopyable, explorer }: RowProps) {
         <Text flex={1} wordBreak="break-word" pr={1}>
           {value}
         </Text>
-        {isCopyable && (
-          <Tooltip label="Copied" isOpen={isCopied}>
-            <IconButton
-              aria-label="Copy to clipboard"
-              size="xs"
-              onClick={() => {
-                clearTimeout(timeout);
-                copy(value);
-                setIsCopied(true);
-                timeout = setTimeout(() => {
-                  setIsCopied(false);
-                }, 5000);
-              }}
-              disabled={isCopied}
-              icon={<CopyIcon />}
-              variant="whiteOutline"
-              border="1px"
-              ml={1}
-            />
-          </Tooltip>
-        )}
+        {isCopyable && <CopyButton value={value} withOutline />}
         {explorer && (
           <ExplorerButton dataType={explorer} value={value} ml={1} />
         )}

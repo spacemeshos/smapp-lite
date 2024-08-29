@@ -361,7 +361,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                           </Text>
                           <Text mb={4}>
                             {acc.address}
-                            <CopyButton value={acc.address} />
+                            <CopyButton value={acc.address} withOutline />
                             <ExplorerButton
                               dataType="accounts"
                               value={acc.address}
