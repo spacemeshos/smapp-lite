@@ -2,10 +2,11 @@ import { IconButton, useBreakpointValue } from '@chakra-ui/react';
 import { IconLock } from '@tabler/icons-react';
 
 import useLockWallet from '../hooks/useLockWallet';
+import { MAIN_MENU_BUTTONS_SIZE } from '../utils/constants';
 
 function LockWallet(): JSX.Element {
   const lockWallet = useLockWallet();
-  const iconSize = useBreakpointValue({ base: 20, md: 28 }, { ssr: false });
+  const iconSize = useBreakpointValue(MAIN_MENU_BUTTONS_SIZE, { ssr: false });
 
   return (
     <IconButton
@@ -15,7 +16,7 @@ function LockWallet(): JSX.Element {
       onClick={lockWallet}
       m={{ base: 0, md: 2 }}
       p={{ base: 0, md: 2 }}
-      variant="dark"
+      variant="ghostWhite"
     />
   );
 }

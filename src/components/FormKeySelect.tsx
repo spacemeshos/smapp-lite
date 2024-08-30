@@ -64,7 +64,6 @@ function FormKeySelect<T extends FieldValues, FieldName extends Path<T>>({
       case KeyType.Foreign:
         return (
           <Input
-            variant="whitePill"
             {...register(fieldName, {
               required: isRequired ? 'Please pick the key' : false,
               validate: (val) =>
@@ -75,7 +74,7 @@ function FormKeySelect<T extends FieldValues, FieldName extends Path<T>>({
       case KeyType.Local:
       default:
         return (
-          <Select {...register(fieldName)} variant="whitePill">
+          <Select {...register(fieldName)}>
             {keys.map((key) => (
               <option key={key.publicKey} value={key.publicKey}>
                 {key.displayName} ({getAbbreviatedHexString(key.publicKey)})

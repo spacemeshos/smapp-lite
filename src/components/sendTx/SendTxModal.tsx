@@ -1104,7 +1104,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={close} isCentered size="2xl">
+      <Modal isOpen={isOpen} onClose={close} isCentered size="xl">
         <Form control={control}>
           <input
             type="hidden"
@@ -1149,7 +1149,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                 </Text>
               )}
             </ModalHeader>
-            <ModalBody minH={0}>
+            <ModalBody>
               {errors.root?.message && (
                 <Text mb={2} color="red">
                   {errors.root.message}
@@ -1201,7 +1201,9 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                     isSubmitted={isSubmitted}
                     inputAddon={
                       <InputRightElement w="auto" pr={2}>
-                        <Text fontSize="xs">Smidge per unit</Text>
+                        <Text fontSize="x-small" mr={2}>
+                          Smidge per unit
+                        </Text>
                       </InputRightElement>
                     }
                     hint={

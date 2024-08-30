@@ -4,6 +4,7 @@ import buttonTheme from './theme/button';
 import cardTheme from './theme/card';
 import checkboxTheme from './theme/checkbox';
 import drawerTheme from './theme/drawer';
+import formLabelTheme from './theme/formLabel';
 import inputTheme from './theme/input';
 import menuTheme from './theme/menu';
 import modalTheme from './theme/modal';
@@ -49,6 +50,7 @@ const components = {
   Radio: radioTheme,
   Input: inputTheme,
   Select: selectTheme,
+  FormLabel: formLabelTheme,
 };
 const theme = extendTheme({ config, colors, components, styles });
 

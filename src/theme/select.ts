@@ -21,6 +21,9 @@ const whitePill = definePartsStyle({
 
 const selectTheme = defineMultiStyleConfig({
   variants: { whitePill },
+  defaultProps: {
+    variant: 'whitePill',
+  },
 });
 
 export default selectTheme;

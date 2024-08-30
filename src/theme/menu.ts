@@ -15,16 +15,25 @@ const baseStyle = definePartsStyle({
     },
   },
   list: {
-    py: '4',
+    py: 0,
     borderRadius: 'xl',
     border: 'none',
     bg: 'brand.lightGray',
+    overflow: 'auto',
+    maxH: '65vh',
   },
   item: {
+    py: 2,
     color: 'brand.darkGreen',
     bg: 'brand.lightGray',
     _focus: {
-      bg: 'blackAlpha.100',
+      bg: 'blackAlpha.200',
+    },
+    _first: {
+      pt: 2.5,
+    },
+    _last: {
+      pb: 2.5,
     },
   },
   groupTitle: {
@@ -39,13 +48,13 @@ const baseStyle = definePartsStyle({
     fontFamily: 'mono',
     fontSize: 'sm',
     letterSpacing: 'tighter',
-    pl: '4',
+    pl: 4,
   },
   divider: {
-    my: '4',
-    mx: '2',
-    color: 'brand.darkGreen',
-    borderBottom: '2px ',
+    my: 2,
+    mx: 0,
+    color: 'brand.gray',
+    borderBottom: '1px ',
   },
 });
 

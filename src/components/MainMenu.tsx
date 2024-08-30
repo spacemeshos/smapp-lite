@@ -12,6 +12,7 @@ import { IconSettings } from '@tabler/icons-react';
 
 import useMnemonics from '../hooks/useMnemonics';
 import useWallet from '../store/useWallet';
+import { MAIN_MENU_BUTTONS_SIZE } from '../utils/constants';
 
 import KeyManager from './KeyManager';
 import MnemonicsModal from './MnemonicsModal';
@@ -24,7 +25,7 @@ function MainMenu(): JSX.Element {
 
   const keyManagerDrawer = useDisclosure();
   const { revealMnemonics } = useMnemonics();
-  const iconSize = useBreakpointValue({ base: 20, md: 28 }, { ssr: false });
+  const iconSize = useBreakpointValue(MAIN_MENU_BUTTONS_SIZE, { ssr: false });
 
   return (
     <>
@@ -34,7 +35,7 @@ function MainMenu(): JSX.Element {
           aria-label="Settings"
           icon={<IconSettings size={iconSize} />}
           size="sm"
-          variant="dark"
+          variant="ghostWhite"
           m={{ base: 0, md: 2 }}
           p={{ base: 0, md: 2 }}
         />

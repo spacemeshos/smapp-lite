@@ -31,7 +31,7 @@ function MultiSigSpawn({
 
   return (
     <>
-      <Text fontSize="sm" mb={1}>
+      <Text fontSize="sm" mt={2} textAlign="center" color="brand.gray">
         Spawn arguments are taken from Account settings.
       </Text>
       <FormInputViewOnly

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { Global } from '@emotion/react';
 
 function Fonts() {

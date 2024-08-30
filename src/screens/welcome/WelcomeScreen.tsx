@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom';
 
-import { Button, Flex, Image, Text } from '@chakra-ui/react';
+import { Button, Flex, Text } from '@chakra-ui/react';
 import { IconArrowNarrowRight } from '@tabler/icons-react';
 
-import logo from '../../assets/logo_white.svg';
+import Logo from '../../components/welcome/Logo';
 
 function WelcomeScreen(): JSX.Element {
   return (
     <Flex flexDir="column" alignItems="center" minH="80vh">
-      <Image src={logo} width={200} my={8} />
+      <Logo />
 
       <Flex
         flexDir="column"

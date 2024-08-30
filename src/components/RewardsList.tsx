@@ -30,7 +30,7 @@ function RewardsList({
   });
 
   return (
-    <TabPanel ref={parentRef} flexGrow={1} height={1} overflow="auto">
+    <TabPanel p={0} ref={parentRef} flexGrow={1} height={1} overflow="auto">
       <div
         style={{
           height: `${virt.getTotalSize()}px`,

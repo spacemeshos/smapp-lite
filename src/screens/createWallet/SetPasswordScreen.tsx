@@ -3,22 +3,19 @@ import { Form, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import {
+  Box,
   Button,
-  Card,
-  CardBody,
-  CardHeader,
   Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Image,
   Text,
 } from '@chakra-ui/react';
 import { IconArrowNarrowRight } from '@tabler/icons-react';
 
-import logo from '../../assets/logo_white.svg';
 import BackButton from '../../components/BackButton';
 import PasswordInput from '../../components/PasswordInput';
+import Logo from '../../components/welcome/Logo';
 import useWallet from '../../store/useWallet';
 
 import { useWalletCreation } from './WalletCreationContext';
@@ -63,125 +60,118 @@ function SetPasswordScreen(): JSX.Element {
       w={{ base: '100%', md: '75%' }}
       maxW="4xl"
     >
-      <Image src={logo} width={200} my={8} />
+      <Logo />
 
-      <Card
-        fontSize="sm"
-        marginY={4}
-        padding={0}
-        w={{ base: '100%', md: '50%' }}
-      >
-        <CardHeader mb={20} mt={4} textAlign="center">
-          <Text fontSize="xl" as="b">
-            Final step to access your wallet
-          </Text>
-        </CardHeader>
-        <CardBody>
-          <Form control={control}>
-            <FormControl
-              isRequired
-              isInvalid={isSubmitted && !!errors.password?.message}
-              mb={4}
-            >
-              <Flex w="100%" flexDir="column">
-                <FormLabel color="brand.lightAlphaGray" fontSize="small">
-                  Set the password:
-                </FormLabel>
-                <PasswordInput
-                  inputProps={
-                    isSubmitted && !!errors.password?.message
-                      ? {
-                          borderColor: 'brand.red',
-                          _hover: { borderColor: 'brand.red' },
-                          _focus: { borderColor: 'brand.red' },
-                        }
-                      : {}
-                  }
-                  register={register('password', {
-                    required: {
-                      value: true,
-                      message: 'Password cannot be empty',
-                    },
-                    minLength: {
-                      value: 8,
-                      message: 'Password should be at least 8 characters long',
-                    },
-                    validate: (val) => {
-                      const hasUpperCase = /[A-Z]/.test(val);
-                      const hasLowerCase = /[a-z]/.test(val);
-                      const hasNumbers = /\d/.test(val);
-                      const hasNonalphas = /\W/.test(val);
-                      if (
-                        !(
-                          hasUpperCase &&
-                          hasLowerCase &&
-                          hasNumbers &&
-                          hasNonalphas
-                        )
-                      ) {
-                        // eslint-disable-next-line max-len
-                        return 'Password should contain symbols in upper and lower cases, numbers, and special characters';
+      <Box px={4} w={{ base: '100%', md: '90%' }} textAlign="center">
+        <Text fontSize="xl" as="strong">
+          Final step to access your wallet
+        </Text>
+      </Box>
+      <Box w="280px" mt={4}>
+        <Form control={control}>
+          <FormControl
+            isRequired
+            isInvalid={isSubmitted && !!errors.password?.message}
+            mb={4}
+          >
+            <Flex w="100%" flexDir="column">
+              <FormLabel color="brand.lightAlphaGray" fontSize="small">
+                Set the password:
+              </FormLabel>
+              <PasswordInput
+                inputProps={
+                  isSubmitted && !!errors.password?.message
+                    ? {
+                        borderColor: 'brand.red',
+                        _hover: { borderColor: 'brand.red' },
+                        _focus: { borderColor: 'brand.red' },
                       }
-                      return undefined;
-                    },
-                  })}
-                />
-                {errors.password?.message && (
-                  <FormErrorMessage textColor="brand.red">
-                    {errors.password.message}
-                  </FormErrorMessage>
-                )}
-              </Flex>
-            </FormControl>
-            <FormControl
-              isRequired
-              isInvalid={isSubmitted && !!errors.confirm?.message}
-              mb={4}
-            >
-              <Flex w="100%" flexDir="column">
-                <FormLabel color="brand.lightAlphaGray" fontSize="small">
-                  Confirm the password:
-                </FormLabel>
-                <PasswordInput
-                  inputProps={
-                    isSubmitted && !!errors.password?.message
-                      ? {
-                          borderColor: 'brand.red',
-                          _hover: { borderColor: 'brand.red' },
-                          _focus: { borderColor: 'brand.red' },
-                        }
-                      : {}
-                  }
-                  register={register('confirm', {
-                    validate: (val, { password }) => {
-                      if (val !== password) {
-                        // eslint-disable-next-line max-len
-                        return 'Your passwords do not match';
-                      }
-                      return undefined;
-                    },
-                  })}
-                />
-                {errors.confirm?.message && (
-                  <FormErrorMessage textColor="brand.red">
-                    {errors.confirm.message}
-                  </FormErrorMessage>
-                )}
-              </Flex>
-            </FormControl>
-            <Flex width="100%" justifyContent="center" pt={10}>
-              <Button
-                type="submit"
-                variant="green"
-                onClick={onSubmit}
-                rightIcon={<IconArrowNarrowRight />}
-              >
-                Create wallet
-              </Button>
+                    : {}
+                }
+                register={register('password', {
+                  required: {
+                    value: true,
+                    message: 'Password cannot be empty',
+                  },
+                  minLength: {
+                    value: 8,
+                    message: 'Password should be at least 8 characters long',
+                  },
+                  validate: (val) => {
+                    const hasUpperCase = /[A-Z]/.test(val);
+                    const hasLowerCase = /[a-z]/.test(val);
+                    const hasNumbers = /\d/.test(val);
+                    const hasNonalphas = /\W/.test(val);
+                    if (
+                      !(
+                        hasUpperCase &&
+                        hasLowerCase &&
+                        hasNumbers &&
+                        hasNonalphas
+                      )
+                    ) {
+                      // eslint-disable-next-line max-len
+                      return 'Password should contain symbols in upper and lower cases, numbers, and special characters';
+                    }
+                    return undefined;
+                  },
+                })}
+              />
+              {errors.password?.message && (
+                <FormErrorMessage textColor="brand.red">
+                  {errors.password.message}
+                </FormErrorMessage>
+              )}
             </Flex>
-          </Form>
-        </CardBody>
-      </Card>
+          </FormControl>
+          <FormControl
+            isRequired
+            isInvalid={isSubmitted && !!errors.confirm?.message}
+            mb={4}
+          >
+            <Flex w="100%" flexDir="column">
+              <FormLabel color="brand.lightAlphaGray" fontSize="small">
+                Confirm the password:
+              </FormLabel>
+              <PasswordInput
+                inputProps={
+                  isSubmitted && !!errors.password?.message
+                    ? {
+                        borderColor: 'brand.red',
+                        _hover: { borderColor: 'brand.red' },
+                        _focus: { borderColor: 'brand.red' },
+                      }
+                    : {}
+                }
+                register={register('confirm', {
+                  validate: (val, { password }) => {
+                    if (val !== password) {
+                      // eslint-disable-next-line max-len
+                      return 'Your passwords do not match';
+                    }
+                    return undefined;
+                  },
+                })}
+              />
+              {errors.confirm?.message && (
+                <FormErrorMessage textColor="brand.red">
+                  {errors.confirm.message}
+                </FormErrorMessage>
+              )}
+            </Flex>
+          </FormControl>
+          <Flex width="100%" justifyContent="center" pt={10}>
+            <Button
+              type="submit"
+              variant="green"
+              onClick={onSubmit}
+              rightIcon={<IconArrowNarrowRight />}
+            >
+              Create wallet
+            </Button>
+          </Flex>
+        </Form>
+      </Box>
       <Flex width="100%" justifyContent="flex-start" mt={12}>
         <BackButton onClick={reset} />
       </Flex>

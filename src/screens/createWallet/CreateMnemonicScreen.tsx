@@ -4,12 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
   Flex,
-  Image,
   SimpleGrid,
   Text,
   useBreakpointValue,
@@ -17,8 +12,9 @@ import {
 import { IconArrowNarrowRight } from '@tabler/icons-react';
 import { useCopyToClipboard } from '@uidotdev/usehooks';
 
-import logo from '../../assets/logo_white.svg';
 import BackButton from '../../components/BackButton';
+import GreenHeader from '../../components/welcome/GreenHeader';
+import Logo from '../../components/welcome/Logo';
 import useWallet from '../../store/useWallet';
 
 import { useWalletCreation } from './WalletCreationContext';
@@ -30,7 +26,7 @@ function CreateMnemonicScreen(): JSX.Element {
   const [isCopied, setIsCopied] = useState(false);
   const [, copy] = useCopyToClipboard();
   const navigate = useNavigate();
-  const columns = useBreakpointValue({ base: 2, md: 3 }) ?? 2;
+  const columns = useBreakpointValue({ base: 2, md: 3 }, { ssr: false });
 
   let timeout: ReturnType<typeof setTimeout>;
 
@@ -51,116 +47,101 @@ function CreateMnemonicScreen(): JSX.Element {
       flexDir="column"
       alignItems="center"
       w={{ base: '100%', md: '75%' }}
-      maxW="4xl"
+      mb={4}
     >
-      <Image src={logo} width={200} my={8} />
+      <Logo />
 
-      <Card
-        fontSize="sm"
-        marginY={4}
-        padding={0}
+      <Box
+        px={4}
         w={{ base: '100%', md: '90%' }}
+        minH={{ base: '175px', md: '195px' }}
+        textAlign="center"
       >
-        <CardHeader pb={0} textAlign="center">
-          <Text
-            color="brand.green"
-            mb={4}
-            textAlign="center"
-            fontSize={{ base: '24px', md: '30px' }}
-            fontFamily="Univers63"
-          >
-            Create a new wallet
-          </Text>
-          <Text
-            as="b"
-            textAlign="center"
-            color="brand.lightGray"
-            fontSize={{ base: '16px', md: '20px' }}
-            fontFamily="Univers65"
-          >
-            Please, save the mnemonic to the safe place and do not share with
-            anyone.
-          </Text>
-        </CardHeader>
+        <GreenHeader>Create a new wallet</GreenHeader>
         <Text
-          as="u"
-          onClick={regenerateMnemonic}
-          paddingX={4}
-          paddingY={2}
+          as="strong"
           textAlign="center"
-          cursor="pointer"
+          color="brand.lightGray"
+          fontSize={{ base: '16px', md: '20px' }}
+          fontFamily="Univers65"
         >
-          Generate new mnemonics
+          Please, save the mnemonic to the safe place and do not share with
+          anyone.
         </Text>
-        <CardBody paddingY={10}>
-          <SimpleGrid
-            columns={columns}
-            spacing="0px"
-            gap={1}
-            bg="whiteAlpha.200"
-          >
-            {mnemonic.split(' ').map((word, idx) => (
-              <Box
-                // eslint-disable-next-line react/no-array-index-key
-                key={`${idx}_${word}`}
-                bg="brand.darkGreen"
-                p={{ base: 2, md: 4 }}
-              >
-                <Text
-                  as="span"
-                  color="whiteAlpha.400"
-                  fontFamily="Univers55"
-                  fontSize={{ base: '12px', md: '14px' }}
-                >
-                  {idx + 1}.{' '}
-                </Text>
-                {word}
-              </Box>
-            ))}
-          </SimpleGrid>
-        </CardBody>
-
-        <CardFooter pt={0} flexDirection="column">
-          <Flex flexDir="column" display={{ base: 'flex', md: 'none' }}>
-            <Button
-              variant="ghostWhite"
-              onClick={onCopyClick}
-              width="100%"
-              disabled={isCopied}
-              as="u"
-            >
-              {isCopied ? 'Copied to clipboard!' : 'Copy to clipboard'}
-            </Button>
-          </Flex>
-        </CardFooter>
-      </Card>
-
-      <Flex width="100%" justifyContent="space-between">
-        <BackButton />
-        <Flex flexDir="column" display={{ base: 'none', md: 'flex' }}>
+        <Box>
           <Button
-            variant="ghostWhite"
+            variant="linkWhite"
+            onClick={regenerateMnemonic}
+            fontSize="sm"
+            fontWeight="normal"
+            my={4}
+          >
+            Generate new mnemonics
+          </Button>
+        </Box>
+      </Box>
+      <Box px={4} w={{ base: '100%', md: '90%' }}>
+        <SimpleGrid columns={columns} spacing={0} gap="1px" bg="whiteAlpha.200">
+          {mnemonic.split(' ').map((word, idx) => (
+            <Box
+              // eslint-disable-next-line react/no-array-index-key
+              key={`${idx}_${word}`}
+              bg="brand.darkGreen"
+              p={{ base: 2, md: 3 }}
+              fontSize={{ base: '12px', md: '14px' }}
+            >
+              <Text
+                as="span"
+                color="whiteAlpha.400"
+                fontFamily="Univers55"
+                fontSize={{ base: '12px', md: '14px' }}
+              >
+                {idx + 1}.{' '}
+              </Text>
+              {word}
+            </Box>
+          ))}
+        </SimpleGrid>
+      </Box>
+
+      <Box width="100%" mt={10}>
+        <Box mb={4} display={{ base: 'flex', md: 'none' }}>
+          <Button
+            variant="linkWhite"
             onClick={onCopyClick}
             width="100%"
             disabled={isCopied}
-            as="u"
           >
             {isCopied ? 'Copied to clipboard!' : 'Copy to clipboard'}
           </Button>
+        </Box>
+
+        <Flex width="100%" justifyContent="space-between">
+          <BackButton />
+          <Box display={{ base: 'none', md: 'flex' }}>
+            <Button
+              variant="linkWhite"
+              onClick={onCopyClick}
+              width="100%"
+              disabled={isCopied}
+            >
+              {isCopied ? 'Copied to clipboard!' : 'Copy to clipboard'}
+            </Button>
+          </Box>
+          <Button
+            rightIcon={<IconArrowNarrowRight />}
+            paddingX={4}
+            paddingY={2}
+            onClick={() => {
+              ctx.setMnemonic(mnemonic);
+              navigate('/create/verify-mnemonic');
+            }}
+            variant="green"
+          >
+            Next step
+          </Button>
         </Flex>
-        <Button
-          rightIcon={<IconArrowNarrowRight />}
-          paddingX={4}
-          paddingY={2}
-          onClick={() => {
-            ctx.setMnemonic(mnemonic);
-            navigate('/create/verify-mnemonic');
-          }}
-          variant="green"
-        >
-          Next step
-        </Button>
-      </Flex>
+      </Box>
     </Flex>
   );
 }

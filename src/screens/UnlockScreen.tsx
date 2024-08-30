@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 
 import PasswordInput from '../components/PasswordInput';
+import Logo from '../components/welcome/Logo';
 import WipeOutAlert from '../components/WipeOutAlert';
 import useWallet from '../store/useWallet';
 
@@ -56,6 +57,8 @@ function UnlockScreen(): JSX.Element {
       justifyContent="space-around"
       minH="90vh"
     >
+      <Logo />
+
       <Flex
         direction="column"
         alignItems="center"
@@ -63,10 +66,12 @@ function UnlockScreen(): JSX.Element {
         flexGrow={1}
       >
         <Text
-          fontSize="xl"
-          mb={12}
+          as="strong"
+          textAlign="center"
+          color="brand.lightGray"
+          fontSize={{ base: '16px', md: '20px' }}
           fontFamily="Univers65"
-          size={{ base: '16px', md: '20px' }}
+          mb={4}
         >
           Unlock Wallet
         </Text>

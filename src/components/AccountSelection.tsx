@@ -33,16 +33,17 @@ function AccountSelection(): JSX.Element {
         as={Button}
         variant="ghostGreen"
         fontSize={{ base: '18px', md: '22px' }}
-        float="right"
         rightIcon={<IconChevronDown size={iconSize} />}
         px={0}
         noOfLines={1}
         justifyContent="center"
         display="flex"
+        ml="auto"
+        mr="auto"
       >
         {accounts[selectedAccount]?.displayName ?? 'Switch account'}
       </MenuButton>
-      <MenuList minWidth={240} maxW="100vw" maxH="80vh" overflow="auto">
+      <MenuList minWidth={240} maxW="100vw">
         <MenuOptionGroup
           type="radio"
           value={String(selectedAccount)}

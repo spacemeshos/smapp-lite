@@ -37,6 +37,9 @@ const whitePill = definePartsStyle({
 
 const inputTheme = defineMultiStyleConfig({
   variants: { darkPill, whitePill },
+  defaultProps: {
+    variant: 'whitePill',
+  },
 });
 
 export default inputTheme;

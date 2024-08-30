@@ -24,6 +24,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  Spacer,
   Text,
 } from '@chakra-ui/react';
 import { StdPublicKeys } from '@spacemesh/sm-codec';
@@ -390,7 +391,7 @@ function ConfirmationModal({
         <ModalHeader pt={0} textAlign="center" fontSize="xx-large">
           Verify transaction
         </ModalHeader>
-        <ModalBody minH={0}>
+        <ModalBody>
           {isLedgerRejected && (
             <Text mb={2} color="brand.red" textAlign="center">
               Transaction rejected by Ledger
@@ -444,7 +445,6 @@ function ConfirmationModal({
               >
                 <FormLabel>Sign transaction using key:</FormLabel>
                 <Select
-                  variant="whitePill"
                   {...register('signWith', {
                     value: eligibleKeys[0]?.publicKey,
                     required:
@@ -487,16 +487,37 @@ function ConfirmationModal({
             </>
           )}
         </ModalBody>
-        <ModalFooter justifyContent="space-between">
-          <Button
-            onClick={onClose}
-            ml={2}
-            variant="whiteModal"
-            leftIcon={<IconArrowNarrowLeft />}
+        <ModalFooter
+          justifyContent="space-between"
+          flexDirection={{ base: 'column', md: 'row' }}
+        >
+          <Box
+            flexGrow={1}
+            w="100%"
+            mt={{ base: 0, md: 0 }}
+            mb={{ base: 2, md: 0 }}
+            mr={2}
           >
-            Back
-          </Button>
-          {renderActions()}
+            <PreviewDataRow
+              label="Fee"
+              value={
+                estimatedGas
+                  ? `${formatSmidge(BigInt(form.gasPrice) * estimatedGas)}`
+                  : 'Loading...'
+              }
+            />
+          </Box>
+          <Flex w="100%">
+            <Button
+              onClick={onClose}
+              variant="whiteModal"
+              leftIcon={<IconArrowNarrowLeft />}
+            >
+              Back
+            </Button>
+            <Spacer />
+            {renderActions()}
+          </Flex>
         </ModalFooter>
       </ModalContent>
     </Modal>

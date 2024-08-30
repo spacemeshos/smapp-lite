@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   ButtonGroup,
+  Divider,
   Flex,
   Icon,
   IconButton,
@@ -100,56 +101,41 @@ function WalletScreen(): JSX.Element {
       justifyContent="flex-start"
       flexGrow={1}
       w="100%"
-      p={{ base: 0, md: 8 }}
+      pl={{ base: 0, md: 8 }}
+      pr={{ base: 0, md: 8 }}
     >
-      <Flex
-        flexDir="column"
-        alignItems="start"
-        borderBottomWidth={1}
-        borderColor="brand.lightGray"
-        mb={2}
-        w="100%"
-      >
+      <Flex flexDir="column" alignItems="start" mb={2} w="100%">
         <Flex alignItems="center" flexDir="row" w="100%">
-          <AccountSelection />
+          <NetworkSelection />
           <Spacer />
-          <Flex display={{ base: 'flex', md: 'none' }} alignItems="end">
-            <MainMenu />
-            <LockWallet />
-            <HardwareWalletConnect />
-            <NetworkSelection />
-          </Flex>
+          <HardwareWalletConnect />
+          <MainMenu />
+          <LockWallet />
         </Flex>
-
-        <Flex alignItems="center" flexDir="row" fontSize="sm" w="100%">
-          <Box w="100%" fontSize="sm" borderRadius={6}>
-            {O.mapWithDefault(
-              currentAccount,
-              <Text color="yellow">
-                Please switch account to view balance.
-              </Text>,
-              (account) => (
-                <Flex alignItems="center">
-                  <Text fontSize={{ base: '12px', md: '16px' }} noOfLines={1}>
-                    {account.address}
-                  </Text>
-                  <CopyButton value={account.address} />
-                </Flex>
-              )
-            )}
-          </Box>
-
-          <Spacer />
-          <Flex display={{ base: 'none', md: 'flex' }} alignItems="end">
-            <MainMenu />
-            <LockWallet />
-            <HardwareWalletConnect />
-            <NetworkSelection />
-          </Flex>
-        </Flex>
+        <NodeStatusBadge />
       </Flex>
+      <Divider />
 
-      <NodeStatusBadge />
+      <Box w="100%" mt={4}>
+        <AccountSelection />
+        {O.mapWithDefault(
+          currentAccount,
+          <Text color="yellow">Please switch account to view balance.</Text>,
+          (account) => (
+            <Flex alignItems="center">
+              <Spacer />
+              <Text
+                fontSize={{ base: '12px', md: '16px' }}
+                wordBreak="break-word"
+              >
+                {account.address}
+              </Text>
+              <CopyButton value={account.address} />
+              <Spacer />
+            </Flex>
+          )
+        )}
+      </Box>
 
       {/* eslint-disable-next-line react/jsx-no-useless-fragment */}
       {O.mapWithDefault(accountData, <></>, ([account, network]) => (
@@ -160,7 +146,6 @@ function WalletScreen(): JSX.Element {
           h="100%"
           flexDir="column"
           align="center"
-          py={{ base: 4, md: 8 }}
         >
           {O.mapWithDefault(
             currentAccount,
@@ -214,7 +199,12 @@ function WalletScreen(): JSX.Element {
               </Text>
             )
           )}
-          <ButtonGroup mt={2} mb={2} w="full" justifyContent="center">
+          <ButtonGroup
+            mt={{ base: 4, md: 6 }}
+            mb={2}
+            w="full"
+            justifyContent="center"
+          >
             <Button
               flexDirection="row"
               onClick={sendTxDisclosure.onOpen}

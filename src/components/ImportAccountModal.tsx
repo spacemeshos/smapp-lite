@@ -179,7 +179,6 @@ function ImportAccountModal({
               type="text"
               onChange={(e) => setDisplayName(e.target.value)}
               value={displayName}
-              variant="whitePill"
             />
           </FormControl>
           {accountData && (
