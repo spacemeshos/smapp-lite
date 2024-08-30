@@ -18,6 +18,7 @@ import {
   WalletFile,
   WalletMeta,
 } from '../types/wallet';
+import { isGCMEncrypted } from '../utils/aes-gcm';
 import Bip32KeyDerivation from '../utils/bip32';
 import { getISODate } from '../utils/datetime';
 import { toHexString } from '../utils/hexString';
@@ -35,7 +36,6 @@ import {
   generateMnemonic,
 } from '../utils/wallet';
 import { isLegacySecrets, migrateSecrets } from '../utils/wallet.legacy';
-import { isGCMEncrypted } from '../utils/aes-gcm';
 
 type WalletData = {
   meta: WalletMeta;
