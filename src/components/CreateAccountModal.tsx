@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Form, useForm } from 'react-hook-form';
 
 import {
+  Box,
   Button,
   Card,
   CardBody,
@@ -319,18 +320,9 @@ function CreateAccountModal({
               errors={errors}
               isSubmitted={isSubmitted}
             />
-            <Card shadow={0}>
-              <CardBody
-                pt={2}
-                pr={0}
-                pb={1}
-                pl={0}
-                bg="brand.modalGreen"
-                color="brand.lightGray"
-              >
-                {renderTemplateSpecificFields()}
-              </CardBody>
-            </Card>
+            <Box pt={2} pb={1} color="brand.lightGray">
+              {renderTemplateSpecificFields()}
+            </Box>
           </ModalBody>
           <ModalFooter>
             <Button onClick={submit} variant="whiteModal" w="full">
