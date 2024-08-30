@@ -4,22 +4,20 @@ import { Form, useNavigate } from 'react-router-dom';
 
 import { CheckCircleIcon, WarningIcon } from '@chakra-ui/icons';
 import {
+  Box,
   Button,
-  Card,
-  CardBody,
-  CardHeader,
   Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Image,
   Input,
   Text,
 } from '@chakra-ui/react';
 
-import logo from '../../assets/logo_white.svg';
 import BackButton from '../../components/BackButton';
 import PasswordInput from '../../components/PasswordInput';
+import GreenHeader from '../../components/welcome/GreenHeader';
+import Logo from '../../components/welcome/Logo';
 import useWallet from '../../store/useWallet';
 import { WalletFile } from '../../types/wallet';
 import { postpone } from '../../utils/promises';
@@ -96,70 +94,84 @@ function ImportScreen(): JSX.Element {
   });
 
   return (
-    <Flex direction="column" alignItems="center" justifyContent="center">
-      <Image src={logo} width={200} my={8} />
+    <Flex
+      flexDir="column"
+      alignItems="center"
+      w={{ base: '100%', md: '75%' }}
+      mb={4}
+    >
+      <Logo />
 
-      <Form>
-        <Card fontSize="sm" marginY={4} paddingX={[10, 20]} paddingY={5}>
-          <CardHeader>
-            <Text fontSize="xl" mb={4} mt={2} textAlign="center">
-              Import wallet file
-            </Text>
-          </CardHeader>
-          <CardBody textAlign="center">
-            <Text mb={4}>
-              Please choose the wallet file you want to import.
-            </Text>
-            <Input
-              ref={inputRef}
-              display="none"
-              type="file"
-              accept=".json"
-              onChange={readFile}
-            />
-            <Button
-              onClick={() => inputRef.current?.click()}
-              variant="whiteModal"
-              mb={4}
-            >
-              Select wallet file
-            </Button>
-            {walletFileContent && walletFileContent.meta?.displayName && (
-              <Text mb={4} color="green.400">
-                <CheckCircleIcon mr={2} mb={1} />
-                Wallet &quot;{walletFileContent.meta.displayName}&quot; loaded.
-              </Text>
-            )}
-            {errors.root?.message && (
-              <Text whiteSpace="pre-wrap" color="red" mb={4}>
-                <WarningIcon mr={2} mb={1} />
-                {errors.root.message}
-              </Text>
-            )}
-            <FormControl isInvalid={!!errors.password?.message}>
-              <FormLabel>Enter password:</FormLabel>
-              <PasswordInput register={register('password')} />
-              <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
-            </FormControl>
-          </CardBody>
-        </Card>
-        <Flex width="100%" justifyContent="space-between" pt={10}>
-          <BackButton />
-
+      <Box px={4} w={{ base: '100%', md: '90%' }} textAlign="center">
+        <GreenHeader>Import wallet file</GreenHeader>
+        <Text
+          as="strong"
+          textAlign="center"
+          color="brand.lightGray"
+          fontSize={{ base: '16px', md: '20px' }}
+          fontFamily="Univers65"
+        >
+          Please choose the wallet file you want to import.
+        </Text>
+      </Box>
+      <Box
+        mt={4}
+        w={{ base: '80%', md: '60%' }}
+        minW="280px"
+        maxW="360px"
+        textAlign="center"
+      >
+        <Form>
+          <Input
+            ref={inputRef}
+            display="none"
+            type="file"
+            accept=".json"
+            onChange={readFile}
+          />
           <Button
-            variant="green"
-            type="submit"
-            pt={2}
-            pb={2}
-            pl={4}
-            pr={4}
-            onClick={onSubmit}
-            disabled={isLoading}
+            onClick={() => inputRef.current?.click()}
+            variant="whiteModal"
+            mb={4}
           >
-            {isLoading ? 'Importing...' : 'Import wallet'}
+            Select wallet file
           </Button>
-        </Flex>
-      </Form>
+          {walletFileContent && walletFileContent.meta?.displayName && (
+            <Text mb={4} color="green.400">
+              <CheckCircleIcon mr={2} mb={1} />
+              Wallet &quot;{walletFileContent.meta.displayName}&quot; loaded.
+            </Text>
+          )}
+          {errors.root?.message && (
+            <Text whiteSpace="pre-wrap" color="red" mb={4}>
+              <WarningIcon mr={2} mb={1} />
+              {errors.root.message}
+            </Text>
+          )}
+          <FormControl isInvalid={!!errors.password?.message}>
+            <FormLabel>Enter password:</FormLabel>
+            <PasswordInput register={register('password')} />
+            <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
+          </FormControl>
+
+          <Flex width="100%" justifyContent="space-between" pt={10}>
+            <BackButton />
+
+            <Button
+              variant="green"
+              type="submit"
+              pt={2}
+              pb={2}
+              pl={4}
+              pr={4}
+              onClick={onSubmit}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Importing...' : 'Import wallet'}
+            </Button>
+          </Flex>
+        </Form>
+      </Box>
     </Flex>
   );
 }

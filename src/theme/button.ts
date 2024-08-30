@@ -42,6 +42,17 @@ const ghostWhite = defineStyle({
   },
 });
 
+const linkWhite = defineStyle({
+  textDecoration: 'underline',
+  borderRadius: 'full',
+  color: '#F0F0F0EE',
+  cursor: 'pointer',
+  _hover: {
+    color: 'brand.green',
+    textDecoration: 'none',
+  },
+});
+
 const whiteModal = defineStyle({
   bg: '#F0F0F0EE',
   borderColor: '#F0F0F0EE',
@@ -104,6 +115,7 @@ const buttonTheme = defineStyleConfig({
     ghostGreen,
     white,
     ghostWhite,
+    linkWhite,
     whiteModal,
     whiteOutline,
     danger,

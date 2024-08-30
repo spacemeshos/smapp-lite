@@ -5,13 +5,8 @@ import { useNavigate } from 'react-router-dom';
 
 import {
   Box,
-  BoxProps,
   Button,
-  Card,
-  CardBody,
-  CardHeader,
   Flex,
-  Image,
   SimpleGrid,
   Tag,
   Text,
@@ -20,8 +15,8 @@ import {
 import { D } from '@mobily/ts-belt';
 import { IconArrowNarrowRight } from '@tabler/icons-react';
 
-import logo from '../../assets/logo_white.svg';
 import BackButton from '../../components/BackButton';
+import Logo from '../../components/welcome/Logo';
 import getRandomIndexes from '../../utils/getRandomIndexes';
 
 import { useWalletCreation } from './WalletCreationContext';
@@ -114,36 +109,37 @@ function VerifyMnemonicScreen(): JSX.Element {
       flexDir="column"
       alignItems="center"
       w={{ base: '100%', md: '75%' }}
-      maxW="4xl"
+      mb={4}
     >
-      <Image src={logo} width={200} my={8} />
+      <Logo />
 
       <DndProvider backend={HTML5Backend}>
-        <Card
-          fontSize="sm"
-          marginY={4}
-          padding={0}
+        <Box
+          px={4}
           w={{ base: '100%', md: '90%' }}
+          minH={{ base: '175px', md: '195px' }}
+          textAlign="center"
         >
-          <CardHeader pb={0} textAlign="center">
-            <Text
-              mb={4}
-              fontSize={{ base: '16px', md: '20px' }}
-              fontFamily="Univers65"
-              textAlign="center"
-            >
-              Let&apos;s verify that you have written down your seed phrase and
-              will able to recover your accounts/funds later if needed.
-            </Text>
+          <Text
+            mb={4}
+            fontSize={{ base: '16px', md: '20px' }}
+            fontFamily="Univers65"
+            textAlign="center"
+          >
+            Let&apos;s verify that you have written down your seed phrase and
+            will able to recover your accounts/funds later if needed.
+          </Text>
 
-            <Text
-              mb={2}
-              fontSize={{ base: '11px', md: '14px' }}
-              fontFamily="Univers65"
-              textAlign="center"
-            >
-              Please, place the missing words on their places:
-            </Text>
+          <Text
+            mt={4}
+            mb={2}
+            fontSize={{ base: '11px', md: '14px' }}
+            fontFamily="Univers65"
+            textAlign="center"
+          >
+            Please, place the missing words on their places:
+          </Text>
+          <Box px={4} w={{ base: '100%', md: '90%' }}>
             <SimpleGrid columns={[2, 4]} width="100%" alignItems="center">
               {slots.bank.map((wordIndex) => (
                 <DraggableTag
@@ -157,87 +153,83 @@ function VerifyMnemonicScreen(): JSX.Element {
                 />
               ))}
             </SimpleGrid>
-          </CardHeader>
-          <CardBody paddingY={10}>
-            <SimpleGrid
-              columns={columns}
-              spacing="0px"
-              gap={1}
-              bg="whiteAlpha.200"
-            >
-              {words.map((word, idx) => {
-                const isSlot = indexesToCheck.includes(idx);
+          </Box>
+        </Box>
+        <Box px={4} w={{ base: '100%', md: '90%' }}>
+          <SimpleGrid
+            columns={columns}
+            spacing={0}
+            gap="1px"
+            bg="whiteAlpha.200"
+          >
+            {words.map((word, idx) => {
+              const isSlot = indexesToCheck.includes(idx);
 
-                if (isSlot) {
-                  const placedWord = slots[idx];
+              if (isSlot) {
+                const placedWord = slots[idx];
 
-                  return (
-                    <DroppableBox
-                      // eslint-disable-next-line react/no-array-index-key
-                      key={`droppable_${word}_${
-                        placedWord ? 'filled' : 'empty'
-                      }`}
-                      slot={idx}
-                      hasWordInside={!!placedWord}
-                    >
-                      {placedWord !== null && placedWord !== undefined ? (
-                        <DraggableTag
-                          placed
-                          key={`word_${words[placedWord]}`}
-                          word={words[placedWord] ?? ''}
-                          index={placedWord}
-                          from={idx}
-                          moveWord={moveWord}
-                          placeWord={placeWord}
-                          allWordsPlaced={allWordsPlaced}
-                          allWordsPlacedCorrectly={allWordsPlacedCorrectly}
-                        />
-                      ) : (
-                        <Text
-                          fontFamily="Univers55"
-                          fontSize={{ base: '12px', md: '14px' }}
-                          color="whiteAlpha.400"
-                          minH="20px"
-                        >
-                          {idx + 1}.{' '}
-                        </Text>
-                      )}
-                    </DroppableBox>
-                  );
-                }
                 return (
-                  <Flex
+                  <DroppableBox
                     // eslint-disable-next-line react/no-array-index-key
-                    key={`${idx}_${word}`}
-                    p={{ base: 2, md: 4 }}
-                    bg="brand.darkGreen"
-                    _hover={
-                      isSlot ? { background: 'blackAlpha.300' } : undefined
-                    }
-                    gap={1}
+                    key={`droppable_${word}`}
+                    slot={idx}
+                    hasWordInside={!!placedWord}
                   >
-                    <Text
-                      fontFamily="Univers55"
-                      fontSize={{ base: '12px', md: '14px' }}
-                      color="whiteAlpha.400"
-                    >
-                      {idx + 1}.
-                    </Text>
-                    <Text
-                      fontFamily="Univers55"
-                      fontSize={{ base: '12px', md: '14px' }}
-                    >
-                      {word}
-                    </Text>
-                  </Flex>
+                    {placedWord !== null && placedWord !== undefined ? (
+                      <DraggableTag
+                        placed
+                        key={`word_${words[placedWord]}`}
+                        word={words[placedWord] ?? ''}
+                        index={placedWord}
+                        from={idx}
+                        moveWord={moveWord}
+                        placeWord={placeWord}
+                        allWordsPlaced={allWordsPlaced}
+                        allWordsPlacedCorrectly={allWordsPlacedCorrectly}
+                      />
+                    ) : (
+                      <Text
+                        fontFamily="Univers55"
+                        fontSize={{ base: '12px', md: '14px' }}
+                        color="whiteAlpha.400"
+                        minH="20px"
+                      >
+                        {idx + 1}.{' '}
+                      </Text>
+                    )}
+                  </DroppableBox>
                 );
-              })}
-            </SimpleGrid>
-          </CardBody>
-        </Card>
+              }
+              return (
+                <Flex
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={`${idx}_${word}`}
+                  p={{ base: 2, md: 3 }}
+                  bg="brand.darkGreen"
+                  _hover={isSlot ? { background: 'blackAlpha.300' } : undefined}
+                  gap={1}
+                >
+                  <Text
+                    fontFamily="Univers55"
+                    fontSize={{ base: '12px', md: '14px' }}
+                    color="whiteAlpha.400"
+                  >
+                    {idx + 1}.
+                  </Text>
+                  <Text
+                    fontFamily="Univers55"
+                    fontSize={{ base: '12px', md: '14px' }}
+                  >
+                    {word}
+                  </Text>
+                </Flex>
+              );
+            })}
+          </SimpleGrid>
+        </Box>
       </DndProvider>
 
-      <Flex width="100%" justifyContent="space-between">
+      <Flex mt={10} width="100%" justifyContent="space-between">
         <BackButton />
 
         <Button
@@ -290,26 +282,27 @@ function DraggableTag({
     }),
   }));
 
-  const fullStyles = placed
-    ? {
-        p: 0,
-        m: 0,
-        minW: 0,
-        borderWidth: '0px',
-        minH: '20px',
-      }
-    : {
-        p: 2,
-        m: 2,
-        minW: 24,
-        borderWidth: '2px',
-        minH: '20px',
-      };
+  const placedStyles = {
+    p: 3,
+    m: 0,
+    borderWidth: 0,
+    borderRadius: 0,
+    w: '100%',
+    h: '100%',
+    display: 'block',
+    lineHeight: '20px',
+  };
+  const nonPlacedStyles = {
+    p: 2,
+    m: 2,
+    minW: 24,
+    borderWidth: '2px',
+    minH: '20px',
+  };
 
   return (
     <Tag
       ref={dragRef}
-      bg="transparent"
       color={
         placed && allWordsPlaced && !allWordsPlacedCorrectly
           ? 'brand.red'
@@ -323,17 +316,11 @@ function DraggableTag({
       alignItems="center"
       justifyContent="center"
       onClick={() => placeWord(index, from)}
-      {...fullStyles}
+      fontFamily="Univers55"
+      fontSize={{ base: '12px', md: '14px' }}
+      {...(placed ? placedStyles : nonPlacedStyles)}
     >
-      {placed && typeof from === 'number' ? (
-        <Text fontFamily="Univers55" fontSize={{ base: '12px', md: '14px' }}>
-          {from + 1}. {word}
-        </Text>
-      ) : (
-        <Text fontFamily="Univers55" fontSize={{ base: '12px', md: '14px' }}>
-          {word}
-        </Text>
-      )}
+      {placed && typeof from === 'number' ? `${from + 1}. ${word}` : word}
     </Tag>
   );
 }
@@ -359,8 +346,15 @@ function DroppableBox({
   return (
     <Box
       ref={dropRef}
-      bg={hasWordInside ? '#0B221C' : 'brand.darkGreen'}
-      p={{ base: 2, md: 4 }}
+      bg={
+        // eslint-disable-next-line no-nested-ternary
+        hasWordInside
+          ? '#0B221C'
+          : isOver
+          ? 'blackAlpha.300'
+          : 'brand.darkGreen'
+      }
+      p={hasWordInside ? 0 : { base: 2, md: 3 }}
     >
       {children}
     </Box>
