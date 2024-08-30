@@ -8,6 +8,11 @@ const baseStyle = definePartsStyle({
   overlay: {
     bg: 'blackAlpha.600',
   },
+  dialogContainer: {
+    overflow: 'auto',
+    pt: 16,
+    pb: [6, 16],
+  },
   dialog: {
     color: 'brand.lightGray',
     paddingX: [2, 6],
@@ -15,9 +20,7 @@ const baseStyle = definePartsStyle({
     paddingBottom: [4, 6],
     marginX: 2,
     borderRadius: '2xl',
-    bg: `brand.modalGreen`,
-    maxH: '90vh',
-    overflowY: 'auto',
+    bg: 'brand.modalGreen',
   },
 });
 
