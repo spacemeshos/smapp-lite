@@ -7,7 +7,7 @@ const DEFAULT_NETWORKS: Network[] = [
     explorerUrl: 'https://explorer.spacemesh.io',
     hrp: 'sm',
     genesisID: '9eebff023abb17ccb775c602daade8ed708f0a50',
-    genesisTime: 1689310800000,
+    genesisTime: 1689321600000,
     layerDuration: 300,
     layersPerEpoch: 4032,
   },
