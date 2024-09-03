@@ -27,6 +27,7 @@ import {
 } from '@tabler/icons-react';
 
 import AccountSelection from '../components/AccountSelection';
+import ConfirmationAlert from '../components/ConfirmationAlert';
 import CopyButton from '../components/CopyButton';
 import HardwareWalletConnect from '../components/HardwareWalletConnect';
 import LockWallet from '../components/LockWallet';
@@ -274,6 +275,7 @@ function WalletScreen(): JSX.Element {
         </Flex>
       ))}
       <PasswordAlert />
+      <ConfirmationAlert />
       <SendTxModal
         isOpen={sendTxDisclosure.isOpen}
         onClose={sendTxDisclosure.onClose}

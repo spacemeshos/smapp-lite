@@ -61,6 +61,7 @@ const useNetworks = create(
         }
         set({
           networks: [...A.removeAt(state.networks, idx)],
+          selectedIndex: idx === state.selectedIndex ? 0 : state.selectedIndex,
         });
       },
       switchNetwork: (idx: number) => {

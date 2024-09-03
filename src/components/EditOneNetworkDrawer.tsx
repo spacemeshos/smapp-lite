@@ -18,6 +18,7 @@ import {
 
 import { fetchNetworkInfo } from '../api/requests/netinfo';
 import useNetworks from '../store/useNetworks';
+import { formatTimestamp } from '../utils/datetime';
 import { normalizeURL } from '../utils/url';
 
 import FormInput from './FormInput';
@@ -67,7 +68,7 @@ function EditOneNetworkDrawer({ idx, isOpen, onClose }: Props): JSX.Element {
         explorer: network.explorerUrl,
         hrp: network.hrp,
         genesisID: network.genesisID,
-        genesisTime: new Date(network.genesisTime).toISOString().slice(0, 16),
+        genesisTime: formatTimestamp(network.genesisTime),
         layerDuration: String(network.layerDuration),
         layersPerEpoch: String(network.layersPerEpoch),
       });

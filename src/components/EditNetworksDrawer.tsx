@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import {
   Button,
@@ -18,9 +18,11 @@ import {
 } from '@chakra-ui/react';
 import { IconEdit, IconPointFilled, IconTrash } from '@tabler/icons-react';
 
+import useConfirmation from '../hooks/useConfirmation';
 import useNetworks from '../store/useNetworks';
 import { Network } from '../types/networks';
 import { BUTTON_ICON_SIZE } from '../utils/constants';
+import { formatTimestamp } from '../utils/datetime';
 import DEFAULT_NETWORKS from '../utils/defaultNetworks';
 
 import AddNetworkDrawer from './AddNetworkDrawer';
@@ -35,16 +37,50 @@ const isDefaultNetwork = (net: Network) => DEFAULT_NETWORKS.includes(net);
 
 function EditNetworksDrawer({ isOpen, onClose }: Props): JSX.Element {
   const [selectedNetwork, setSelectedNetwork] = useState(0);
-  const { networks } = useNetworks();
+  const { deleteNetwork, networks } = useNetworks();
   const editNetDrawer = useDisclosure();
   const drawerAdd = useDisclosure();
+  const { withConfirmation } = useConfirmation();
 
   const onEdit = (idx: number) => {
     setSelectedNetwork(idx);
     editNetDrawer.onOpen();
   };
   const onDelete = (idx: number) => {
-    // TODO
+    const network = networks[idx];
+    if (!network) {
+      throw new Error(
+        `Cannot delete the network (id: ${idx}) that is not exist`
+      );
+    }
+    withConfirmation(
+      () => deleteNetwork(idx),
+      'Delete network',
+      'Are you sure you want to delete this network?',
+      <>
+        <List spacing={2}>
+          <ListItem>
+            <Text fontSize="xs">Network name:</Text>
+            {network.name}
+          </ListItem>
+          <ListItem>
+            <Text fontSize="xs">JSON RPC URL:</Text>
+            {network.jsonRPC}
+          </ListItem>
+          <ListItem>
+            <Text fontSize="xs">Genesis ID:</Text>
+            {network.genesisID}
+          </ListItem>
+          <ListItem>
+            <Text fontSize="xs">Genesis Time:</Text>
+            {formatTimestamp(network.genesisTime)}
+          </ListItem>
+        </List>
+        <Text fontSize="xs" color="brand.gray" mt={4}>
+          You cannot undo this action, but you always can add the network again.
+        </Text>
+      </>
+    );
   };
 
   const firstNonDefaultNetwork = networks.findIndex(
@@ -69,9 +105,13 @@ function EditNetworksDrawer({ isOpen, onClose }: Props): JSX.Element {
           />
           <List cursor="default" userSelect="none">
             {networks.map((net, idx) => (
-              <>
+              <Fragment key={`network-${net.name}-${net.jsonRPC}`}>
                 {firstNonDefaultNetwork === idx && (
-                  <ListItem display="flex" alignItems="center">
+                  <ListItem
+                    display="flex"
+                    alignItems="center"
+                    key="non-defaults"
+                  >
                     <Text fontSize="xs" color="brand.gray" my={2}>
                       You cannot edit or delete default networks, but you may
                       create, edit and delete a custom ones.
@@ -107,7 +147,7 @@ function EditNetworksDrawer({ isOpen, onClose }: Props): JSX.Element {
                     isDisabled={isDefaultNetwork(net)}
                   />
                 </ListItem>
-              </>
+              </Fragment>
             ))}
           </List>
         </DrawerBody>
