@@ -4,8 +4,6 @@ import { Form, useForm } from 'react-hook-form';
 import {
   Box,
   Button,
-  Card,
-  CardBody,
   Modal,
   ModalBody,
   ModalCloseButton,
