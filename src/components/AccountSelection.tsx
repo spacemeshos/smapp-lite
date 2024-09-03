@@ -34,7 +34,7 @@ function AccountSelection(): JSX.Element {
         variant="ghostGreen"
         fontSize={{ base: '18px', md: '22px' }}
         rightIcon={<IconChevronDown size={iconSize} />}
-        px={0}
+        pr={1}
         noOfLines={1}
         justifyContent="center"
         display="flex"

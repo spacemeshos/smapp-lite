@@ -13,6 +13,8 @@ type NetworkState = {
 
 type NetworkActions = {
   addNetwork: (net: Network) => void;
+  editNetwork: (idx: number, net: Network) => void;
+  deleteNetwork: (idx: number) => void;
   switchNetwork: (idx: number) => void;
 };
 
@@ -42,6 +44,24 @@ const useNetworks = create(
           const i = newState.networks.findIndex((n) => n === net);
           set({ selectedIndex: i });
         }
+      },
+      editNetwork: (idx: number, net: Network) => {
+        const state = get();
+        if (!state.networks[idx]) {
+          throw new Error(`Cannot edit network with index ${idx}`);
+        }
+        set({
+          networks: [...A.updateAt(state.networks, idx, () => net)],
+        });
+      },
+      deleteNetwork: (idx: number) => {
+        const state = get();
+        if (!state.networks[idx]) {
+          throw new Error(`Cannot delete network with index ${idx}`);
+        }
+        set({
+          networks: [...A.removeAt(state.networks, idx)],
+        });
       },
       switchNetwork: (idx: number) => {
         const state = get();
