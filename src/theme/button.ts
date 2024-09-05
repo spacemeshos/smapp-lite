@@ -93,9 +93,9 @@ const whiteModal = defineStyle({
 
 const whiteOutline = defineStyle({
   bg: 'brand.darkGreen',
-  borderColor: '#F0F0F0',
+  borderColor: 'brand.lightGray',
   borderWidth: '2px',
-  textColor: '#F0F0F0',
+  textColor: 'brand.lightGray',
   borderRadius: 'full',
   _hover: {
     bg: 'brand.darkGreen',
@@ -117,6 +117,21 @@ const danger = defineStyle({
     borderColor: 'red.500',
     borderWidth: '2px',
     textColor: 'brand.lightGray',
+  },
+});
+const dangerOutline = defineStyle({
+  bg: 'brand.darkGreen',
+  borderColor: 'brand.lightGray',
+  borderWidth: '2px',
+  textColor: 'brand.red',
+  fillColor: 'brand.red',
+  borderRadius: 'full',
+  _hover: {
+    bg: 'brand.darkGreen',
+    borderColor: 'brand.red',
+    borderWidth: '2px',
+    textColor: 'brand.red',
+    fillColor: 'brand.red',
   },
 });
 
@@ -146,6 +161,7 @@ const buttonTheme = defineStyleConfig({
     whiteModal,
     whiteOutline,
     danger,
+    dangerOutline,
     outline,
   },
 });
