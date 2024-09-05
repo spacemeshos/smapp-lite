@@ -101,6 +101,14 @@ type WalletActions = {
     spawnArguments: T,
     password: string
   ) => Promise<Account<T>>;
+  editAccount: <T extends AnySpawnArguments>(
+    idx: number,
+    displayName: string,
+    templateAddress: StdTemplateKeys,
+    spawnArguments: T,
+    password: string
+  ) => Promise<Account<T>>;
+  deleteAccount: (idx: number, password: string) => Promise<boolean>;
 };
 
 type WalletSelectors = {
@@ -395,6 +403,68 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
       });
 
       return acc;
+    },
+    editAccount: async (
+      idx,
+      displayName,
+      templateAddress,
+      spawnArguments,
+      password
+    ) => {
+      const wallet = await get().loadWalletWithSecrets(password);
+      const acc = wallet.crypto.accounts[idx];
+      if (!acc) {
+        throw new Error(`Cannot find an account by index "${idx}"`);
+      }
+      const newAcc = {
+        ...acc,
+        displayName,
+        templateAddress,
+        spawnArguments,
+      };
+      // Preparing secret part of the wallet
+      const newSecrets = {
+        ...wallet.crypto,
+        accounts: [...A.updateAt(wallet.crypto.accounts, idx, () => newAcc)],
+      };
+      // Updating App state
+      set({
+        wallet: extractData({
+          meta: wallet.meta,
+          crypto: newSecrets,
+        }),
+      });
+      // Saving a wallet file in the storage
+      saveToLocalStorage(WALLET_STORE_KEY, {
+        ...wallet,
+        crypto: await encryptWallet(newSecrets, password),
+      });
+
+      return newAcc;
+    },
+    deleteAccount: async (idx, password) => {
+      const wallet = await get().loadWalletWithSecrets(password);
+      const acc = wallet.crypto.accounts[idx];
+      if (!acc) {
+        throw new Error(`Cannot find an account by index "${idx}"`);
+      }
+      const newSecrets = {
+        ...wallet.crypto,
+        accounts: [...A.removeAt(wallet.crypto.accounts, idx)],
+      };
+      // Updating App state
+      set({
+        wallet: extractData({
+          meta: wallet.meta,
+          crypto: newSecrets,
+        }),
+      });
+      // Saving a wallet file in the storage
+      saveToLocalStorage(WALLET_STORE_KEY, {
+        ...wallet,
+        crypto: await encryptWallet(newSecrets, password),
+      });
+      return true;
     },
     // Selectors
     hasWallet: () => {

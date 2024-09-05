@@ -57,6 +57,7 @@ import { safeKeyForAccount } from '../utils/wallet';
 import CopyButton from './CopyButton';
 import CreateAccountModal from './CreateAccountModal';
 import CreateKeyPairModal from './CreateKeyPairModal';
+import EditAccountModal from './EditAccountModal';
 import ExplorerButton from './ExplorerButton';
 import ImportAccountModal from './ImportAccountModal';
 import ImportKeyFromLedgerModal from './ImportKeyFromLedgerModal';
@@ -101,7 +102,7 @@ const renderSingleKey = (key: SafeKeyWithType): JSX.Element =>
   );
 
 function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
-  const { wallet, deleteKey } = useWallet();
+  const { wallet, deleteKey, deleteAccount } = useWallet();
   const hrp = useCurrentHRP();
   const accounts = useAccountsList(hrp);
 
@@ -115,8 +116,10 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
   const importFromLedgerModal = useDisclosure();
   const createAccountModal = useDisclosure();
   const importAccountModal = useDisclosure();
+  const editAccountModal = useDisclosure();
 
   const [renameKeyIdx, setRenameKeyIdx] = useState(0);
+  const [editAccountIdx, setEditAccountIdx] = useState(0);
 
   const closeHandler = () => {
     onClose();
@@ -139,6 +142,25 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
       'Are you sure you want to delete this key?',
       // eslint-disable-next-line max-len
       'You cannot undo this action, but you always can import the key again or derive it if you know the path.',
+      true
+    );
+  const onEditAccount = (idx: number) => {
+    setEditAccountIdx(idx);
+    editAccountModal.onOpen();
+  };
+  const onDeleteAccount = (idx: number) =>
+    withConfirmation(
+      () =>
+        withPassword(
+          (pass) => deleteAccount(idx, pass),
+          'Delete Account',
+          // eslint-disable-next-line max-len
+          'Please type in the password to delete the account and store the wallet secrets without it'
+        ),
+      'Delete key',
+      'Are you sure you want to delete this account?',
+      // eslint-disable-next-line max-len
+      'You cannot undo this action, but you always can create or import the account again.',
       true
     );
 
@@ -287,7 +309,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                           size="xs"
                         />
                         <IconButton
-                          ml={2}
+                          ml={1}
                           aria-label="Delete key"
                           onClick={() => onDeleteKey(idx)}
                           icon={<IconTrash size={12} />}
@@ -332,7 +354,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                   </Button>
                 </Flex>
                 <Box flex={1}>
-                  {accounts.map((acc) => {
+                  {accounts.map((acc, idx) => {
                     const keys = getKeysByAccount(acc);
                     return (
                       <Box
@@ -361,10 +383,38 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                         </Button>
                         <Text fontSize="md">
                           <strong>{acc.displayName}</strong>
+                          <IconButton
+                            ml={2}
+                            aria-label="Edit account"
+                            onClick={() => onEditAccount(idx)}
+                            icon={<IconEdit size={12} />}
+                            variant="whiteOutline"
+                            borderWidth={1}
+                            size="xs"
+                          />
+                          <IconButton
+                            ml={1}
+                            aria-label="Delete account"
+                            onClick={() => onDeleteAccount(idx)}
+                            icon={<IconTrash size={12} />}
+                            variant="dangerOutline"
+                            borderWidth={1}
+                            size="xs"
+                          />
+                        </Text>
+                        <Text mt={1}>
+                          {acc.address}
+                          <CopyButton value={acc.address} withOutline />
+                          <ExplorerButton
+                            dataType="accounts"
+                            value={acc.address}
+                            ml={1}
+                          />
+                        </Text>
+                        <Text fontSize="md">
                           <Badge
                             fontWeight="normal"
                             fontSize="xx-small"
-                            ml={1}
                             colorScheme={getTemplateColorByKey(
                               acc.templateAddress
                             )}
@@ -400,15 +450,6 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                               </>
                             )}
                           </Badge>
-                        </Text>
-                        <Text mb={4}>
-                          {acc.address}
-                          <CopyButton value={acc.address} withOutline />
-                          <ExplorerButton
-                            dataType="accounts"
-                            value={acc.address}
-                            ml={1}
-                          />
                         </Text>
 
                         <Box color="grey">
@@ -459,6 +500,11 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
             accounts={accounts}
             isOpen={importAccountModal.isOpen}
             onClose={importAccountModal.onClose}
+          />
+          <EditAccountModal
+            accountIndex={editAccountIdx}
+            isOpen={editAccountModal.isOpen}
+            onClose={editAccountModal.onClose}
           />
         </DrawerBody>
       </DrawerContent>

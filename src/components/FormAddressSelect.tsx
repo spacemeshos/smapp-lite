@@ -66,24 +66,35 @@ function FormAddressSelect<T extends FieldValues, FieldName extends Path<T>>({
   setValue,
   getValues,
 }: Props<T, FieldName>): JSX.Element {
+  const value = getValues(fieldName);
+  const isLocalAddress = !!accounts.find((x) => x.address === value);
   const [origin, setOrigin] = useState(
-    defaultForeign ? Origin.Foreign : Origin.Local
+    defaultForeign || (value && !isLocalAddress) ? Origin.Foreign : Origin.Local
   );
   const prevOrigin = useRef(origin);
+
   useEffect(() => () => unregister(fieldName), [unregister, fieldName, origin]);
   useEffect(() => {
     const firstLocal = accounts?.[0]?.address;
-    const val = getValues(fieldName);
-    const foundVal = accounts.find((x) => x.address === val);
     if (
       prevOrigin.current !== origin &&
       origin === Origin.Local &&
       !!firstLocal &&
-      !foundVal
+      !isLocalAddress
     ) {
+      // If switched from foreign to local,
+      // but values is not a local one — switch to the first local
       setValue(fieldName, firstLocal as PathValue<T, FieldName>);
     }
-  }, [prevOrigin, origin, accounts, setValue, fieldName, getValues]);
+  }, [
+    prevOrigin,
+    origin,
+    accounts,
+    setValue,
+    fieldName,
+    value,
+    isLocalAddress,
+  ]);
 
   const error = get(errors, fieldName) as FieldError | undefined;
   const renderInputs = () => {
@@ -93,9 +104,7 @@ function FormAddressSelect<T extends FieldValues, FieldName extends Path<T>>({
           <Input
             {...register(fieldName, {
               required: isRequired ? 'Please pick the address' : false,
-              value: (!defaultForeign
-                ? accounts[0]?.address ?? ''
-                : '') as PathValue<T, FieldName>,
+              value,
               validate: (val) => {
                 try {
                   Bech32AddressSchema.parse(val);
@@ -110,7 +119,14 @@ function FormAddressSelect<T extends FieldValues, FieldName extends Path<T>>({
       case Origin.Local:
       default:
         return (
-          <Select {...register(fieldName)}>
+          <Select
+            {...register(fieldName, {
+              value: ((value || accounts[0]?.address) ?? '') as PathValue<
+                T,
+                FieldName
+              >,
+            })}
+          >
             {accounts.map((acc) => (
               <option
                 key={`${acc.address}_${acc.displayName}`}
