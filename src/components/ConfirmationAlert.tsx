@@ -44,7 +44,7 @@ function ConfirmationAlert(): JSX.Element {
           </Button>
           <Button
             type="submit"
-            variant="whiteModal"
+            variant={disclosure.isDanger ? 'danger' : 'whiteModal'}
             onClick={disclosure.onSubmit}
             ml={3}
           >

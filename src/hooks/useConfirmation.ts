@@ -15,7 +15,8 @@ type UseConfirmationReturnType = {
     callback: Callback<T>,
     actionLabel: string,
     header: JSX.Element | string | null,
-    content: JSX.Element | string | null
+    content: JSX.Element | string | null,
+    isDanger?: boolean
   ) => Promise<T | null>;
   disclosure: {
     isOpen: boolean;
@@ -24,6 +25,7 @@ type UseConfirmationReturnType = {
     header: JSX.Element | string | null;
     content: JSX.Element | string | null;
     actionLabel: string;
+    isDanger: boolean;
   };
 };
 
@@ -32,6 +34,7 @@ const usePassword = (): UseConfirmationReturnType => {
   const [header, setHeader] = useState<JSX.Element | string | null>(null);
   const [content, setContent] = useState<JSX.Element | string | null>(null);
   const [actionLabel, setActionLabel] = useState<string>('Proceed');
+  const [isDanger, setIsDanger] = useState(false);
   const [callback, setCallback] = useState<Callback | null>(null);
 
   // Handlers for Alert Form
@@ -71,12 +74,14 @@ const usePassword = (): UseConfirmationReturnType => {
     cb: Callback<T>,
     _actionLabel: string,
     _header: JSX.Element | string | null,
-    _content: JSX.Element | string | null
+    _content: JSX.Element | string | null,
+    _isDanger = false
   ): Promise<T | null> => {
     setCallback(() => cb);
     setActionLabel(_actionLabel);
     setHeader(_header);
     setContent(_content);
+    setIsDanger(_isDanger);
     onOpen();
     return waitForIt<T>();
   };
@@ -90,6 +95,7 @@ const usePassword = (): UseConfirmationReturnType => {
       header,
       content,
       actionLabel,
+      isDanger,
     },
   };
 };
@@ -104,6 +110,7 @@ export default singletonHook(
       header: null,
       content: null,
       actionLabel: 'Proceed',
+      isDanger: false,
     },
   },
   usePassword
