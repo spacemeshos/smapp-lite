@@ -1,6 +1,7 @@
 import fileDownload from 'js-file-download';
 import { create } from 'zustand';
 
+import { A } from '@mobily/ts-belt';
 import * as bip39 from '@scure/bip39';
 import { StdPublicKeys, StdTemplateKeys } from '@spacemesh/sm-codec';
 
@@ -88,6 +89,8 @@ type WalletActions = {
     password: string,
     withSingleSig?: boolean
   ) => Promise<SafeKey>;
+  renameKey: (idx: number, name: string, password: string) => Promise<SafeKey>;
+  deleteKey: (idx: number, password: string) => Promise<boolean>;
   revealSecretKey: (
     publicKey: HexString,
     password: string
@@ -296,6 +299,59 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
       };
       await get().addKeyPair(kp, password, withSingleSig);
       return ensafeKeyPair(kp);
+    },
+    renameKey: async (idx, name, password) => {
+      const wallet = await get().loadWalletWithSecrets(password);
+      const key = wallet.crypto.keys[idx];
+      if (!key) {
+        throw new Error(`Cannot find a key pair by index "${idx}"`);
+      }
+      const newKey = {
+        ...key,
+        displayName: name,
+      };
+      // Preparing secret part of the wallet
+      const newSecrets = {
+        ...wallet.crypto,
+        keys: [...A.updateAt(wallet.crypto.keys, idx, () => newKey)],
+      };
+      // Updating App state
+      set({
+        wallet: extractData({
+          meta: wallet.meta,
+          crypto: newSecrets,
+        }),
+      });
+      // Saving a wallet file in the storage
+      saveToLocalStorage(WALLET_STORE_KEY, {
+        ...wallet,
+        crypto: await encryptWallet(newSecrets, password),
+      });
+      return ensafeKeyPair(newKey);
+    },
+    deleteKey: async (idx, password) => {
+      const wallet = await get().loadWalletWithSecrets(password);
+      const key = wallet.crypto.keys[idx];
+      if (!key) {
+        throw new Error(`Cannot find a key pair by index "${idx}"`);
+      }
+      const newSecrets = {
+        ...wallet.crypto,
+        keys: [...A.removeAt(wallet.crypto.keys, idx)],
+      };
+      // Updating App state
+      set({
+        wallet: extractData({
+          meta: wallet.meta,
+          crypto: newSecrets,
+        }),
+      });
+      // Saving a wallet file in the storage
+      saveToLocalStorage(WALLET_STORE_KEY, {
+        ...wallet,
+        crypto: await encryptWallet(newSecrets, password),
+      });
+      return true;
     },
     revealSecretKey: async (publicKey, password) => {
       const wallet = await get().loadWalletWithSecrets(password);

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
   ArrayPath,
   Control,
@@ -16,6 +16,7 @@ import { IconPlus, IconTrash } from '@tabler/icons-react';
 
 import { SafeKey } from '../types/wallet';
 import { BUTTON_ICON_SIZE, MAX_MULTISIG_AMOUNT } from '../utils/constants';
+import { noop } from '../utils/func';
 
 import FormKeySelect from './FormKeySelect';
 
@@ -27,6 +28,7 @@ type Props<T extends FieldValues, FieldName extends ArrayPath<T>> = {
   unregister: UseFormUnregister<T>;
   errors: FieldErrors<T>;
   isSubmitted?: boolean;
+  values?: string[];
 };
 
 function FormMultiKeySelect<
@@ -40,15 +42,41 @@ function FormMultiKeySelect<
   unregister,
   errors,
   isSubmitted = false,
+  values = [],
 }: Props<T, FieldName>): JSX.Element {
   const { fields, append, remove } = useFieldArray({
     control,
     name: fieldName,
   });
   const addEmptyField = useCallback(
-    () => append((keys[0]?.publicKey ?? '0x01') as FieldArray<T, FieldName>),
-    [append, keys]
+    () =>
+      append(
+        (keys[fields.length]?.publicKey ||
+          `0x${String(fields.length).padStart(2, '0')}`) as FieldArray<
+          T,
+          FieldName
+        >
+      ),
+    [append, fields.length, keys]
   );
+
+  useEffect(() => {
+    // Have at least one field by default
+    if (!values) {
+      append(keys[0]?.publicKey as FieldArray<T, FieldName>);
+    }
+  }, [append, keys, values]);
+
+  useEffect(() => {
+    if (values.length === 0) {
+      return noop;
+    }
+    // In case there are some values — restore them in the form
+    values.forEach((_, idx) => append(idx as FieldArray<T, FieldName>));
+    return () => {
+      values.forEach((_, idx) => remove(idx));
+    };
+  }, [values, append, remove]);
 
   const rootError = errors[fieldName]?.message;
   return (
@@ -68,6 +96,7 @@ function FormMultiKeySelect<
           errors={errors}
           isSubmitted={isSubmitted}
           isRequired
+          value={values[index] || keys[index]?.publicKey}
         >
           <IconButton
             icon={<IconTrash size={BUTTON_ICON_SIZE} />}
