@@ -34,7 +34,7 @@ export const GENESIS_VESTING_ACCOUNTS = {
   sm1qqqqqqqqgh8qhqh3ltv9uq0klm404lwjsf9jdagh7kyj0: 333300000000000n,
   sm1qqqqqq8upt9xtyt5lclxneqmdpaus6j37ma2ecc4fp5qq: 859100000000000n,
   sm1qqqqqqrfa0yrzehxujdn7w400afw2e7pv4na2ac8sya0k: 293300000000000n,
-  sm1qqqqqqz2ja3vag3xwqdx9z2mukgdx3qdvqh2jequjn5t2: 1990600000000000n,
+  sm1qqqqqqz3hlf5mjvt7gcpkxnsxd7fahr3zksl0psds3uwj: 1990600000000000n,
   sm1qqqqqqxehnxnamgm5cqdtuqvg7jnhnsq5ug3s4g3d2xa7: 409100000000000n,
   sm1qqqqqqz43tzlzqyp695je2tk68a7r707vzxuc0ghj8awp: 2933540000000000n,
   sm1qqqqqqqm5aejp8saqp0mq7z5tkxw6vfd9v2nu2gekut5s: 2933540000000000n,
