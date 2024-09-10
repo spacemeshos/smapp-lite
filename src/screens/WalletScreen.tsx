@@ -43,7 +43,10 @@ import TxList from '../components/TxList';
 import useDataRefresher from '../hooks/useDataRefresher';
 import { useCurrentHRP } from '../hooks/useNetworkSelectors';
 import useVaultBalance from '../hooks/useVaultBalance';
-import { useCurrentAccount } from '../hooks/useWalletSelectors';
+import {
+  useAccountsList,
+  useCurrentAccount,
+} from '../hooks/useWalletSelectors';
 import useAccountData from '../store/useAccountData';
 import useNetworks from '../store/useNetworks';
 import { Transaction } from '../types/tx';
@@ -72,6 +75,7 @@ function WalletScreen(): JSX.Element {
 
   const hrp = useCurrentHRP();
   const currentAccount = useCurrentAccount(hrp);
+  const accountList = useAccountsList(hrp);
 
   const accountData = pipe(
     O.zip(currentNetwork, currentAccount),
@@ -121,7 +125,21 @@ function WalletScreen(): JSX.Element {
         <AccountSelection />
         {O.mapWithDefault(
           currentAccount,
-          <Text color="yellow">Please switch account to view balance.</Text>,
+          accountList.length > 0 ? (
+            <Text color="yellow" align="center">
+              Please switch account to view balance.
+            </Text>
+          ) : (
+            <Box maxW={400} mx="auto">
+              <Text textAlign="center" fontWeight="bold" fontSize="lg" mb={2}>
+                Your wallet does not have any accounts yet.
+              </Text>
+              <Text textAlign="center" fontSize="sm" maxW={350} mx="auto">
+                Please click on the Settings icon above, and open &quot;Manage
+                keys &amp; accounts&quot; to create or import some.
+              </Text>
+            </Box>
+          ),
           (account) => (
             <Flex alignItems="center">
               <Spacer />
@@ -148,37 +166,31 @@ function WalletScreen(): JSX.Element {
           flexDir="column"
           align="center"
         >
-          {O.mapWithDefault(
-            currentAccount,
-            <Text color="yellow">Please switch account to view balance.</Text>,
-            () => (
-              <Flex alignItems="center">
-                <Text
-                  as="b"
-                  fontSize={{ base: '32px', md: '40px' }}
-                  title={`${balance} Smidge`}
-                >
-                  {formatSmidge(balance)}
-                </Text>
-                <IconButton
-                  ml={4}
-                  width={{ base: '21px', md: '27px' }}
-                  variant="whiteOutline"
-                  disabled={isLoading}
-                  icon={
-                    isLoading ? (
-                      <Spinner size="sm" />
-                    ) : (
-                      <IconRefresh width={refreshIconSize} />
-                    )
-                  }
-                  aria-label="Refresh balance"
-                  onClick={() => refreshData()}
-                  verticalAlign="text-bottom"
-                />
-              </Flex>
-            )
-          )}
+          <Flex alignItems="center">
+            <Text
+              as="b"
+              fontSize={{ base: '32px', md: '40px' }}
+              title={`${balance} Smidge`}
+            >
+              {formatSmidge(balance)}
+            </Text>
+            <IconButton
+              ml={4}
+              width={{ base: '21px', md: '27px' }}
+              variant="whiteOutline"
+              disabled={isLoading}
+              icon={
+                isLoading ? (
+                  <Spinner size="sm" />
+                ) : (
+                  <IconRefresh width={refreshIconSize} />
+                )
+              }
+              aria-label="Refresh balance"
+              onClick={() => refreshData()}
+              verticalAlign="text-bottom"
+            />
+          </Flex>
           {O.mapWithDefault(
             unlockedBalance,
             // eslint-disable-next-line react/jsx-no-useless-fragment
