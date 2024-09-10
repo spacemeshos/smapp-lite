@@ -7,11 +7,21 @@ import Transport from '@ledgerhq/hw-transport';
 import LedgerWebBLE from '@ledgerhq/hw-transport-web-ble';
 import LedgerWebUSB from '@ledgerhq/hw-transport-webusb';
 import { O } from '@mobily/ts-belt';
-import { ResponseError } from '@zondax/ledger-js';
-import { SpaceMeshApp } from '@zondax/ledger-spacemesh';
+import { LedgerError, ResponseError } from '@zondax/ledger-js';
+import {
+  Account,
+  AccountType,
+  ResponseAddress,
+  SpaceMeshApp,
+} from '@zondax/ledger-spacemesh';
 
 import { HexString } from '../types/common';
-import { KeyOrigin } from '../types/wallet';
+import { AccountWithAddress, KeyOrigin } from '../types/wallet';
+import {
+  isMultiSigAccount,
+  isSingleSigAccount,
+  isVestingAccount,
+} from '../utils/account';
 import Bip32KeyDerivation from '../utils/bip32';
 import { getDisclosureDefaults } from '../utils/disclosure';
 import { noop } from '../utils/func';
@@ -44,6 +54,14 @@ export enum LedgerTransports {
   WebUSB = 'WebUSB',
 }
 
+export enum VerificationStatus {
+  Pending = 'Pending',
+  ApprovedCorrect = 'ApprovedCorrect',
+  ApprovedWrong = 'ApprovedWrong',
+  Rejected = 'Rejected',
+  NotConnected = 'NotConnected',
+}
+
 export type LedgerDevice = {
   type: KeyOrigin.Ledger;
   transportType: LedgerTransports;
@@ -52,6 +70,11 @@ export type LedgerDevice = {
   actions: {
     getPubKey: (path: string) => Promise<HexString>;
     signTx: (path: string, blob: Uint8Array) => Promise<Uint8Array>;
+    verify: (
+      path: string,
+      account: AccountWithAddress,
+      index?: number
+    ) => Promise<VerificationStatus>;
   };
 };
 
@@ -87,6 +110,20 @@ const createLedgerTransport = (
       throw new Error(`Unknown Ledger transport: ${transportType}`);
     }
   }
+};
+
+const verifyAddress =
+  (account: AccountWithAddress) => (response: ResponseAddress) =>
+    response.address === account.address
+      ? VerificationStatus.ApprovedCorrect
+      : VerificationStatus.ApprovedWrong;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const handleVerificationError = (err: any) => {
+  if (err.returnCode === LedgerError.TransactionRejected) {
+    return VerificationStatus.Rejected;
+  }
+  throw err;
 };
 
 const useHardwareWallet = (): UseHardwareWalletHook => {
@@ -132,6 +169,34 @@ const useHardwareWallet = (): UseHardwareWalletHook => {
             });
           modalApproval.onClose();
           return res;
+        },
+        verify: async (path, account, index = 0) => {
+          const result = (() => {
+            if (isSingleSigAccount(account)) {
+              return app.getAddressAndPubKey(path, true);
+            }
+            if (isMultiSigAccount(account) || isVestingAccount(account)) {
+              return app.getAddressMultisig(
+                path,
+                index,
+                new Account(
+                  AccountType.Multisig,
+                  account.spawnArguments.Required,
+                  account.spawnArguments.PublicKeys.length,
+                  account.spawnArguments.PublicKeys.map((pk, idx) => ({
+                    index: idx,
+                    pubkey: Buffer.from(pk, 'hex'),
+                  }))
+                )
+              );
+            }
+            throw new Error('Unsupported account type');
+          })();
+
+          return result
+            .then(verifyAddress(account))
+            .catch(handleVerificationError)
+            .catch(handleLedgerError);
         },
       },
     });

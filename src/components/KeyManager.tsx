@@ -150,12 +150,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
   };
 
   return (
-    <Drawer
-      size="lg"
-      placement="right"
-      isOpen={isOpen}
-      onClose={closeHandler}
-    >
+    <Drawer size="lg" placement="right" isOpen={isOpen} onClose={closeHandler}>
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton zIndex={2} />
@@ -341,9 +336,8 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                               /* eslint-disable max-len */
                               keys.length > 1 &&
                                 `${keys.length} / ${
-                                  (
-                                    acc.spawnArguments as MultiSigSpawnArguments
-                                  ).Required
+                                  (acc.spawnArguments as MultiSigSpawnArguments)
+                                    .Required
                                 } keys`
                               /* eslint-enable max-len */
                             }
