@@ -32,7 +32,7 @@ function RenameKeyModal({
   keyIndex,
   isOpen,
   onClose,
-}: RenameKeyModalProps): JSX.Element {
+}: RenameKeyModalProps): JSX.Element | null {
   const { renameKey, wallet } = useWallet();
   const { withPassword } = usePassword();
   const {
@@ -50,8 +50,15 @@ function RenameKeyModal({
   };
 
   const key = wallet?.keychain[keyIndex];
+
+  useEffect(() => {
+    if (key) {
+      setValue('displayName', key.displayName);
+    }
+  }, [key, setValue]);
+
   if (!key) {
-    throw new Error(`Key with index ${keyIndex} not found`);
+    return null;
   }
 
   const submit = handleSubmit(async ({ displayName }) => {
@@ -68,10 +75,6 @@ function RenameKeyModal({
       close();
     }
   });
-
-  useEffect(() => {
-    setValue('displayName', key.displayName);
-  }, [key, setValue]);
 
   return (
     <Modal isOpen={isOpen} onClose={close} isCentered size="lg">

@@ -55,7 +55,7 @@ function EditAccountModal({
   accountIndex,
   isOpen,
   onClose,
-}: EditAccountModalProps): JSX.Element {
+}: EditAccountModalProps): JSX.Element | null {
   const { editAccount, wallet } = useWallet();
   const { withPassword } = usePassword();
   const hrp = useCurrentHRP();
@@ -85,18 +85,16 @@ function EditAccountModal({
   const totalAmount = watch('TotalAmount');
 
   const account = wallet?.accounts[accountIndex];
-  if (!account) {
-    throw new Error(`Account with index ${accountIndex} not found`);
-  }
 
   useEffect(() => {
-    const formValues = {
-      displayName: account.displayName,
-      templateAddress: account.templateAddress,
-      ...account.spawnArguments,
-    } as Parameters<typeof reset>[0];
-    reset(formValues);
-
+    if (account) {
+      const formValues = {
+        displayName: account.displayName,
+        templateAddress: account.templateAddress,
+        ...account.spawnArguments,
+      } as Parameters<typeof reset>[0];
+      reset(formValues);
+    }
     return () => reset();
   }, [account, reset]);
 
@@ -129,6 +127,10 @@ function EditAccountModal({
       setValue('InitialUnlockAmount', String(BigInt(totalAmount) / 4n));
     }
   }, [totalAmount, setValue]);
+
+  if (!account) {
+    return null;
+  }
 
   const submit = handleSubmit(async (data) => {
     const success = await withPassword(
