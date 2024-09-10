@@ -141,7 +141,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
       'Delete Key',
       'Are you sure you want to delete this key?',
       // eslint-disable-next-line max-len
-      'You cannot undo this action, but you always can import the key again or derive it if you know the path.',
+      'You cannot undo this action, but you can always import the key again or derive it if you know the path.',
       true
     );
   const onEditAccount = (idx: number) => {
@@ -160,7 +160,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
       'Delete key',
       'Are you sure you want to delete this account?',
       // eslint-disable-next-line max-len
-      'You cannot undo this action, but you always can create or import the account again.',
+      'You cannot undo this action, but you can always create or import the account again.',
       true
     );
 

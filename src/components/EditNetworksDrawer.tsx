@@ -77,7 +77,7 @@ function EditNetworksDrawer({ isOpen, onClose }: Props): JSX.Element {
           </ListItem>
         </List>
         <Text fontSize="xs" color="brand.gray" mt={4}>
-          You cannot undo this action, but you always can add the network again.
+          You cannot undo this action but can always add the network again.
         </Text>
       </>
     );
@@ -114,7 +114,7 @@ function EditNetworksDrawer({ isOpen, onClose }: Props): JSX.Element {
                   >
                     <Text fontSize="xs" color="brand.gray" my={2}>
                       You cannot edit or delete default networks, but you may
-                      create, edit and delete a custom ones.
+                      create, edit, and delete custom ones.
                     </Text>
                   </ListItem>
                 )}
