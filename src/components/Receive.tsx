@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import QRCode from 'react-qr-code';
 
 import {
@@ -12,8 +11,8 @@ import {
   ModalOverlay,
   Text,
 } from '@chakra-ui/react';
-import { useCopyToClipboard } from '@uidotdev/usehooks';
 
+import useCopy from '../hooks/useCopy';
 import { AccountWithAddress } from '../types/wallet';
 
 import CopyButton from './CopyButton';
@@ -29,18 +28,7 @@ function ReceiveModal({
   isOpen,
   onClose,
 }: ReceiveModalProps): JSX.Element {
-  const [isCopied, setIsCopied] = useState(false);
-  const [, copy] = useCopyToClipboard();
-
-  let timeout: ReturnType<typeof setTimeout>;
-  const onCopyClick = (data: string) => () => {
-    clearTimeout(timeout);
-    copy(data);
-    setIsCopied(true);
-    timeout = setTimeout(() => {
-      setIsCopied(false);
-    }, 5000);
-  };
+  const { isCopied, onCopy } = useCopy();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
@@ -63,7 +51,7 @@ function ReceiveModal({
         <ModalFooter>
           <Button
             isDisabled={isCopied}
-            onClick={onCopyClick(account.address)}
+            onClick={() => onCopy(account.address)}
             mr={2}
             w="50%"
             variant="whiteModal"
