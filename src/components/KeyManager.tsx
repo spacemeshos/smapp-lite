@@ -157,7 +157,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
           // eslint-disable-next-line max-len
           'Please type in the password to delete the account and store the wallet secrets without it'
         ),
-      'Delete key',
+      'Delete account',
       'Are you sure you want to delete this account?',
       // eslint-disable-next-line max-len
       'You cannot undo this action, but you can always create or import the account again.',
