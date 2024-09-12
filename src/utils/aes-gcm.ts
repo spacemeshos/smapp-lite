@@ -137,7 +137,12 @@ export const decrypt = async (
   const salt = fromHexString(encryptedMessage.kdfparams.salt);
   const iv = fromHexString(encryptedMessage.cipherParams.iv);
   const cipherText = fromHexString(encryptedMessage.cipherText);
-  const key = await pbkdf2Key(password, salt);
+  const key = await pbkdf2Key(
+    password,
+    salt,
+    encryptedMessage.kdfparams.dklen,
+    encryptedMessage.kdfparams.iterations
+  );
   const decryptedBytes = await subtle.decrypt(
     {
       name: 'AES-GCM',
