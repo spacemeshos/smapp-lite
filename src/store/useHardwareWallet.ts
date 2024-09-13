@@ -29,7 +29,6 @@ export const IS_SUPPORTED = (() => {
     case 'opera':
     case 'opera-mini':
     case 'samsung':
-    case 'safari':
     case 'yandexbrowser':
       return true;
     default:
