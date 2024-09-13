@@ -78,10 +78,12 @@ function ReceiveModal({
   };
 
   const close = () => {
-    setVerificationError(null);
-    setVerificationStatus(null);
+    if (verificationStatus !== VerificationStatus.Pending) {
+      setVerificationError(null);
+      setVerificationStatus(null);
 
-    onClose();
+      onClose();
+    }
   };
 
   const verifyAndShow = () => {
@@ -95,6 +97,7 @@ function ReceiveModal({
         setVerificationStatus(res);
       })
       .catch((err) => {
+        setVerificationStatus(null);
         setVerificationError(err);
       });
   };
@@ -103,7 +106,9 @@ function ReceiveModal({
     <Modal isOpen={isOpen} onClose={close} isCentered size="xl">
       <ModalOverlay />
       <ModalContent>
-        <ModalCloseButton />
+        {verificationStatus !== VerificationStatus.Pending && (
+          <ModalCloseButton />
+        )}
         <ModalHeader textAlign="center">Receive funds</ModalHeader>
         <ModalBody>
           <Text fontSize="sm" mb={4} textAlign="center">
@@ -122,7 +127,7 @@ function ReceiveModal({
             }}
             value={account.address}
           />
-          <Box mt={2} fontSize="sm" textAlign="center">
+          <Box my={2} minH={42} fontSize="sm" textAlign="center">
             {verificationStatus === VerificationStatus.ApprovedCorrect && (
               <Text color="brand.green">
                 The address is verified successfully!
@@ -130,8 +135,9 @@ function ReceiveModal({
             )}
             {verificationStatus === VerificationStatus.Pending && (
               <Text color="yellow">
-                Please review the address on the Ledger device and approve if it
-                matches the address above.
+                Please review the address on the Ledger device.
+                <br />
+                Approve if it matches the address above.
               </Text>
             )}
             {verificationStatus === VerificationStatus.NotConnected && (
@@ -162,12 +168,12 @@ function ReceiveModal({
             )}
           </Box>
           {isLedgerBasedAccount(account) && (
-            <Box textAlign="center" mt={4}>
+            <Box textAlign="center">
               <Button
                 variant="whiteModal"
                 onClick={verifyAndShow}
-                disabled={verificationStatus === VerificationStatus.Pending}
-                w="80%"
+                isDisabled={verificationStatus === VerificationStatus.Pending}
+                w={{ base: '100%', md: '80%' }}
                 maxW={340}
               >
                 Verify
@@ -177,7 +183,9 @@ function ReceiveModal({
         </ModalBody>
         <ModalFooter gap={2}>
           <Button
-            isDisabled={isCopied}
+            isDisabled={
+              isCopied || verificationStatus === VerificationStatus.Pending
+            }
             onClick={() => onCopy(account.address)}
             w={{ base: '100%', md: '50%' }}
             variant="whiteModal"
@@ -188,6 +196,7 @@ function ReceiveModal({
             variant="whiteModal"
             onClick={close}
             w={{ base: '100%', md: '50%' }}
+            isDisabled={verificationStatus === VerificationStatus.Pending}
           >
             OK
           </Button>
