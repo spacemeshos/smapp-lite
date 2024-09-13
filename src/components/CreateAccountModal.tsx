@@ -106,6 +106,11 @@ function CreateAccountModal({
     }
   }, [totalAmount, setValue]);
 
+  const close = () => {
+    reset(defaultValues);
+    onClose();
+  };
+
   const submit = handleSubmit(async (data) => {
     const success = await withPassword(
       (password) =>
@@ -286,7 +291,7 @@ function CreateAccountModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">
+    <Modal isOpen={isOpen} onClose={close} isCentered size="lg">
       <Form control={control}>
         <ModalOverlay />
         <ModalContent>
