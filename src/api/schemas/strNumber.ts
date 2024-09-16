@@ -10,6 +10,6 @@ export const BigIntStringSchema = z.custom<string>((a) => {
 });
 
 export const BigIntMin = (min: bigint) =>
-  z.custom<string>((a) => BigInt(a) >= min, {
+  z.custom<string>((a) => a && BigInt(a) >= min, {
     message: `Should be greater than or equal to ${String(min)}`,
   });
