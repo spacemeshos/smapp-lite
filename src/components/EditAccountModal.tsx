@@ -349,7 +349,7 @@ function EditAccountModal({
             <Text color="yellow" my={4} fontSize="xs" textAlign="center">
               Change the parameters below on your own risk.
               <br />
-              Changing any of it will change the account&apos;s address.
+              Changing any of them will change the account&apos;s address.
             </Text>
             <FormSelect
               label="Account type"
