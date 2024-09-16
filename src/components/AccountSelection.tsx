@@ -21,11 +21,15 @@ const renderAccountName = (acc: AccountWithAddress): string =>
     ? `${acc.displayName} (${getAbbreviatedAddress(acc.address)})`
     : acc.address;
 
-function AccountSelection(): JSX.Element {
+function AccountSelection(): JSX.Element | null {
   const { selectedAccount, selectAccount } = useWallet();
   const hrp = useCurrentHRP();
   const accounts = useAccountsList(hrp);
   const iconSize = useBreakpointValue({ base: 14, md: 24 }, { ssr: false });
+
+  if (accounts.length === 0) {
+    return null;
+  }
 
   return (
     <Menu>
@@ -34,7 +38,7 @@ function AccountSelection(): JSX.Element {
         variant="ghostGreen"
         fontSize={{ base: '18px', md: '22px' }}
         rightIcon={<IconChevronDown size={iconSize} />}
-        px={0}
+        pr={1}
         noOfLines={1}
         justifyContent="center"
         display="flex"

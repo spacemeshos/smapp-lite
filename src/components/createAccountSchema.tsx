@@ -10,30 +10,30 @@ const DisplayNameSchema = z.string().min(2);
 const SingleSigSchema = z.object({
   displayName: DisplayNameSchema,
   templateAddress: z.literal(StdPublicKeys.SingleSig),
-  publicKey: HexStringSchema,
+  PublicKey: HexStringSchema,
 });
 const MultiSigSchema = z.object({
   displayName: DisplayNameSchema,
   templateAddress: z.literal(StdPublicKeys.MultiSig),
-  required: z.number().min(0).max(10),
-  publicKeys: z
+  Required: z.number().min(0).max(10),
+  PublicKeys: z
     .array(HexStringSchema)
     .min(1, 'MultiSig account requires at least two parties'),
 });
 const VaultSchema = z.object({
   displayName: DisplayNameSchema,
   templateAddress: z.literal(StdPublicKeys.Vault),
-  owner: Bech32AddressSchema,
-  totalAmount: z.string().min(0),
-  initialUnlockAmount: z.string().min(0),
-  vestingStart: z.number().min(0),
-  vestingEnd: z.number().min(0),
+  Owner: Bech32AddressSchema,
+  TotalAmount: z.string().min(0),
+  InitialUnlockAmount: z.string().min(0),
+  VestingStart: z.number().min(0),
+  VestingEnd: z.number().min(0),
 });
 const VestingSchema = z.object({
   displayName: DisplayNameSchema,
   templateAddress: z.literal(StdPublicKeys.Vesting),
-  required: z.number().min(0).max(10),
-  publicKeys: z
+  Required: z.number().min(0).max(10),
+  PublicKeys: z
     .array(HexStringSchema)
     .min(1, 'Vesting account requires at least two parties'),
 });
@@ -48,25 +48,19 @@ export const extractSpawnArgs = (data: FormValues): AnySpawnArguments => {
   let args;
   args = SingleSigSchema.safeParse(data);
   if (args.success) {
-    return { PublicKey: args.data.publicKey };
+    return { PublicKey: args.data.PublicKey };
   }
   args = MultiSigSchema.safeParse(data);
   if (args.success) {
-    return { Required: args.data.required, PublicKeys: args.data.publicKeys };
+    return args.data;
   }
   args = VestingSchema.safeParse(data);
   if (args.success) {
-    return { Required: args.data.required, PublicKeys: args.data.publicKeys };
+    return args.data;
   }
   args = VaultSchema.safeParse(data);
   if (args.success) {
-    return {
-      Owner: args.data.owner,
-      TotalAmount: args.data.totalAmount,
-      InitialUnlockAmount: args.data.initialUnlockAmount,
-      VestingStart: args.data.vestingStart,
-      VestingEnd: args.data.vestingEnd,
-    };
+    return args.data;
   }
 
   throw new Error('Cannot get required inputs to create an account');

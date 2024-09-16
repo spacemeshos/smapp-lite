@@ -14,28 +14,52 @@ const green = defineStyle({
 });
 
 const ghostGreen = defineStyle({
+  px: 2,
   textColor: 'brand.green',
   fillColor: 'brand.green',
-  bgColor: 'brand.darkGreen',
+  bgColor: 'transparent',
+  _hover: {
+    bg: 'whiteAlpha.100',
+  },
+});
+
+const ghostRed = defineStyle({
+  textColor: 'brand.red',
+  fillColor: 'brand.red',
+  bgColor: 'transparent',
+  _hover: {
+    bg: 'whiteAlpha.100',
+  },
 });
 
 const white = defineStyle({
-  bg: '#F0F0F0EE',
-  borderColor: '#F0F0F0EE',
+  bg: 'brand.lightAlphaGray',
+  borderColor: 'brand.lightAlphaGray',
   borderWidth: '2px',
   textColor: 'brand.darkGreen',
   borderRadius: 'full',
   _hover: {
     bg: 'brand.darkGreen',
-    borderColor: '#F0F0F0EE',
+    borderColor: 'brand.lightAlphaGray',
     borderWidth: '2px',
-    textColor: '#F0F0F0EE',
+    textColor: 'brand.lightAlphaGray',
+  },
+});
+
+const ghost = defineStyle({
+  color: 'brand.lightAlphaGray',
+  cursor: 'pointer',
+  _hover: {
+    bg: 'whiteAlpha.100',
+  },
+  _disabled: {
+    cursor: 'not-allowed',
   },
 });
 
 const ghostWhite = defineStyle({
   borderRadius: 'full',
-  color: '#F0F0F0EE',
+  color: 'brand.lightAlphaGray',
   cursor: 'pointer',
   _hover: {
     color: 'brand.green',
@@ -45,7 +69,7 @@ const ghostWhite = defineStyle({
 const linkWhite = defineStyle({
   textDecoration: 'underline',
   borderRadius: 'full',
-  color: '#F0F0F0EE',
+  color: 'brand.lightAlphaGray',
   cursor: 'pointer',
   _hover: {
     color: 'brand.green',
@@ -54,30 +78,31 @@ const linkWhite = defineStyle({
 });
 
 const whiteModal = defineStyle({
-  bg: '#F0F0F0EE',
-  borderColor: '#F0F0F0EE',
+  bg: 'brand.lightAlphaGray',
+  borderColor: 'brand.lightAlphaGray',
   borderWidth: '2px',
   textColor: 'brand.modalGreen',
   borderRadius: 'full',
   _hover: {
     bg: 'brand.modalGreen',
-    borderColor: '#F0F0F0EE',
+    borderColor: 'brand.lightAlphaGray',
     borderWidth: '2px',
-    textColor: '#F0F0F0EE',
+    textColor: 'brand.lightAlphaGray',
   },
 });
 
 const whiteOutline = defineStyle({
   bg: 'brand.darkGreen',
-  borderColor: '#F0F0F0EE',
+  borderColor: 'brand.lightGray',
   borderWidth: '2px',
-  textColor: '#F0F0F0EE',
+  textColor: 'brand.lightGray',
   borderRadius: 'full',
   _hover: {
     bg: 'brand.darkGreen',
-    borderColor: '#F0F0F0EE',
+    borderColor: 'brand.green',
     borderWidth: '2px',
-    textColor: '#F0F0F0EE',
+    textColor: 'brand.green',
+    fillColor: 'brand.green',
   },
 });
 
@@ -92,6 +117,21 @@ const danger = defineStyle({
     borderColor: 'red.500',
     borderWidth: '2px',
     textColor: 'brand.lightGray',
+  },
+});
+const dangerOutline = defineStyle({
+  bg: 'brand.darkGreen',
+  borderColor: 'brand.lightGray',
+  borderWidth: '2px',
+  textColor: 'brand.red',
+  fillColor: 'brand.red',
+  borderRadius: 'full',
+  _hover: {
+    bg: 'brand.darkGreen',
+    borderColor: 'brand.red',
+    borderWidth: '2px',
+    textColor: 'brand.red',
+    fillColor: 'brand.red',
   },
 });
 
@@ -112,13 +152,16 @@ const outline = defineStyle({
 const buttonTheme = defineStyleConfig({
   variants: {
     green,
-    ghostGreen,
-    white,
+    ghost,
     ghostWhite,
+    ghostGreen,
+    ghostRed,
+    white,
     linkWhite,
     whiteModal,
     whiteOutline,
     danger,
+    dangerOutline,
     outline,
   },
 });

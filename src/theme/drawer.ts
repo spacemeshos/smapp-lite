@@ -12,6 +12,9 @@ const baseStyle = definePartsStyle({
     borderRadius: 'none',
     bg: `brand.modalGreen`,
   },
+  body: {
+    overflowY: 'auto',
+  },
 });
 
 const drawerTheme = defineMultiStyleConfig({

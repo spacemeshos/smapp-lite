@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
   ArrayPath,
   Control,
@@ -27,6 +27,7 @@ type Props<T extends FieldValues, FieldName extends ArrayPath<T>> = {
   unregister: UseFormUnregister<T>;
   errors: FieldErrors<T>;
   isSubmitted?: boolean;
+  values?: string[] | null;
 };
 
 function FormMultiKeySelect<
@@ -40,15 +41,33 @@ function FormMultiKeySelect<
   unregister,
   errors,
   isSubmitted = false,
+  values = null,
 }: Props<T, FieldName>): JSX.Element {
   const { fields, append, remove } = useFieldArray({
     control,
     name: fieldName,
   });
   const addEmptyField = useCallback(
-    () => append((keys[0]?.publicKey ?? '0x01') as FieldArray<T, FieldName>),
-    [append, keys]
+    () =>
+      append(
+        (keys[fields.length]?.publicKey ||
+          `0x${String(fields.length).padStart(2, '0')}`) as FieldArray<
+          T,
+          FieldName
+        >
+      ),
+    [append, fields.length, keys]
   );
+
+  useEffect(() => {
+    if (!values || values.length === 0) {
+      append((keys?.[0]?.publicKey || '0x01') as FieldArray<T, FieldName>);
+    } else {
+      // In case there are some values — restore them in the form
+      values.forEach((v) => append(v as FieldArray<T, FieldName>));
+    }
+    return () => remove();
+  }, [values, append, remove, keys]);
 
   const rootError = errors[fieldName]?.message;
   return (
@@ -68,6 +87,7 @@ function FormMultiKeySelect<
           errors={errors}
           isSubmitted={isSubmitted}
           isRequired
+          value={values?.[index] || keys[index]?.publicKey}
         >
           <IconButton
             icon={<IconTrash size={BUTTON_ICON_SIZE} />}

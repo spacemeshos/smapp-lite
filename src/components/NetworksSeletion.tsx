@@ -20,10 +20,10 @@ import {
 import useNetworks from '../store/useNetworks';
 import useNetworkStatus from '../store/useNetworkStatus';
 
-import AddNetworkDrawer from './AddNetworkDrawer';
+import EditNetworksDrawer from './EditNetworksDrawer';
 
 function NetworkSelection(): JSX.Element {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const drawerEdit = useDisclosure();
   const { selectedIndex, getCurrentNetwork, switchNetwork, networks } =
     useNetworks();
   const currentNetwork = getCurrentNetwork();
@@ -34,7 +34,10 @@ function NetworkSelection(): JSX.Element {
 
   return (
     <>
-      <AddNetworkDrawer isOpen={isOpen} onClose={onClose} />
+      <EditNetworksDrawer
+        isOpen={drawerEdit.isOpen}
+        onClose={drawerEdit.onClose}
+      />
       <Menu>
         <MenuButton
           as={Button}
@@ -75,7 +78,7 @@ function NetworkSelection(): JSX.Element {
             ))}
           </MenuOptionGroup>
           <MenuDivider />
-          <MenuItem onClick={onOpen}>Add new network...</MenuItem>
+          <MenuItem onClick={drawerEdit.onOpen}>Edit networks...</MenuItem>
         </MenuList>
       </Menu>
     </>

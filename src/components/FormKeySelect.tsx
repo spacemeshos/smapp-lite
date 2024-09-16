@@ -5,6 +5,7 @@ import {
   FieldValues,
   get,
   Path,
+  PathValue,
   UseFormRegister,
   UseFormUnregister,
 } from 'react-hook-form';
@@ -35,6 +36,8 @@ type Props<
   errors: FieldErrors<T>;
   isSubmitted?: boolean;
   isRequired?: boolean;
+  defaultForeign?: boolean;
+  value?: string | null;
 }>;
 
 enum KeyType {
@@ -51,11 +54,25 @@ function FormKeySelect<T extends FieldValues, FieldName extends Path<T>>({
   isSubmitted = false,
   isRequired = false,
   children = '',
+  value = null,
 }: Props<T, FieldName>): JSX.Element {
-  const [keyType, setKeyType] = useState(KeyType.Local);
+  const isLocalValue = !value || keys.some((key) => key.publicKey === value);
+  const [keyType, setKeyType] = useState(
+    isLocalValue ? KeyType.Local : KeyType.Foreign
+  );
+  const formValue = (value || '') as PathValue<T, FieldName>;
+
+  useEffect(() => {
+    if (keys.some((key) => key.publicKey === value)) {
+      setKeyType(KeyType.Local);
+    }
+    if (!value) {
+      setKeyType(KeyType.Foreign);
+    }
+  }, [keys, value]);
   useEffect(
     () => () => unregister(fieldName),
-    [unregister, fieldName, keyType]
+    [unregister, fieldName, keyType, value]
   );
 
   const error = get(errors, fieldName) as FieldError | undefined;
@@ -65,6 +82,7 @@ function FormKeySelect<T extends FieldValues, FieldName extends Path<T>>({
         return (
           <Input
             {...register(fieldName, {
+              value: formValue,
               required: isRequired ? 'Please pick the key' : false,
               validate: (val) =>
                 isHexString(val) ? true : 'Invalid Hex format',
@@ -74,7 +92,7 @@ function FormKeySelect<T extends FieldValues, FieldName extends Path<T>>({
       case KeyType.Local:
       default:
         return (
-          <Select {...register(fieldName)}>
+          <Select {...register(fieldName, { value: formValue })}>
             {keys.map((key) => (
               <option key={key.publicKey} value={key.publicKey}>
                 {key.displayName} ({getAbbreviatedHexString(key.publicKey)})

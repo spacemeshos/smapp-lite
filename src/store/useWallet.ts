@@ -1,6 +1,7 @@
 import fileDownload from 'js-file-download';
 import { create } from 'zustand';
 
+import { A } from '@mobily/ts-belt';
 import * as bip39 from '@scure/bip39';
 import { StdPublicKeys, StdTemplateKeys } from '@spacemesh/sm-codec';
 
@@ -88,6 +89,8 @@ type WalletActions = {
     password: string,
     withSingleSig?: boolean
   ) => Promise<SafeKey>;
+  renameKey: (idx: number, name: string, password: string) => Promise<SafeKey>;
+  deleteKey: (idx: number, password: string) => Promise<boolean>;
   revealSecretKey: (
     publicKey: HexString,
     password: string
@@ -98,6 +101,14 @@ type WalletActions = {
     spawnArguments: T,
     password: string
   ) => Promise<Account<T>>;
+  editAccount: <T extends AnySpawnArguments>(
+    idx: number,
+    displayName: string,
+    templateAddress: StdTemplateKeys,
+    spawnArguments: T,
+    password: string
+  ) => Promise<Account<T>>;
+  deleteAccount: (idx: number, password: string) => Promise<boolean>;
 };
 
 type WalletSelectors = {
@@ -297,6 +308,59 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
       await get().addKeyPair(kp, password, withSingleSig);
       return ensafeKeyPair(kp);
     },
+    renameKey: async (idx, name, password) => {
+      const wallet = await get().loadWalletWithSecrets(password);
+      const key = wallet.crypto.keys[idx];
+      if (!key) {
+        throw new Error(`Cannot find a key pair by index "${idx}"`);
+      }
+      const newKey = {
+        ...key,
+        displayName: name,
+      };
+      // Preparing secret part of the wallet
+      const newSecrets = {
+        ...wallet.crypto,
+        keys: [...A.updateAt(wallet.crypto.keys, idx, () => newKey)],
+      };
+      // Updating App state
+      set({
+        wallet: extractData({
+          meta: wallet.meta,
+          crypto: newSecrets,
+        }),
+      });
+      // Saving a wallet file in the storage
+      saveToLocalStorage(WALLET_STORE_KEY, {
+        ...wallet,
+        crypto: await encryptWallet(newSecrets, password),
+      });
+      return ensafeKeyPair(newKey);
+    },
+    deleteKey: async (idx, password) => {
+      const wallet = await get().loadWalletWithSecrets(password);
+      const key = wallet.crypto.keys[idx];
+      if (!key) {
+        throw new Error(`Cannot find a key pair by index "${idx}"`);
+      }
+      const newSecrets = {
+        ...wallet.crypto,
+        keys: [...A.removeAt(wallet.crypto.keys, idx)],
+      };
+      // Updating App state
+      set({
+        wallet: extractData({
+          meta: wallet.meta,
+          crypto: newSecrets,
+        }),
+      });
+      // Saving a wallet file in the storage
+      saveToLocalStorage(WALLET_STORE_KEY, {
+        ...wallet,
+        crypto: await encryptWallet(newSecrets, password),
+      });
+      return true;
+    },
     revealSecretKey: async (publicKey, password) => {
       const wallet = await get().loadWalletWithSecrets(password);
       const kp = wallet.crypto.keys.find((k) => k.publicKey === publicKey);
@@ -339,6 +403,68 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
       });
 
       return acc;
+    },
+    editAccount: async (
+      idx,
+      displayName,
+      templateAddress,
+      spawnArguments,
+      password
+    ) => {
+      const wallet = await get().loadWalletWithSecrets(password);
+      const acc = wallet.crypto.accounts[idx];
+      if (!acc) {
+        throw new Error(`Cannot find an account by index "${idx}"`);
+      }
+      const newAcc = {
+        ...acc,
+        displayName,
+        templateAddress,
+        spawnArguments,
+      };
+      // Preparing secret part of the wallet
+      const newSecrets = {
+        ...wallet.crypto,
+        accounts: [...A.updateAt(wallet.crypto.accounts, idx, () => newAcc)],
+      };
+      // Updating App state
+      set({
+        wallet: extractData({
+          meta: wallet.meta,
+          crypto: newSecrets,
+        }),
+      });
+      // Saving a wallet file in the storage
+      saveToLocalStorage(WALLET_STORE_KEY, {
+        ...wallet,
+        crypto: await encryptWallet(newSecrets, password),
+      });
+
+      return newAcc;
+    },
+    deleteAccount: async (idx, password) => {
+      const wallet = await get().loadWalletWithSecrets(password);
+      const acc = wallet.crypto.accounts[idx];
+      if (!acc) {
+        throw new Error(`Cannot find an account by index "${idx}"`);
+      }
+      const newSecrets = {
+        ...wallet.crypto,
+        accounts: [...A.removeAt(wallet.crypto.accounts, idx)],
+      };
+      // Updating App state
+      set({
+        wallet: extractData({
+          meta: wallet.meta,
+          crypto: newSecrets,
+        }),
+      });
+      // Saving a wallet file in the storage
+      saveToLocalStorage(WALLET_STORE_KEY, {
+        ...wallet,
+        crypto: await encryptWallet(newSecrets, password),
+      });
+      return true;
     },
     // Selectors
     hasWallet: () => {

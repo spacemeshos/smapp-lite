@@ -26,7 +26,13 @@ import {
   GENESIS_VESTING_START,
 } from '../utils/constants';
 import { noop } from '../utils/func';
-import { getTemplateNameByKey } from '../utils/templates';
+import {
+  getTemplateNameByKey,
+  MultiSigSpawnArguments,
+  SingleSigSpawnArguments,
+  VaultSpawnArguments,
+  VestingSpawnArguments,
+} from '../utils/templates';
 
 import {
   extractSpawnArgs,
@@ -39,24 +45,26 @@ import FormKeySelect from './FormKeySelect';
 import FormMultiKeySelect from './FormMultiKeySelect';
 import FormSelect from './FormSelect';
 
-type CreateAccountModalProps = {
+type EditAccountModalProps = {
+  accountIndex: number;
   isOpen: boolean;
   onClose: () => void;
 };
 
-function CreateAccountModal({
+function EditAccountModal({
+  accountIndex,
   isOpen,
   onClose,
-}: CreateAccountModalProps): JSX.Element {
-  const { createAccount, wallet } = useWallet();
+}: EditAccountModalProps): JSX.Element | null {
+  const { editAccount, wallet } = useWallet();
   const { withPassword } = usePassword();
   const hrp = useCurrentHRP();
   const accounts = useAccountsList(hrp);
   const keys = wallet?.keychain || [];
   const defaultValues = {
     displayName: '',
-    Required: 1,
-    PublicKeys: [keys[0]?.publicKey || '0x1'],
+    required: 1,
+    publicKeys: [keys[0]?.publicKey || '0x1'],
   };
   const {
     watch,
@@ -75,6 +83,20 @@ function CreateAccountModal({
   const selectedTemplate = watch('templateAddress');
   const selectedOwner = watch('Owner');
   const totalAmount = watch('TotalAmount');
+
+  const account = wallet?.accounts[accountIndex];
+
+  useEffect(() => {
+    if (account) {
+      const formValues = {
+        displayName: account.displayName,
+        templateAddress: account.templateAddress,
+        ...account.spawnArguments,
+      } as Parameters<typeof reset>[0];
+      reset(formValues);
+    }
+    return () => reset();
+  }, [account, reset]);
 
   useEffect(() => {
     if (selectedTemplate === StdPublicKeys.Vault) {
@@ -106,35 +128,35 @@ function CreateAccountModal({
     }
   }, [totalAmount, setValue]);
 
-  const close = () => {
-    reset(defaultValues);
-    onClose();
-  };
+  if (!account) {
+    return null;
+  }
 
   const submit = handleSubmit(async (data) => {
     const success = await withPassword(
       (password) =>
-        createAccount(
+        editAccount(
+          accountIndex,
           data.displayName,
           data.templateAddress,
           extractSpawnArgs(data),
           password
         ),
-      'Create a new Account',
+      'Edit Account',
       // eslint-disable-next-line max-len
-      `Please enter the password to create the new account "${
+      `Please enter the password to save changes in the account "${
         data.displayName
       }" of type "${getTemplateNameByKey(data.templateAddress)}"`
     );
     if (success) {
-      reset(defaultValues);
       onClose();
     }
   });
 
   const renderTemplateSpecificFields = () => {
     switch (selectedTemplate) {
-      case StdPublicKeys.Vault:
+      case StdPublicKeys.Vault: {
+        const args = account.spawnArguments as VaultSpawnArguments;
         return (
           <>
             <Text fontWeight="bold">Vault</Text>
@@ -159,6 +181,7 @@ function CreateAccountModal({
               label="Total amount"
               inputProps={{ type: 'number' }}
               register={register('TotalAmount', {
+                value: args.TotalAmount,
                 required: 'Please specify total amount locked in the vault',
               })}
               errors={errors}
@@ -168,6 +191,7 @@ function CreateAccountModal({
               label="Vesting start (layer number)"
               inputProps={{ type: 'number' }}
               register={register('VestingStart', {
+                value: args.VestingStart,
                 required: 'Please specify the epoch when the vesting starts',
                 valueAsNumber: true,
               })}
@@ -178,6 +202,7 @@ function CreateAccountModal({
               label="Vesting end (layer number)"
               inputProps={{ type: 'number' }}
               register={register('VestingEnd', {
+                value: args.VestingEnd,
                 required: 'Please specify the epoch when the vesting ends',
                 valueAsNumber: true,
               })}
@@ -186,7 +211,9 @@ function CreateAccountModal({
             />
           </>
         );
-      case StdPublicKeys.Vesting:
+      }
+      case StdPublicKeys.Vesting: {
+        const args = account.spawnArguments as VestingSpawnArguments;
         return (
           <>
             <Text fontWeight="bold">Vesting Account</Text>
@@ -197,6 +224,7 @@ function CreateAccountModal({
               label="Required amount of signatures"
               inputProps={{ type: 'number' }}
               register={register('Required', {
+                value: args.Required,
                 required: 'Please specify any number from 0 to 10',
                 valueAsNumber: true,
                 validate: (n) => {
@@ -222,10 +250,13 @@ function CreateAccountModal({
               unregister={unregister}
               errors={errors}
               isSubmitted={isSubmitted}
+              values={args.PublicKeys}
             />
           </>
         );
-      case StdPublicKeys.MultiSig:
+      }
+      case StdPublicKeys.MultiSig: {
+        const args = account.spawnArguments as MultiSigSpawnArguments;
         return (
           <>
             <Text fontWeight="bold">Multiple Signatures</Text>
@@ -238,6 +269,7 @@ function CreateAccountModal({
               label="Required amount of signatures"
               inputProps={{ type: 'number' }}
               register={register('Required', {
+                value: args.Required,
                 required: 'Please specify any number from 0 to 10',
                 valueAsNumber: true,
                 validate: (n) => {
@@ -263,11 +295,14 @@ function CreateAccountModal({
               unregister={unregister}
               errors={errors}
               isSubmitted={isSubmitted}
+              values={args.PublicKeys}
             />
           </>
         );
+      }
       case StdPublicKeys.SingleSig:
-      default:
+      default: {
+        const args = account.spawnArguments as SingleSigSpawnArguments;
         return (
           <>
             <Text fontWeight="bold">Single Signature</Text>
@@ -283,20 +318,21 @@ function CreateAccountModal({
               errors={errors}
               isSubmitted={isSubmitted}
               isRequired
-              value={keys[0]?.publicKey}
+              value={args.PublicKey}
             />
           </>
         );
+      }
     }
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={close} isCentered size="lg">
+    <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">
       <Form control={control}>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
-          <ModalHeader textAlign="center">Create a new Account</ModalHeader>
+          <ModalHeader textAlign="center">Edit Account</ModalHeader>
           <ModalBody>
             <FormInput
               label="Name"
@@ -310,6 +346,11 @@ function CreateAccountModal({
               errors={errors}
               isSubmitted={isSubmitted}
             />
+            <Text color="yellow" my={4} fontSize="xs" textAlign="center">
+              Change the parameters below on your own risk.
+              <br />
+              Changing any of them will change the account&apos;s address.
+            </Text>
             <FormSelect
               label="Account type"
               register={register('templateAddress', {
@@ -330,7 +371,7 @@ function CreateAccountModal({
           </ModalBody>
           <ModalFooter>
             <Button onClick={submit} variant="whiteModal" w="full">
-              Add
+              Save
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -339,4 +380,4 @@ function CreateAccountModal({
   );
 }
 
-export default CreateAccountModal;
+export default EditAccountModal;

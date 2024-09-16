@@ -1,4 +1,5 @@
 import fileDownload from 'js-file-download';
+import { useState } from 'react';
 
 import {
   Badge,
@@ -10,6 +11,7 @@ import {
   DrawerContent,
   DrawerOverlay,
   Flex,
+  IconButton,
   Tab,
   TabList,
   TabPanel,
@@ -23,15 +25,19 @@ import { StdPublicKeys } from '@spacemesh/sm-codec';
 import {
   IconDeviceDesktop,
   IconDeviceUsb,
+  IconEdit,
   IconEyeglass2,
   IconFileImport,
   IconKey,
   IconPlus,
+  IconTrash,
 } from '@tabler/icons-react';
 
+import useConfirmation from '../hooks/useConfirmation';
 import { useCurrentHRP } from '../hooks/useNetworkSelectors';
 import useRevealSecretKey from '../hooks/useRevealSecretKey';
 import { useAccountsList } from '../hooks/useWalletSelectors';
+import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
 import {
   AccountWithAddress,
@@ -51,10 +57,12 @@ import { safeKeyForAccount } from '../utils/wallet';
 import CopyButton from './CopyButton';
 import CreateAccountModal from './CreateAccountModal';
 import CreateKeyPairModal from './CreateKeyPairModal';
+import EditAccountModal from './EditAccountModal';
 import ExplorerButton from './ExplorerButton';
 import ImportAccountModal from './ImportAccountModal';
 import ImportKeyFromLedgerModal from './ImportKeyFromLedgerModal';
 import ImportKeyPairModal from './ImportKeyPairModal';
+import RenameKeyModal from './RenameKeyModal';
 import RevealSecretKeyModal from './RevealSecretKeyModal';
 
 type KeyManagerProps = {
@@ -94,21 +102,67 @@ const renderSingleKey = (key: SafeKeyWithType): JSX.Element =>
   );
 
 function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
-  const { wallet } = useWallet();
+  const { wallet, deleteKey, deleteAccount } = useWallet();
   const hrp = useCurrentHRP();
   const accounts = useAccountsList(hrp);
 
   const { revealSecretKey } = useRevealSecretKey();
+  const { withConfirmation } = useConfirmation();
+  const { withPassword } = usePassword();
 
   const createKeyPairModal = useDisclosure();
   const importKeyPairModal = useDisclosure();
+  const renameKeyModal = useDisclosure();
   const importFromLedgerModal = useDisclosure();
   const createAccountModal = useDisclosure();
   const importAccountModal = useDisclosure();
+  const editAccountModal = useDisclosure();
+
+  const [renameKeyIdx, setRenameKeyIdx] = useState(0);
+  const [editAccountIdx, setEditAccountIdx] = useState(0);
 
   const closeHandler = () => {
     onClose();
   };
+
+  const onRenameKey = (idx: number) => {
+    setRenameKeyIdx(idx);
+    renameKeyModal.onOpen();
+  };
+  const onDeleteKey = (idx: number) =>
+    withConfirmation(
+      () =>
+        withPassword(
+          (pass) => deleteKey(idx, pass),
+          'Delete Key',
+          // eslint-disable-next-line max-len
+          'Please type in the password to delete the key and store the wallet secrets without it'
+        ),
+      'Delete Key',
+      'Are you sure you want to delete this key?',
+      // eslint-disable-next-line max-len
+      'You cannot undo this action, but you can always import the key again or derive it if you know the path.',
+      true
+    );
+  const onEditAccount = (idx: number) => {
+    setEditAccountIdx(idx);
+    editAccountModal.onOpen();
+  };
+  const onDeleteAccount = (idx: number) =>
+    withConfirmation(
+      () =>
+        withPassword(
+          (pass) => deleteAccount(idx, pass),
+          'Delete Account',
+          // eslint-disable-next-line max-len
+          'Please type in the password to delete the account and store the wallet secrets without it'
+        ),
+      'Delete account',
+      'Are you sure you want to delete this account?',
+      // eslint-disable-next-line max-len
+      'You cannot undo this action, but you can always create or import the account again.',
+      true
+    );
 
   const exportAccount = (acc: AccountWithAddress) =>
     fileDownload(
@@ -150,12 +204,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
   };
 
   return (
-    <Drawer
-      size="lg"
-      placement="right"
-      isOpen={isOpen}
-      onClose={closeHandler}
-    >
+    <Drawer size="lg" placement="right" isOpen={isOpen} onClose={closeHandler}>
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton zIndex={2} />
@@ -207,7 +256,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                   </Button>
                 </Flex>
                 <Box flex={1}>
-                  {(wallet?.keychain ?? []).map((key) => (
+                  {(wallet?.keychain ?? []).map((key, idx) => (
                     <Box
                       key={key.publicKey}
                       mb={2}
@@ -250,6 +299,24 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                       )}
                       <Text fontWeight="bold" mb={1}>
                         {key.displayName}
+                        <IconButton
+                          ml={2}
+                          aria-label="Rename key"
+                          onClick={() => onRenameKey(idx)}
+                          icon={<IconEdit size={12} />}
+                          variant="whiteOutline"
+                          borderWidth={1}
+                          size="xs"
+                        />
+                        <IconButton
+                          ml={1}
+                          aria-label="Delete key"
+                          onClick={() => onDeleteKey(idx)}
+                          icon={<IconTrash size={12} />}
+                          variant="dangerOutline"
+                          borderWidth={1}
+                          size="xs"
+                        />
                       </Text>
 
                       <Text fontSize="xx-small">Public Key</Text>
@@ -287,7 +354,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                   </Button>
                 </Flex>
                 <Box flex={1}>
-                  {accounts.map((acc) => {
+                  {accounts.map((acc, idx) => {
                     const keys = getKeysByAccount(acc);
                     return (
                       <Box
@@ -316,10 +383,38 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                         </Button>
                         <Text fontSize="md">
                           <strong>{acc.displayName}</strong>
+                          <IconButton
+                            ml={2}
+                            aria-label="Edit account"
+                            onClick={() => onEditAccount(idx)}
+                            icon={<IconEdit size={12} />}
+                            variant="whiteOutline"
+                            borderWidth={1}
+                            size="xs"
+                          />
+                          <IconButton
+                            ml={1}
+                            aria-label="Delete account"
+                            onClick={() => onDeleteAccount(idx)}
+                            icon={<IconTrash size={12} />}
+                            variant="dangerOutline"
+                            borderWidth={1}
+                            size="xs"
+                          />
+                        </Text>
+                        <Text mt={1}>
+                          {acc.address}
+                          <CopyButton value={acc.address} withOutline />
+                          <ExplorerButton
+                            dataType="accounts"
+                            value={acc.address}
+                            ml={1}
+                          />
+                        </Text>
+                        <Text fontSize="md">
                           <Badge
                             fontWeight="normal"
                             fontSize="xx-small"
-                            ml={1}
                             colorScheme={getTemplateColorByKey(
                               acc.templateAddress
                             )}
@@ -341,9 +436,8 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                               /* eslint-disable max-len */
                               keys.length > 1 &&
                                 `${keys.length} / ${
-                                  (
-                                    acc.spawnArguments as MultiSigSpawnArguments
-                                  ).Required
+                                  (acc.spawnArguments as MultiSigSpawnArguments)
+                                    .Required
                                 } keys`
                               /* eslint-enable max-len */
                             }
@@ -356,15 +450,6 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                               </>
                             )}
                           </Badge>
-                        </Text>
-                        <Text mb={4}>
-                          {acc.address}
-                          <CopyButton value={acc.address} withOutline />
-                          <ExplorerButton
-                            dataType="accounts"
-                            value={acc.address}
-                            ml={1}
-                          />
                         </Text>
 
                         <Box color="grey">
@@ -401,6 +486,11 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
             isOpen={importFromLedgerModal.isOpen}
             onClose={importFromLedgerModal.onClose}
           />
+          <RenameKeyModal
+            keyIndex={renameKeyIdx ?? 0}
+            isOpen={renameKeyModal.isOpen}
+            onClose={renameKeyModal.onClose}
+          />
           <RevealSecretKeyModal />
           <CreateAccountModal
             isOpen={createAccountModal.isOpen}
@@ -410,6 +500,11 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
             accounts={accounts}
             isOpen={importAccountModal.isOpen}
             onClose={importAccountModal.onClose}
+          />
+          <EditAccountModal
+            accountIndex={editAccountIdx}
+            isOpen={editAccountModal.isOpen}
+            onClose={editAccountModal.onClose}
           />
         </DrawerBody>
       </DrawerContent>
