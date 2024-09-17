@@ -126,7 +126,7 @@ function WalletScreen(): JSX.Element {
         {O.mapWithDefault(
           currentAccount,
           accountList.length > 0 ? (
-            <Text color="yellow" align="center">
+            <Text color="orange" align="center">
               Please switch account to view balance.
             </Text>
           ) : (
@@ -257,7 +257,7 @@ function WalletScreen(): JSX.Element {
             borderRadius={6}
             position="relative"
           >
-            <TabList h={14} justifyContent="center" border="none">
+            <TabList h={16} justifyContent="center">
               <Tab>Transactions</Tab>
               <Tab>Rewards</Tab>
             </TabList>

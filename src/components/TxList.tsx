@@ -41,13 +41,13 @@ function TxList({
       >
         {txs.length === 0 && (
           <>
-            <Text color="grey">
+            <Text color="grey" fontSize="sm" p={2}>
               No transactions yet.
               <br />
               <br />
               To send transactions you need to:
             </Text>
-            <OrderedList color="grey">
+            <OrderedList color="grey" pl={3} fontSize="sm">
               <ListItem>have some tokens on the balance,</ListItem>
               <ListItem>initiate a spawn transaction first.</ListItem>
             </OrderedList>

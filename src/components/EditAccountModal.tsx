@@ -346,7 +346,7 @@ function EditAccountModal({
               errors={errors}
               isSubmitted={isSubmitted}
             />
-            <Text color="yellow" my={4} fontSize="xs" textAlign="center">
+            <Text color="orange" my={4} fontSize="xs" textAlign="center">
               Change the parameters below on your own risk.
               <br />
               Changing any of them will change the account&apos;s address.

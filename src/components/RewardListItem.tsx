@@ -30,8 +30,8 @@ function RewardListItem({
 }: RewardListItemProps): JSX.Element {
   return (
     <Card
-      py={1}
-      _hover={{ cursor: 'pointer', bgColor: 'brand.modalGreen' }}
+      variant="list"
+      _hover={{ cursor: 'default', bgColor: 'brand.modalGreen' }}
       borderBottom="2px solid"
       borderColor="brand.modalGreen"
     >

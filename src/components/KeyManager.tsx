@@ -290,7 +290,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                           float="right"
                           display="flex"
                           alignItems="center"
-                          colorScheme="yellow"
+                          colorScheme="orange"
                           gap={1}
                         >
                           <IconDeviceUsb size={12} />
@@ -427,7 +427,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                             fontWeight="normal"
                             fontSize="xx-small"
                             ml={1}
-                            colorScheme="yellow"
+                            colorScheme="orange"
                           >
                             {keys.length === 1 &&
                               keys[0] &&
