@@ -10,11 +10,11 @@ import {
   useBreakpointValue,
 } from '@chakra-ui/react';
 import { IconArrowNarrowRight } from '@tabler/icons-react';
-import { useCopyToClipboard } from '@uidotdev/usehooks';
 
 import BackButton from '../../components/BackButton';
 import GreenHeader from '../../components/welcome/GreenHeader';
 import Logo from '../../components/welcome/Logo';
+import useCopy from '../../hooks/useCopy';
 import useWallet from '../../store/useWallet';
 
 import { useWalletCreation } from './WalletCreationContext';
@@ -23,24 +23,14 @@ function CreateMnemonicScreen(): JSX.Element {
   const { generateMnemonic } = useWallet();
   const ctx = useWalletCreation();
   const [mnemonic, setMnemonic] = useState(ctx.mnemonic || generateMnemonic());
-  const [isCopied, setIsCopied] = useState(false);
-  const [, copy] = useCopyToClipboard();
   const navigate = useNavigate();
   const columns = useBreakpointValue({ base: 2, md: 3 }, { ssr: false });
-
-  let timeout: ReturnType<typeof setTimeout>;
+  const { isCopied, onCopy } = useCopy();
 
   const regenerateMnemonic = () => {
     setMnemonic(generateMnemonic());
   };
-  const onCopyClick = () => {
-    clearTimeout(timeout);
-    copy(mnemonic);
-    setIsCopied(true);
-    timeout = setTimeout(() => {
-      setIsCopied(false);
-    }, 5000);
-  };
+  const onCopyClick = () => onCopy(mnemonic);
 
   return (
     <Flex
