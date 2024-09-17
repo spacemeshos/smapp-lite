@@ -23,6 +23,11 @@ export const MAIN_MENU_BUTTONS_SIZE = { base: 18, md: 24 };
 
 export const MAX_MULTISIG_AMOUNT = 10;
 
+export const API_MIN_FETCH_INTERVAL = 10;
+
+export const FETCH_NODE_STATUS_INTERVAL = 5 * MINUTE;
+export const FETCH_NODE_STATUS_RETRY = 1 * MINUTE;
+
 export const GENESIS_VESTING_ACCOUNTS = {
   sm1qqqqqqpdvm9pwx07d99ajgnuj8rp250u90xt4jczwd873: 2743200000000000n,
   sm1qqqqqqx4shtr69586rtnx2j69hvsp9yeen0q8asqv7duy: 5867100000000000n,
