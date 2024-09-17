@@ -110,3 +110,26 @@ export const getVaultUnlockedAmount = (
     available: zeroOrMore(available),
   };
 };
+export const getKeysByAccount = (
+  acc: AccountWithAddress,
+  keys: SafeKeyWithType[]
+) => {
+  switch (acc.templateAddress) {
+    case StdPublicKeys.SingleSig: {
+      const pk = (acc.spawnArguments as SingleSigSpawnArguments).PublicKey;
+      return keys.filter((k) => k.publicKey === pk);
+    }
+    case StdPublicKeys.MultiSig:
+    case StdPublicKeys.Vesting: {
+      const pks = (acc.spawnArguments as MultiSigSpawnArguments).PublicKeys;
+      return keys.filter((k) => pks.includes(k.publicKey));
+    }
+    case StdPublicKeys.Vault: {
+      const pk = (acc.spawnArguments as VaultSpawnArguments).Owner;
+      return keys.filter((k) => k.publicKey === pk);
+    }
+    default: {
+      throw new Error('Unknown account type');
+    }
+  }
+};

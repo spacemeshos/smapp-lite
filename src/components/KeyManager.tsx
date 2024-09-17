@@ -44,12 +44,12 @@ import {
   KeyPairType,
   SafeKeyWithType,
 } from '../types/wallet';
+import { getKeysByAccount } from '../utils/account';
 import { BUTTON_ICON_SIZE } from '../utils/constants';
 import {
   AnySpawnArguments,
   getTemplateNameByKey,
   MultiSigSpawnArguments,
-  SingleSigSpawnArguments,
   VaultSpawnArguments,
 } from '../utils/templates';
 import { safeKeyForAccount } from '../utils/wallet';
@@ -170,29 +170,6 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
       `${acc.address}.account`,
       'text/plain'
     );
-
-  const getKeysByAccount = (acc: AccountWithAddress) => {
-    switch (acc.templateAddress) {
-      case StdPublicKeys.SingleSig: {
-        const pk = (acc.spawnArguments as SingleSigSpawnArguments).PublicKey;
-        return (wallet?.keychain ?? []).filter((k) => k.publicKey === pk);
-      }
-      case StdPublicKeys.MultiSig:
-      case StdPublicKeys.Vesting: {
-        const pks = (acc.spawnArguments as MultiSigSpawnArguments).PublicKeys;
-        return (wallet?.keychain ?? []).filter((k) =>
-          pks.includes(k.publicKey)
-        );
-      }
-      case StdPublicKeys.Vault: {
-        const pk = (acc.spawnArguments as VaultSpawnArguments).Owner;
-        return (wallet?.keychain ?? []).filter((k) => k.publicKey === pk);
-      }
-      default: {
-        throw new Error('Unknown account type');
-      }
-    }
-  };
 
   const withoutInitialUnlockAmount = (args: AnySpawnArguments) => {
     if (Object.hasOwn(args, 'InitialUnlockAmount')) {
@@ -355,7 +332,7 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                 </Flex>
                 <Box flex={1}>
                   {accounts.map((acc, idx) => {
-                    const keys = getKeysByAccount(acc);
+                    const keys = getKeysByAccount(acc, wallet?.keychain ?? []);
                     return (
                       <Box
                         key={safeKeyForAccount(acc)}
