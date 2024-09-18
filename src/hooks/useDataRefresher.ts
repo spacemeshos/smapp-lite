@@ -4,8 +4,10 @@ import { singletonHook } from 'react-singleton-hook';
 import { O } from '@mobily/ts-belt';
 
 import useNetworks from '../store/useNetworks';
+import useNetworkStatus from '../store/useNetworkStatus';
 import useWallet from '../store/useWallet';
 import { Bech32Address } from '../types/common';
+import { API_MIN_FETCH_INTERVAL } from '../utils/constants';
 import { noop } from '../utils/func';
 
 import useAccountHandlers from './useAccountHandlers';
@@ -25,6 +27,7 @@ const useDataRefresher = () => {
   const accounts = useAccountsList(hrp);
   const { selectedAccount } = useWallet();
   const currentNetwork = getCurrentNetwork();
+  const { status } = useNetworkStatus();
   const addresses = useMemo(
     () => accounts.map((acc) => acc.address),
     [accounts]
@@ -32,8 +35,12 @@ const useDataRefresher = () => {
   const curAddress = accounts[selectedAccount]?.address;
   const rpc = currentNetwork?.jsonRPC;
 
+  const cannotDoRequest = !status || !rpc;
   const doRequests = useMemo(
     () => (addrs: Bech32Address[], addr: Bech32Address) => {
+      if (cannotDoRequest) {
+        return Promise.resolve();
+      }
       setIsLoading(true);
       return Promise.all([
         fetchAccountState(addrs),
@@ -48,7 +55,7 @@ const useDataRefresher = () => {
           setIsLoading(false);
         });
     },
-    [fetchAccountState, fetchTransactions, fetchRewards]
+    [cannotDoRequest, fetchAccountState, fetchTransactions, fetchRewards]
   );
 
   useEffect(() => {
@@ -57,7 +64,9 @@ const useDataRefresher = () => {
       doRequests(addresses, curAddress);
       ival = setInterval(
         () => doRequests(addresses, curAddress),
-        O.getWithDefault(layerDur, 300) * 1000
+        O.mapWithDefault(layerDur, 300, (val) =>
+          val < API_MIN_FETCH_INTERVAL ? API_MIN_FETCH_INTERVAL : val
+        ) * 1000
       );
     }
     return () => clearInterval(ival);
