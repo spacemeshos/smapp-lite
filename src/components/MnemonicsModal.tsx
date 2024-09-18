@@ -49,6 +49,7 @@ function MnemonicsModal(): JSX.Element {
             rows={4}
             resize="none"
             borderColor="brand.darkGreen"
+            translate="no"
           />
           <Text fontSize="xs" color="gray" mt={2}>
             We recommend you to remember mnemonics and not store them on your

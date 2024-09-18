@@ -71,7 +71,13 @@ function CreateMnemonicScreen(): JSX.Element {
         </Box>
       </Box>
       <Box px={4} w={{ base: '100%', md: '90%' }}>
-        <SimpleGrid columns={columns} spacing={0} gap="1px" bg="whiteAlpha.200">
+        <SimpleGrid
+          columns={columns}
+          spacing={0}
+          gap="1px"
+          bg="whiteAlpha.200"
+          translate="no"
+        >
           {mnemonic.split(' ').map((word, idx) => (
             <Box
               // eslint-disable-next-line react/no-array-index-key

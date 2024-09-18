@@ -140,7 +140,12 @@ function VerifyMnemonicScreen(): JSX.Element {
             Please, place the missing words on their places:
           </Text>
           <Box px={4} w={{ base: '100%', md: '90%' }}>
-            <SimpleGrid columns={[2, 4]} width="100%" alignItems="center">
+            <SimpleGrid
+              columns={[2, 4]}
+              width="100%"
+              alignItems="center"
+              translate="no"
+            >
               {slots.bank.map((wordIndex) => (
                 <DraggableTag
                   placed={false}
@@ -161,6 +166,7 @@ function VerifyMnemonicScreen(): JSX.Element {
             spacing={0}
             gap="1px"
             bg="whiteAlpha.200"
+            translate="no"
           >
             {words.map((word, idx) => {
               const isSlot = indexesToCheck.includes(idx);
