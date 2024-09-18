@@ -75,7 +75,7 @@ function TxListItem({
       : 'Unknown fee';
   return (
     <Card
-      py={1}
+      variant="list"
       _hover={{ cursor: 'pointer', bgColor: 'brand.modalGreen' }}
       borderBottom="2px solid"
       borderColor="brand.modalGreen"

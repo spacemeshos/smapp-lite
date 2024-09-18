@@ -9,24 +9,18 @@ const baseStyle = definePartsStyle({
     backgroundColor: 'brand.darkGreen',
     shadow: 'none',
   },
-  header: {
-    paddingBottom: '2px',
+});
+
+const list = definePartsStyle({
+  container: {
+    backgroundColor: 'brand.darkGreen',
+    shadow: 'none',
+    borderRadius: '0px',
   },
   body: {
-    paddingTop: '2px',
-  },
-  footer: {
-    paddingTop: '2px',
+    py: 2,
   },
 });
 
-const sizes = {
-  md: definePartsStyle({
-    container: {
-      borderRadius: '0px',
-    },
-  }),
-};
-
-const cardTheme = defineMultiStyleConfig({ baseStyle, sizes });
+const cardTheme = defineMultiStyleConfig({ baseStyle, variants: { list } });
 export default cardTheme;

@@ -346,10 +346,10 @@ function EditAccountModal({
               errors={errors}
               isSubmitted={isSubmitted}
             />
-            <Text color="yellow" my={4} fontSize="xs" textAlign="center">
-              Change the parameters below on your own risk.
+            <Text color="orange" my={4} fontSize="xs" textAlign="center">
+              Any changes to the parameters below will alter the account address.
               <br />
-              Changing any of them will change the account&apos;s address.
+              Proceed at your own risk.
             </Text>
             <FormSelect
               label="Account type"

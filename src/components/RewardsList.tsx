@@ -39,7 +39,7 @@ function RewardsList({
         }}
       >
         {account.rewards.length === 0 && (
-          <Text color="grey">
+          <Text color="grey" fontSize="sm" p={2}>
             No rewards for this account.
             <br />
             Check out{' '}

@@ -1,4 +1,4 @@
-import { Badge, Box, Card, CardBody } from '@chakra-ui/react';
+import { Badge, Box, Card, CardBody, Text } from '@chakra-ui/react';
 
 import useNetworks from '../store/useNetworks';
 import useNetworkStatus from '../store/useNetworkStatus';
@@ -13,14 +13,15 @@ function NodeStatusBadge(): JSX.Element | null {
     return (
       <Card
         variant="outline"
-        borderColor="red"
+        borderColor="brand.red"
         fontSize="sm"
         width="100%"
         mt={2}
       >
         <CardBody>
-          Error: {error.message}
-          <br />
+          <Text textColor="brand.red" mb={2}>
+            Error: {error.message}
+          </Text>
           Please choose another public RPC.
         </CardBody>
       </Card>
@@ -31,7 +32,7 @@ function NodeStatusBadge(): JSX.Element | null {
     return (
       <Card
         variant="outline"
-        borderColor="grey"
+        borderColor="brand.gray"
         fontSize="sm"
         width="100%"
         mt={2}
