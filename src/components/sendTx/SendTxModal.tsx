@@ -71,6 +71,7 @@ import {
 } from '../../utils/account';
 import { fromBase64 } from '../../utils/base64';
 import { generateAddress, getWords } from '../../utils/bech32';
+import { DEFAULT_ACCOUNT_STATES } from '../../utils/constants';
 import { fromHexString, toHexString } from '../../utils/hexString';
 import { isForeignKey } from '../../utils/keys';
 import { formatSmidge } from '../../utils/smh';
@@ -92,11 +93,13 @@ import ConfirmationModal, { ConfirmationData } from './ConfirmationModal';
 import Drain from './Drain';
 import MultiSigSpawn from './MultiSigSpawn';
 import {
+  DrainPayload,
   DrainSchema,
   FormSchema,
   FormValues,
   MultiSigSpawnSchema,
   SingleSigSpawnSchema,
+  SpendPayload,
   SpendSchema,
   VaultSpawnSchema,
 } from './schemas';
@@ -193,6 +196,47 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
     false,
     isVaultAccount
   );
+
+  const insufficientFunds = O.mapWithDefault(accountState, '', (acc) => {
+    if (!estimatedGas) {
+      return 'Waiting for gas estimation...';
+    }
+
+    const tx = getValues();
+    const fee =
+      estimatedGas *
+      BigInt(Number.isNaN(tx.gasPrice) || !tx.gasPrice ? 1 : tx.gasPrice);
+    if (BigInt(acc.projected.balance) < fee) {
+      return 'You have insufficient funds to pay for gas';
+    }
+    if (SpendSchema.safeParse(tx.payload).success) {
+      // If it is a Spend tx — check if the balance is enough to send the amount
+      const txPayload = tx.payload as SpendPayload;
+      const res =
+        BigInt(acc.projected.balance) >= BigInt(txPayload.Amount) + fee;
+      return res ? '' : 'You have insufficient funds to send this amount';
+    }
+    if (DrainSchema.safeParse(tx.payload).success) {
+      // If it is a Drain tx — check that Vault has enough balance to be drained
+      const txPayload = tx.payload as DrainPayload;
+      return pipe(
+        genesisID,
+        O.flatMap((genId) => getAccountData(genId, txPayload.Vault)),
+        O.mapWithDefault('', (vault) => {
+          if (vault.state === DEFAULT_ACCOUNT_STATES) {
+            // No account data found — do not block the transaction
+            return '';
+          }
+
+          const res =
+            BigInt(vault.state.projected.balance) >= BigInt(txPayload.Amount);
+          return res ? '' : 'The vault has insufficient funds to be drained';
+        })
+      );
+    }
+    // In any other case
+    return '';
+  });
 
   const methodOptions = useMemo(
     () =>
@@ -1287,6 +1331,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
           isMultiSig={txData.isMultiSig ?? false}
           required={txData.required}
           isLedgerRejected={isLedgerRejected}
+          insufficientFunds={insufficientFunds}
         />
       )}
     </>

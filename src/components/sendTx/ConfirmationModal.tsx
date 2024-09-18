@@ -77,6 +77,7 @@ type ConfirmationModalProps = ConfirmationData & {
   isOpen: boolean;
   estimatedGas: bigint | null;
   isLedgerRejected?: boolean;
+  insufficientFunds: string;
 };
 
 const renderTemplateSpecificFields = (form: FormValues) => {
@@ -222,6 +223,7 @@ function ConfirmationModal({
   signatures = undefined,
   required = 1,
   isMultiSig = false,
+  insufficientFunds,
   isOpen,
   onClose,
   onSubmit,
@@ -320,7 +322,13 @@ function ConfirmationModal({
     if (!isMultiSig) {
       return (
         <ButtonGroup isAttached>
-          <Button variant="whiteModal" onClick={submit} ml={2} mr="1px">
+          <Button
+            variant="whiteModal"
+            onClick={submit}
+            ml={2}
+            mr="1px"
+            isDisabled={insufficientFunds.length > 0}
+          >
             {hasSingleSig ? 'Publish' : 'Sign & Publish'}
           </Button>
           <Menu>
@@ -349,10 +357,11 @@ function ConfirmationModal({
     return (
       <ButtonGroup isAttached>
         <Button
-          colorScheme="blue"
+          variant="whiteModal"
           onClick={mayPublish ? submit : exportSigned}
           ml={2}
           mr="1px"
+          isDisabled={mayPublish ? insufficientFunds.length > 0 : false}
         >
           {/* eslint-disable-next-line no-nested-ternary */}
           {hasAllSignatures
@@ -365,7 +374,7 @@ function ConfirmationModal({
           <MenuButton
             as={IconButton}
             icon={<IconChevronDown />}
-            colorScheme="blue"
+            variant="whiteModal"
             minW={8}
           />
           <MenuList>
@@ -485,6 +494,11 @@ function ConfirmationModal({
                 />
               )}
             </>
+          )}
+          {!!insufficientFunds && (
+            <Text mt={2} color="brand.red" fontSize="xs">
+              {insufficientFunds}
+            </Text>
           )}
         </ModalBody>
         <ModalFooter
