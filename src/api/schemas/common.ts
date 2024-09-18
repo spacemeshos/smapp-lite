@@ -14,6 +14,10 @@ export const HexStringSchema = z.custom<string>(
   }
 );
 
+export const PublicKeySchema = HexStringSchema.and(
+  z.string().length(64, 'Public key must be 32 bytes long (64 characters)')
+);
+
 export const Base64Schema = z
   .string()
   .refine(isValid, { message: 'Expected Base64 string' });

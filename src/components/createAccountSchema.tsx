@@ -3,21 +3,21 @@ import { z } from 'zod';
 import { StdPublicKeys } from '@spacemesh/sm-codec';
 
 import { Bech32AddressSchema } from '../api/schemas/address';
-import { HexStringSchema } from '../api/schemas/common';
+import { PublicKeySchema } from '../api/schemas/common';
 import { AnySpawnArguments } from '../utils/templates';
 
 const DisplayNameSchema = z.string().min(2);
 const SingleSigSchema = z.object({
   displayName: DisplayNameSchema,
   templateAddress: z.literal(StdPublicKeys.SingleSig),
-  PublicKey: HexStringSchema,
+  PublicKey: PublicKeySchema,
 });
 const MultiSigSchema = z.object({
   displayName: DisplayNameSchema,
   templateAddress: z.literal(StdPublicKeys.MultiSig),
   Required: z.number().min(0).max(10),
   PublicKeys: z
-    .array(HexStringSchema)
+    .array(PublicKeySchema)
     .min(1, 'MultiSig account requires at least two parties'),
 });
 const VaultSchema = z.object({
@@ -34,7 +34,7 @@ const VestingSchema = z.object({
   templateAddress: z.literal(StdPublicKeys.Vesting),
   Required: z.number().min(0).max(10),
   PublicKeys: z
-    .array(HexStringSchema)
+    .array(PublicKeySchema)
     .min(1, 'Vesting account requires at least two parties'),
 });
 export const FormSchema = z.discriminatedUnion('templateAddress', [
