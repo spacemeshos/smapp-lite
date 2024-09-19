@@ -1147,194 +1147,192 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
   };
 
   return (
-    <>
-      <Modal isOpen={isOpen} onClose={close} isCentered size="xl">
-        <Form control={control}>
-          <input
-            type="hidden"
-            {...register('templateAddress', {
-              value: O.mapWithDefault(
-                currerntAccount,
-                StdPublicKeys.SingleSig,
-                (acc) => acc.templateAddress as StdTemplateKeys
-              ),
-            })}
-          />
-          <ModalOverlay />
-          <ModalContent>
-            <ModalCloseButton />
-            <ModalHeader pt={0} textAlign="center" fontSize="x-large">
-              Send a transaction
-              <Text fontSize="xs">
-                Or you can
-                <TxFileReader
-                  multiple
-                  onRead={handleImportTx}
-                  onError={showImportError}
-                >
-                  <Button
-                    variant="link"
-                    as="u"
-                    color="brand.lightGray"
-                    size="xs"
-                    p={1}
-                    isDisabled={
-                      !!(currerntAccount && isVaultAccount(currerntAccount))
-                    }
-                  >
-                    import a transaction
-                  </Button>
-                </TxFileReader>
-                from file.
-              </Text>
-              {!!importErrors && (
-                <Text mt={2} mb={2} fontSize="xs" color="red">
-                  {importErrors}
-                </Text>
-              )}
-            </ModalHeader>
-            <ModalBody>
-              {errors.root?.message && (
-                <Text mb={2} color="red">
-                  {errors.root.message}
-                </Text>
-              )}
-              <FormSelect
-                register={register('payload.methodSelector', {
-                  valueAsNumber: true,
-                })}
-                options={methodOptions.map(({ value, ...rest }) => ({
-                  value: String(value),
-                  ...rest,
-                }))}
-                errors={errors}
-                isSubmitted={isSubmitted}
-              />
-              {O.mapWithDefault(
-                currerntAccount,
-                <Text color="red">
-                  No account selected. Please switch to an account first. first.
-                </Text>,
-                (curAcc) => (
-                  <Card shadow={0}>
-                    <CardBody
-                      pt={2}
-                      pr={0}
-                      pb={1}
-                      pl={0}
-                      bg="brand.modalGreen"
-                      color="brand.lightGray"
-                    >
-                      {renderTemplateSpecificFields(curAcc)}
-                    </CardBody>
-                  </Card>
-                )
-              )}
-              <Flex mt={0}>
-                <Box mr={2} w="50%">
-                  <FormInput
-                    label="Gas Price"
-                    inputProps={{
-                      type: 'number',
-                    }}
-                    register={register('gasPrice', {
-                      value: 1,
-                      valueAsNumber: true,
-                    })}
-                    errors={errors}
-                    isSubmitted={isSubmitted}
-                    inputAddon={
-                      <InputRightElement w="auto" pr={2}>
-                        <Text fontSize="x-small" mr={2}>
-                          Smidge per unit
-                        </Text>
-                      </InputRightElement>
-                    }
-                    hint={
-                      <>
-                        <Text mb={2}>
-                          <strong>How much to pay per gas unit</strong>
-                          <br />
-                          During high network traffic, transactions with higher
-                          gas prices are prioritized.
-                        </Text>
-                        <Text>
-                          Example: transaction costs 25,000 gas units, gas price
-                          is 2 smidges, the total fee will be 50,000 smidges.
-                        </Text>
-                      </>
-                    }
-                  />
-                </Box>
-                <Box ml={2} w="50%">
-                  <FormInput
-                    label="Nonce"
-                    inputProps={{
-                      type: 'number',
-                    }}
-                    register={register('nonce', {
-                      value: 1,
-                      valueAsNumber: true,
-                      required: 'Nonce is required',
-                      min: {
-                        value: 1,
-                        // eslint-disable-next-line max-len
-                        message: 'Nonce must be a positive number or zero',
-                      },
-                    })}
-                    errors={errors}
-                    isSubmitted={isSubmitted}
-                    hint={
-                      <Text>
-                        <strong>The transaction counter</strong>
-                        <br />
-                        The number is used only to ensure each transaction is
-                        unique.
-                        <br />
-                        It increments automatically, but can be set manually if
-                        needed.
-                      </Text>
-                    }
-                  />
-                </Box>
-              </Flex>
-              {isCurrentVaultAccount && (
-                <Text fontSize="sm" color="orange">
-                  Vault account cannot publish any transactions by itself.
-                  <br />
-                  You have to switch to Vesting account first and then publish
-                  transactions from it: Spawn or Drain.
-                </Text>
-              )}
-            </ModalBody>
-            <ModalFooter justifyContent="center">
-              <Button
-                px={12}
-                variant="whiteModal"
-                onClick={submit}
-                isDisabled={isCurrentVaultAccount}
-              >
-                Next
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Form>
-      </Modal>
-      {txData && (
-        <ConfirmationModal
-          {...txData}
-          estimatedGas={estimatedGas}
-          isOpen={confirmationModal.isOpen}
-          onClose={onConfirmationModalClose}
-          onSubmit={signAndPublish}
-          onExport={exportTx}
-          isMultiSig={txData.isMultiSig ?? false}
-          required={txData.required}
-          isLedgerRejected={isLedgerRejected}
-          insufficientFunds={insufficientFunds}
+    <Modal isOpen={isOpen} onClose={close} isCentered size="xl">
+      <Form control={control}>
+        <input
+          type="hidden"
+          {...register('templateAddress', {
+            value: O.mapWithDefault(
+              currerntAccount,
+              StdPublicKeys.SingleSig,
+              (acc) => acc.templateAddress as StdTemplateKeys
+            ),
+          })}
         />
-      )}
-    </>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalCloseButton />
+          <ModalHeader pt={0} textAlign="center" fontSize="x-large">
+            Send a transaction
+            <Text fontSize="xs">
+              Or you can
+              <TxFileReader
+                multiple
+                onRead={handleImportTx}
+                onError={showImportError}
+              >
+                <Button
+                  variant="link"
+                  as="u"
+                  color="brand.lightGray"
+                  size="xs"
+                  p={1}
+                  isDisabled={
+                    !!(currerntAccount && isVaultAccount(currerntAccount))
+                  }
+                >
+                  import a transaction
+                </Button>
+              </TxFileReader>
+              from file.
+            </Text>
+            {!!importErrors && (
+              <Text mt={2} mb={2} fontSize="xs" color="red">
+                {importErrors}
+              </Text>
+            )}
+          </ModalHeader>
+          <ModalBody>
+            {errors.root?.message && (
+              <Text mb={2} color="red">
+                {errors.root.message}
+              </Text>
+            )}
+            <FormSelect
+              register={register('payload.methodSelector', {
+                valueAsNumber: true,
+              })}
+              options={methodOptions.map(({ value, ...rest }) => ({
+                value: String(value),
+                ...rest,
+              }))}
+              errors={errors}
+              isSubmitted={isSubmitted}
+            />
+            {O.mapWithDefault(
+              currerntAccount,
+              <Text color="red">
+                No account selected. Please switch to an account first. first.
+              </Text>,
+              (curAcc) => (
+                <Card shadow={0}>
+                  <CardBody
+                    pt={2}
+                    pr={0}
+                    pb={1}
+                    pl={0}
+                    bg="brand.modalGreen"
+                    color="brand.lightGray"
+                  >
+                    {renderTemplateSpecificFields(curAcc)}
+                  </CardBody>
+                </Card>
+              )
+            )}
+            <Flex mt={0}>
+              <Box mr={2} w="50%">
+                <FormInput
+                  label="Gas Price"
+                  inputProps={{
+                    type: 'number',
+                  }}
+                  register={register('gasPrice', {
+                    value: 1,
+                    valueAsNumber: true,
+                  })}
+                  errors={errors}
+                  isSubmitted={isSubmitted}
+                  inputAddon={
+                    <InputRightElement w="auto" pr={2}>
+                      <Text fontSize="x-small" mr={2}>
+                        Smidge per unit
+                      </Text>
+                    </InputRightElement>
+                  }
+                  hint={
+                    <>
+                      <Text mb={2}>
+                        <strong>How much to pay per gas unit</strong>
+                        <br />
+                        During high network traffic, transactions with higher
+                        gas prices are prioritized.
+                      </Text>
+                      <Text>
+                        Example: transaction costs 25,000 gas units, gas price
+                        is 2 smidges, the total fee will be 50,000 smidges.
+                      </Text>
+                    </>
+                  }
+                />
+              </Box>
+              <Box ml={2} w="50%">
+                <FormInput
+                  label="Nonce"
+                  inputProps={{
+                    type: 'number',
+                  }}
+                  register={register('nonce', {
+                    value: 1,
+                    valueAsNumber: true,
+                    required: 'Nonce is required',
+                    min: {
+                      value: 1,
+                      // eslint-disable-next-line max-len
+                      message: 'Nonce must be a positive number or zero',
+                    },
+                  })}
+                  errors={errors}
+                  isSubmitted={isSubmitted}
+                  hint={
+                    <Text>
+                      <strong>The transaction counter</strong>
+                      <br />
+                      The number is used only to ensure each transaction is
+                      unique.
+                      <br />
+                      It increments automatically, but can be set manually if
+                      needed.
+                    </Text>
+                  }
+                />
+              </Box>
+            </Flex>
+            {isCurrentVaultAccount && (
+              <Text fontSize="sm" color="orange">
+                Vault account cannot publish any transactions by itself.
+                <br />
+                You have to switch to Vesting account first and then publish
+                transactions from it: Spawn or Drain.
+              </Text>
+            )}
+            {txData && (
+              <ConfirmationModal
+                {...txData}
+                estimatedGas={estimatedGas}
+                isOpen={confirmationModal.isOpen}
+                onClose={onConfirmationModalClose}
+                onSubmit={signAndPublish}
+                onExport={exportTx}
+                isMultiSig={txData.isMultiSig ?? false}
+                required={txData.required}
+                isLedgerRejected={isLedgerRejected}
+                insufficientFunds={insufficientFunds}
+              />
+            )}
+          </ModalBody>
+          <ModalFooter justifyContent="center">
+            <Button
+              px={12}
+              variant="whiteModal"
+              onClick={submit}
+              isDisabled={isCurrentVaultAccount}
+            >
+              Next
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Form>
+    </Modal>
   );
 }
 
