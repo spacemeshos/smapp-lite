@@ -20,12 +20,12 @@ import usePassword from '../store/usePassword';
 
 import PasswordInput from './PasswordInput';
 
-function PasswordAlert(): JSX.Element {
+function PasswordAlert(): JSX.Element | null {
   const [isLoading, setIsLoading] = useState(false);
   const { form } = usePassword();
   const cancelRef = useRef<HTMLButtonElement>(null);
   if (!form.register.password || !form.register.remember) {
-    throw new Error('PasswordAlert: password or remember is not registered');
+    return null;
   }
 
   const onSubmit = async () => {

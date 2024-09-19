@@ -85,11 +85,11 @@ function ImportScreen(): JSX.Element {
       () => openWallet(walletFileContent, password),
       1
     );
+    setIsLoading(false);
     if (!success) {
       setError('password', { type: 'value', message: 'Invalid password' });
       return;
     }
-    setIsLoading(false);
     navigate('/wallet');
   });
 
