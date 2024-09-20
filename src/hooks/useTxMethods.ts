@@ -1,12 +1,11 @@
 import { O } from '@mobily/ts-belt';
-import { signAsync } from '@noble/ed25519';
 
 import { fetchEstimatedGas, fetchPublishTx } from '../api/requests/tx';
-import useWallet from '../store/useWallet';
 import { HexString } from '../types/common';
 import { prepareTxForSign } from '../utils/tx';
 
 import { useCurrentGenesisID, useCurrentRPC } from './useNetworkSelectors';
+import { useSignMessage } from './useSigning';
 
 export const useEstimateGas = () => {
   const rpc = useCurrentRPC();
@@ -19,8 +18,8 @@ export const useEstimateGas = () => {
 };
 
 export const useSignTx = () => {
-  const { revealSecretKey } = useWallet();
   const genesisID = useCurrentGenesisID();
+  const sign = useSignMessage();
   return async (
     encodedTx: Uint8Array,
     publicKey: HexString,
@@ -31,11 +30,7 @@ export const useSignTx = () => {
         'Please select the network first and then sign a transaction.'
       );
     }
-    const secret = await revealSecretKey(publicKey, password);
-    return signAsync(
-      prepareTxForSign(genesisID, encodedTx),
-      secret.slice(0, 64)
-    );
+    return sign(prepareTxForSign(genesisID, encodedTx), publicKey, password);
   };
 };
 
