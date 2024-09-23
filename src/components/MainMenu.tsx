@@ -16,6 +16,7 @@ import { MAIN_MENU_BUTTONS_SIZE } from '../utils/constants';
 
 import KeyManager from './KeyManager';
 import MnemonicsModal from './MnemonicsModal';
+import VerifyMessageModal from './VerifyMessageModal';
 import WipeOutAlert from './WipeOutAlert';
 
 function MainMenu(): JSX.Element {
@@ -24,6 +25,7 @@ function MainMenu(): JSX.Element {
   const wipeAlert = useDisclosure();
 
   const keyManagerDrawer = useDisclosure();
+  const verifyMessageModal = useDisclosure();
   const { revealMnemonics } = useMnemonics();
   const iconSize = useBreakpointValue(MAIN_MENU_BUTTONS_SIZE, { ssr: false });
 
@@ -46,6 +48,10 @@ function MainMenu(): JSX.Element {
           <MenuItem onClick={revealMnemonics}>Backup mnemonic</MenuItem>
           <MenuItem onClick={exportWalletFile}>Export wallet file</MenuItem>
           <MenuDivider />
+          <MenuItem onClick={verifyMessageModal.onOpen}>
+            Verify Message
+          </MenuItem>
+          <MenuDivider />
           <MenuItem color="red" onClick={wipeAlert.onOpen}>
             Wipe out
           </MenuItem>
@@ -56,6 +62,10 @@ function MainMenu(): JSX.Element {
       <KeyManager
         isOpen={keyManagerDrawer.isOpen}
         onClose={keyManagerDrawer.onClose}
+      />
+      <VerifyMessageModal
+        isOpen={verifyMessageModal.isOpen}
+        onClose={verifyMessageModal.onClose}
       />
     </>
   );
