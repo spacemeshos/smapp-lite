@@ -14,4 +14,16 @@ export default defineConfig({
       }
     })
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: function manualChunks(id) {
+          // Bundle all third-party code aside
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+        }
+      },
+    },
+  },
 });
