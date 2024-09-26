@@ -612,7 +612,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
 
       return withPassword(
         (password) => signTx(txData.encoded, signWith, password),
-        'Enter password to sign transaction',
+        'Sign Transaction',
         txData.description
       );
     };

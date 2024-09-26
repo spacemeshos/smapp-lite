@@ -142,7 +142,7 @@ function EditAccountModal({
           extractSpawnArgs(data),
           password
         ),
-      'Edit Account',
+      'Save Account',
       // eslint-disable-next-line max-len
       `Please enter the password to save changes in the account "${
         data.displayName

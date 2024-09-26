@@ -73,7 +73,7 @@ function ImportKeyFromLedgerModal({
           );
           return true;
         },
-        'Import PublicKey from Ledger device',
+        'Import Public Key',
         // eslint-disable-next-line max-len
         `Please enter the password to store public key ${publicKey} in the wallet.`
       );

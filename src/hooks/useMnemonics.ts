@@ -16,7 +16,7 @@ const useMnemonics = () => {
   const revealMnemonics = async () => {
     const words = await withPassword(
       showMnemonics,
-      'Show mnemonics',
+      'Show Mnemonics',
       // eslint-disable-next-line max-len
       'Please enter your password to read mnemonics from the secret part of your wallet:'
     );

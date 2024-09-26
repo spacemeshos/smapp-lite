@@ -23,7 +23,7 @@ const useRevealSecretKey = () => {
   const revealSecretKey = async (key: SafeKey) => {
     const sk = await withPassword(
       (password) => readSecretKey(key.publicKey, password),
-      'Reveal secret key',
+      'Reveal Secret Key',
       // eslint-disable-next-line max-len
       `Please type the password to reveal secret key for account "${key.displayName}"`
     );
