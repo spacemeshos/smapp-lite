@@ -95,7 +95,7 @@ function SpawnAnotherAccount({
 
   return (
     <Flex flexDir="column">
-      <FormControl>
+      <FormControl mb={2}>
         <FormLabel>Please select account to spawn:</FormLabel>
         <Select
           variant="whitePill"
