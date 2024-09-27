@@ -240,14 +240,6 @@ function WalletScreen(): JSX.Element {
               <IconQrcode />
               Receive
             </Button>
-            {/* <Button w="25%" h={14} flexDirection="column" p={2}>
-              <IconWritingSign />
-              Sign
-            </Button>
-            <Button w="25%" h={14} flexDirection="column" p={2}>
-              <IconUserScan />
-              Verify
-            </Button> */}
           </ButtonGroup>
           <Tabs
             w="100%"
