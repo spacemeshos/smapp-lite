@@ -84,11 +84,7 @@ function VerifyMessageModal({
       });
       return;
     }
-    verifyMessage(
-      data.signature,
-      `${SIGNED_MESSAGE_PREFIX}${data.text}`,
-      data.publicKey
-    )
+    verifyMessage(data.signature, data.text, data.publicKey)
       .then((result) => {
         setVerifyStatus(result ? VerifyStatus.Valid : VerifyStatus.Invalid);
       })

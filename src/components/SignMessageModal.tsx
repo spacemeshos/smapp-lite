@@ -63,17 +63,14 @@ function SignMessageModal({
           // Sign using Ledger device
           throw new Error('Hardware wallet is not supported yet');
         }
+        const text = `${SIGNED_MESSAGE_PREFIX}${message}`;
         // Sign using local key
         return JSON.stringify(
           {
             publicKey: key.publicKey,
-            text: message,
+            text,
             signature: toHexString(
-              await signMessage(
-                `${SIGNED_MESSAGE_PREFIX}${message}`,
-                key.publicKey,
-                password
-              )
+              await signMessage(text, key.publicKey, password)
             ),
           } satisfies SignedMessage,
           null,
