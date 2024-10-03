@@ -26,6 +26,7 @@ import {
   IconSend,
 } from '@tabler/icons-react';
 
+import AccountActionHints from '../components/AccountActionHints';
 import AccountSelection from '../components/AccountSelection';
 import ConfirmationAlert from '../components/ConfirmationAlert';
 import CopyButton from '../components/CopyButton';
@@ -240,15 +241,8 @@ function WalletScreen(): JSX.Element {
               <IconQrcode />
               Receive
             </Button>
-            {/* <Button w="25%" h={14} flexDirection="column" p={2}>
-              <IconWritingSign />
-              Sign
-            </Button>
-            <Button w="25%" h={14} flexDirection="column" p={2}>
-              <IconUserScan />
-              Verify
-            </Button> */}
           </ButtonGroup>
+          <AccountActionHints />
           <Tabs
             w="100%"
             display="flex"

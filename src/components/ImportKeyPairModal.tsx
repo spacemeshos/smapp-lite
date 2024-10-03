@@ -64,7 +64,7 @@ function ImportKeyPairModal({
           );
           return true;
         },
-        'Importing the Key Pair',
+        'Import the Key Pair',
         // eslint-disable-next-line max-len
         `Please enter the password to create the new key pair "${displayName}" from the secret key.`
       );

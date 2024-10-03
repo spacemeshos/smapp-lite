@@ -6,8 +6,11 @@ import {
 } from 'react-hook-form';
 
 import { Flex, FormControl, FormLabel, Select, Text } from '@chakra-ui/react';
+import { O, pipe } from '@mobily/ts-belt';
 import { StdTemplateKeys } from '@spacemesh/sm-codec';
 
+import { useCurrentGenesisID } from '../../hooks/useNetworkSelectors';
+import useAccountData from '../../store/useAccountData';
 import { AccountWithAddress } from '../../types/wallet';
 import {
   isMultiSigAccount,
@@ -35,7 +38,19 @@ function SpawnAnotherAccount({
   unregister,
   setValue,
 }: SpawnAnotherAccount) {
-  const [selectedAddress, setSelectedAddress] = useState(accounts[0]?.address);
+  const genesisID = useCurrentGenesisID();
+  const { isSpawnedAccount } = useAccountData();
+  const isSpawned = (acc: AccountWithAddress<AnySpawnArguments>) =>
+    pipe(
+      genesisID,
+      O.mapWithDefault(false, (genesis) =>
+        isSpawnedAccount(genesis, acc.address)
+      )
+    );
+
+  const [selectedAddress, setSelectedAddress] = useState(
+    accounts.find((x) => !isSpawned(x))?.address
+  );
 
   const selectAccount = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -95,7 +110,7 @@ function SpawnAnotherAccount({
 
   return (
     <Flex flexDir="column">
-      <FormControl>
+      <FormControl mb={2}>
         <FormLabel>Please select account to spawn:</FormLabel>
         <Select
           variant="whitePill"
@@ -106,6 +121,7 @@ function SpawnAnotherAccount({
             <option
               key={`${acc.address}_${acc.displayName}`}
               value={acc.address}
+              disabled={isSpawned(acc)}
             >
               {acc.displayName} ({acc.address})
             </option>

@@ -67,7 +67,7 @@ function RenameKeyModal({
         await renameKey(keyIndex, displayName, password);
         return true;
       },
-      'Rename',
+      'Rename Key',
       // eslint-disable-next-line max-len
       `Please enter the password to change the name of key "${key.displayName}" (${key.path}) to "${displayName}":`
     );

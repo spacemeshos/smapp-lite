@@ -57,7 +57,7 @@ function CreateKeyPairModal({
           await createKeyPair(displayName, path, password, createSingleSig);
           return true;
         },
-        'Create a new Key Pair',
+        'Create a Key Pair',
         // eslint-disable-next-line max-len
         `Please enter the password to create the new key pair "${displayName}" with path "${path}"`
       );

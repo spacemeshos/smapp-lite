@@ -142,7 +142,7 @@ function EditAccountModal({
           extractSpawnArgs(data),
           password
         ),
-      'Edit Account',
+      'Save Account',
       // eslint-disable-next-line max-len
       `Please enter the password to save changes in the account "${
         data.displayName
@@ -347,7 +347,8 @@ function EditAccountModal({
               isSubmitted={isSubmitted}
             />
             <Text color="orange" my={4} fontSize="xs" textAlign="center">
-              Any changes to the parameters below will alter the account address.
+              Any changes to the parameters below will alter the account
+              address.
               <br />
               Proceed at your own risk.
             </Text>
