@@ -31,6 +31,7 @@ import {
   IconKey,
   IconPlus,
   IconTrash,
+  IconWritingSign,
 } from '@tabler/icons-react';
 
 import useConfirmation from '../hooks/useConfirmation';
@@ -64,6 +65,7 @@ import ImportKeyFromLedgerModal from './ImportKeyFromLedgerModal';
 import ImportKeyPairModal from './ImportKeyPairModal';
 import RenameKeyModal from './RenameKeyModal';
 import RevealSecretKeyModal from './RevealSecretKeyModal';
+import SignMessageModal from './SignMessageModal';
 
 type KeyManagerProps = {
   isOpen: boolean;
@@ -117,9 +119,11 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
   const createAccountModal = useDisclosure();
   const importAccountModal = useDisclosure();
   const editAccountModal = useDisclosure();
+  const signMessageModal = useDisclosure();
 
   const [renameKeyIdx, setRenameKeyIdx] = useState(0);
   const [editAccountIdx, setEditAccountIdx] = useState(0);
+  const [signMessageByKeyIndex, setSignMessageByKeyIndex] = useState(0);
 
   const closeHandler = () => {
     onClose();
@@ -241,59 +245,91 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
                       backgroundColor="blackAlpha.300"
                       borderRadius="md"
                     >
-                      {key.type === KeyPairType.Software ? (
-                        <Button
-                          size="xx-small"
-                          p={1}
-                          fontSize="xx-small"
-                          fontWeight="normal"
-                          float="right"
-                          display="flex"
-                          alignItems="center"
-                          borderRadius="sm"
-                          textTransform="uppercase"
-                          gap={1}
-                          onClick={() => revealSecretKey(key)}
-                          variant="ghostWhite"
-                        >
-                          <IconKey size={12} />
-                          Export secret key
-                        </Button>
-                      ) : (
-                        <Badge
-                          p={1}
-                          fontSize="xx-small"
-                          fontWeight="normal"
-                          float="right"
-                          display="flex"
-                          alignItems="center"
-                          colorScheme="orange"
-                          gap={1}
-                        >
-                          <IconDeviceUsb size={12} />
-                          Hardware
-                        </Badge>
-                      )}
-                      <Text fontWeight="bold" mb={1}>
+                      <Flex
+                        float="right"
+                        flexDir={{ base: 'column', sm: 'row-reverse' }}
+                        alignItems="flex-end"
+                        gap={{ base: 1, sm: 2 }}
+                      >
+                        {key.type === KeyPairType.Software ? (
+                          <>
+                            <Button
+                              size="xx-small"
+                              p={1}
+                              fontSize="xx-small"
+                              fontWeight="normal"
+                              display="flex"
+                              alignItems="center"
+                              borderRadius="sm"
+                              textTransform="uppercase"
+                              gap={1}
+                              onClick={() => revealSecretKey(key)}
+                              variant="ghostWhite"
+                            >
+                              <IconKey size={12} />
+                              Export secret key
+                            </Button>
+                            <Button
+                              size="xx-small"
+                              p={1}
+                              fontSize="xx-small"
+                              fontWeight="normal"
+                              display="flex"
+                              alignItems="center"
+                              borderRadius="sm"
+                              textTransform="uppercase"
+                              gap={1}
+                              onClick={() => {
+                                setSignMessageByKeyIndex(idx);
+                                signMessageModal.onOpen();
+                              }}
+                              variant="ghostWhite"
+                            >
+                              <IconWritingSign size={12} />
+                              Sign message
+                            </Button>
+                          </>
+                        ) : (
+                          <Badge
+                            p={1}
+                            fontSize="xx-small"
+                            fontWeight="normal"
+                            display="flex"
+                            alignItems="center"
+                            colorScheme="orange"
+                            gap={1}
+                          >
+                            <IconDeviceUsb size={12} />
+                            Hardware
+                          </Badge>
+                        )}
+                      </Flex>
+                      <Text as="div" fontWeight="bold" mb={1}>
                         {key.displayName}
-                        <IconButton
-                          ml={2}
-                          aria-label="Rename key"
-                          onClick={() => onRenameKey(idx)}
-                          icon={<IconEdit size={12} />}
-                          variant="whiteOutline"
-                          borderWidth={1}
-                          size="xs"
-                        />
-                        <IconButton
-                          ml={1}
-                          aria-label="Delete key"
-                          onClick={() => onDeleteKey(idx)}
-                          icon={<IconTrash size={12} />}
-                          variant="dangerOutline"
-                          borderWidth={1}
-                          size="xs"
-                        />
+                        <Box
+                          display={{ base: 'block', sm: 'inline-block' }}
+                          ml={{ base: 0, sm: 2 }}
+                          my={{ base: 2, sm: 0 }}
+                        >
+                          <IconButton
+                            aria-label="Rename key"
+                            onClick={() => onRenameKey(idx)}
+                            icon={<IconEdit size={12} />}
+                            variant="whiteOutline"
+                            borderWidth={1}
+                            size="xs"
+                            mr={1}
+                          />
+                          <IconButton
+                            aria-label="Delete key"
+                            onClick={() => onDeleteKey(idx)}
+                            icon={<IconTrash size={12} />}
+                            variant="dangerOutline"
+                            borderWidth={1}
+                            size="xs"
+                            mr={1}
+                          />
+                        </Box>
                       </Text>
 
                       <Text fontSize="xx-small">Public Key</Text>
@@ -482,6 +518,11 @@ function KeyManager({ isOpen, onClose }: KeyManagerProps): JSX.Element {
             accountIndex={editAccountIdx}
             isOpen={editAccountModal.isOpen}
             onClose={editAccountModal.onClose}
+          />
+          <SignMessageModal
+            keyIndex={signMessageByKeyIndex}
+            isOpen={signMessageModal.isOpen}
+            onClose={signMessageModal.onClose}
           />
         </DrawerBody>
       </DrawerContent>
