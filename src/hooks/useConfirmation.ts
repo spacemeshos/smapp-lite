@@ -50,7 +50,7 @@ const usePassword = (): UseConfirmationReturnType => {
       const res = await callback();
       _onClose();
       eventEmitter.emit('success', res);
-    }, 1);
+    });
 
   const onClose = () => {
     eventEmitter.emit('close', true);

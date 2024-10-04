@@ -82,8 +82,7 @@ function ImportScreen(): JSX.Element {
     const success = await postpone(
       // We need to postpone it for one tick
       // to allow component to re-render
-      () => openWallet(walletFileContent, password),
-      1
+      () => openWallet(walletFileContent, password)
     );
     setIsLoading(false);
     if (!success) {
