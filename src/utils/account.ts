@@ -1,5 +1,6 @@
 import { StdPublicKeys } from '@spacemesh/sm-codec';
 
+import { HexString } from '../types/common';
 import { AccountWithAddress, SafeKeyWithType } from '../types/wallet';
 
 import {
@@ -133,3 +134,31 @@ export const getKeysByAccount = (
     }
   }
 };
+
+export const getUsedPublicKeys = (
+  accounts: AccountWithAddress[],
+  keys: SafeKeyWithType[]
+): Set<HexString> => {
+  const set = new Set<HexString>();
+  accounts.forEach((acc) => {
+    getKeysByAccount(acc, keys).forEach((k) => set.add(k.publicKey));
+  });
+  return set;
+};
+
+export function findUnusedKey(
+  keys: SafeKeyWithType[],
+  accounts: AccountWithAddress[]
+): SafeKeyWithType | null;
+export function findUnusedKey(
+  keys: SafeKeyWithType[],
+  usedPublicKeys: Set<HexString>
+): SafeKeyWithType | null;
+export function findUnusedKey(
+  keys: SafeKeyWithType[],
+  findIn: AccountWithAddress[] | Set<HexString>
+): SafeKeyWithType | null {
+  const usedKeys =
+    findIn instanceof Set ? findIn : getUsedPublicKeys(findIn, keys);
+  return keys.find((k) => !usedKeys.has(k.publicKey)) || null;
+}

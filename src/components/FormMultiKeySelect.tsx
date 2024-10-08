@@ -15,7 +15,11 @@ import { Button, IconButton, Text } from '@chakra-ui/react';
 import { IconPlus, IconTrash } from '@tabler/icons-react';
 
 import { SafeKey } from '../types/wallet';
-import { BUTTON_ICON_SIZE, MAX_MULTISIG_AMOUNT } from '../utils/constants';
+import {
+  BUTTON_ICON_SIZE,
+  CREATE_NEW_KEY_LITERAL,
+  MAX_MULTISIG_AMOUNT,
+} from '../utils/constants';
 
 import FormKeySelect from './FormKeySelect';
 
@@ -28,6 +32,7 @@ type Props<T extends FieldValues, FieldName extends ArrayPath<T>> = {
   errors: FieldErrors<T>;
   isSubmitted?: boolean;
   values?: string[] | null;
+  hasCreateOption?: boolean;
 };
 
 function FormMultiKeySelect<
@@ -42,6 +47,7 @@ function FormMultiKeySelect<
   errors,
   isSubmitted = false,
   values = null,
+  hasCreateOption = false,
 }: Props<T, FieldName>): JSX.Element {
   const { fields, append, remove } = useFieldArray({
     control,
@@ -69,6 +75,11 @@ function FormMultiKeySelect<
     return () => remove();
   }, [values, append, remove, keys]);
 
+  const getSelectValue = useCallback(
+    (index: number) => values?.[index] || keys[index]?.publicKey,
+    [keys, values]
+  );
+
   const rootError = errors[fieldName]?.message;
   return (
     <>
@@ -87,7 +98,8 @@ function FormMultiKeySelect<
           errors={errors}
           isSubmitted={isSubmitted}
           isRequired
-          value={values?.[index] || keys[index]?.publicKey}
+          value={getSelectValue(index)}
+          hasCreateOption={hasCreateOption}
         >
           <IconButton
             icon={<IconTrash size={BUTTON_ICON_SIZE} />}
