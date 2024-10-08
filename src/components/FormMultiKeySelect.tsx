@@ -33,8 +33,8 @@ type Props<T extends FieldValues, FieldName extends ArrayPath<T>> = {
   isSubmitted?: boolean;
   values?: string[] | null;
   hasCreateOption?: boolean;
+  autoSelectKeys?: null | SafeKey[];
 };
-
 function FormMultiKeySelect<
   T extends FieldValues,
   FieldName extends ArrayPath<T>
@@ -48,6 +48,7 @@ function FormMultiKeySelect<
   isSubmitted = false,
   values = null,
   hasCreateOption = false,
+  autoSelectKeys = null,
 }: Props<T, FieldName>): JSX.Element {
   const { fields, append, remove } = useFieldArray({
     control,
@@ -56,13 +57,12 @@ function FormMultiKeySelect<
   const addEmptyField = useCallback(
     () =>
       append(
-        (keys[fields.length]?.publicKey ||
-          `0x${String(fields.length).padStart(2, '0')}`) as FieldArray<
+        `0x${String(fields.length).padStart(2, '0')}` as FieldArray<
           T,
           FieldName
         >
       ),
-    [append, fields.length, keys]
+    [append, fields.length]
   );
 
   useEffect(() => {
@@ -76,8 +76,17 @@ function FormMultiKeySelect<
   }, [values, append, remove, keys]);
 
   const getSelectValue = useCallback(
-    (index: number) => values?.[index] || keys[index]?.publicKey,
-    [keys, values]
+    (index: number) => {
+      const nextRecommendedKey = autoSelectKeys
+        ? autoSelectKeys[index]?.publicKey
+        : keys[index]?.publicKey;
+      const defaultKey = hasCreateOption
+        ? CREATE_NEW_KEY_LITERAL
+        : `0x${String(index).padStart(2, '0')}`;
+      const nextKey = nextRecommendedKey ?? defaultKey;
+      return values?.[index] || nextKey;
+    },
+    [autoSelectKeys, hasCreateOption, keys, values]
   );
 
   const rootError = errors[fieldName]?.message;

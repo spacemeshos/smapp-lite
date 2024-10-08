@@ -89,6 +89,10 @@ function CreateAccountModal({
     () => findUnusedKey(keys, usedPublicKeys),
     [keys, usedPublicKeys]
   );
+  const unusedKeys = useMemo(
+    () => keys.filter((key) => !usedPublicKeys.has(key.publicKey)),
+    [keys, usedPublicKeys]
+  );
 
   const isKeyUsed = (() => {
     if (selectedTemplate === StdPublicKeys.SingleSig) {
@@ -300,6 +304,7 @@ function CreateAccountModal({
               errors={errors}
               isSubmitted={isSubmitted}
               hasCreateOption
+              autoSelectKeys={unusedKeys}
             />
           </>
         );
@@ -343,6 +348,7 @@ function CreateAccountModal({
               isSubmitted={isSubmitted}
               values={multiKeyValues}
               hasCreateOption
+              autoSelectKeys={unusedKeys}
             />
           </>
         );
