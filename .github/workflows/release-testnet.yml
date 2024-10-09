@@ -63,7 +63,6 @@ jobs:
                 packageManager: yarn
                 apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
                 accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-                environment: Production # This is a different app, so we need to specify the environment (Production or Preview)
                 # The default branch for mainnet is main, and for the testnet is testnet
                 command: pages deploy ./dist --project-name ${{ vars.DEVELOPMENT_ENV_NAME }} --branch testnet --commit-hash ${{ env.GITHUB_SHA }}
 

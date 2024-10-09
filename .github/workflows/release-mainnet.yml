@@ -59,7 +59,6 @@ jobs:
                 packageManager: yarn
                 apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
                 accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-                environment: Production
                 preCommands: echo "Deploying to ${{ vars.PRODUCTION_ENV_NAME }}"
                 command: pages deploy ./dist --project-name ${{ vars.PRODUCTION_ENV_NAME }} --branch ${{ env.GITHUB_REF_NAME }} --commit-hash ${{ env.GITHUB_SHA }}
 
