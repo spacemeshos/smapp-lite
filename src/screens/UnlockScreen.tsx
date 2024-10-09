@@ -16,6 +16,7 @@ import PasswordInput from '../components/PasswordInput';
 import Logo from '../components/welcome/Logo';
 import WipeOutAlert from '../components/WipeOutAlert';
 import useWallet from '../store/useWallet';
+import { postpone } from '../utils/promises';
 
 type FormValues = {
   password: string;
@@ -37,15 +38,18 @@ function UnlockScreen(): JSX.Element {
 
   const submit = handleSubmit(async (data) => {
     setIsLoading(true);
-    const success = await unlockWallet(data.password);
-    if (!success) {
-      setError('password', { type: 'value', message: 'Invalid password' });
-      return;
-    }
-    setValue('password', '');
-    reset();
-    setIsLoading(false);
-    navigate('/wallet');
+    await postpone(async () => {
+      const success = await unlockWallet(data.password);
+      if (!success) {
+        setError('password', { type: 'value', message: 'Invalid password' });
+        setIsLoading(false);
+        return;
+      }
+      setValue('password', '');
+      reset();
+      setIsLoading(false);
+      navigate('/wallet');
+    });
   });
 
   const wipeAlert = useDisclosure();
