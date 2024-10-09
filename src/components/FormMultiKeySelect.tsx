@@ -15,7 +15,11 @@ import { Button, IconButton, Text } from '@chakra-ui/react';
 import { IconPlus, IconTrash } from '@tabler/icons-react';
 
 import { SafeKey } from '../types/wallet';
-import { BUTTON_ICON_SIZE, MAX_MULTISIG_AMOUNT } from '../utils/constants';
+import {
+  BUTTON_ICON_SIZE,
+  CREATE_NEW_KEY_LITERAL,
+  MAX_MULTISIG_AMOUNT,
+} from '../utils/constants';
 
 import FormKeySelect from './FormKeySelect';
 
@@ -28,8 +32,9 @@ type Props<T extends FieldValues, FieldName extends ArrayPath<T>> = {
   errors: FieldErrors<T>;
   isSubmitted?: boolean;
   values?: string[] | null;
+  hasCreateOption?: boolean;
+  autoSelectKeys?: null | SafeKey[];
 };
-
 function FormMultiKeySelect<
   T extends FieldValues,
   FieldName extends ArrayPath<T>
@@ -42,6 +47,8 @@ function FormMultiKeySelect<
   errors,
   isSubmitted = false,
   values = null,
+  hasCreateOption = false,
+  autoSelectKeys = null,
 }: Props<T, FieldName>): JSX.Element {
   const { fields, append, remove } = useFieldArray({
     control,
@@ -50,13 +57,12 @@ function FormMultiKeySelect<
   const addEmptyField = useCallback(
     () =>
       append(
-        (keys[fields.length]?.publicKey ||
-          `0x${String(fields.length).padStart(2, '0')}`) as FieldArray<
+        `0x${String(fields.length).padStart(2, '0')}` as FieldArray<
           T,
           FieldName
         >
       ),
-    [append, fields.length, keys]
+    [append, fields.length]
   );
 
   useEffect(() => {
@@ -68,6 +74,20 @@ function FormMultiKeySelect<
     }
     return () => remove();
   }, [values, append, remove, keys]);
+
+  const getSelectValue = useCallback(
+    (index: number) => {
+      const nextRecommendedKey = autoSelectKeys
+        ? autoSelectKeys[index]?.publicKey
+        : keys[index]?.publicKey;
+      const defaultKey = hasCreateOption
+        ? CREATE_NEW_KEY_LITERAL
+        : `0x${String(index).padStart(2, '0')}`;
+      const nextKey = nextRecommendedKey ?? defaultKey;
+      return values?.[index] || nextKey;
+    },
+    [autoSelectKeys, hasCreateOption, keys, values]
+  );
 
   const rootError = errors[fieldName]?.message;
   return (
@@ -87,7 +107,8 @@ function FormMultiKeySelect<
           errors={errors}
           isSubmitted={isSubmitted}
           isRequired
-          value={values?.[index] || keys[index]?.publicKey}
+          value={getSelectValue(index)}
+          hasCreateOption={hasCreateOption}
         >
           <IconButton
             icon={<IconTrash size={BUTTON_ICON_SIZE} />}

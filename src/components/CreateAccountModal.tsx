@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Form, useForm } from 'react-hook-form';
 
 import {
@@ -20,7 +20,10 @@ import { useCurrentHRP } from '../hooks/useNetworkSelectors';
 import { useAccountsList } from '../hooks/useWalletSelectors';
 import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
+import { findUnusedKey, getUsedPublicKeys } from '../utils/account';
+import Bip32KeyDerivation from '../utils/bip32';
 import {
+  CREATE_NEW_KEY_LITERAL,
   GENESIS_VESTING_ACCOUNTS,
   GENESIS_VESTING_END,
   GENESIS_VESTING_START,
@@ -48,11 +51,11 @@ function CreateAccountModal({
   isOpen,
   onClose,
 }: CreateAccountModalProps): JSX.Element {
-  const { createAccount, wallet } = useWallet();
+  const { createAccount, createKeyPair, wallet } = useWallet();
   const { withPassword } = usePassword();
   const hrp = useCurrentHRP();
   const accounts = useAccountsList(hrp);
-  const keys = wallet?.keychain || [];
+  const keys = useMemo(() => wallet?.keychain || [], [wallet]);
   const defaultValues = {
     displayName: '',
     Required: 1,
@@ -75,6 +78,36 @@ function CreateAccountModal({
   const selectedTemplate = watch('templateAddress');
   const selectedOwner = watch('Owner');
   const totalAmount = watch('TotalAmount');
+  const selectedPublicKey = watch('PublicKey');
+  const selectedPublicKeys = watch('PublicKeys');
+
+  const usedPublicKeys = useMemo(
+    () => getUsedPublicKeys(accounts, keys),
+    [accounts, keys]
+  );
+  const unusedKey = useMemo(
+    () => findUnusedKey(keys, usedPublicKeys),
+    [keys, usedPublicKeys]
+  );
+  const unusedKeys = useMemo(
+    () => keys.filter((key) => !usedPublicKeys.has(key.publicKey)),
+    [keys, usedPublicKeys]
+  );
+
+  const isKeyUsed = (() => {
+    if (selectedTemplate === StdPublicKeys.SingleSig) {
+      return usedPublicKeys.has(selectedPublicKey);
+    }
+    if (
+      selectedTemplate === StdPublicKeys.MultiSig ||
+      selectedTemplate === StdPublicKeys.Vesting
+    ) {
+      return (selectedPublicKeys || []).some((pk: string) =>
+        usedPublicKeys.has(pk)
+      );
+    }
+    return false;
+  })();
 
   useEffect(() => {
     if (selectedTemplate === StdPublicKeys.Vault) {
@@ -87,16 +120,18 @@ function CreateAccountModal({
   }, [register, selectedTemplate, unregister]);
 
   useEffect(() => {
-    const owner = selectedOwner || getValues('Owner');
-    if (Object.hasOwn(GENESIS_VESTING_ACCOUNTS, owner)) {
-      const amount =
-        GENESIS_VESTING_ACCOUNTS[
-          owner as keyof typeof GENESIS_VESTING_ACCOUNTS
-        ];
-      setValue('TotalAmount', String(amount));
-      setValue('InitialUnlockAmount', String(amount / 4n));
-      setValue('VestingStart', GENESIS_VESTING_START);
-      setValue('VestingEnd', GENESIS_VESTING_END);
+    if (selectedTemplate === StdPublicKeys.Vault) {
+      const owner = selectedOwner || getValues('Owner');
+      if (Object.hasOwn(GENESIS_VESTING_ACCOUNTS, owner)) {
+        const amount =
+          GENESIS_VESTING_ACCOUNTS[
+            owner as keyof typeof GENESIS_VESTING_ACCOUNTS
+          ];
+        setValue('TotalAmount', String(amount));
+        setValue('InitialUnlockAmount', String(amount / 4n));
+        setValue('VestingStart', GENESIS_VESTING_START);
+        setValue('VestingEnd', GENESIS_VESTING_END);
+      }
     }
   }, [getValues, selectedOwner, selectedTemplate, setValue]);
 
@@ -106,20 +141,66 @@ function CreateAccountModal({
     }
   }, [totalAmount, setValue]);
 
+  const multiKeyValues = useMemo(
+    () => [unusedKey?.publicKey || CREATE_NEW_KEY_LITERAL],
+    [unusedKey]
+  );
+
   const close = () => {
     reset(defaultValues);
     onClose();
   };
 
+  const createNewKeyPairIfNeeded = async (
+    values: FormValues,
+    password: string
+  ): Promise<FormValues> => {
+    if (
+      values.templateAddress === StdPublicKeys.SingleSig &&
+      values.PublicKey === CREATE_NEW_KEY_LITERAL
+    ) {
+      const path = Bip32KeyDerivation.createPath(wallet?.keychain?.length || 0);
+      const key = await createKeyPair(values.displayName, path, password);
+      return { ...values, PublicKey: key.publicKey };
+    }
+    if (
+      (values.templateAddress === StdPublicKeys.MultiSig ||
+        values.templateAddress === StdPublicKeys.Vesting) &&
+      values.PublicKeys.some((pk) => pk === CREATE_NEW_KEY_LITERAL)
+    ) {
+      let keysCreated = 0;
+      const newKeys = await values.PublicKeys.reduce(async (acc, pk, idx) => {
+        const prev = await acc;
+        if (pk === CREATE_NEW_KEY_LITERAL) {
+          const path = Bip32KeyDerivation.createPath(
+            (wallet?.keychain?.length || 0) + keysCreated
+          );
+          keysCreated += 1;
+          const newKey = await createKeyPair(
+            `${values.displayName} #${idx}`,
+            path,
+            password
+          ).then((k) => k.publicKey);
+          return [...prev, newKey];
+        }
+        return [...prev, pk];
+      }, Promise.resolve([] as string[]));
+      return { ...values, PublicKeys: newKeys };
+    }
+    return values;
+  };
+
   const submit = handleSubmit(async (data) => {
     const success = await withPassword(
-      (password) =>
-        createAccount(
+      async (password) => {
+        const formValues = await createNewKeyPairIfNeeded(data, password);
+        return createAccount(
           data.displayName,
           data.templateAddress,
-          extractSpawnArgs(data),
+          extractSpawnArgs(formValues),
           password
-        ),
+        );
+      },
       'Create an Account',
       // eslint-disable-next-line max-len
       `Please enter the password to create the new account "${
@@ -222,6 +303,8 @@ function CreateAccountModal({
               unregister={unregister}
               errors={errors}
               isSubmitted={isSubmitted}
+              hasCreateOption
+              autoSelectKeys={unusedKeys}
             />
           </>
         );
@@ -263,6 +346,9 @@ function CreateAccountModal({
               unregister={unregister}
               errors={errors}
               isSubmitted={isSubmitted}
+              values={multiKeyValues}
+              hasCreateOption
+              autoSelectKeys={unusedKeys}
             />
           </>
         );
@@ -283,7 +369,8 @@ function CreateAccountModal({
               errors={errors}
               isSubmitted={isSubmitted}
               isRequired
-              value={keys[0]?.publicKey}
+              value={unusedKey?.publicKey}
+              hasCreateOption
             />
           </>
         );
@@ -327,6 +414,13 @@ function CreateAccountModal({
             <Box pt={2} pb={1} color="brand.lightGray">
               {renderTemplateSpecificFields()}
             </Box>
+            {isKeyUsed && (
+              <Text color="orange">
+                The selected key is already used in another account.
+                <br />
+                Are you sure you want to create another one?
+              </Text>
+            )}
           </ModalBody>
           <ModalFooter>
             <Button onClick={submit} variant="whiteModal" w="full">
