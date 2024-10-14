@@ -91,6 +91,7 @@ import TxFileReader from '../TxFileReader';
 
 import ConfirmationModal, { ConfirmationData } from './ConfirmationModal';
 import Drain from './Drain';
+import ExportSuccessModal from './ExportSuccessModal';
 import MultiSigSpawn from './MultiSigSpawn';
 import {
   DrainPayload,
@@ -175,6 +176,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
   const estimateGas = useEstimateGas();
   const { setTransactions } = useAccountData();
 
+  const exportSuccessModal = useDisclosure();
+  const [isExportedSigned, setIsExportedSigned] = useState(false);
   const confirmationModal = useDisclosure();
   const [txData, setTxData] = useState<null | TxData>(null);
   const [estimatedGas, setEstimatedGas] = useState<null | bigint>(null);
@@ -287,6 +290,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
     setTxData(null);
     setImportErrors('');
     setIsLedgerRejected(false);
+    setIsExportedSigned(false);
     clearErrors();
     onClose();
   };
@@ -755,6 +759,9 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
         `tx-${signWith ? 'signed' : 'unsigned'}-${hex.slice(-6)}.hex`,
         'text/plain'
       );
+      confirmationModal.onClose();
+      setIsExportedSigned(!!signWith);
+      exportSuccessModal.onOpen();
       return true;
     }
     return false;
@@ -1176,6 +1183,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                   as="u"
                   color="brand.lightGray"
                   size="xs"
+                  cursor="pointer"
                   p={1}
                   isDisabled={
                     !!(currerntAccount && isVaultAccount(currerntAccount))
@@ -1317,6 +1325,14 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                 required={txData.required}
                 isLedgerRejected={isLedgerRejected}
                 insufficientFunds={insufficientFunds}
+              />
+            )}
+            {txData && (
+              <ExportSuccessModal
+                templateAddress={txData?.form.templateAddress}
+                isSigned={isExportedSigned}
+                isOpen={exportSuccessModal.isOpen}
+                onClose={exportSuccessModal.onClose}
               />
             )}
           </ModalBody>
