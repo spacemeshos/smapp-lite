@@ -61,3 +61,5 @@ export const GENESIS_VESTING_START = 105120;
 export const GENESIS_VESTING_END = 420480;
 
 export const SIGNED_MESSAGE_PREFIX = 'Message:';
+
+export const CREATE_NEW_KEY_LITERAL = 'CREATE_NEW_KEY_FOR_ACCOUNT';

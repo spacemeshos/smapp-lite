@@ -24,6 +24,7 @@ import {
 import { isHexString } from '../types/common';
 import { SafeKey } from '../types/wallet';
 import { getAbbreviatedHexString } from '../utils/abbr';
+import { CREATE_NEW_KEY_LITERAL } from '../utils/constants';
 
 type Props<
   T extends FieldValues,
@@ -38,6 +39,7 @@ type Props<
   isRequired?: boolean;
   defaultForeign?: boolean;
   value?: string | null;
+  hasCreateOption?: boolean;
 }>;
 
 enum KeyType {
@@ -55,8 +57,12 @@ function FormKeySelect<T extends FieldValues, FieldName extends Path<T>>({
   isRequired = false,
   children = '',
   value = null,
+  hasCreateOption = false,
 }: Props<T, FieldName>): JSX.Element {
-  const isLocalValue = !value || keys.some((key) => key.publicKey === value);
+  const isLocalValue =
+    !value ||
+    (hasCreateOption && value === CREATE_NEW_KEY_LITERAL) ||
+    keys.some((key) => key.publicKey === value);
   const [keyType, setKeyType] = useState(
     isLocalValue ? KeyType.Local : KeyType.Foreign
   );
@@ -70,9 +76,19 @@ function FormKeySelect<T extends FieldValues, FieldName extends Path<T>>({
       setKeyType(KeyType.Foreign);
     }
   }, [keys, value]);
+
+  useEffect(() => {
+    if (!hasCreateOption) return;
+    if (keyType === KeyType.Local && formValue === '') {
+      register(fieldName, {
+        value: CREATE_NEW_KEY_LITERAL as PathValue<T, FieldName>,
+      });
+    }
+  }, [fieldName, formValue, hasCreateOption, keyType, register]);
+
   useEffect(
     () => () => unregister(fieldName),
-    [unregister, fieldName, keyType, value]
+    [unregister, fieldName, keyType]
   );
 
   const error = get(errors, fieldName) as FieldError | undefined;
@@ -93,6 +109,12 @@ function FormKeySelect<T extends FieldValues, FieldName extends Path<T>>({
       default:
         return (
           <Select {...register(fieldName, { value: formValue })}>
+            {hasCreateOption && (
+              <>
+                <option value={CREATE_NEW_KEY_LITERAL}>Create New Key</option>
+                <option disabled>--------------------</option>
+              </>
+            )}
             {keys.map((key) => (
               <option key={key.publicKey} value={key.publicKey}>
                 {key.displayName} ({getAbbreviatedHexString(key.publicKey)})
