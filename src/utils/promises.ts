@@ -3,9 +3,14 @@ export const delay = (ms: number) =>
     setTimeout(resolve, ms);
   });
 
-export const postpone = <T>(fn: () => T, ms: number): Promise<T> =>
-  new Promise((resolve) => {
-    setTimeout(async () => {
-      resolve(await fn());
+export const postpone = <T>(fn: () => Promise<T> | T, ms = 1): Promise<T> =>
+  new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const r = fn();
+      if (r instanceof Promise) {
+        r.then(resolve).catch(reject);
+        return;
+      }
+      resolve(r);
     }, ms);
   });

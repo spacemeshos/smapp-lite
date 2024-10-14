@@ -137,7 +137,7 @@ const usePassword = (): UsePasswordReturnType => {
       } catch (err) {
         setError('password', { message: 'Incorrect password' });
       }
-    }, 1);
+    });
   });
 
   const onClose = () => {

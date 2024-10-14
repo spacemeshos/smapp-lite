@@ -19,7 +19,6 @@ import {
 
 import { useVerifyMessage } from '../hooks/useSigning';
 import { isSignedMessage } from '../types/message';
-import { SIGNED_MESSAGE_PREFIX } from '../utils/constants';
 
 type VerifyMessageModalProps = {
   isOpen: boolean;
