@@ -37,35 +37,38 @@ function ExportSuccessModal({
           exported successfully
         </ModalHeader>
         <ModalBody pb={6}>
-          <Text mb={2}>To complete the transaction, you need to:</Text>
+          <Text mb={2}>To complete the transaction, follow these steps:</Text>
 
           {templateAddress === StdPublicKeys.MultiSig ||
           templateAddress === StdPublicKeys.Vesting ? (
             <>
               <List styleType="auto" stylePosition="inside">
                 <ListItem>
-                  if you own one of required keys — import the transaction and
-                  sign
-                  {isSigned ? ' again' : ' it'},
+                  If you own one of the required keys — import the transaction
+                  and sign it
+                  {isSigned ? ' again.' : ' .'},
                 </ListItem>
-                <ListItem>send the exported file to other parties,</ListItem>
                 <ListItem>
-                  collect all the signatures, import them and publish,
+                  Send the exported file to other parties if needed.
+                </ListItem>
+                <ListItem>
+                  Collect all the signatures, then import them, and publish the
+                  transaction.
                 </ListItem>
               </List>
               <Text mt={2}>
-                Signatures might be collected in sync or async way, so you can
-                end the signed transaction to all other parties and ask them to
-                sign it. Once you have collect enough signatures, you can import
-                all of them at once, the signatures will be combined
-                automatically.
+                Signatures can be collected either synchronously or
+                asynchronously. This means you can send the signed transaction
+                to all other parties and request their signatures. Once you have
+                gathered enough signatures, you can import them all at once, and
+                they will be combined automatically.
               </Text>
             </>
           ) : (
             <List styleType="auto" stylePosition="inside">
-              <ListItem>import the transaction,</ListItem>
-              {!isSigned && <ListItem>sign it,</ListItem>}
-              <ListItem>publish the signed transaction.</ListItem>
+              <ListItem>Import this transaction file.</ListItem>
+              {!isSigned && <ListItem>Sign it.</ListItem>}
+              <ListItem>Publish the signed transaction.</ListItem>
             </List>
           )}
         </ModalBody>
