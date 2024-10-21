@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Form, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -37,6 +37,7 @@ function SetPasswordScreen(): JSX.Element {
   const ctx = useWalletCreation();
   const navigate = useNavigate();
   const { createWallet } = useWallet();
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     if (ctx.mnemonic.length === 0) {
@@ -44,13 +45,15 @@ function SetPasswordScreen(): JSX.Element {
     }
   }, [ctx.mnemonic, navigate]);
 
-  const onSubmit = handleSubmit((vals) => {
+  const onSubmit = handleSubmit(async (vals) => {
+    setSubmitted(true);
     ctx.setPassword(vals.password);
-    createWallet(vals.password, ctx.mnemonic);
+    await createWallet(vals.password, ctx.mnemonic);
     setValue('password', '');
     setValue('confirm', '');
     reset();
     navigate('/wallet');
+    setSubmitted(false);
   });
 
   return (
@@ -166,8 +169,9 @@ function SetPasswordScreen(): JSX.Element {
               variant="green"
               onClick={onSubmit}
               rightIcon={<IconArrowNarrowRight />}
+              isDisabled={submitted}
             >
-              Create wallet
+              {submitted ? 'Creating wallet...' : 'Create wallet'}
             </Button>
           </Flex>
         </Form>
