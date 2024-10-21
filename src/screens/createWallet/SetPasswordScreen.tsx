@@ -66,6 +66,10 @@ function SetPasswordScreen(): JSX.Element {
         <Text fontSize="xl" as="strong">
           Final step to access your wallet
         </Text>
+        <Text fontSize="xs" mt={2} maxW={300} mx="auto">
+          Password should be at least 8 symbols long and contain uppercase and
+          lowercase letters, and&nbsp;numbers.
+        </Text>
       </Box>
       <Box w="280px" mt={4}>
         <Form control={control}>
@@ -101,17 +105,9 @@ function SetPasswordScreen(): JSX.Element {
                     const hasUpperCase = /[A-Z]/.test(val);
                     const hasLowerCase = /[a-z]/.test(val);
                     const hasNumbers = /\d/.test(val);
-                    const hasNonalphas = /\W/.test(val);
-                    if (
-                      !(
-                        hasUpperCase &&
-                        hasLowerCase &&
-                        hasNumbers &&
-                        hasNonalphas
-                      )
-                    ) {
+                    if (!(hasUpperCase && hasLowerCase && hasNumbers)) {
                       // eslint-disable-next-line max-len
-                      return 'Password should contain symbols in upper and lower cases, numbers, and special characters';
+                      return 'Password should contain symbols in upper and lower cases, numbers';
                     }
                     return undefined;
                   },
