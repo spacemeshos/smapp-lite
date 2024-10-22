@@ -56,7 +56,7 @@ type WalletActions = {
     password: string,
     existingMnemonic?: string,
     name?: string
-  ) => void;
+  ) => Promise<void>;
   openWallet: (wallet: WalletFile, password: string) => Promise<boolean>;
   unlockWallet: (password: string) => Promise<boolean>;
   lockWallet: () => void;
