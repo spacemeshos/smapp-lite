@@ -107,7 +107,7 @@ function SetPasswordScreen(): JSX.Element {
                     const hasNumbers = /\d/.test(val);
                     if (!(hasUpperCase && hasLowerCase && hasNumbers)) {
                       // eslint-disable-next-line max-len
-                      return 'Password should contain symbols in upper and lower cases, numbers';
+                      return 'Password should contain numbers and symbols in upper and lower cases.';
                     }
                     return undefined;
                   },
