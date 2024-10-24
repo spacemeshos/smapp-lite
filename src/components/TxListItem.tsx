@@ -2,6 +2,7 @@ import { Box, Card, CardBody, Flex, Icon, Text } from '@chakra-ui/react';
 import { StdMethods } from '@spacemesh/sm-codec';
 import {
   IconArrowBigLeftLinesFilled,
+  IconArrowBigRightLinesFilled,
   IconArrowNarrowDown,
   IconArrowNarrowLeft,
   IconArrowNarrowRight,
@@ -41,8 +42,16 @@ function TxIcon({ tx, host }: { tx: Transaction; host: Bech32Address }) {
             return IconArrowNarrowLeft;
         }
       }
-      case StdMethods.Drain:
-        return IconArrowBigLeftLinesFilled;
+      case StdMethods.Drain: {
+        switch (getTxType(tx, host)) {
+          case TxType.Received:
+          case TxType.Self:
+            return IconArrowBigRightLinesFilled;
+          case TxType.Spent:
+          default:
+            return IconArrowBigLeftLinesFilled;
+        }
+      }
       default:
         return IconQuestionMark;
     }
