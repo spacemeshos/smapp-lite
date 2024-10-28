@@ -84,11 +84,13 @@ export const getDestinationAddress = <T>(
   tx: Transaction<T>,
   host: Bech32Address
 ) => {
-  if (!isSpendTransaction(tx)) return null;
-  const destination = tx.parsed?.Destination;
-  const parsedHost = bech32.decode(host);
-  const words = bech32.toWords(destination);
-  return bech32.encode(parsedHost.prefix, words);
+  if (isSpendTransaction(tx) || isDrainTransaction(tx)) {
+    const destination = tx.parsed?.Destination;
+    const parsedHost = bech32.decode(host);
+    const words = bech32.toWords(destination);
+    return bech32.encode(parsedHost.prefix, words);
+  }
+  return null;
 };
 
 export const getTxType = <T>(tx: Transaction<T>, host: Bech32Address) => {
@@ -145,6 +147,22 @@ export const getTxBalance = <T>(tx: Transaction<T>, host: Bech32Address) => {
           }
           case TxType.Self:
             return 0n;
+          default:
+            return null;
+        }
+      }
+      return null;
+    }
+    case TemplateName.Vesting: {
+      if (isDrainTransaction(tx)) {
+        const type = getTxType(tx, host);
+        switch (type) {
+          case TxType.Self:
+          case TxType.Received:
+            return tx.parsed.Amount;
+          case TxType.Spent: {
+            return -1n * tx.parsed.Amount;
+          }
           default:
             return null;
         }
