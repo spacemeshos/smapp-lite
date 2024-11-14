@@ -3,6 +3,7 @@ import { Form, useForm } from 'react-hook-form';
 
 import {
   Button,
+  Checkbox,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -36,6 +37,7 @@ type FormValues = {
   explorer: string;
   layerDuration: string;
   layersPerEpoch: string;
+  isAthena: boolean;
 };
 
 function AddNetworkDrawer({ isOpen, onClose }: Props): JSX.Element {
@@ -67,6 +69,7 @@ function AddNetworkDrawer({ isOpen, onClose }: Props): JSX.Element {
       genesisTime: new Date(data.genesisTime).getTime(),
       layerDuration: parseInt(data.layerDuration, 10),
       layersPerEpoch: parseInt(data.layersPerEpoch, 10),
+      isAthena: data.isAthena ?? false,
     });
 
     close();
@@ -213,6 +216,14 @@ function AddNetworkDrawer({ isOpen, onClose }: Props): JSX.Element {
               errors={errors}
               isSubmitted={isSubmitted}
             />
+            <Checkbox
+              size="lg"
+              mt={2}
+              pl={4}
+              {...register('isAthena', { value: false })}
+            >
+              <Text fontSize="md">Running under Athena VM</Text>
+            </Checkbox>
           </DrawerBody>
 
           <DrawerFooter>

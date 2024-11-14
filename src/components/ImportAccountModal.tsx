@@ -18,6 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { StdTemplateKeys } from '@spacemesh/sm-codec';
 
+import { useIsAthena } from '../hooks/useNetworkSelectors';
 import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
 import { Account, AccountWithAddress } from '../types/wallet';
@@ -37,6 +38,7 @@ function ImportAccountModal({
 }: ImportAccountModalProps): JSX.Element {
   const { createAccount } = useWallet();
   const { withPassword } = usePassword();
+  const isAthena = useIsAthena();
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [displayName, setDisplayName] = useState('');
@@ -133,6 +135,7 @@ function ImportAccountModal({
             displayName,
             accountData.templateAddress as StdTemplateKeys,
             accountData.spawnArguments,
+            isAthena,
             password
           ),
         'Import Account',

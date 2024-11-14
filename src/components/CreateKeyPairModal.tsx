@@ -14,6 +14,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 
+import { useIsAthena } from '../hooks/useNetworkSelectors';
 import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
 import Bip32KeyDerivation from '../utils/bip32';
@@ -37,6 +38,7 @@ function CreateKeyPairModal({
 }: CreateKeyPairModalProps): JSX.Element {
   const { createKeyPair, wallet } = useWallet();
   const { withPassword } = usePassword();
+  const isAthena = useIsAthena();
   const {
     register,
     reset,
@@ -54,7 +56,13 @@ function CreateKeyPairModal({
     async ({ displayName, path, createSingleSig }) => {
       const success = await withPassword(
         async (password) => {
-          await createKeyPair(displayName, path, password, createSingleSig);
+          await createKeyPair(
+            displayName,
+            path,
+            password,
+            isAthena,
+            createSingleSig
+          );
           return true;
         },
         'Create a Key Pair',
