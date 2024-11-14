@@ -20,6 +20,7 @@ export const fetchRewardsChunk = (
       limit,
       offset,
     }),
+    credentials: 'include',
   })
     .then((r) => r.json())
     .then(parseResponse(RewardsListSchema))

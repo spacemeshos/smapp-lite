@@ -10,6 +10,7 @@ import { NodeStatusSchema, NodeSyncStatus } from '../schemas/node';
 export const fetchNetworkInfo = (rpc: string) =>
   fetchJSON(`${rpc}/spacemesh.v2alpha1.NetworkService/Info`, {
     method: 'POST',
+    credentials: 'include',
   })
     .then(parseResponse(NetworkInfoResponseSchema))
     .then((res) => ({
@@ -20,7 +21,10 @@ export const fetchNetworkInfo = (rpc: string) =>
     }));
 
 export const fetchNodeStatus = (rpc: string) =>
-  fetchJSON(`${rpc}/spacemesh.v2alpha1.NodeService/Status`, { method: 'POST' })
+  fetchJSON(`${rpc}/spacemesh.v2alpha1.NodeService/Status`, {
+    method: 'POST',
+    credentials: 'include',
+  })
     .then(parseResponse(NodeStatusSchema))
     .then((status) => ({
       connectedPeers: parseInt(status.connectedPeers, 10),

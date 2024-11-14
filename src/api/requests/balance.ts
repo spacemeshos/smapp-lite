@@ -16,6 +16,7 @@ export const fetchBalances = async (rpc: string, addresses: Bech32Address[]) =>
       addresses,
       limit: 100,
     }),
+    credentials: 'include',
   })
     .then((r) => r.json())
     .then(parseResponse(BalanceResponseSchema))
