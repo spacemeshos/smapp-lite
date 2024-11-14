@@ -1,6 +1,6 @@
 import * as bip39 from '@scure/bip39';
 import { wordlist } from '@scure/bip39/wordlists/english';
-import { StdTemplateKeys, StdTemplates } from '@spacemesh/sm-codec';
+import { Athena, StdTemplateKeys, StdTemplates } from '@spacemesh/sm-codec';
 
 import { Bech32Address } from '../types/common';
 import {
@@ -21,9 +21,10 @@ import { decrypt as decryptGCM, isGCMEncrypted } from './aes-gcm';
 import { generateAddress } from './bech32';
 import Bip32KeyDerivation from './bip32';
 import { getISODate } from './datetime';
-import { toHexString } from './hexString';
+import { fromHexString, toHexString } from './hexString';
 import {
   AnySpawnArguments,
+  AthenaSpawnArguments,
   convertSpawnArgumentsForEncoding,
   TemplateKey,
 } from './templates';
@@ -81,11 +82,26 @@ export const createWallet = (
 // Derive Account from KeyPair
 //
 
-export const computeAddress = <TK extends StdTemplateKeys>(
+export const computeAddress = <
+  TK extends StdTemplateKeys | Athena.TemplatePubKeys
+>(
   hrp: string,
   templateKey: TK,
-  spawnArguments: AnySpawnArguments
+  spawnArguments: AnySpawnArguments,
+  isAthena?: boolean
 ): Bech32Address => {
+  if (isAthena && templateKey === Athena.Wallet.TEMPLATE_PUBKEY_HEX) {
+    // TODO: Add support of other addresses
+    const tpl = Athena.Templates[templateKey as Athena.TemplatePubKeys];
+    const args = spawnArguments as AthenaSpawnArguments;
+    const principal = tpl.principal({
+      Nonce: BigInt(args.Nonce),
+      Balance: BigInt(args.Balance),
+      Payload: fromHexString(args.PublicKey),
+    });
+    return generateAddress(principal, hrp);
+  }
+
   const tpl = StdTemplates[templateKey].methods[0];
   const args = convertSpawnArgumentsForEncoding(templateKey, spawnArguments);
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment

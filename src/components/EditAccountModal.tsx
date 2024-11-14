@@ -29,6 +29,7 @@ import { noop } from '../utils/func';
 import {
   getTemplateNameByKey,
   MultiSigSpawnArguments,
+  parseTemplateKey,
   SingleSigSpawnArguments,
   VaultSpawnArguments,
   VestingSpawnArguments,
@@ -138,7 +139,7 @@ function EditAccountModal({
         editAccount(
           accountIndex,
           data.displayName,
-          data.templateAddress,
+          parseTemplateKey(data.templateAddress),
           extractSpawnArgs(data),
           password
         ),

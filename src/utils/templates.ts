@@ -1,6 +1,7 @@
 import { bech32 } from 'bech32';
 
 import {
+  Athena,
   MultiSigTemplate,
   SingleSigTemplate,
   StdMethods,
@@ -24,6 +25,7 @@ export enum TemplateName {
   MultiSig = 'Multiple Signatures',
   Vesting = 'Vesting Account',
   Vault = 'Vault',
+  AthenaWallet = 'Athena.Wallet',
 }
 
 export type SingleSigSpawnArguments = {
@@ -45,10 +47,17 @@ export type VaultSpawnArguments = {
   VestingEnd: number;
 };
 
+export type AthenaSpawnArguments = {
+  Nonce: number;
+  Balance: number;
+  PublicKey: HexString;
+};
+
 export type AnySpawnArguments =
   | SingleSigSpawnArguments
   | MultiSigSpawnArguments
-  | VaultSpawnArguments;
+  | VaultSpawnArguments
+  | AthenaSpawnArguments;
 
 export enum MethodName {
   Unknown = 'Unknown Method',
@@ -84,6 +93,10 @@ export const TemplateMethodsMap = {
 // Utils
 //
 
+export const athenaSuffix = (key: HexString): string => `A${key}`;
+export const parseTemplateKey = (key: string): HexString =>
+  key?.[0] === 'A' ? key.slice(1) : key;
+
 export const getTemplateNameByKey = (key: HexString): TemplateName => {
   switch (key) {
     case TemplateKey.SingleSig:
@@ -94,6 +107,8 @@ export const getTemplateNameByKey = (key: HexString): TemplateName => {
       return TemplateName.Vesting;
     case TemplateKey.Vault:
       return TemplateName.Vault;
+    case athenaSuffix(Athena.Wallet.TEMPLATE_PUBKEY_HEX):
+      return TemplateName.AthenaWallet;
     default:
       return TemplateName.Unknown;
   }
