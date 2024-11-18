@@ -494,7 +494,7 @@ function CreateAccountModal({
                   disabled: isAthena,
                 },
                 {
-                  value: `A${Athena.Wallet.TEMPLATE_PUBKEY_HEX}`,
+                  value: athenaSuffix(Athena.Wallet.TEMPLATE_PUBKEY_HEX),
                   label: 'Athena.Wallet',
                   disabled: !isAthena,
                 },
