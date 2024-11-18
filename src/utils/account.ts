@@ -1,10 +1,11 @@
-import { StdPublicKeys } from '@spacemesh/sm-codec';
+import { Athena, StdPublicKeys } from '@spacemesh/sm-codec';
 
 import { HexString } from '../types/common';
 import { AccountWithAddress, SafeKeyWithType } from '../types/wallet';
 
 import {
   AnySpawnArguments,
+  AthenaSpawnArguments,
   MultiSigSpawnArguments,
   SingleSigSpawnArguments,
   VaultSpawnArguments,
@@ -14,7 +15,12 @@ import {
 export const isSingleSigAccount = (
   acc: AccountWithAddress
 ): acc is AccountWithAddress<SingleSigSpawnArguments> =>
-  acc.templateAddress === StdPublicKeys.SingleSig;
+  acc.templateAddress === StdPublicKeys.SingleSig && !acc.isAthena;
+
+export const isAthenaWalletAccount = (
+  acc: AccountWithAddress
+): acc is AccountWithAddress<AthenaSpawnArguments> =>
+  acc.templateAddress === Athena.Wallet.TEMPLATE_PUBKEY_HEX && !!acc.isAthena;
 
 export const isMultiSigAccount = (
   acc: AccountWithAddress

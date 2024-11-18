@@ -27,7 +27,7 @@ import {
   Spacer,
   Text,
 } from '@chakra-ui/react';
-import { StdPublicKeys } from '@spacemesh/sm-codec';
+import { Athena, StdPublicKeys } from '@spacemesh/sm-codec';
 import { MultiSigPart, SingleSig } from '@spacemesh/sm-codec/lib/codecs';
 import { IconArrowNarrowLeft, IconChevronDown } from '@tabler/icons-react';
 
@@ -37,6 +37,7 @@ import { getAbbreviatedHexString } from '../../utils/abbr';
 import { toHexString } from '../../utils/hexString';
 import { formatSmidge } from '../../utils/smh';
 import {
+  athenaSuffix,
   getMethodName,
   getTemplateNameByKey,
   MethodSelectors,
@@ -46,6 +47,7 @@ import FormKeySelect from '../FormKeySelect';
 import PreviewDataRow from '../PreviewDataRow';
 
 import {
+  AthenaWalletSpawnSchema,
   DrainSchema,
   FormValues,
   MultiSigSpawnSchema,
@@ -82,6 +84,35 @@ type ConfirmationModalProps = ConfirmationData & {
 
 const renderTemplateSpecificFields = (form: FormValues) => {
   switch (form.templateAddress) {
+    case athenaSuffix(Athena.Wallet.TEMPLATE_PUBKEY_HEX): {
+      if (form.payload.methodSelector === MethodSelectors.Spawn) {
+        const args = AthenaWalletSpawnSchema.parse(form.payload);
+        return (
+          <>
+            <PreviewDataRow label="Public key" value={args.PublicKey} />
+            <PreviewDataRow label="Nonce" value={String(args.Nonce)} />
+            <PreviewDataRow label="Balance" value={String(args.Balance)} />
+          </>
+        );
+      }
+      if (form.payload.methodSelector === MethodSelectors.Spend) {
+        const args = SpendSchema.parse(form.payload);
+        return (
+          <>
+            <PreviewDataRow
+              label="Destination address"
+              value={args.Destination}
+            />
+            <PreviewDataRow label="Amount" value={formatSmidge(args.Amount)} />
+          </>
+        );
+      }
+      return (
+        <Text color="orange" fontSize="xs">
+          Unsupported method: {form.payload.methodSelector} for Athena Wallet.
+        </Text>
+      );
+    }
     case StdPublicKeys.SingleSig: {
       if (form.payload.methodSelector === MethodSelectors.Spawn) {
         const args = SingleSigSpawnSchema.parse(form.payload);

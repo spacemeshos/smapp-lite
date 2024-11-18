@@ -23,14 +23,19 @@ export const useSignTx = () => {
   return async (
     encodedTx: Uint8Array,
     publicKey: HexString,
-    password: string
+    password: string,
+    isAthena?: boolean
   ) => {
     if (!genesisID) {
       throw new Error(
         'Please select the network first and then sign a transaction.'
       );
     }
-    return sign(prepareTxForSign(genesisID, encodedTx), publicKey, password);
+    // TODO: Remove that Athena kludge
+    const dataToSign = isAthena
+      ? encodedTx
+      : prepareTxForSign(genesisID, encodedTx);
+    return sign(dataToSign, publicKey, password);
   };
 };
 

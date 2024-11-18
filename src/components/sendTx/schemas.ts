@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
-import { StdPublicKeys } from '@spacemesh/sm-codec';
+import { Athena, StdPublicKeys } from '@spacemesh/sm-codec';
 
 import { Bech32AddressSchema } from '../../api/schemas/address';
 import { HexStringSchema } from '../../api/schemas/common';
 import { BigIntMin, BigIntStringSchema } from '../../api/schemas/strNumber';
 import { Bech32Address } from '../../types/common';
-import { MethodSelectors } from '../../utils/templates';
+import { athenaSuffix, MethodSelectors } from '../../utils/templates';
 
 // Tx schemas
 
@@ -64,6 +64,15 @@ export const VestingSpawnSchema = z.object({
 });
 
 export type VestingSpawnPayload = z.infer<typeof VestingSpawnSchema>;
+
+export const AthenaWalletSpawnSchema = z.object({
+  methodSelector: z.literal(MethodSelectors.Spawn),
+  PublicKey: HexStringSchema,
+  Nonce: BigIntStringSchema.and(BigIntMin(0n)),
+  Balance: BigIntStringSchema.and(BigIntMin(0n)),
+});
+
+export type AthenaWalletSpawnPayload = z.infer<typeof AthenaWalletSpawnSchema>;
 
 // Tx schemas by template addr
 
@@ -123,6 +132,17 @@ export const VestingSchema = z.object({
 
 export type VestingTx = z.infer<typeof VestingSchema>;
 
+export const AthenaWalletSchema = z.object({
+  templateAddress: z.literal(athenaSuffix(Athena.Wallet.TEMPLATE_PUBKEY_HEX)),
+  payload: z.discriminatedUnion('methodSelector', [
+    AthenaWalletSpawnSchema,
+    SpendSchema,
+  ]),
+  ...CommonTxFields,
+});
+
+export type AthenaWalletTx = z.infer<typeof SingleSigSchema>;
+
 // Form schema
 
 export const FormSchema = z.discriminatedUnion('templateAddress', [
@@ -130,6 +150,7 @@ export const FormSchema = z.discriminatedUnion('templateAddress', [
   MultiSigSchema,
   VaultSchema,
   VestingSchema,
+  AthenaWalletSchema,
 ]);
 
 export type FormValues = z.infer<typeof FormSchema>;

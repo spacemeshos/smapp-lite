@@ -22,6 +22,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { O, pipe } from '@mobily/ts-belt';
 import {
+  Athena,
   Codecs,
   DrainArguments,
   MultiSigSpawnArguments as MultiSigSpawnArgumentsTx,
@@ -64,6 +65,7 @@ import {
   extractEligibleKeys,
   extractRequiredSignatures,
   isAnyMultiSig,
+  isAthenaWalletAccount,
   isMultiSigAccount,
   isSingleSigAccount,
   isVaultAccount,
@@ -76,6 +78,7 @@ import { fromHexString, toHexString } from '../../utils/hexString';
 import { isForeignKey } from '../../utils/keys';
 import { formatSmidge } from '../../utils/smh';
 import {
+  athenaSuffix,
   getMethodName,
   getTemplateMethod,
   getTemplateNameByKey,
@@ -89,11 +92,13 @@ import FormInput from '../FormInput';
 import FormSelect from '../FormSelect';
 import TxFileReader from '../TxFileReader';
 
+import AthenaWalletSpawn from './AthenaWalletSpawn';
 import ConfirmationModal, { ConfirmationData } from './ConfirmationModal';
 import Drain from './Drain';
 import ExportSuccessModal from './ExportSuccessModal';
 import MultiSigSpawn from './MultiSigSpawn';
 import {
+  AthenaWalletSpawnSchema,
   DrainPayload,
   DrainSchema,
   FormSchema,
@@ -120,7 +125,9 @@ type AnyArguments =
   | MultiSigSpawnArgumentsTx
   | VaultSpawnArgumentsTx
   | VestingSpawnArgumentsTx
-  | DrainArguments;
+  | DrainArguments
+  | Athena.Wallet.SpawnArguments
+  | Athena.Wallet.SpendArguments;
 type TxData = ConfirmationData & {
   description: string;
   Arguments: AnyArguments;
@@ -189,7 +196,9 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
     if (currerntAccount) {
       setValue(
         'templateAddress',
-        currerntAccount.templateAddress as StdTemplateKeys
+        (currerntAccount.isAthena
+          ? athenaSuffix(currerntAccount.templateAddress)
+          : currerntAccount.templateAddress) as StdTemplateKeys
       );
     }
   }, [currerntAccount, setValue]);
@@ -330,7 +339,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
       const principal = computeAddress(
         hrp,
         currerntAccount.templateAddress as StdTemplateKeys,
-        currerntAccount.spawnArguments
+        currerntAccount.spawnArguments,
+        currerntAccount.isAthena
       );
       const pinripalBytes = getWords(principal);
       const commonProps = {
@@ -345,6 +355,49 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
 
       switch (data.payload.methodSelector) {
         case StdMethods.Spawn: {
+          if (
+            currerntAccount.isAthena &&
+            data.templateAddress ===
+              athenaSuffix(Athena.Wallet.TEMPLATE_PUBKEY_HEX)
+          ) {
+            const args = AthenaWalletSpawnSchema.parse(data.payload);
+            const Arguments = {
+              PubKey: fromHexString(args.PublicKey),
+              Nonce: BigInt(args.Nonce),
+              Balance: BigInt(args.Balance),
+            };
+            const encoded = Athena.Templates[
+              '000000000000000000000000000000000000000000000001'
+            ].methods[Athena.Wallet.METHODS_HEX.SPAWN].enc({
+              Version: 1n,
+              Principal: pinripalBytes,
+              Nonce: BigInt(data.nonce),
+              GasPrice: BigInt(data.gasPrice),
+              Payload: Arguments,
+              Signature: null,
+            });
+            const spawnAccount =
+              accountsList.find(
+                (acc) =>
+                  isAthenaWalletAccount(acc) &&
+                  acc.spawnArguments.PublicKey === args.PublicKey &&
+                  String(acc.spawnArguments.Nonce) === args.Nonce &&
+                  String(acc.spawnArguments.Balance) === args.Balance
+              )?.displayName || 'external key';
+
+            setTxData({
+              principal,
+              form: data,
+              encoded,
+              description: `Spawn ${getTemplateNameByKey(
+                data.templateAddress
+              )} account using ${spawnAccount}`,
+              Arguments,
+              ...commonProps,
+            });
+            updateEstimatedGas(encoded, 0);
+            break;
+          }
           if (data.templateAddress === StdPublicKeys.SingleSig) {
             const args = SingleSigSpawnSchema.parse(data.payload);
             const Arguments = {
@@ -445,6 +498,40 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
           break;
         }
         case StdMethods.Spend: {
+          if (
+            currerntAccount.isAthena &&
+            data.templateAddress ===
+              athenaSuffix(Athena.Wallet.TEMPLATE_PUBKEY_HEX)
+          ) {
+            const args = SpendSchema.parse(data.payload);
+            const Arguments = {
+              Recipient: getWords(args.Destination),
+              Amount: BigInt(args.Amount),
+            };
+            const encoded = Athena.Templates[
+              '000000000000000000000000000000000000000000000001'
+            ].methods[Athena.Wallet.METHODS_HEX.SPEND].enc({
+              Version: 1n,
+              Principal: pinripalBytes,
+              Nonce: BigInt(data.nonce),
+              GasPrice: BigInt(data.gasPrice),
+              Payload: Arguments,
+              Signature: null,
+            });
+
+            setTxData({
+              principal,
+              form: data,
+              encoded,
+              description: `Send ${formatSmidge(args.Amount)} to ${
+                args.Destination
+              }`,
+              Arguments,
+              ...commonProps,
+            });
+            updateEstimatedGas(encoded, 0);
+            break;
+          }
           if (data.templateAddress === StdPublicKeys.SingleSig) {
             const args = SpendSchema.parse(data.payload);
             const Arguments = {
@@ -606,8 +693,13 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
           modalWrongDevice.onOpen();
           return null;
         }
+        // TODO: Remove that Athena kludge
+        const dataToSign = currerntAccount.isAthena
+          ? txData.encoded
+          : prepareTxForSign(genesisID, txData.encoded);
+
         return connectedDevice.actions
-          .signTx(keyToUse.path, prepareTxForSign(genesisID, txData.encoded))
+          .signTx(keyToUse.path, dataToSign)
           .catch(() => {
             setIsLedgerRejected(true);
             return null;
@@ -1036,7 +1128,10 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
     );
 
   const renderTemplateSpecificFields = (acc: AccountWithAddress) => {
-    switch (acc.templateAddress) {
+    const tplAddr = isAthenaWalletAccount(acc)
+      ? athenaSuffix(acc.templateAddress)
+      : acc.templateAddress;
+    switch (tplAddr) {
       case StdPublicKeys.Vault: {
         if (!isVaultAccount(acc)) {
           throw new Error('Invalid account type for Vault template');
@@ -1147,6 +1242,30 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
           />
         );
       }
+      case athenaSuffix(Athena.Wallet.TEMPLATE_PUBKEY_HEX): {
+        if (isAthenaWalletAccount(acc)) {
+          return selectedMethod === StdMethods.Spawn ? (
+            <AthenaWalletSpawn
+              register={register}
+              unregister={unregister}
+              setValue={setValue}
+              spawnArguments={acc.spawnArguments}
+            />
+          ) : (
+            <Spend
+              register={register}
+              unregister={unregister}
+              errors={errors}
+              isSubmitted={isSubmitted}
+              accounts={accountsList}
+              setValue={setValue}
+              getValues={getValues}
+              watch={watch}
+            />
+          );
+        }
+        throw new Error('Invalid account type for Athena Wallet template');
+      }
       default: {
         return <Text color="red">Invalid template address</Text>;
       }
@@ -1162,7 +1281,10 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             value: O.mapWithDefault(
               currerntAccount,
               StdPublicKeys.SingleSig,
-              (acc) => acc.templateAddress as StdTemplateKeys
+              (acc) =>
+                (acc.isAthena
+                  ? athenaSuffix(acc.templateAddress)
+                  : acc.templateAddress) as StdTemplateKeys
             ),
           })}
         />
@@ -1175,6 +1297,10 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               Or you can
               <TxFileReader
                 multiple
+                isDisabled={
+                  !!(currerntAccount && isVaultAccount(currerntAccount)) ||
+                  !!currerntAccount?.isAthena
+                }
                 onRead={handleImportTx}
                 onError={showImportError}
               >
@@ -1186,7 +1312,8 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
                   cursor="pointer"
                   p={1}
                   isDisabled={
-                    !!(currerntAccount && isVaultAccount(currerntAccount))
+                    !!(currerntAccount && isVaultAccount(currerntAccount)) ||
+                    !!currerntAccount?.isAthena
                   }
                 >
                   import a transaction
@@ -1329,7 +1456,9 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             )}
             {txData && (
               <ExportSuccessModal
-                templateAddress={txData?.form.templateAddress}
+                templateAddress={
+                  txData?.form.templateAddress as StdTemplateKeys
+                }
                 isSigned={isExportedSigned}
                 isOpen={exportSuccessModal.isOpen}
                 onClose={exportSuccessModal.onClose}
