@@ -14,7 +14,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { StdPublicKeys } from '@spacemesh/sm-codec';
+import { StdPublicKeys, StdTemplateKeys } from '@spacemesh/sm-codec';
 
 import { useCurrentHRP } from '../hooks/useNetworkSelectors';
 import { useAccountsList } from '../hooks/useWalletSelectors';
@@ -139,7 +139,7 @@ function EditAccountModal({
         editAccount(
           accountIndex,
           data.displayName,
-          parseTemplateKey(data.templateAddress),
+          parseTemplateKey(data.templateAddress) as StdTemplateKeys,
           extractSpawnArgs(data),
           password
         ),

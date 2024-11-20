@@ -133,7 +133,7 @@ export const VestingSchema = z.object({
 export type VestingTx = z.infer<typeof VestingSchema>;
 
 export const AthenaWalletSchema = z.object({
-  templateAddress: z.literal(athenaSuffix(Athena.Wallet.TEMPLATE_PUBKEY_HEX)),
+  templateAddress: z.literal(`A${Athena.Wallet.TEMPLATE_PUBKEY_HEX}`), // TODO
   payload: z.discriminatedUnion('methodSelector', [
     AthenaWalletSpawnSchema,
     SpendSchema,
