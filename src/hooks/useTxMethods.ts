@@ -24,7 +24,7 @@ export const useSignTx = () => {
     encodedTx: Uint8Array,
     publicKey: HexString,
     password: string,
-    isAthena?: boolean
+    isAthena: boolean
   ) => {
     if (!genesisID) {
       throw new Error(

@@ -35,7 +35,11 @@ const useAccountHandlers = () => {
       }
 
       const rpc = currentNetwork.jsonRPC;
-      const txs = await fetchTransactionsByAddress(rpc, address);
+      const txs = await fetchTransactionsByAddress(
+        rpc,
+        address,
+        currentNetwork.isAthena || false
+      );
       setTransactions(currentNetwork.genesisID, txs);
     },
     [currentNetwork, setTransactions]

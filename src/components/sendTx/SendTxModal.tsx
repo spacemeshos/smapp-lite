@@ -707,7 +707,13 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
       }
 
       return withPassword(
-        (password) => signTx(txData.encoded, signWith, password),
+        (password) =>
+          signTx(
+            txData.encoded,
+            signWith,
+            password,
+            currerntAccount.isAthena || false
+          ),
         'Sign Transaction',
         txData.description
       );

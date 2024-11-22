@@ -115,10 +115,11 @@ export const getTemplateNameByKey = (key: HexString): TemplateName => {
 };
 
 export const getTemplateNameByAddress = (
-  address: Bech32Address
+  address: Bech32Address,
+  isAthena = false
 ): TemplateName => {
   const pk = toHexString(bech32.fromWords(bech32.decode(address).words));
-  return getTemplateNameByKey(pk);
+  return getTemplateNameByKey(isAthena ? athenaSuffix(pk) : pk);
 };
 
 export const getMethodName = (methodSelector: number) =>
