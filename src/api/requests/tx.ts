@@ -10,6 +10,8 @@ import {
   getTemplateMethod,
   getTemplateNameByAddress,
 } from '../../utils/templates';
+import fetch from '../fetch';
+import getFetchAll from '../getFetchAll';
 import { parseResponse } from '../schemas/error';
 import {
   EstimateGasResponseSchema,
@@ -20,8 +22,6 @@ import {
   TransactionState,
   WithExtraData,
 } from '../schemas/tx';
-
-import getFetchAll from './getFetchAll';
 
 const getTxState = (
   resultStatus: TransactionResultStatus | undefined,
@@ -61,7 +61,6 @@ export const fetchTransactionsChunk = async (
       limit,
       offset,
     }),
-    credentials: 'include',
   })
     .then((r) => r.json())
     .then(parseResponse(TransactionResponseSchema))
@@ -134,7 +133,6 @@ export const fetchEstimatedGas = async (rpc: string, encodedTx: Uint8Array) =>
     body: JSON.stringify({
       transaction: toBase64(encodedTx),
     }),
-    credentials: 'include',
   })
     .then((r) => r.json())
     .then(parseResponse(EstimateGasResponseSchema))
@@ -146,7 +144,6 @@ export const fetchPublishTx = async (rpc: string, encodedTx: Uint8Array) =>
     body: JSON.stringify({
       transaction: toBase64(encodedTx),
     }),
-    credentials: 'include',
   })
     .then((r) => r.json())
     .then(parseResponse(SubmitTxResponseSchema))

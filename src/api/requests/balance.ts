@@ -1,5 +1,6 @@
 import { AccountStatesWithAddress } from '../../types/account';
 import { Bech32Address } from '../../types/common';
+import fetch from '../fetch';
 import { BalanceResponseSchema } from '../schemas/account';
 import { parseResponse } from '../schemas/error';
 
@@ -16,7 +17,6 @@ export const fetchBalances = async (rpc: string, addresses: Bech32Address[]) =>
       addresses,
       limit: 100,
     }),
-    credentials: 'include',
   })
     .then((r) => r.json())
     .then(parseResponse(BalanceResponseSchema))
