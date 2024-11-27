@@ -10,6 +10,8 @@ import {
   getTemplateMethod,
   getTemplateNameByAddress,
 } from '../../utils/templates';
+import fetch from '../fetch';
+import getFetchAll from '../getFetchAll';
 import { parseResponse } from '../schemas/error';
 import {
   EstimateGasResponseSchema,
@@ -20,8 +22,6 @@ import {
   TransactionState,
   WithExtraData,
 } from '../schemas/tx';
-
-import getFetchAll from './getFetchAll';
 
 const getTxState = (
   resultStatus: TransactionResultStatus | undefined,

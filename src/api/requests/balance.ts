@@ -1,5 +1,6 @@
 import { AccountStatesWithAddress } from '../../types/account';
 import { Bech32Address } from '../../types/common';
+import fetch from '../fetch';
 import { BalanceResponseSchema } from '../schemas/account';
 import { parseResponse } from '../schemas/error';
 

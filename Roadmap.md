@@ -22,7 +22,7 @@
 
 --
 
-5. [ ] Wallet
+5. [X] Wallet
    1. [X] Overview screen
       1. [X] Balance
       2. [X] Network/API status
@@ -34,39 +34,39 @@
       1. [X] List
    4. [X] Manage accounts
       1. [X] Create new
-      2. [ ] Rename
-      3. [ ] Delete
+      2. [X] Rename
+      3. [X] Delete
       4. [X] View only accounts (see Y)
    5. [X] Manage keys
       1. [X] Create new
       2. [X] Import secret key
-      3. [ ] Import from Ledger
-      4. [ ] Delete (?)
+      3. [X] Import from Ledger
+      4. [X] Delete (?)
       5. [X] Export secret key
-   6. [ ] Send transaction
+   6. [X] Send transaction
       1. [X] Single signature
          // Just sign with selected account
-      2. [ ] Multiple Signatures
-         1. [ ] Sign with selected account
-         2. [ ] Sign with another account in the wallet
-         3. [ ] Parse transaction and signatures (that sent by other party) and sign
-      3. [ ] Support all TX kinds
+      2. [X] Multiple Signatures
+         1. [X] Sign with selected account
+         2. [X] Sign with another account in the wallet
+         3. [X] Parse transaction and signatures (that sent by other party) and sign
+      3. [X] Support all TX kinds
          1. [X] SingleSig.Spawn
          2. [X] SingleSig.Spend
-         3. [ ] MultiSig.Spawn
-         4. [ ] MultiSig.Spend
-         5. [ ] Vesting.Drain
-         6. [ ] Vault.Spawn
-   7. [ ] Sign message
-   8. [ ] Verify signed message
+         3. [X] MultiSig.Spawn
+         4. [X] MultiSig.Spend
+         5. [X] Vesting.Drain
+         6. [X] Vault.Spawn
+   7. [X] Sign message
+   8. [X] Verify signed message
 
 6. [ ] Settings
    1. [X] Network settings
       - RPC
       - Remote node status
       1. [X] Add network
-      2. [ ] Edit/view network (?)
-      3. [ ] Delete network
+      2. [X] Edit/view network (?)
+      3. [X] Delete network
    2. [ ] Change password
 
 7. [X] Backup wallet
@@ -98,10 +98,10 @@ Features
 
 - [X] Auto-fetch transactions and rewards periodically
 
-- [ ] Add SMH/Smidge Inputs
+- [X] Add SMH/Smidge Inputs
 
 - [ ] Add QR Code scanner
 
 - [ ] Load more transactions / rewards (now it is limited to latest 1000)
 
-- [ ] Session stickiness
+- [X] Session stickiness

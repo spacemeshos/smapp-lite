@@ -1,16 +1,17 @@
 import parse from 'parse-duration';
 
 import { fromBase64 } from '../../utils/base64';
-import fetchJSON from '../../utils/fetchJSON';
 import { toHexString } from '../../utils/hexString';
+import fetch from '../fetch';
 import { parseResponse } from '../schemas/error';
 import { NetworkInfoResponseSchema } from '../schemas/network';
 import { NodeStatusSchema, NodeSyncStatus } from '../schemas/node';
 
 export const fetchNetworkInfo = (rpc: string) =>
-  fetchJSON(`${rpc}/spacemesh.v2alpha1.NetworkService/Info`, {
+  fetch(`${rpc}/spacemesh.v2alpha1.NetworkService/Info`, {
     method: 'POST',
   })
+    .then((r) => r.json())
     .then(parseResponse(NetworkInfoResponseSchema))
     .then((res) => ({
       ...res,
@@ -20,7 +21,10 @@ export const fetchNetworkInfo = (rpc: string) =>
     }));
 
 export const fetchNodeStatus = (rpc: string) =>
-  fetchJSON(`${rpc}/spacemesh.v2alpha1.NodeService/Status`, { method: 'POST' })
+  fetch(`${rpc}/spacemesh.v2alpha1.NodeService/Status`, {
+    method: 'POST',
+  })
+    .then((r) => r.json())
     .then(parseResponse(NodeStatusSchema))
     .then((status) => ({
       connectedPeers: parseInt(status.connectedPeers, 10),
