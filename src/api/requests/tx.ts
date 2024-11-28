@@ -1,4 +1,9 @@
-import { Athena, SpawnTransaction, SpendTransaction, StdMethods } from '@spacemesh/sm-codec';
+import {
+  Athena,
+  SpawnTransaction,
+  SpendTransaction,
+  StdMethods,
+} from '@spacemesh/sm-codec';
 
 import { Bech32Address } from '../../types/common';
 import { Transaction } from '../../types/tx';

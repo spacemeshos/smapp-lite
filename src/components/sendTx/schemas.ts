@@ -6,7 +6,7 @@ import { Bech32AddressSchema } from '../../api/schemas/address';
 import { HexStringSchema } from '../../api/schemas/common';
 import { BigIntMin, BigIntStringSchema } from '../../api/schemas/strNumber';
 import { Bech32Address } from '../../types/common';
-import { athenaSuffix, MethodSelectors } from '../../utils/templates';
+import { MethodSelectors } from '../../utils/templates';
 
 // Tx schemas
 
@@ -68,8 +68,6 @@ export type VestingSpawnPayload = z.infer<typeof VestingSpawnSchema>;
 export const AthenaWalletSpawnSchema = z.object({
   methodSelector: z.literal(MethodSelectors.Spawn),
   PublicKey: HexStringSchema,
-  Nonce: BigIntStringSchema.and(BigIntMin(0n)),
-  Balance: BigIntStringSchema.and(BigIntMin(0n)),
 });
 
 export type AthenaWalletSpawnPayload = z.infer<typeof AthenaWalletSpawnSchema>;
@@ -135,7 +133,7 @@ export type VestingTx = z.infer<typeof VestingSchema>;
 export const AthenaWalletSchema = z.object({
   templateAddress: z.literal(`A${Athena.Wallet.TEMPLATE_PUBKEY_HEX}`), // TODO
   payload: z.discriminatedUnion('methodSelector', [
-    AthenaWalletSpawnSchema,
+    SingleSigSpawnSchema,
     SpendSchema,
   ]),
   ...CommonTxFields,
