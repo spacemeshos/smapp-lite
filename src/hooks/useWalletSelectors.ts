@@ -24,7 +24,8 @@ export const useAccountsList = (hrp: string): AccountWithAddress[] => {
       address: computeAddress(
         hrp,
         acc.templateAddress as StdTemplateKeys,
-        acc.spawnArguments
+        acc.spawnArguments,
+        acc.isAthena
       ),
     }));
   }, [accs, hrp]);

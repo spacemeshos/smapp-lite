@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { StdPublicKeys } from '@spacemesh/sm-codec';
+import { Athena, StdPublicKeys } from '@spacemesh/sm-codec';
 
 import { Bech32AddressSchema } from '../../api/schemas/address';
 import { HexStringSchema } from '../../api/schemas/common';
@@ -65,6 +65,13 @@ export const VestingSpawnSchema = z.object({
 
 export type VestingSpawnPayload = z.infer<typeof VestingSpawnSchema>;
 
+export const AthenaWalletSpawnSchema = z.object({
+  methodSelector: z.literal(MethodSelectors.Spawn),
+  PublicKey: HexStringSchema,
+});
+
+export type AthenaWalletSpawnPayload = z.infer<typeof AthenaWalletSpawnSchema>;
+
 // Tx schemas by template addr
 
 export const CommonTxFields = {
@@ -123,6 +130,17 @@ export const VestingSchema = z.object({
 
 export type VestingTx = z.infer<typeof VestingSchema>;
 
+export const AthenaWalletSchema = z.object({
+  templateAddress: z.literal(`A${Athena.Wallet.TEMPLATE_PUBKEY_HEX}`), // TODO
+  payload: z.discriminatedUnion('methodSelector', [
+    SingleSigSpawnSchema,
+    SpendSchema,
+  ]),
+  ...CommonTxFields,
+});
+
+export type AthenaWalletTx = z.infer<typeof SingleSigSchema>;
+
 // Form schema
 
 export const FormSchema = z.discriminatedUnion('templateAddress', [
@@ -130,6 +148,7 @@ export const FormSchema = z.discriminatedUnion('templateAddress', [
   MultiSigSchema,
   VaultSchema,
   VestingSchema,
+  AthenaWalletSchema,
 ]);
 
 export type FormValues = z.infer<typeof FormSchema>;
