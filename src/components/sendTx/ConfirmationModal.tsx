@@ -87,13 +87,7 @@ const renderTemplateSpecificFields = (form: FormValues) => {
     case athenaSuffix(Athena.Wallet.TEMPLATE_PUBKEY_HEX): {
       if (form.payload.methodSelector === MethodSelectors.Spawn) {
         const args = AthenaWalletSpawnSchema.parse(form.payload);
-        return (
-          <>
-            <PreviewDataRow label="Public key" value={args.PublicKey} />
-            <PreviewDataRow label="Nonce" value={String(args.Nonce)} />
-            <PreviewDataRow label="Balance" value={String(args.Balance)} />
-          </>
-        );
+        return <PreviewDataRow label="Public key" value={args.PublicKey} />;
       }
       if (form.payload.methodSelector === MethodSelectors.Spend) {
         const args = SpendSchema.parse(form.payload);

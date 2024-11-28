@@ -92,7 +92,6 @@ import FormInput from '../FormInput';
 import FormSelect from '../FormSelect';
 import TxFileReader from '../TxFileReader';
 
-import AthenaWalletSpawn from './AthenaWalletSpawn';
 import ConfirmationModal, { ConfirmationData } from './ConfirmationModal';
 import Drain from './Drain';
 import ExportSuccessModal from './ExportSuccessModal';
@@ -363,8 +362,6 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             const args = AthenaWalletSpawnSchema.parse(data.payload);
             const Arguments = {
               PubKey: fromHexString(args.PublicKey),
-              Nonce: BigInt(args.Nonce),
-              Balance: BigInt(args.Balance),
             };
             const encoded = Athena.Templates[
               '000000000000000000000000000000000000000000000001'
@@ -380,9 +377,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               accountsList.find(
                 (acc) =>
                   isAthenaWalletAccount(acc) &&
-                  acc.spawnArguments.PublicKey === args.PublicKey &&
-                  String(acc.spawnArguments.Nonce) === args.Nonce &&
-                  String(acc.spawnArguments.Balance) === args.Balance
+                  acc.spawnArguments.PublicKey === args.PublicKey
               )?.displayName || 'external key';
 
             setTxData({
@@ -1223,8 +1218,9 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
           />
         );
       }
+      case athenaSuffix(Athena.Wallet.TEMPLATE_PUBKEY_HEX):
       case StdPublicKeys.SingleSig: {
-        if (!isSingleSigAccount(acc)) {
+        if (!isSingleSigAccount(acc) && !isAthenaWalletAccount(acc)) {
           throw new Error('Invalid account type for SingleSig template');
         }
         return selectedMethod === StdMethods.Spawn ? (
@@ -1247,30 +1243,6 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             watch={watch}
           />
         );
-      }
-      case athenaSuffix(Athena.Wallet.TEMPLATE_PUBKEY_HEX): {
-        if (isAthenaWalletAccount(acc)) {
-          return selectedMethod === StdMethods.Spawn ? (
-            <AthenaWalletSpawn
-              register={register}
-              unregister={unregister}
-              setValue={setValue}
-              spawnArguments={acc.spawnArguments}
-            />
-          ) : (
-            <Spend
-              register={register}
-              unregister={unregister}
-              errors={errors}
-              isSubmitted={isSubmitted}
-              accounts={accountsList}
-              setValue={setValue}
-              getValues={getValues}
-              watch={watch}
-            />
-          );
-        }
-        throw new Error('Invalid account type for Athena Wallet template');
       }
       default: {
         return <Text color="red">Invalid template address</Text>;

@@ -94,11 +94,7 @@ export const computeAddress = <
     // TODO: Add support of other addresses
     const tpl = Athena.Templates[templateKey as Athena.TemplatePubKeys];
     const args = spawnArguments as AthenaSpawnArguments;
-    const principal = tpl.principal({
-      Nonce: BigInt(args.Nonce),
-      Balance: BigInt(args.Balance),
-      Payload: fromHexString(args.PublicKey),
-    });
+    const principal = tpl.principal(fromHexString(args.PublicKey));
     return generateAddress(principal, hrp);
   }
 
