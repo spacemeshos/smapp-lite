@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   UseFormRegister,
   UseFormSetValue,
@@ -40,13 +40,29 @@ function SpawnAnotherAccount({
 }: SpawnAnotherAccount) {
   const genesisID = useCurrentGenesisID();
   const { isSpawnedAccount } = useAccountData();
-  const isSpawned = (acc: AccountWithAddress<AnySpawnArguments>) =>
-    pipe(
-      genesisID,
-      O.mapWithDefault(false, (genesis) =>
-        isSpawnedAccount(genesis, acc.address)
-      )
-    );
+  const isSpawned = useCallback(
+    (acc: AccountWithAddress<AnySpawnArguments>) =>
+      pipe(
+        genesisID,
+        O.mapWithDefault(false, (genesis) =>
+          isSpawnedAccount(genesis, acc.address)
+        )
+      ),
+    [genesisID, isSpawnedAccount]
+  );
+
+  useEffect(() => {
+    if (accounts.length > 0) {
+      const firstUnspawned = accounts.find((x) => !isSpawned(x));
+      if (firstUnspawned) {
+        setSelectedAddress(firstUnspawned.address);
+        setValue(
+          'templateAddress',
+          firstUnspawned.templateAddress as StdTemplateKeys
+        );
+      }
+    }
+  }, [accounts, isSpawned, setValue]);
 
   const [selectedAddress, setSelectedAddress] = useState(
     accounts.find((x) => !isSpawned(x))?.address
