@@ -11,6 +11,7 @@ import modalTheme from './theme/modal';
 import radioTheme from './theme/radio';
 import selectTheme from './theme/select';
 import tabsTheme from './theme/tabs';
+import tooltipTheme from './theme/tooltip';
 
 const config: ThemeConfig = {
   initialColorMode: 'dark',
@@ -51,6 +52,7 @@ const components = {
   Input: inputTheme,
   Select: selectTheme,
   FormLabel: formLabelTheme,
+  Tooltip: tooltipTheme,
 };
 const theme = extendTheme({ config, colors, components, styles });
 
