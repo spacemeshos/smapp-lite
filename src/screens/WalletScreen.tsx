@@ -194,7 +194,7 @@ function WalletScreen(): JSX.Element {
                   ? `Available balance: ${balance.projected} Smidge\n`
                   : ''
               }Actual balance:     ${balance.current} Smidge`}
-              color={pendingBalance ? 'brand.orange' : 'white'}
+              color={pendingBalance ? 'orange' : 'white'}
             >
               {pendingBalance ? (
                 <Icon
@@ -225,7 +225,7 @@ function WalletScreen(): JSX.Element {
             />
           </Flex>
           {pendingBalance && (
-            <Text fontSize="sm" color="orange" mb={2} mr={10}>
+            <Text fontSize="sm" color="orange" mt={-1} mb={2} mr={10}>
               Pending transactions...
               <Tooltip
                 maxW="80vw"
@@ -234,7 +234,7 @@ function WalletScreen(): JSX.Element {
                     <Tbody>
                       <Tr>
                         <Td pl={0} pr={2} fontSize="xs">
-                          Available balance:
+                          Pending balance:
                         </Td>
                         <Td pl={2} pr={0}>
                           {balance.projected} Smidge
@@ -242,7 +242,7 @@ function WalletScreen(): JSX.Element {
                       </Tr>
                       <Tr>
                         <Td pl={0} pr={2} fontSize="xs">
-                          Actual balance:
+                          Current balance:
                         </Td>
                         <Td pl={2} pr={0}>
                           {balance.current} Smidge
