@@ -78,4 +78,58 @@ describe('getVaultUnlockedAmount', () => {
       expect(r.totalUnlocked).toBe(280000n);
     });
   });
+  describe('Rounding: 1 million / 300 layers', () => {
+    const args = {
+      Owner: 'someOwner',
+      TotalAmount: '1000000',
+      VestingStart: 0,
+      VestingEnd: 300,
+      InitialUnlockAmount: '250000',
+    };
+    it('Layer 0', () => {
+      const r = getVaultUnlockedAmount(args, 0, 1000000n);
+      expect(r.available).toBe(3333n);
+      expect(r.totalUnlocked).toBe(3333n);
+    });
+    it('Layer 1', () => {
+      const r = getVaultUnlockedAmount(args, 1, 1000000n);
+      expect(r.available).toBe(6666n);
+      expect(r.totalUnlocked).toBe(6666n);
+    });
+    it('Layer 5', () => {
+      const r = getVaultUnlockedAmount(args, 5, 1000000n);
+      expect(r.available).toBe(19998n);
+      expect(r.totalUnlocked).toBe(19998n);
+    });
+    it('Layer 6', () => {
+      const r = getVaultUnlockedAmount(args, 6, 1000000n);
+      expect(r.available).toBe(23331n);
+      expect(r.totalUnlocked).toBe(23331n);
+    });
+    it('Layer 100', () => {
+      const r = getVaultUnlockedAmount(args, 100, 1000000n);
+      expect(r.available).toBe(336633n);
+      expect(r.totalUnlocked).toBe(336633n);
+    });
+    it('Layer 298', () => {
+      const r = getVaultUnlockedAmount(args, 298, 1000000n);
+      expect(r.available).toBe(996567n);
+      expect(r.totalUnlocked).toBe(996567n);
+    });
+    it('Layer 299', () => {
+      const r = getVaultUnlockedAmount(args, 299, 1000000n);
+      expect(r.available).toBe(999900n);
+      expect(r.totalUnlocked).toBe(999900n);
+    });
+    it('Layer 300', () => {
+      const r = getVaultUnlockedAmount(args, 300, 1000000n);
+      expect(r.available).toBe(1000000n);
+      expect(r.totalUnlocked).toBe(1000000n);
+    });
+    it('Layer 301', () => {
+      const r = getVaultUnlockedAmount(args, 301, 1000000n);
+      expect(r.available).toBe(1000000n);
+      expect(r.totalUnlocked).toBe(1000000n);
+    });
+  });
 });
