@@ -8,18 +8,26 @@ import {
   Flex,
   Icon,
   IconButton,
+  keyframes,
   Spacer,
   Spinner,
   Tab,
+  Table,
   TabList,
   TabPanels,
   Tabs,
+  Tbody,
+  Td,
   Text,
+  Tooltip,
+  Tr,
   useBreakpointValue,
   useDisclosure,
 } from '@chakra-ui/react';
 import { O, pipe } from '@mobily/ts-belt';
 import {
+  IconHelp,
+  IconHourglassEmpty,
   IconLockOpen2,
   IconQrcode,
   IconRefresh,
@@ -53,6 +61,11 @@ import useNetworks from '../store/useNetworks';
 import { Transaction } from '../types/tx';
 import { formatSmidge } from '../utils/smh';
 
+const spin = keyframes`
+  85% {transform: rotate(0deg);}   
+  100% {transform: rotate(360deg)} 
+`;
+
 function WalletScreen(): JSX.Element {
   const { isLoading, refreshData } = useDataRefresher();
 
@@ -85,8 +98,11 @@ function WalletScreen(): JSX.Element {
   );
   const balance = O.mapWithDefault(
     accountData,
-    '0',
-    ([account]) => account.state.current.balance
+    { current: '0', projected: '0' },
+    ([account]) => ({
+      current: account.state.current.balance,
+      projected: account.state.projected.balance,
+    })
   );
 
   const refreshIconSize = useBreakpointValue(
@@ -97,8 +113,10 @@ function WalletScreen(): JSX.Element {
   const unlockedBalance = useVaultBalance(
     currentAccount,
     currentNetwork,
-    BigInt(balance)
+    BigInt(balance.current)
   );
+
+  const pendingBalance = balance.projected !== balance.current;
 
   return (
     <Flex
@@ -171,9 +189,23 @@ function WalletScreen(): JSX.Element {
             <Text
               as="b"
               fontSize={{ base: '32px', md: '40px' }}
-              title={`${balance} Smidge`}
+              title={`${
+                pendingBalance
+                  ? `Available balance: ${balance.projected} Smidge\n`
+                  : ''
+              }Actual balance:     ${balance.current} Smidge`}
+              color={pendingBalance ? 'orange' : 'white'}
             >
-              {formatSmidge(balance)}
+              {pendingBalance ? (
+                <Icon
+                  as={IconHourglassEmpty}
+                  display="inline-block"
+                  boxSize={{ base: 6, md: 7 }}
+                  mb={{ base: '-1px', md: 0 }}
+                  animation={`${spin} 4s linear infinite`}
+                />
+              ) : null}
+              {formatSmidge(balance.projected)}
             </Text>
             <IconButton
               ml={4}
@@ -192,6 +224,40 @@ function WalletScreen(): JSX.Element {
               verticalAlign="text-bottom"
             />
           </Flex>
+          {pendingBalance && (
+            <Text fontSize="sm" color="orange" mt={-1} mb={2} mr={10}>
+              Pending transactions...
+              <Tooltip
+                maxW="80vw"
+                label={
+                  <Table size="sm" variant="unstyled" whiteSpace="nowrap">
+                    <Tbody>
+                      <Tr>
+                        <Td pl={0} pr={2} fontSize="xs">
+                          Pending balance:
+                        </Td>
+                        <Td pl={2} pr={0}>
+                          {balance.projected} Smidge
+                        </Td>
+                      </Tr>
+                      <Tr>
+                        <Td pl={0} pr={2} fontSize="xs">
+                          Current balance:
+                        </Td>
+                        <Td pl={2} pr={0}>
+                          {balance.current} Smidge
+                        </Td>
+                      </Tr>
+                    </Tbody>
+                  </Table>
+                }
+              >
+                <Text display="inline-block" ml={1}>
+                  <IconHelp size={14} style={{ marginBottom: '-2px' }} />
+                </Text>
+              </Tooltip>
+            </Text>
+          )}
           {O.mapWithDefault(
             unlockedBalance,
             // eslint-disable-next-line react/jsx-no-useless-fragment
