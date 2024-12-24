@@ -45,7 +45,8 @@ const useVaultBalance = (
         O.map(([args, net]) =>
           getVaultUnlockedAmount(
             args,
-            layerByTimestamp(net.genesisTime, net.layerDuration, now),
+            // Calculate unlocked amount for the next layer
+            layerByTimestamp(net.genesisTime, net.layerDuration, now) + 1,
             balance
           )
         )

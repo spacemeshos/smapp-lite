@@ -93,18 +93,41 @@ export const extractEligibleKeys = <T extends AnySpawnArguments>(
 };
 
 const zeroOrMore = (n: bigint): bigint => (n >= 0n ? n : 0n);
+
+const accumulatedVestedAtLayer = (args: VaultSpawnArguments, layer: number) => {
+  if (layer < args.VestingStart) return 0n;
+  if (layer >= args.VestingEnd) return BigInt(args.TotalAmount);
+
+  const vestingPeriod = BigInt(args.VestingEnd) - BigInt(args.VestingStart);
+  const layersPassed = BigInt(layer) - BigInt(args.VestingStart) + 1n;
+  const vestedLayers =
+    layersPassed < vestingPeriod ? zeroOrMore(layersPassed) : vestingPeriod;
+  const vestedPerLayer = BigInt(args.TotalAmount) / vestingPeriod;
+  return vestedLayers * vestedPerLayer;
+};
+
+const vestAtLayer = (args: VaultSpawnArguments, layer: number) => {
+  if (layer < BigInt(args.VestingStart) || layer > BigInt(args.VestingEnd))
+    return 0n;
+
+  const prevLayerVested = accumulatedVestedAtLayer(args, layer - 1);
+  const curLayerVested = accumulatedVestedAtLayer(args, layer);
+  return curLayerVested - prevLayerVested;
+};
+
+const unlockedAtLayer = (args: VaultSpawnArguments, layer: number) => {
+  const acc = accumulatedVestedAtLayer(args, layer - 1);
+  const vest = vestAtLayer(args, layer);
+  return acc + vest;
+};
+
 export const getVaultUnlockedAmount = (
   args: VaultSpawnArguments,
-  currentLayer: number,
-  currentBalance: bigint
+  layer: number,
+  balanceAtLayer: bigint
 ) => {
-  const vestingPeriod = BigInt(args.VestingEnd) - BigInt(args.VestingStart);
-  const layersPassed = BigInt(currentLayer) - BigInt(args.VestingStart);
-  const vestedLayers =
-    layersPassed < vestingPeriod ? layersPassed : vestingPeriod;
-  const vestingPerLayer = BigInt(args.TotalAmount) / vestingPeriod;
-  const totalUnlocked = vestedLayers * vestingPerLayer;
-  const alreadySpent = BigInt(args.TotalAmount) - currentBalance;
+  const totalUnlocked = unlockedAtLayer(args, layer);
+  const alreadySpent = BigInt(args.TotalAmount) - balanceAtLayer;
   const available = totalUnlocked - alreadySpent;
   return {
     totalUnlocked: zeroOrMore(totalUnlocked),
