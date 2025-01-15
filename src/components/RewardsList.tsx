@@ -45,7 +45,7 @@ function RewardsList({
             Check out{' '}
             <Link
               as="a"
-              href="https://docs.spacemesh.io/docs/start"
+              href="https://docs.spacemesh.io/docs/start/smeshing/start"
               target="_blank"
             >
               Smesher&apos;s guide
