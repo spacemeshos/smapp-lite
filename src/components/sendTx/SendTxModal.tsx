@@ -25,6 +25,7 @@ import {
   Athena,
   Codecs,
   DrainArguments,
+  hash,
   MultiSigSpawnArguments as MultiSigSpawnArgumentsTx,
   MultiSigTemplate,
   SingleSigSpawnArguments as SingleSigSpawnArgumentsTx,
@@ -368,6 +369,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             ].methods[Athena.Wallet.METHODS_HEX.SPAWN].enc({
               Version: 1n,
               Principal: pinripalBytes,
+              TemplateAddress: Athena.Wallet.TEMPLATE_PUBKEY,
               Nonce: BigInt(data.nonce),
               GasPrice: BigInt(data.gasPrice),
               Payload: Arguments,
@@ -508,6 +510,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             ].methods[Athena.Wallet.METHODS_HEX.SPEND].enc({
               Version: 1n,
               Principal: pinripalBytes,
+              TemplateAddress: undefined,
               Nonce: BigInt(data.nonce),
               GasPrice: BigInt(data.gasPrice),
               Payload: Arguments,
@@ -677,6 +680,11 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
         throw new Error('Cannot sign transaction: Open the wallet first');
       }
       const keyToUse = wallet.keychain.find((k) => k.publicKey === signWith);
+      // TODO: Remove that Athena kludge
+      const dataToSign = currerntAccount.isAthena
+        ? hash(txData.encoded)
+        : prepareTxForSign(genesisID, txData.encoded);
+
       if (isForeignKey(keyToUse) && keyToUse.origin === KeyOrigin.Ledger) {
         if (!(await checkDeviceConnection()) || !connectedDevice) {
           return null;
@@ -688,10 +696,6 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
           modalWrongDevice.onOpen();
           return null;
         }
-        // TODO: Remove that Athena kludge
-        const dataToSign = currerntAccount.isAthena
-          ? txData.encoded
-          : prepareTxForSign(genesisID, txData.encoded);
 
         return connectedDevice.actions
           .signTx(keyToUse.path, dataToSign)
@@ -704,7 +708,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
       return withPassword(
         (password) =>
           signTx(
-            txData.encoded,
+            dataToSign,
             signWith,
             password,
             currerntAccount.isAthena || false

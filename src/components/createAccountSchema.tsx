@@ -54,7 +54,6 @@ const MainAccountSchemas = z.discriminatedUnion('templateAddress', [
 const AthenaWalletSchema = z.object({
   displayName: DisplayNameSchema,
   templateAddress: z.literal(`A${Athena.Wallet.TEMPLATE_PUBKEY_HEX}`),
-  Nonce: z.number().int().min(0),
   PublicKey: PublicKeySchema,
 });
 
@@ -99,8 +98,6 @@ export const extractSpawnArgs = (data: FormValues): AnySpawnArguments => {
   args = AthenaWalletSchema.safeParse(data);
   if (args.success) {
     return {
-      Nonce: args.data.Nonce,
-      Balance: 0,
       PublicKey: args.data.PublicKey,
     };
   }

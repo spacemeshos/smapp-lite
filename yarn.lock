@@ -2349,10 +2349,10 @@
   resolved "https://registry.yarnpkg.com/@spacemesh/ed25519-bip32/-/ed25519-bip32-0.2.1.tgz#f622616060fb477b1fbc5d1292ff21993927a3b2"
   integrity sha512-wwB9FHotFBc1IqYLNZRXt9jZIm7K4gWap4EaotEGeoRLvVJNR/J63TXZBEsHhPrMOWTC2yAcxi6GC47bxsYOhA==
 
-"@spacemesh/sm-codec@^0.9.0-athena.2":
-  version "0.9.0-athena.2"
-  resolved "https://registry.yarnpkg.com/@spacemesh/sm-codec/-/sm-codec-0.9.0-athena.2.tgz#564c2b7719a1aef5a76d5447ef780e4111a5dcc0"
-  integrity sha512-Tmn746XJ/sfMpUscvlPQ09qgGM9tVpz1XhMHCg00WWKA3Dir4nkKHN8o/JPkAPHYzBZbdATtURJgk8r+2p8HPw==
+"@spacemesh/sm-codec@^0.9.0-athena.3":
+  version "0.9.0-athena.3"
+  resolved "https://registry.yarnpkg.com/@spacemesh/sm-codec/-/sm-codec-0.9.0-athena.3.tgz#00bab28cbd1b24914ecb39b8fa44ae5b1cd3c313"
+  integrity sha512-68jrlZCiHvApXLP3IDAUE36Q4nPDeA8m11LfmLshrwhhhAM4cwmwySYWBAe8V1RZUunisYRi0e2K9NYdlmlpkw==
   dependencies:
     "@noble/hashes" "^1.4.0"
     scale-ts "^1.6.0"

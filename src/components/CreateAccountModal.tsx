@@ -257,16 +257,6 @@ function CreateAccountModal({
                 value={unusedKey?.publicKey}
                 hasCreateOption
               />
-              <FormInput
-                label="Nonce"
-                inputProps={{ type: 'number' }}
-                register={register('Nonce', {
-                  required: 'Please specify nonce',
-                  valueAsNumber: true,
-                })}
-                errors={errors}
-                isSubmitted={isSubmitted}
-              />
             </>
           );
         default:
