@@ -1,17 +1,18 @@
 import { z } from 'zod';
 
 import { Athena, StdPublicKeys } from '@spacemesh/sm-codec';
+import { METHODS_HEX } from '@spacemesh/sm-codec/lib/athena/wallet';
 
 import { Bech32AddressSchema } from '../../api/schemas/address';
 import { HexStringSchema } from '../../api/schemas/common';
 import { BigIntMin, BigIntStringSchema } from '../../api/schemas/strNumber';
 import { Bech32Address } from '../../types/common';
-import { MethodSelectors } from '../../utils/templates';
+import { MethodSelectorStrings } from '../../utils/templates';
 
 // Tx schemas
 
 export const SpendSchema = z.object({
-  methodSelector: z.literal(MethodSelectors.Spend),
+  methodSelector: z.literal(MethodSelectorStrings.Spend),
   Destination: Bech32AddressSchema,
   Amount: BigIntStringSchema.and(BigIntMin(0n)),
 });
@@ -19,7 +20,7 @@ export const SpendSchema = z.object({
 export type SpendPayload = z.infer<typeof SpendSchema>;
 
 export const DrainSchema = z.object({
-  methodSelector: z.literal(MethodSelectors.Drain),
+  methodSelector: z.literal(MethodSelectorStrings.Drain),
   Vault: Bech32AddressSchema,
   Destination: Bech32AddressSchema,
   Amount: BigIntStringSchema.and(BigIntMin(0n)),
@@ -28,14 +29,14 @@ export const DrainSchema = z.object({
 export type DrainPayload = z.infer<typeof DrainSchema>;
 
 export const SingleSigSpawnSchema = z.object({
-  methodSelector: z.literal(MethodSelectors.Spawn),
+  methodSelector: z.literal(MethodSelectorStrings.Spawn),
   PublicKey: HexStringSchema,
 });
 
 export type SingleSigSpawnPayload = z.infer<typeof SingleSigSpawnSchema>;
 
 export const MultiSigSpawnSchema = z.object({
-  methodSelector: z.literal(MethodSelectors.Spawn),
+  methodSelector: z.literal(MethodSelectorStrings.Spawn),
   Required: z.number().min(0).max(10),
   PublicKeys: z
     .array(HexStringSchema)
@@ -45,7 +46,7 @@ export const MultiSigSpawnSchema = z.object({
 export type MultiSigSpawnPayload = z.infer<typeof MultiSigSpawnSchema>;
 
 export const VaultSpawnSchema = z.object({
-  methodSelector: z.literal(MethodSelectors.Spawn),
+  methodSelector: z.literal(MethodSelectorStrings.Spawn),
   Owner: Bech32AddressSchema,
   TotalAmount: BigIntStringSchema.and(BigIntMin(0n)),
   InitialUnlockAmount: BigIntStringSchema.and(BigIntMin(0n)),
@@ -56,7 +57,7 @@ export const VaultSpawnSchema = z.object({
 export type VaultSpawnPayload = z.infer<typeof VaultSpawnSchema>;
 
 export const VestingSpawnSchema = z.object({
-  methodSelector: z.literal(MethodSelectors.Spawn),
+  methodSelector: z.literal(MethodSelectorStrings.Spawn),
   Required: z.number().min(0).max(10),
   PublicKeys: z
     .array(HexStringSchema)
@@ -66,8 +67,13 @@ export const VestingSpawnSchema = z.object({
 export type VestingSpawnPayload = z.infer<typeof VestingSpawnSchema>;
 
 export const AthenaWalletSpawnSchema = z.object({
-  methodSelector: z.literal(MethodSelectors.Spawn),
+  methodSelector: z.literal(MethodSelectorStrings.Spawn),
   PublicKey: HexStringSchema,
+});
+
+export const AthenaDeploySchema = z.object({
+  methodSelector: z.literal(METHODS_HEX.DEPLOY),
+  program: HexStringSchema,
 });
 
 export type AthenaWalletSpawnPayload = z.infer<typeof AthenaWalletSpawnSchema>;
@@ -135,6 +141,7 @@ export const AthenaWalletSchema = z.object({
   payload: z.discriminatedUnion('methodSelector', [
     SingleSigSpawnSchema,
     SpendSchema,
+    AthenaDeploySchema,
   ]),
   ...CommonTxFields,
 });

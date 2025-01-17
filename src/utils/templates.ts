@@ -11,6 +11,7 @@ import {
   VaultTemplate,
   VestingTemplate,
 } from '@spacemesh/sm-codec';
+import { METHODS_HEX } from '@spacemesh/sm-codec/lib/athena/wallet';
 
 import { Bech32Address, HexString } from '../types/common';
 
@@ -64,6 +65,7 @@ export enum MethodName {
   Spawn = 'Spawn',
   Spend = 'Spend',
   Drain = 'Drain',
+  Deploy = 'Deploy',
 }
 
 export enum MethodSelectors {
@@ -72,20 +74,38 @@ export enum MethodSelectors {
   Drain = StdMethods.Drain,
 }
 
+export enum MethodSelectorStrings {
+  Spawn = '0',
+  Spend = '16',
+  Drain = '17',
+  Deploy = 'e24cc333', // Athena
+}
+
 export const MethodNamesMap = {
   [MethodSelectors.Spawn]: MethodName.Spawn,
   [MethodSelectors.Spend]: MethodName.Spend,
   [MethodSelectors.Drain]: MethodName.Drain,
+  [METHODS_HEX.DEPLOY]: MethodName.Deploy,
 } as const;
 
 export const TemplateMethodsMap = {
-  [StdPublicKeys.SingleSig]: [MethodSelectors.Spawn, MethodSelectors.Spend],
-  [StdPublicKeys.MultiSig]: [MethodSelectors.Spawn, MethodSelectors.Spend],
-  [StdPublicKeys.Vault]: [MethodSelectors.Spawn, MethodSelectors.Spend],
+  [StdPublicKeys.SingleSig]: [
+    MethodSelectorStrings.Spawn,
+    MethodSelectorStrings.Spend,
+    METHODS_HEX.DEPLOY,
+  ],
+  [StdPublicKeys.MultiSig]: [
+    MethodSelectorStrings.Spawn,
+    MethodSelectorStrings.Spend,
+  ],
+  [StdPublicKeys.Vault]: [
+    MethodSelectorStrings.Spawn,
+    MethodSelectorStrings.Spend,
+  ],
   [StdPublicKeys.Vesting]: [
-    MethodSelectors.Spawn,
-    MethodSelectors.Spend,
-    MethodSelectors.Drain,
+    MethodSelectorStrings.Spawn,
+    MethodSelectorStrings.Spend,
+    MethodSelectorStrings.Drain,
   ],
 };
 
@@ -122,7 +142,7 @@ export const getTemplateNameByAddress = (
   return getTemplateNameByKey(isAthena ? athenaSuffix(pk) : pk);
 };
 
-export const getMethodName = (methodSelector: number) =>
+export const getMethodName = (methodSelector: number | HexString) =>
   MethodNamesMap[methodSelector as keyof typeof MethodNamesMap] ??
   MethodName.Unknown;
 
@@ -159,7 +179,7 @@ export const convertSpawnArgumentsForEncoding = <T extends StdTemplateKeys>(
 
 export const getTemplateMethod = (
   templateAddress: HexString,
-  method: number
+  method: string
 ) => {
   const throwUnsupportedMethodError = () => {
     throw new Error(
@@ -171,40 +191,40 @@ export const getTemplateMethod = (
 
   switch (templateAddress) {
     case StdPublicKeys.SingleSig: {
-      if (method === MethodSelectors.Spawn) {
+      if (method === MethodSelectorStrings.Spawn) {
         return SingleSigTemplate.methods[0];
       }
-      if (method === MethodSelectors.Spend) {
+      if (method === MethodSelectorStrings.Spend) {
         return SingleSigTemplate.methods[16];
       }
       return throwUnsupportedMethodError();
     }
     case StdPublicKeys.MultiSig: {
-      if (method === MethodSelectors.Spawn) {
+      if (method === MethodSelectorStrings.Spawn) {
         return MultiSigTemplate.methods[0];
       }
-      if (method === MethodSelectors.Spend) {
+      if (method === MethodSelectorStrings.Spend) {
         return MultiSigTemplate.methods[16];
       }
       return throwUnsupportedMethodError();
     }
     case StdPublicKeys.Vault: {
-      if (method === MethodSelectors.Spawn) {
+      if (method === MethodSelectorStrings.Spawn) {
         return VaultTemplate.methods[0];
       }
-      if (method === MethodSelectors.Spend) {
+      if (method === MethodSelectorStrings.Spend) {
         return VaultTemplate.methods[16];
       }
       return throwUnsupportedMethodError();
     }
     case StdPublicKeys.Vesting: {
-      if (method === MethodSelectors.Spawn) {
+      if (method === MethodSelectorStrings.Spawn) {
         return VestingTemplate.methods[0];
       }
-      if (method === MethodSelectors.Spend) {
+      if (method === MethodSelectorStrings.Spend) {
         return VestingTemplate.methods[16];
       }
-      if (method === MethodSelectors.Drain) {
+      if (method === MethodSelectorStrings.Drain) {
         return VestingTemplate.methods[17];
       }
       return throwUnsupportedMethodError();

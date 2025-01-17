@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { Bech32Address } from '../../types/common';
 
 import { Bech32AddressSchema } from './address';
-import { Base64Schema } from './common';
+import { Base64Schema, HexStringSchema } from './common';
 import { BigIntStringSchema } from './strNumber';
 
 // Common stuff
@@ -39,7 +39,7 @@ export const TransactionSchema = z.object({
   type: TransactionTemplateMethodType,
   principal: Bech32AddressSchema,
   template: Bech32AddressSchema,
-  method: z.number(),
+  method: z.union([z.number(), HexStringSchema]),
   nonce: NonceSchema,
   maxGas: BigIntStringSchema,
   gasPrice: BigIntStringSchema,

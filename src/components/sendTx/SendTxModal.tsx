@@ -39,6 +39,7 @@ import {
   VestingSpawnArguments as VestingSpawnArgumentsTx,
   VestingTemplate,
 } from '@spacemesh/sm-codec';
+import { METHODS_HEX } from '@spacemesh/sm-codec/lib/athena/wallet';
 import { MultiSigPart, SingleSig } from '@spacemesh/sm-codec/lib/codecs';
 import { SpawnArguments } from '@spacemesh/sm-codec/lib/std/singlesig';
 
@@ -83,7 +84,7 @@ import {
   getMethodName,
   getTemplateMethod,
   getTemplateNameByKey,
-  MethodSelectors,
+  MethodSelectorStrings,
   MultiSigSpawnArguments,
   TemplateMethodsMap,
 } from '../../utils/templates';
@@ -94,10 +95,12 @@ import FormSelect from '../FormSelect';
 import TxFileReader from '../TxFileReader';
 
 import ConfirmationModal, { ConfirmationData } from './ConfirmationModal';
+import Deploy from './Deploy';
 import Drain from './Drain';
 import ExportSuccessModal from './ExportSuccessModal';
 import MultiSigSpawn from './MultiSigSpawn';
 import {
+  AthenaDeploySchema,
   AthenaWalletSpawnSchema,
   DrainPayload,
   DrainSchema,
@@ -127,7 +130,8 @@ type AnyArguments =
   | VestingSpawnArgumentsTx
   | DrainArguments
   | Athena.Wallet.SpawnArguments
-  | Athena.Wallet.SpendArguments;
+  | Athena.Wallet.SpendArguments
+  | Athena.Wallet.DeployArguments;
 type TxData = ConfirmationData & {
   description: string;
   Arguments: AnyArguments;
@@ -194,12 +198,15 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
   useEffect(() => {
     // Update template address when the current account changes
     if (currerntAccount) {
-      setValue(
-        'templateAddress',
-        (currerntAccount.isAthena
+      const templateAddress = (
+        currerntAccount.isAthena
           ? athenaSuffix(currerntAccount.templateAddress)
-          : currerntAccount.templateAddress) as StdTemplateKeys
-      );
+          : currerntAccount.templateAddress
+      ) as
+        | StdTemplateKeys
+        | 'A000000000000000000000000000000000000000000000001';
+
+      setValue('templateAddress', templateAddress);
     }
   }, [currerntAccount, setValue]);
 
@@ -254,11 +261,28 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
     () =>
       [
         {
-          value: MethodSelectors.Spawn,
+          value: MethodSelectorStrings.Spawn,
           label: isSpawned ? 'Spawn' : 'Self Spawn',
         },
-        { value: MethodSelectors.Spend, label: 'Spend', disabled: !isSpawned },
-        { value: MethodSelectors.Drain, label: 'Drain', disabled: !isSpawned },
+        {
+          value: MethodSelectorStrings.Spend,
+          label: 'Spend',
+          disabled: !isSpawned,
+        },
+        {
+          value: MethodSelectorStrings.Drain,
+          label: 'Drain',
+          disabled: !isSpawned,
+        },
+        ...(currerntAccount && currerntAccount?.isAthena
+          ? [
+              {
+                value: MethodSelectorStrings.Deploy,
+                label: 'Deploy contract',
+                disabled: !isSpawned,
+              },
+            ]
+          : []),
       ].filter(
         ({ value }) =>
           (currerntAccount &&
@@ -273,21 +297,21 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
   useEffect(() => {
     // Automatically switch between methods if the account is spawned or not
     if (
-      getValues().payload.methodSelector === MethodSelectors.Spawn &&
+      getValues().payload.methodSelector === MethodSelectorStrings.Spawn &&
       isSpawned
     ) {
       setValue(
         'payload.methodSelector',
-        methodOptions.find(
-          (opt) => opt.value !== MethodSelectors.Spawn && !opt.disabled
-        )?.value ?? MethodSelectors.Spawn
+        (methodOptions.find(
+          (opt) => opt.value !== MethodSelectorStrings.Spawn && !opt.disabled
+        )?.value ?? MethodSelectorStrings.Spawn) as MethodSelectorStrings
       );
     }
     if (
-      getValues().payload.methodSelector !== MethodSelectors.Spawn &&
+      getValues().payload.methodSelector !== MethodSelectorStrings.Spawn &&
       !isSpawned
     ) {
-      setValue('payload.methodSelector', MethodSelectors.Spawn);
+      setValue('payload.methodSelector', MethodSelectorStrings.Spawn);
     }
   }, [setValue, isSpawned, methodOptions, getValues]);
 
@@ -353,13 +377,13 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
         required: extractRequiredSignatures(currerntAccount),
       };
 
-      switch (data.payload.methodSelector) {
-        case StdMethods.Spawn: {
-          if (
-            currerntAccount.isAthena &&
-            data.templateAddress ===
-              athenaSuffix(Athena.Wallet.TEMPLATE_PUBKEY_HEX)
-          ) {
+      if (
+        currerntAccount.isAthena &&
+        currerntAccount.templateAddress === Athena.Wallet.TEMPLATE_PUBKEY_HEX
+      ) {
+        // Athena VM
+        switch (data.payload.methodSelector) {
+          case MethodSelectorStrings.Spawn: {
             const args = AthenaWalletSpawnSchema.parse(data.payload);
             const Arguments = {
               PubKey: fromHexString(args.PublicKey),
@@ -395,111 +419,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             updateEstimatedGas(encoded, 0);
             break;
           }
-          if (data.templateAddress === StdPublicKeys.SingleSig) {
-            const args = SingleSigSpawnSchema.parse(data.payload);
-            const Arguments = {
-              PublicKey: fromHexString(args.PublicKey),
-            };
-            const encoded = SingleSigTemplate.methods[StdMethods.Spawn].encode(
-              pinripalBytes,
-              {
-                Nonce: BigInt(data.nonce),
-                GasPrice: BigInt(data.gasPrice),
-                Arguments,
-              }
-            );
-
-            const spawnAccount =
-              accountsList.find(
-                (acc) =>
-                  isSingleSigAccount(acc) &&
-                  acc.spawnArguments.PublicKey === args.PublicKey
-              )?.displayName || 'external key';
-
-            setTxData({
-              principal,
-              form: data,
-              encoded,
-              description: `Spawn ${getTemplateNameByKey(
-                data.templateAddress
-              )} account using ${spawnAccount}`,
-              Arguments,
-              ...commonProps,
-            });
-            updateEstimatedGas(encoded, 0);
-          }
-          if (
-            data.templateAddress === StdPublicKeys.MultiSig ||
-            data.templateAddress === StdPublicKeys.Vesting
-          ) {
-            const args = MultiSigSpawnSchema.parse(data.payload);
-            const Template =
-              data.templateAddress === StdPublicKeys.Vesting
-                ? VestingTemplate
-                : MultiSigTemplate;
-            const Arguments = {
-              Required: BigInt(args.Required),
-              PublicKeys: args.PublicKeys.map(fromHexString),
-            };
-            const encoded = Template.methods[StdMethods.Spawn].encode(
-              pinripalBytes,
-              {
-                Nonce: BigInt(data.nonce),
-                GasPrice: BigInt(data.gasPrice),
-                Arguments,
-              }
-            );
-
-            setTxData({
-              principal,
-              form: data,
-              encoded,
-              description: `Spawn ${getTemplateNameByKey(
-                data.templateAddress
-              )} account: ${currerntAccount.displayName}`,
-              Arguments,
-              ...commonProps,
-            });
-            updateEstimatedGas(encoded, args.Required);
-          }
-          if (data.templateAddress === StdPublicKeys.Vault) {
-            const args = VaultSpawnSchema.parse(data.payload);
-            const Arguments = {
-              Owner: getWords(args.Owner),
-              TotalAmount: BigInt(args.TotalAmount),
-              InitialUnlockAmount: BigInt(args.InitialUnlockAmount),
-              VestingStart: BigInt(args.VestingStart),
-              VestingEnd: BigInt(args.VestingEnd),
-            };
-            const encoded = VaultTemplate.methods[StdMethods.Spawn].encode(
-              pinripalBytes,
-              {
-                Nonce: BigInt(data.nonce),
-                GasPrice: BigInt(data.gasPrice),
-                Arguments,
-              }
-            );
-
-            setTxData({
-              principal,
-              form: data,
-              encoded,
-              description: `Spawn ${getTemplateNameByKey(
-                data.templateAddress
-              )} account: ${currerntAccount.displayName}`,
-              Arguments,
-              ...commonProps,
-            });
-            updateEstimatedGas(encoded, 0);
-          }
-          break;
-        }
-        case StdMethods.Spend: {
-          if (
-            currerntAccount.isAthena &&
-            data.templateAddress ===
-              athenaSuffix(Athena.Wallet.TEMPLATE_PUBKEY_HEX)
-          ) {
+          case MethodSelectorStrings.Spend: {
             const args = SpendSchema.parse(data.payload);
             const Arguments = {
               Recipient: getWords(args.Destination),
@@ -530,124 +450,257 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             updateEstimatedGas(encoded, 0);
             break;
           }
-          if (data.templateAddress === StdPublicKeys.SingleSig) {
-            const args = SpendSchema.parse(data.payload);
-            const Arguments = {
-              Amount: BigInt(args.Amount),
-              Destination: getWords(args.Destination),
-            };
-            const encoded = SingleSigTemplate.methods[StdMethods.Spend].encode(
-              pinripalBytes,
-              {
-                Nonce: BigInt(data.nonce),
-                GasPrice: BigInt(data.gasPrice),
-                Arguments,
-              }
-            );
+          case METHODS_HEX.DEPLOY: {
+            const args = AthenaDeploySchema.parse(data.payload);
+            const program = fromHexString(args.program);
+            const encoded = Athena.Templates[
+              '000000000000000000000000000000000000000000000001'
+            ].methods[Athena.Wallet.METHODS_HEX.DEPLOY].enc({
+              Version: 1n,
+              Principal: pinripalBytes,
+              TemplateAddress: undefined,
+              Nonce: BigInt(data.nonce),
+              GasPrice: BigInt(data.gasPrice),
+              Payload: program,
+              Signature: null,
+            });
 
             setTxData({
               principal,
               form: data,
               encoded,
-              description: `Send ${formatSmidge(args.Amount)} to ${
-                args.Destination
-              }`,
-              Arguments,
+              description: 'Deploy contract',
+              Arguments: program,
               ...commonProps,
             });
             updateEstimatedGas(encoded, 0);
+            break;
           }
-          if (
-            data.templateAddress === StdPublicKeys.MultiSig ||
-            data.templateAddress === StdPublicKeys.Vesting
-          ) {
-            const args = SpendSchema.parse(data.payload);
-            const Arguments = {
-              Amount: BigInt(args.Amount),
-              Destination: getWords(args.Destination),
-            };
-            const encoded = MultiSigTemplate.methods[StdMethods.Spend].encode(
-              pinripalBytes,
-              {
-                Nonce: BigInt(data.nonce),
-                GasPrice: BigInt(data.gasPrice),
-                Arguments,
-              }
-            );
-
-            setTxData({
-              principal,
-              form: data,
-              encoded,
-              description: `Send ${formatSmidge(args.Amount)} to ${
-                args.Destination
-              }`,
-              Arguments,
-              ...commonProps,
-            });
-            updateEstimatedGas(encoded, commonProps.required);
+          default: {
+            throw new Error("Invalid Athena's method selector");
           }
-
-          if (data.templateAddress === StdPublicKeys.Vault) {
-            const args = SpendSchema.parse(data.payload);
-            const Arguments = {
-              Amount: BigInt(args.Amount),
-              Destination: getWords(args.Destination),
-            };
-            const encoded = VaultTemplate.methods[StdMethods.Spend].encode(
-              pinripalBytes,
-              {
-                Nonce: BigInt(data.nonce),
-                GasPrice: BigInt(data.gasPrice),
-                Arguments,
-              }
-            );
-
-            setTxData({
-              principal,
-              form: data,
-              encoded,
-              description: `Spawn ${formatSmidge(args.Amount)}`,
-              Arguments,
-              ...commonProps,
-            });
-            updateEstimatedGas(encoded, 0);
-          }
-          break;
         }
-        case StdMethods.Drain: {
-          if (data.templateAddress === StdPublicKeys.Vesting) {
-            const args = DrainSchema.parse(data.payload);
-            const Arguments = {
-              Vault: getWords(args.Vault),
-              Amount: BigInt(args.Amount),
-              Destination: getWords(args.Destination),
-            };
-            const encoded = VestingTemplate.methods[StdMethods.Drain].encode(
-              pinripalBytes,
-              {
+      } else {
+        // L1 VM
+        switch (data.payload.methodSelector) {
+          case MethodSelectorStrings.Spawn: {
+            if (data.templateAddress === StdPublicKeys.SingleSig) {
+              const args = SingleSigSpawnSchema.parse(data.payload);
+              const Arguments = {
+                PublicKey: fromHexString(args.PublicKey),
+              };
+              const encoded = SingleSigTemplate.methods[
+                StdMethods.Spawn
+              ].encode(pinripalBytes, {
                 Nonce: BigInt(data.nonce),
                 GasPrice: BigInt(data.gasPrice),
                 Arguments,
-              }
-            );
+              });
 
-            setTxData({
-              principal,
-              form: data,
-              encoded,
-              description: `Drain ${formatSmidge(args.Amount)} from ${
-                args.Vault
-              } to ${args.Destination}`,
-              Arguments,
-              ...commonProps,
-            });
-            updateEstimatedGas(encoded, commonProps.required);
+              const spawnAccount =
+                accountsList.find(
+                  (acc) =>
+                    isSingleSigAccount(acc) &&
+                    acc.spawnArguments.PublicKey === args.PublicKey
+                )?.displayName || 'external key';
+
+              setTxData({
+                principal,
+                form: data,
+                encoded,
+                description: `Spawn ${getTemplateNameByKey(
+                  data.templateAddress
+                )} account using ${spawnAccount}`,
+                Arguments,
+                ...commonProps,
+              });
+              updateEstimatedGas(encoded, 0);
+            }
+            if (
+              data.templateAddress === StdPublicKeys.MultiSig ||
+              data.templateAddress === StdPublicKeys.Vesting
+            ) {
+              const args = MultiSigSpawnSchema.parse(data.payload);
+              const Template =
+                data.templateAddress === StdPublicKeys.Vesting
+                  ? VestingTemplate
+                  : MultiSigTemplate;
+              const Arguments = {
+                Required: BigInt(args.Required),
+                PublicKeys: args.PublicKeys.map(fromHexString),
+              };
+              const encoded = Template.methods[StdMethods.Spawn].encode(
+                pinripalBytes,
+                {
+                  Nonce: BigInt(data.nonce),
+                  GasPrice: BigInt(data.gasPrice),
+                  Arguments,
+                }
+              );
+
+              setTxData({
+                principal,
+                form: data,
+                encoded,
+                description: `Spawn ${getTemplateNameByKey(
+                  data.templateAddress
+                )} account: ${currerntAccount.displayName}`,
+                Arguments,
+                ...commonProps,
+              });
+              updateEstimatedGas(encoded, args.Required);
+            }
+            if (data.templateAddress === StdPublicKeys.Vault) {
+              const args = VaultSpawnSchema.parse(data.payload);
+              const Arguments = {
+                Owner: getWords(args.Owner),
+                TotalAmount: BigInt(args.TotalAmount),
+                InitialUnlockAmount: BigInt(args.InitialUnlockAmount),
+                VestingStart: BigInt(args.VestingStart),
+                VestingEnd: BigInt(args.VestingEnd),
+              };
+              const encoded = VaultTemplate.methods[StdMethods.Spawn].encode(
+                pinripalBytes,
+                {
+                  Nonce: BigInt(data.nonce),
+                  GasPrice: BigInt(data.gasPrice),
+                  Arguments,
+                }
+              );
+
+              setTxData({
+                principal,
+                form: data,
+                encoded,
+                description: `Spawn ${getTemplateNameByKey(
+                  data.templateAddress
+                )} account: ${currerntAccount.displayName}`,
+                Arguments,
+                ...commonProps,
+              });
+              updateEstimatedGas(encoded, 0);
+            }
+            break;
           }
-          break;
-        }
-        default: {
-          throw new Error('Invalid method selector');
+          case MethodSelectorStrings.Spend: {
+            if (data.templateAddress === StdPublicKeys.SingleSig) {
+              const args = SpendSchema.parse(data.payload);
+              const Arguments = {
+                Amount: BigInt(args.Amount),
+                Destination: getWords(args.Destination),
+              };
+              const encoded = SingleSigTemplate.methods[
+                StdMethods.Spend
+              ].encode(pinripalBytes, {
+                Nonce: BigInt(data.nonce),
+                GasPrice: BigInt(data.gasPrice),
+                Arguments,
+              });
+
+              setTxData({
+                principal,
+                form: data,
+                encoded,
+                description: `Send ${formatSmidge(args.Amount)} to ${
+                  args.Destination
+                }`,
+                Arguments,
+                ...commonProps,
+              });
+              updateEstimatedGas(encoded, 0);
+            }
+            if (
+              data.templateAddress === StdPublicKeys.MultiSig ||
+              data.templateAddress === StdPublicKeys.Vesting
+            ) {
+              const args = SpendSchema.parse(data.payload);
+              const Arguments = {
+                Amount: BigInt(args.Amount),
+                Destination: getWords(args.Destination),
+              };
+              const encoded = MultiSigTemplate.methods[StdMethods.Spend].encode(
+                pinripalBytes,
+                {
+                  Nonce: BigInt(data.nonce),
+                  GasPrice: BigInt(data.gasPrice),
+                  Arguments,
+                }
+              );
+
+              setTxData({
+                principal,
+                form: data,
+                encoded,
+                description: `Send ${formatSmidge(args.Amount)} to ${
+                  args.Destination
+                }`,
+                Arguments,
+                ...commonProps,
+              });
+              updateEstimatedGas(encoded, commonProps.required);
+            }
+
+            if (data.templateAddress === StdPublicKeys.Vault) {
+              const args = SpendSchema.parse(data.payload);
+              const Arguments = {
+                Amount: BigInt(args.Amount),
+                Destination: getWords(args.Destination),
+              };
+              const encoded = VaultTemplate.methods[StdMethods.Spend].encode(
+                pinripalBytes,
+                {
+                  Nonce: BigInt(data.nonce),
+                  GasPrice: BigInt(data.gasPrice),
+                  Arguments,
+                }
+              );
+
+              setTxData({
+                principal,
+                form: data,
+                encoded,
+                description: `Spawn ${formatSmidge(args.Amount)}`,
+                Arguments,
+                ...commonProps,
+              });
+              updateEstimatedGas(encoded, 0);
+            }
+            break;
+          }
+          case MethodSelectorStrings.Drain: {
+            if (data.templateAddress === StdPublicKeys.Vesting) {
+              const args = DrainSchema.parse(data.payload);
+              const Arguments = {
+                Vault: getWords(args.Vault),
+                Amount: BigInt(args.Amount),
+                Destination: getWords(args.Destination),
+              };
+              const encoded = VestingTemplate.methods[StdMethods.Drain].encode(
+                pinripalBytes,
+                {
+                  Nonce: BigInt(data.nonce),
+                  GasPrice: BigInt(data.gasPrice),
+                  Arguments,
+                }
+              );
+
+              setTxData({
+                principal,
+                form: data,
+                encoded,
+                description: `Drain ${formatSmidge(args.Amount)} from ${
+                  args.Vault
+                } to ${args.Destination}`,
+                Arguments,
+                ...commonProps,
+              });
+              updateEstimatedGas(encoded, commonProps.required);
+            }
+            break;
+          }
+          default: {
+            throw new Error('Invalid method selector');
+          }
         }
       }
 
@@ -680,10 +733,6 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
         throw new Error('Cannot sign transaction: Open the wallet first');
       }
       const keyToUse = wallet.keychain.find((k) => k.publicKey === signWith);
-      // TODO: Remove that Athena kludge
-      const dataToSign = currerntAccount.isAthena
-        ? hash(txData.encoded)
-        : prepareTxForSign(genesisID, txData.encoded);
 
       if (isForeignKey(keyToUse) && keyToUse.origin === KeyOrigin.Ledger) {
         if (!(await checkDeviceConnection()) || !connectedDevice) {
@@ -697,6 +746,11 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
           return null;
         }
 
+        // TODO: Remove that Athena kludge
+        const dataToSign = currerntAccount.isAthena
+          ? hash(txData.encoded)
+          : prepareTxForSign(genesisID, txData.encoded);
+
         return connectedDevice.actions
           .signTx(keyToUse.path, dataToSign)
           .catch(() => {
@@ -708,7 +762,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
       return withPassword(
         (password) =>
           signTx(
-            dataToSign,
+            txData.encoded,
             signWith,
             password,
             currerntAccount.isAthena || false
@@ -891,9 +945,9 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
       return;
     }
 
-    const method = Number(headers[0].MethodSelector) as MethodSelectors;
+    const method = String(headers[0].MethodSelector) as MethodSelectorStrings;
     const templateAddress =
-      method === MethodSelectors.Spawn
+      method === MethodSelectorStrings.Spawn
         ? toHexString(
             Codecs.SpawnTxHeader.dec(txs[0] as HexString).TemplateAddress
           )
@@ -936,7 +990,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
 
     const convertToFormValues = (tx: typeof rawTx): FormValues => {
       switch (method) {
-        case MethodSelectors.Spawn: {
+        case MethodSelectorStrings.Spawn: {
           if (templateAddress === StdPublicKeys.SingleSig) {
             const args = tx.Payload.Arguments as SpawnArguments;
             return {
@@ -985,7 +1039,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             `Template ${templateAddress} does not support SelfSpawn transaction`
           );
         }
-        case MethodSelectors.Spend: {
+        case MethodSelectorStrings.Spend: {
           if (
             templateAddress === StdPublicKeys.SingleSig ||
             templateAddress === StdPublicKeys.MultiSig ||
@@ -1008,7 +1062,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
             `Template ${templateAddress} does not support Spend transaction`
           );
         }
-        case MethodSelectors.Drain: {
+        case MethodSelectorStrings.Drain: {
           if (templateAddress === StdPublicKeys.Vesting) {
             const args = tx.Payload.Arguments as DrainArguments;
             return {
@@ -1136,12 +1190,13 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
     const tplAddr = isAthenaWalletAccount(acc)
       ? athenaSuffix(acc.templateAddress)
       : acc.templateAddress;
+
     switch (tplAddr) {
       case StdPublicKeys.Vault: {
         if (!isVaultAccount(acc)) {
           throw new Error('Invalid account type for Vault template');
         }
-        return selectedMethod === StdMethods.Spawn ? (
+        return selectedMethod === MethodSelectorStrings.Spawn ? (
           <VaultSpawn
             register={register}
             unregister={unregister}
@@ -1165,7 +1220,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
           throw new Error('Invalid account type for Vesting template');
         }
         // eslint-disable-next-line no-nested-ternary
-        return selectedMethod === StdMethods.Spawn ? (
+        return selectedMethod === MethodSelectorStrings.Spawn ? (
           renderSpawnOrSelfSpawn(
             <MultiSigSpawn
               register={register}
@@ -1173,7 +1228,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               spawnArguments={acc.spawnArguments}
             />
           )
-        ) : selectedMethod === StdMethods.Spend ? (
+        ) : selectedMethod === MethodSelectorStrings.Spend ? (
           <Spend
             register={register}
             unregister={unregister}
@@ -1201,7 +1256,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
         if (!isMultiSigAccount(acc)) {
           throw new Error('Invalid account type for MultiSig template');
         }
-        return selectedMethod === StdMethods.Spawn ? (
+        return selectedMethod === MethodSelectorStrings.Spawn ? (
           renderSpawnOrSelfSpawn(
             <MultiSigSpawn
               register={register}
@@ -1227,7 +1282,16 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
         if (!isSingleSigAccount(acc) && !isAthenaWalletAccount(acc)) {
           throw new Error('Invalid account type for SingleSig template');
         }
-        return selectedMethod === StdMethods.Spawn ? (
+        if (selectedMethod === METHODS_HEX.DEPLOY) {
+          return (
+            <Deploy
+              register={register}
+              unregister={unregister}
+              setValue={setValue}
+            />
+          );
+        }
+        return selectedMethod === MethodSelectorStrings.Spawn ? (
           renderSpawnOrSelfSpawn(
             <SingleSigSpawn
               register={register}
@@ -1316,9 +1380,7 @@ function SendTxModal({ isOpen, onClose }: SendTxModalProps): JSX.Element {
               </Text>
             )}
             <FormSelect
-              register={register('payload.methodSelector', {
-                valueAsNumber: true,
-              })}
+              register={register('payload.methodSelector')}
               options={methodOptions.map(({ value, ...rest }) => ({
                 value: String(value),
                 ...rest,

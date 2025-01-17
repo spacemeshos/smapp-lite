@@ -173,7 +173,7 @@ export const fetchTransactionsByAddress = async (
   return txs.map((tx) => {
     const templateAddress = toHexString(getWords(tx.template));
     try {
-      const template = getTemplateMethod(templateAddress, tx.method);
+      const template = getTemplateMethod(templateAddress, String(tx.method));
       const parsedRaw = template.decode(fromBase64(tx.raw));
       const parsed =
         tx.method === 0

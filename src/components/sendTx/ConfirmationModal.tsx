@@ -85,11 +85,11 @@ type ConfirmationModalProps = ConfirmationData & {
 const renderTemplateSpecificFields = (form: FormValues) => {
   switch (form.templateAddress) {
     case athenaSuffix(Athena.Wallet.TEMPLATE_PUBKEY_HEX): {
-      if (form.payload.methodSelector === MethodSelectors.Spawn) {
+      if (form.payload.methodSelector === MethodSelectors.Spawn.toString()) {
         const args = AthenaWalletSpawnSchema.parse(form.payload);
         return <PreviewDataRow label="Public key" value={args.PublicKey} />;
       }
-      if (form.payload.methodSelector === MethodSelectors.Spend) {
+      if (form.payload.methodSelector === MethodSelectors.Spend.toString()) {
         const args = SpendSchema.parse(form.payload);
         return (
           <>
@@ -108,11 +108,11 @@ const renderTemplateSpecificFields = (form: FormValues) => {
       );
     }
     case StdPublicKeys.SingleSig: {
-      if (form.payload.methodSelector === MethodSelectors.Spawn) {
+      if (form.payload.methodSelector === MethodSelectors.Spawn.toString()) {
         const args = SingleSigSpawnSchema.parse(form.payload);
         return <PreviewDataRow label="Public key" value={args.PublicKey} />;
       }
-      if (form.payload.methodSelector === MethodSelectors.Spend) {
+      if (form.payload.methodSelector === MethodSelectors.Spend.toString()) {
         const args = SpendSchema.parse(form.payload);
         return (
           <>
@@ -133,7 +133,7 @@ const renderTemplateSpecificFields = (form: FormValues) => {
     }
     case StdPublicKeys.MultiSig:
     case StdPublicKeys.Vesting: {
-      if (form.payload.methodSelector === MethodSelectors.Spawn) {
+      if (form.payload.methodSelector === MethodSelectors.Spawn.toString()) {
         const args = MultiSigSpawnSchema.parse(form.payload);
         return (
           <>
@@ -147,7 +147,7 @@ const renderTemplateSpecificFields = (form: FormValues) => {
           </>
         );
       }
-      if (form.payload.methodSelector === MethodSelectors.Spend) {
+      if (form.payload.methodSelector === MethodSelectors.Spend.toString()) {
         const args = SpendSchema.parse(form.payload);
         return (
           <>
@@ -161,7 +161,7 @@ const renderTemplateSpecificFields = (form: FormValues) => {
       }
       if (
         form.templateAddress === StdPublicKeys.Vesting &&
-        form.payload.methodSelector === MethodSelectors.Drain
+        form.payload.methodSelector === MethodSelectors.Drain.toString()
       ) {
         const args = DrainSchema.parse(form.payload);
         return (
@@ -183,7 +183,7 @@ const renderTemplateSpecificFields = (form: FormValues) => {
       );
     }
     case StdPublicKeys.Vault: {
-      if (form.payload.methodSelector === MethodSelectors.Spawn) {
+      if (form.payload.methodSelector === MethodSelectors.Spawn.toString()) {
         const args = VaultSpawnSchema.parse(form.payload);
         return (
           <>
@@ -207,7 +207,7 @@ const renderTemplateSpecificFields = (form: FormValues) => {
           </>
         );
       }
-      if (form.payload.methodSelector === MethodSelectors.Spend) {
+      if (form.payload.methodSelector === MethodSelectors.Spend.toString()) {
         const args = SpendSchema.parse(form.payload);
         return (
           <>

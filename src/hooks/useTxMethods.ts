@@ -1,4 +1,5 @@
 import { O } from '@mobily/ts-belt';
+import { hash } from '@spacemesh/sm-codec';
 
 import { fetchEstimatedGas, fetchPublishTx } from '../api/requests/tx';
 import { HexString } from '../types/common';
@@ -33,7 +34,7 @@ export const useSignTx = () => {
     }
     // TODO: Remove that Athena kludge
     const dataToSign = isAthena
-      ? encodedTx
+      ? hash(encodedTx)
       : prepareTxForSign(genesisID, encodedTx);
     return sign(dataToSign, publicKey, password);
   };

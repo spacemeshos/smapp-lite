@@ -12,7 +12,7 @@ import { Bech32Address, BigIntString, HexString } from './common';
 
 export type TransactionID = HexString;
 
-export type Transaction<T = Record<string, unknown>> = {
+export type Transaction<T = Record<string, unknown> | unknown> = {
   id: TransactionID;
   principal: Bech32Address;
   nonce: {
@@ -25,7 +25,7 @@ export type Transaction<T = Record<string, unknown>> = {
   };
   template: {
     address: Bech32Address;
-    method: number;
+    method: number | HexString;
     name: string;
     methodName: string;
   };
