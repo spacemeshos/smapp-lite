@@ -1,5 +1,4 @@
 import {
-  Athena,
   MultiSigSpawnArguments,
   SingleSigSpawnArguments,
   SpendArguments,

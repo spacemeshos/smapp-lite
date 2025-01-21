@@ -2,6 +2,7 @@ import {
   Athena,
   SpawnTransaction,
   SpendTransaction,
+  StdMethods,
 } from '@spacemesh/sm-codec';
 import { DeployArguments } from '@spacemesh/sm-codec/lib/athena/wallet';
 import {
@@ -94,6 +95,34 @@ type ParseErr = {
   bytes: Uint8Array;
 };
 
+const getMethod = (
+  tx: TransactionResponseObject & WithExtraData,
+  isAthena: boolean
+) => {
+  switch (tx.type) {
+    case 'TRANSACTION_TYPE_SINGLE_SIG_SPAWN':
+    case 'TRANSACTION_TYPE_SINGLE_SIG_SELFSPAWN':
+    case 'TRANSACTION_TYPE_MULTI_SIG_SPAWN':
+    case 'TRANSACTION_TYPE_MULTI_SIG_SELFSPAWN': {
+      if (isAthena) {
+        return Athena.Wallet.METHODS_HEX.SPAWN;
+      }
+      return StdMethods.Spawn;
+    }
+    case 'TRANSACTION_TYPE_MULTI_SIG_SEND':
+    case 'TRANSACTION_TYPE_SINGLE_SIG_SEND': {
+      if (isAthena) {
+        return Athena.Wallet.METHODS_HEX.SPEND;
+      }
+      return StdMethods.Spend;
+    }
+    case 'TRANSACTION_TYPE_DEPLOY':
+      return Athena.Wallet.METHODS_HEX.DEPLOY;
+    default:
+      return tx.method;
+  }
+};
+
 export const fetchTransactionsByAddress = async (
   rpc: string,
   address: Bech32Address,
@@ -178,7 +207,7 @@ export const fetchTransactionsByAddress = async (
         };
 
         const parsed = parse();
-        const { method } = tx;
+        const method = getMethod(tx, isAthena);
         return {
           id: toHexString(fromBase64(tx.id), true),
           principal: tx.principal,
