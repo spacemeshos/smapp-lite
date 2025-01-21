@@ -37,6 +37,7 @@ export interface Account<T = AnySpawnArguments> {
   displayName: string;
   templateAddress: string;
   spawnArguments: T;
+  isAthena?: boolean;
 }
 
 export type AccountWithAddress<T = AnySpawnArguments> = Account<T> & {

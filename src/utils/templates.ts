@@ -1,6 +1,7 @@
 import { bech32 } from 'bech32';
 
 import {
+  Athena,
   MultiSigTemplate,
   SingleSigTemplate,
   StdMethods,
@@ -10,6 +11,7 @@ import {
   VaultTemplate,
   VestingTemplate,
 } from '@spacemesh/sm-codec';
+import { METHODS_HEX } from '@spacemesh/sm-codec/lib/athena/wallet';
 
 import { Bech32Address, HexString } from '../types/common';
 
@@ -24,6 +26,7 @@ export enum TemplateName {
   MultiSig = 'Multiple Signatures',
   Vesting = 'Vesting Account',
   Vault = 'Vault',
+  AthenaWallet = 'Athena.Wallet',
 }
 
 export type SingleSigSpawnArguments = {
@@ -45,16 +48,24 @@ export type VaultSpawnArguments = {
   VestingEnd: number;
 };
 
+export type AthenaSpawnArguments = {
+  Nonce: number;
+  Balance: number;
+  PublicKey: HexString;
+};
+
 export type AnySpawnArguments =
   | SingleSigSpawnArguments
   | MultiSigSpawnArguments
-  | VaultSpawnArguments;
+  | VaultSpawnArguments
+  | AthenaSpawnArguments;
 
 export enum MethodName {
   Unknown = 'Unknown Method',
   Spawn = 'Spawn',
   Spend = 'Spend',
   Drain = 'Drain',
+  Deploy = 'Deploy',
 }
 
 export enum MethodSelectors {
@@ -63,26 +74,50 @@ export enum MethodSelectors {
   Drain = StdMethods.Drain,
 }
 
+export enum MethodSelectorStrings {
+  Spawn = '0',
+  Spend = '16',
+  Drain = '17',
+  Deploy = 'e24cc333', // Athena
+}
+
 export const MethodNamesMap = {
   [MethodSelectors.Spawn]: MethodName.Spawn,
   [MethodSelectors.Spend]: MethodName.Spend,
   [MethodSelectors.Drain]: MethodName.Drain,
+  [METHODS_HEX.SPAWN]: MethodName.Spawn,
+  [METHODS_HEX.SPEND]: MethodName.Spend,
+  [METHODS_HEX.DEPLOY]: MethodName.Deploy,
 } as const;
 
 export const TemplateMethodsMap = {
-  [StdPublicKeys.SingleSig]: [MethodSelectors.Spawn, MethodSelectors.Spend],
-  [StdPublicKeys.MultiSig]: [MethodSelectors.Spawn, MethodSelectors.Spend],
-  [StdPublicKeys.Vault]: [MethodSelectors.Spawn, MethodSelectors.Spend],
+  [StdPublicKeys.SingleSig]: [
+    MethodSelectorStrings.Spawn,
+    MethodSelectorStrings.Spend,
+    METHODS_HEX.DEPLOY,
+  ],
+  [StdPublicKeys.MultiSig]: [
+    MethodSelectorStrings.Spawn,
+    MethodSelectorStrings.Spend,
+  ],
+  [StdPublicKeys.Vault]: [
+    MethodSelectorStrings.Spawn,
+    MethodSelectorStrings.Spend,
+  ],
   [StdPublicKeys.Vesting]: [
-    MethodSelectors.Spawn,
-    MethodSelectors.Spend,
-    MethodSelectors.Drain,
+    MethodSelectorStrings.Spawn,
+    MethodSelectorStrings.Spend,
+    MethodSelectorStrings.Drain,
   ],
 };
 
 //
 // Utils
 //
+
+export const athenaSuffix = (key: HexString): string => `A${key}`;
+export const parseTemplateKey = (key: string): HexString =>
+  key?.[0] === 'A' ? key.slice(1) : key;
 
 export const getTemplateNameByKey = (key: HexString): TemplateName => {
   switch (key) {
@@ -94,19 +129,22 @@ export const getTemplateNameByKey = (key: HexString): TemplateName => {
       return TemplateName.Vesting;
     case TemplateKey.Vault:
       return TemplateName.Vault;
+    case athenaSuffix(Athena.Wallet.TEMPLATE_PUBKEY_HEX):
+      return TemplateName.AthenaWallet;
     default:
       return TemplateName.Unknown;
   }
 };
 
 export const getTemplateNameByAddress = (
-  address: Bech32Address
+  address: Bech32Address,
+  isAthena = false
 ): TemplateName => {
   const pk = toHexString(bech32.fromWords(bech32.decode(address).words));
-  return getTemplateNameByKey(pk);
+  return getTemplateNameByKey(isAthena ? athenaSuffix(pk) : pk);
 };
 
-export const getMethodName = (methodSelector: number) =>
+export const getMethodName = (methodSelector: number | HexString) =>
   MethodNamesMap[methodSelector as keyof typeof MethodNamesMap] ??
   MethodName.Unknown;
 
@@ -143,7 +181,7 @@ export const convertSpawnArgumentsForEncoding = <T extends StdTemplateKeys>(
 
 export const getTemplateMethod = (
   templateAddress: HexString,
-  method: number
+  method: string
 ) => {
   const throwUnsupportedMethodError = () => {
     throw new Error(
@@ -155,40 +193,40 @@ export const getTemplateMethod = (
 
   switch (templateAddress) {
     case StdPublicKeys.SingleSig: {
-      if (method === MethodSelectors.Spawn) {
+      if (method === MethodSelectorStrings.Spawn) {
         return SingleSigTemplate.methods[0];
       }
-      if (method === MethodSelectors.Spend) {
+      if (method === MethodSelectorStrings.Spend) {
         return SingleSigTemplate.methods[16];
       }
       return throwUnsupportedMethodError();
     }
     case StdPublicKeys.MultiSig: {
-      if (method === MethodSelectors.Spawn) {
+      if (method === MethodSelectorStrings.Spawn) {
         return MultiSigTemplate.methods[0];
       }
-      if (method === MethodSelectors.Spend) {
+      if (method === MethodSelectorStrings.Spend) {
         return MultiSigTemplate.methods[16];
       }
       return throwUnsupportedMethodError();
     }
     case StdPublicKeys.Vault: {
-      if (method === MethodSelectors.Spawn) {
+      if (method === MethodSelectorStrings.Spawn) {
         return VaultTemplate.methods[0];
       }
-      if (method === MethodSelectors.Spend) {
+      if (method === MethodSelectorStrings.Spend) {
         return VaultTemplate.methods[16];
       }
       return throwUnsupportedMethodError();
     }
     case StdPublicKeys.Vesting: {
-      if (method === MethodSelectors.Spawn) {
+      if (method === MethodSelectorStrings.Spawn) {
         return VestingTemplate.methods[0];
       }
-      if (method === MethodSelectors.Spend) {
+      if (method === MethodSelectorStrings.Spend) {
         return VestingTemplate.methods[16];
       }
-      if (method === MethodSelectors.Drain) {
+      if (method === MethodSelectorStrings.Drain) {
         return VestingTemplate.methods[17];
       }
       return throwUnsupportedMethodError();
