@@ -29,3 +29,6 @@ export const getCurrentTimeUTC = () => {
   const now = new Date();
   return now.getTime() + now.getTimezoneOffset() * 60000;
 };
+
+export const toMs = (isoTime: string) => new Date(isoTime).getTime();
+export const toISO = (ms: number) => new Date(ms).toISOString().slice(0, 16);
