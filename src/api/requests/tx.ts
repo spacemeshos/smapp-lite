@@ -1,4 +1,14 @@
-import { SpawnTransaction, SpendTransaction } from '@spacemesh/sm-codec';
+import {
+  Athena,
+  SpawnTransaction,
+  SpendTransaction,
+  StdMethods,
+} from '@spacemesh/sm-codec';
+import { DeployArguments } from '@spacemesh/sm-codec/lib/athena/wallet';
+import {
+  SpawnArguments,
+  SpendArguments,
+} from '@spacemesh/sm-codec/lib/std/singlesig';
 
 import { Bech32Address } from '../../types/common';
 import { Transaction } from '../../types/tx';
@@ -67,6 +77,7 @@ export const fetchTransactionsChunk = async (
     .then(({ transactions }) =>
       transactions.map((tx) => ({
         ...tx.tx,
+        type: tx.tx.type,
         layer: tx.txResult?.layer || 0,
         state: getTxState(
           tx.txResult?.status,
@@ -79,16 +90,161 @@ export const fetchTransactionsChunk = async (
 
 export const fetchTransactions = getFetchAll(fetchTransactionsChunk, 100);
 
+type ParseErr = {
+  error: string;
+  bytes: Uint8Array;
+};
+
+const getMethod = (
+  tx: TransactionResponseObject & WithExtraData,
+  isAthena: boolean
+) => {
+  switch (tx.type) {
+    case 'TRANSACTION_TYPE_SINGLE_SIG_SPAWN':
+    case 'TRANSACTION_TYPE_SINGLE_SIG_SELFSPAWN':
+    case 'TRANSACTION_TYPE_MULTI_SIG_SPAWN':
+    case 'TRANSACTION_TYPE_MULTI_SIG_SELFSPAWN': {
+      if (isAthena) {
+        return Athena.Wallet.METHODS_HEX.SPAWN;
+      }
+      return StdMethods.Spawn;
+    }
+    case 'TRANSACTION_TYPE_MULTI_SIG_SEND':
+    case 'TRANSACTION_TYPE_SINGLE_SIG_SEND': {
+      if (isAthena) {
+        return Athena.Wallet.METHODS_HEX.SPEND;
+      }
+      return StdMethods.Spend;
+    }
+    case 'TRANSACTION_TYPE_DEPLOY':
+      return Athena.Wallet.METHODS_HEX.DEPLOY;
+    default:
+      return tx.method;
+  }
+};
+
 export const fetchTransactionsByAddress = async (
   rpc: string,
-  address: Bech32Address
+  address: Bech32Address,
+  isAthena: boolean
 ) => {
   const txs = await fetchTransactions(rpc, address);
 
+  if (isAthena) {
+    return txs.map((tx) => {
+      try {
+        const parse = () => {
+          const txBytes = fromBase64(tx.raw);
+          switch (tx.type) {
+            case 'TRANSACTION_TYPE_SINGLE_SIG_SPAWN':
+              return Athena.Templates[
+                '000000000000000000000000000000000000000000000001'
+              ].methods[Athena.Wallet.METHODS_HEX.SPAWN].dec(
+                txBytes
+              ) as Athena.TypedTx<Athena.Wallet.SpawnArguments>;
+            case 'TRANSACTION_TYPE_SINGLE_SIG_SEND':
+              return Athena.Templates[
+                '000000000000000000000000000000000000000000000001'
+              ].methods[Athena.Wallet.METHODS_HEX.SPEND].dec(
+                txBytes
+              ) as Athena.TypedTx<Athena.Wallet.SpendArguments>;
+            case 'TRANSACTION_TYPE_DEPLOY':
+              return Athena.Templates[
+                '000000000000000000000000000000000000000000000001'
+              ].methods[Athena.Wallet.METHODS_HEX.DEPLOY].dec(
+                txBytes
+              ) as Athena.TypedTx<Athena.Wallet.DeployArguments>;
+            default: {
+              // eslint-disable-next-line max-len
+              const errMessage = `Unknown Athnea's transaction type: ${tx.type}`;
+              // eslint-disable-next-line no-console
+              console.log(new Error(errMessage));
+              return {
+                error: errMessage,
+                bytes: txBytes,
+              } as ParseErr;
+            }
+          }
+        };
+        const getParsedPayload = (
+          parsed: ReturnType<typeof parse>
+        ): SpawnArguments | SpendArguments | DeployArguments | ParseErr => {
+          switch (tx.type) {
+            case 'TRANSACTION_TYPE_SINGLE_SIG_SPAWN':
+              return {
+                PublicKey: (
+                  parsed as Athena.TypedTx<Athena.Wallet.SpawnArguments>
+                ).Payload.PubKey,
+              };
+            case 'TRANSACTION_TYPE_SINGLE_SIG_SEND':
+              return {
+                Destination: (
+                  parsed as Athena.TypedTx<Athena.Wallet.SpendArguments>
+                ).Payload.Recipient,
+                Amount: (parsed as Athena.TypedTx<Athena.Wallet.SpendArguments>)
+                  .Payload.Amount,
+              };
+            case 'TRANSACTION_TYPE_DEPLOY':
+              return (parsed as Athena.TypedTx<Athena.Wallet.DeployArguments>)
+                .Payload;
+            default: {
+              if (
+                !(
+                  Object.hasOwn(parsed, 'error') &&
+                  Object.hasOwn(parsed, 'bytes')
+                )
+              ) {
+                throw new Error(`Unknown Athnea transaction type ${tx.type}`);
+              }
+              // eslint-disable-next-line max-len
+              const errMessage = `Unknown Athnea's transaction type: ${tx.type}`;
+              return {
+                error: errMessage,
+                bytes: (parsed as ParseErr).bytes,
+              };
+            }
+          }
+        };
+
+        const parsed = parse();
+        const method = getMethod(tx, isAthena);
+        return {
+          id: toHexString(fromBase64(tx.id), true),
+          principal: tx.principal,
+          nonce: {
+            counter: tx.nonce.counter,
+            bitfield: tx.nonce.bitfield || 0,
+          },
+          gas: {
+            maxGas: tx.maxGas,
+            price: tx.gasPrice,
+          },
+          template: {
+            address: tx.template,
+            method,
+            name: getTemplateNameByAddress(tx.template, true),
+            methodName: getMethodName(method),
+          },
+          layer: tx.layer,
+          parsed: getParsedPayload(parsed),
+          state: tx.state,
+          message: tx.message,
+          touched: tx.touched,
+        };
+      } catch (err) {
+        /* eslint-disable no-console */
+        console.log('Error parsing Athena Transaction', tx);
+        console.error(err);
+        /* eslint-enable no-console */
+        throw err;
+      }
+    });
+  }
+
   return txs.map((tx) => {
     const templateAddress = toHexString(getWords(tx.template));
-    const template = getTemplateMethod(templateAddress, tx.method);
     try {
+      const template = getTemplateMethod(templateAddress, String(tx.method));
       const parsedRaw = template.decode(fromBase64(tx.raw));
       const parsed =
         tx.method === 0

@@ -13,6 +13,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 
+import { useIsAthena } from '../hooks/useNetworkSelectors';
 import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
 import { HexString } from '../types/common';
@@ -39,6 +40,7 @@ function ImportKeyPairModal({
 }: ImportKeyPairModalProps): JSX.Element {
   const { importKeyPair } = useWallet();
   const { withPassword } = usePassword();
+  const isAthena = useIsAthena();
   const {
     register,
     reset,
@@ -60,6 +62,7 @@ function ImportKeyPairModal({
             displayName,
             secretKey,
             password,
+            isAthena,
             createSingleSig
           );
           return true;

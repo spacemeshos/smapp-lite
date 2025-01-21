@@ -33,7 +33,42 @@ function AccountActionHints(): JSX.Element | null {
   const [account, isSpawned] = data;
   if (isSpawned) return null;
 
+  const getBorderColor = () => {
+    if (!!currentAccount?.isAthena !== network.isAthena) {
+      return 'brand.red';
+    }
+    return 'brand.green';
+  };
   const renderContents = () => {
+    // Is Athena account on Non-Athena network
+    if (!!currentAccount?.isAthena && !network.isAthena) {
+      return (
+        <Box w="100%">
+          <Text fontSize="md" fontWeight="bold" mb={2}>
+            That network does not support Athena accounts
+          </Text>
+          <Text fontSize="sm">
+            Please switch to the original Spacemesh account first.
+          </Text>
+        </Box>
+      );
+    }
+    // Is Athena account on Non-Athena network
+    if (!currentAccount?.isAthena && !!network.isAthena) {
+      return (
+        <Box w="100%">
+          <Text fontSize="md" fontWeight="bold" mb={2}>
+            That network supports only Athena accounts
+          </Text>
+          <Text fontSize="sm">
+            Please switch to the Athena account first.
+            <br />
+            You may need to create it first on the &quot;Keys &amp;
+            Accounts&quot; page.
+          </Text>
+        </Box>
+      );
+    }
     // No balance
     if (
       account.state.current.balance === '0' ||
@@ -128,7 +163,7 @@ function AccountActionHints(): JSX.Element | null {
     <Card
       my={4}
       variant="outline"
-      borderColor="brand.green"
+      borderColor={getBorderColor()}
       maxW={{ base: '100%', md: '600px' }}
     >
       <CardBody>{renderContents()}</CardBody>

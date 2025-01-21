@@ -74,6 +74,7 @@ function EditNetworksDrawer({ isOpen, onClose }: Props): JSX.Element {
           <ListItem>
             <Text fontSize="xs">Genesis Time:</Text>
             {formatTimestamp(network.genesisTime)}
+            <Text fontSize="xx-small">UNIX Time: {network.genesisTime}</Text>
           </ListItem>
         </List>
         <Text fontSize="xs" color="brand.gray" mt={4}>
