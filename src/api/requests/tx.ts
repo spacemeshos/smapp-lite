@@ -2,8 +2,12 @@ import {
   Athena,
   SpawnTransaction,
   SpendTransaction,
-  StdMethods,
 } from '@spacemesh/sm-codec';
+import { DeployArguments } from '@spacemesh/sm-codec/lib/athena/wallet';
+import {
+  SpawnArguments,
+  SpendArguments,
+} from '@spacemesh/sm-codec/lib/std/singlesig';
 
 import { Bech32Address } from '../../types/common';
 import { Transaction } from '../../types/tx';
@@ -85,6 +89,11 @@ export const fetchTransactionsChunk = async (
 
 export const fetchTransactions = getFetchAll(fetchTransactionsChunk, 100);
 
+type ParseErr = {
+  error: string;
+  bytes: Uint8Array;
+};
+
 export const fetchTransactionsByAddress = async (
   rpc: string,
   address: Bech32Address,
@@ -110,17 +119,66 @@ export const fetchTransactionsByAddress = async (
               ].methods[Athena.Wallet.METHODS_HEX.SPEND].dec(
                 txBytes
               ) as Athena.TypedTx<Athena.Wallet.SpendArguments>;
+            case 'TRANSACTION_TYPE_DEPLOY':
+              return Athena.Templates[
+                '000000000000000000000000000000000000000000000001'
+              ].methods[Athena.Wallet.METHODS_HEX.DEPLOY].dec(
+                txBytes
+              ) as Athena.TypedTx<Athena.Wallet.DeployArguments>;
             default: {
-              throw new Error(`Unknown Athnea's transaction type: ${tx.type}`);
+              // eslint-disable-next-line max-len
+              const errMessage = `Unknown Athnea's transaction type: ${tx.type}`;
+              // eslint-disable-next-line no-console
+              console.log(new Error(errMessage));
+              return {
+                error: errMessage,
+                bytes: txBytes,
+              } as ParseErr;
             }
           }
         };
-        const parsed = parse();
+        const getParsedPayload = (
+          parsed: ReturnType<typeof parse>
+        ): SpawnArguments | SpendArguments | DeployArguments | ParseErr => {
+          switch (tx.type) {
+            case 'TRANSACTION_TYPE_SINGLE_SIG_SPAWN':
+              return {
+                PublicKey: (
+                  parsed as Athena.TypedTx<Athena.Wallet.SpawnArguments>
+                ).Payload.PubKey,
+              };
+            case 'TRANSACTION_TYPE_SINGLE_SIG_SEND':
+              return {
+                Destination: (
+                  parsed as Athena.TypedTx<Athena.Wallet.SpendArguments>
+                ).Payload.Recipient,
+                Amount: (parsed as Athena.TypedTx<Athena.Wallet.SpendArguments>)
+                  .Payload.Amount,
+              };
+            case 'TRANSACTION_TYPE_DEPLOY':
+              return (parsed as Athena.TypedTx<Athena.Wallet.DeployArguments>)
+                .Payload;
+            default: {
+              if (
+                !(
+                  Object.hasOwn(parsed, 'error') &&
+                  Object.hasOwn(parsed, 'bytes')
+                )
+              ) {
+                throw new Error(`Unknown Athnea transaction type ${tx.type}`);
+              }
+              // eslint-disable-next-line max-len
+              const errMessage = `Unknown Athnea's transaction type: ${tx.type}`;
+              return {
+                error: errMessage,
+                bytes: (parsed as ParseErr).bytes,
+              };
+            }
+          }
+        };
 
-        const method =
-          tx.type === 'TRANSACTION_TYPE_SINGLE_SIG_SPAWN'
-            ? StdMethods.Spawn
-            : StdMethods.Spend;
+        const parsed = parse();
+        const { method } = tx;
         return {
           id: toHexString(fromBase64(tx.id), true),
           principal: tx.principal,
@@ -139,27 +197,11 @@ export const fetchTransactionsByAddress = async (
             methodName: getMethodName(method),
           },
           layer: tx.layer,
-          parsed:
-            tx.type === 'TRANSACTION_TYPE_SINGLE_SIG_SPAWN'
-              ? {
-                  PublicKey: (
-                    parsed as Athena.TypedTx<Athena.Wallet.SpawnArguments>
-                  ).Payload.PubKey,
-                }
-              : {
-                  Destination: (
-                    parsed as Athena.TypedTx<Athena.Wallet.SpendArguments>
-                  ).Payload.Recipient,
-                  Amount: (
-                    parsed as Athena.TypedTx<Athena.Wallet.SpendArguments>
-                  ).Payload.Amount,
-                },
+          parsed: getParsedPayload(parsed),
           state: tx.state,
           message: tx.message,
           touched: tx.touched,
-        } satisfies Transaction<
-          (SpawnTransaction | SpendTransaction)['Payload']['Arguments']
-        >; // TODO: to display it as genvm txs
+        };
       } catch (err) {
         /* eslint-disable no-console */
         console.log('Error parsing Athena Transaction', tx);

@@ -85,6 +85,8 @@ export const MethodNamesMap = {
   [MethodSelectors.Spawn]: MethodName.Spawn,
   [MethodSelectors.Spend]: MethodName.Spend,
   [MethodSelectors.Drain]: MethodName.Drain,
+  [METHODS_HEX.SPAWN]: MethodName.Spawn,
+  [METHODS_HEX.SPEND]: MethodName.Spend,
   [METHODS_HEX.DEPLOY]: MethodName.Deploy,
 } as const;
 

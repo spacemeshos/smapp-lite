@@ -1,10 +1,12 @@
 import {
+  Athena,
   MultiSigSpawnArguments,
   SingleSigSpawnArguments,
   SpendArguments,
   VaultSpawnArguments,
   VestingSpawnArguments,
 } from '@spacemesh/sm-codec';
+import { DeployArguments } from '@spacemesh/sm-codec/lib/athena/wallet';
 
 import { TransactionState } from '../api/schemas/tx';
 
@@ -44,3 +46,5 @@ export type ParsedSpawnTransaction =
   | Transaction<VaultSpawnArguments>;
 
 export type ParsedSpendTransaction = Transaction<SpendArguments>;
+
+export type ParsedDeployTransaction = Transaction<DeployArguments>;

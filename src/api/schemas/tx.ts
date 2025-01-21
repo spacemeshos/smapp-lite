@@ -32,6 +32,7 @@ export const TransactionTemplateMethodType = z.enum([
   'TRANSACTION_TYPE_VESTING_SPAWN',
   'TRANSACTION_TYPE_VAULT_SPAWN',
   'TRANSACTION_TYPE_DRAIN_VAULT',
+  'TRANSACTION_TYPE_DEPLOY',
 ]);
 
 export const TransactionSchema = z.object({
