@@ -1,11 +1,18 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   UseFormRegister,
   UseFormSetValue,
   UseFormUnregister,
 } from 'react-hook-form';
 
-import { Flex, FormControl, FormLabel, Select, Text } from '@chakra-ui/react';
+import {
+  Flex,
+  FormControl,
+  FormLabel,
+  Select,
+  Text,
+  usePrevious,
+} from '@chakra-ui/react';
 import { O, pipe } from '@mobily/ts-belt';
 import { StdTemplateKeys } from '@spacemesh/sm-codec';
 
@@ -50,19 +57,23 @@ function SpawnAnotherAccount({
       ),
     [genesisID, isSpawnedAccount]
   );
+  const unspawnedAccount = useMemo(
+    () => accounts.find((x) => !isSpawned(x)),
+    [accounts, isSpawned]
+  );
+  const prevUnspawnedAccouns = usePrevious(unspawnedAccount);
 
   useEffect(() => {
-    if (accounts.length > 0) {
-      const firstUnspawned = accounts.find((x) => !isSpawned(x));
-      if (firstUnspawned) {
-        setSelectedAddress(firstUnspawned.address);
+    if (accounts.length > 0 && unspawnedAccount !== prevUnspawnedAccouns) {
+      if (unspawnedAccount) {
+        setSelectedAddress(unspawnedAccount.address);
         setValue(
           'templateAddress',
-          firstUnspawned.templateAddress as StdTemplateKeys
+          unspawnedAccount.templateAddress as StdTemplateKeys
         );
       }
     }
-  }, [accounts, isSpawned, setValue]);
+  }, [accounts.length, prevUnspawnedAccouns, setValue, unspawnedAccount]);
 
   const [selectedAddress, setSelectedAddress] = useState(
     accounts.find((x) => !isSpawned(x))?.address
@@ -72,7 +83,7 @@ function SpawnAnotherAccount({
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       const account = accounts.find((acc) => acc.address === e.target.value);
       if (account) {
-        setSelectedAddress(e.target.value);
+        setSelectedAddress(account.address);
         setValue('templateAddress', account.templateAddress as StdTemplateKeys);
       }
     },
