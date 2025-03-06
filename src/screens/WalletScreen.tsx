@@ -225,7 +225,7 @@ function WalletScreen(): JSX.Element {
             />
           </Flex>
           {pendingBalance && (
-            <Text fontSize="sm" color="orange" mt={-1} mb={2} mr={10}>
+            <Box fontSize="sm" color="orange" mt={-1} mb={2} mr={10}>
               Pending transactions...
               <Tooltip
                 maxW="80vw"
@@ -256,7 +256,7 @@ function WalletScreen(): JSX.Element {
                   <IconHelp size={14} style={{ marginBottom: '-2px' }} />
                 </Text>
               </Tooltip>
-            </Text>
+            </Box>
           )}
           {O.mapWithDefault(
             unlockedBalance,
