@@ -132,6 +132,7 @@ function FormAmountInput<T extends FieldValues>({
         <Input
           type="number"
           key={`display_input-${register.name}`}
+          id={`display_input-${register.name}`}
           value={displayValue}
           onChange={onChange}
         />
