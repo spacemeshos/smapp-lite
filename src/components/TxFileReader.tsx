@@ -6,6 +6,7 @@ import { toHexString } from '../utils/hexString';
 type TxFileReaderProps = PropsWithChildren<{
   multiple?: boolean;
   accept?: string;
+  isDisabled?: boolean;
   onRead: (txs: HexString[]) => void;
   onError: (err: Error) => void;
 }>;
@@ -37,6 +38,7 @@ function TxFileReader({
   children = null,
   onRead,
   onError,
+  isDisabled = false,
 }: TxFileReaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -76,6 +78,7 @@ function TxFileReader({
         multiple={multiple}
         accept={accept}
         style={{ display: 'none' }}
+        disabled={isDisabled}
       />
       {children}
     </span>

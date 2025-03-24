@@ -2349,10 +2349,10 @@
   resolved "https://registry.yarnpkg.com/@spacemesh/ed25519-bip32/-/ed25519-bip32-0.2.1.tgz#f622616060fb477b1fbc5d1292ff21993927a3b2"
   integrity sha512-wwB9FHotFBc1IqYLNZRXt9jZIm7K4gWap4EaotEGeoRLvVJNR/J63TXZBEsHhPrMOWTC2yAcxi6GC47bxsYOhA==
 
-"@spacemesh/sm-codec@^0.8.0":
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/@spacemesh/sm-codec/-/sm-codec-0.8.0.tgz#dd788c29c9cd5918f4fe80ff6537e827ab94cb25"
-  integrity sha512-/Fs4W1yCLo/UM9GTlmvk/r0A+9gzlwbmlelPCsLUnnb6c6Ypb63koXECn3INeoSFE4Knfk49/6XQO3GnXsrMQw==
+"@spacemesh/sm-codec@0.9.0-athena.4":
+  version "0.9.0-athena.4"
+  resolved "https://registry.yarnpkg.com/@spacemesh/sm-codec/-/sm-codec-0.9.0-athena.4.tgz#424c43c1bfd7e78ab3dca5fe46220c79b5a73b41"
+  integrity sha512-qJxiggOBb/+bjAflz6DtKKnPnBplc+wdDYvhB+uEJ4ag6qzz8UiRUcJ3Z9fMPnkdq0yHsJCMy3oKId7tYHy70Q==
   dependencies:
     "@noble/hashes" "^1.4.0"
     scale-ts "^1.6.0"
@@ -3847,7 +3847,7 @@ create-require@^1.1.0, create-require@^1.1.1:
   resolved "https://registry.yarnpkg.com/create-require/-/create-require-1.1.1.tgz#c1d7e8f1e5f6cfc9ff65f9cd352d37348756c333"
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
 
-cross-spawn@7.0.5, cross-spawn@^7.0.0, cross-spawn@^7.0.2, cross-spawn@^7.0.3:
+cross-spawn@^7.0.0, cross-spawn@^7.0.2, cross-spawn@^7.0.3:
   version "7.0.5"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.5.tgz#910aac880ff5243da96b728bc6521a5f6c2f2f82"
   integrity sha512-ZVJrKKYunU38/76t0RMOulHOnUcbU9GbpWKAOZ0mhjr7CX6FVrH+4FrAapSOekrgFQ3f/8gwMEuIft0aKq6Hug==

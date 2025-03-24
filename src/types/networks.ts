@@ -9,6 +9,7 @@ export type Network = {
   genesisID: HexString;
   layerDuration: number;
   layersPerEpoch: number;
+  isAthena?: boolean;
 };
 
 export type NodeStatus = {

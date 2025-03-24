@@ -4,6 +4,7 @@ import { Form, useForm } from 'react-hook-form';
 import {
   Box,
   Button,
+  Checkbox,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -14,9 +15,9 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { StdPublicKeys } from '@spacemesh/sm-codec';
+import { Athena, StdPublicKeys, StdTemplateKeys } from '@spacemesh/sm-codec';
 
-import { useCurrentHRP } from '../hooks/useNetworkSelectors';
+import { useCurrentHRP, useIsAthena } from '../hooks/useNetworkSelectors';
 import { useAccountsList } from '../hooks/useWalletSelectors';
 import usePassword from '../store/usePassword';
 import useWallet from '../store/useWallet';
@@ -29,7 +30,11 @@ import {
   GENESIS_VESTING_START,
 } from '../utils/constants';
 import { noop } from '../utils/func';
-import { getTemplateNameByKey } from '../utils/templates';
+import {
+  athenaSuffix,
+  getTemplateNameByKey,
+  parseTemplateKey,
+} from '../utils/templates';
 
 import {
   extractSpawnArgs,
@@ -55,10 +60,13 @@ function CreateAccountModal({
   const { withPassword } = usePassword();
   const hrp = useCurrentHRP();
   const accounts = useAccountsList(hrp);
+  const isAthena = useIsAthena();
   const keys = useMemo(() => wallet?.keychain || [], [wallet]);
   const defaultValues = {
     displayName: '',
+    templateAddress: StdPublicKeys.SingleSig,
     Required: 1,
+    Nonce: 0,
     PublicKeys: [keys[0]?.publicKey || '0x1'],
   };
   const {
@@ -108,6 +116,12 @@ function CreateAccountModal({
     }
     return false;
   })();
+
+  useEffect(() => {
+    if (isAthena && selectedTemplate && selectedTemplate[0] !== 'A') {
+      setValue('templateAddress', `A${Athena.Wallet.TEMPLATE_PUBKEY_HEX}`);
+    }
+  }, [isAthena, selectedTemplate, setValue]);
 
   useEffect(() => {
     if (selectedTemplate === StdPublicKeys.Vault) {
@@ -160,7 +174,12 @@ function CreateAccountModal({
       values.PublicKey === CREATE_NEW_KEY_LITERAL
     ) {
       const path = Bip32KeyDerivation.createPath(wallet?.keychain?.length || 0);
-      const key = await createKeyPair(values.displayName, path, password);
+      const key = await createKeyPair(
+        values.displayName,
+        path,
+        password,
+        isAthena
+      );
       return { ...values, PublicKey: key.publicKey };
     }
     if (
@@ -179,7 +198,8 @@ function CreateAccountModal({
           const newKey = await createKeyPair(
             `${values.displayName} #${idx}`,
             path,
-            password
+            password,
+            isAthena
           ).then((k) => k.publicKey);
           return [...prev, newKey];
         }
@@ -194,10 +214,12 @@ function CreateAccountModal({
     const success = await withPassword(
       async (password) => {
         const formValues = await createNewKeyPairIfNeeded(data, password);
+        const tplAddr = parseTemplateKey(data.templateAddress);
         return createAccount(
           data.displayName,
-          data.templateAddress,
+          tplAddr as StdTemplateKeys,
           extractSpawnArgs(formValues),
+          isAthena,
           password
         );
       },
@@ -214,6 +236,37 @@ function CreateAccountModal({
   });
 
   const renderTemplateSpecificFields = () => {
+    if (isAthena) {
+      switch (parseTemplateKey(selectedTemplate)) {
+        case Athena.Wallet.TEMPLATE_PUBKEY_HEX:
+          return (
+            <>
+              <Text fontWeight="bold">Athena.Wallet</Text>
+              <Text fontSize="sm" mb={1}>
+                The default account that requires only one signature to submit a
+                transaction.
+              </Text>
+              <FormKeySelect
+                fieldName="PublicKey"
+                keys={keys}
+                register={register}
+                unregister={unregister}
+                errors={errors}
+                isSubmitted={isSubmitted}
+                isRequired
+                value={unusedKey?.publicKey}
+                hasCreateOption
+              />
+            </>
+          );
+        default:
+          return (
+            <Text fontWeight="bold" color="red">
+              Unknown Athena template
+            </Text>
+          );
+      }
+    }
     switch (selectedTemplate) {
       case StdPublicKeys.Vault:
         return (
@@ -397,16 +450,44 @@ function CreateAccountModal({
               errors={errors}
               isSubmitted={isSubmitted}
             />
+            <Checkbox
+              size="lg"
+              defaultChecked={isAthena}
+              {...register('isAthena', { value: isAthena })}
+            >
+              <Text fontSize="md">Athena VM account</Text>
+            </Checkbox>
             <FormSelect
               label="Account type"
               register={register('templateAddress', {
                 value: StdPublicKeys.SingleSig,
               })}
               options={[
-                { value: StdPublicKeys.SingleSig, label: 'SingleSig' },
-                { value: StdPublicKeys.MultiSig, label: 'MultiSig' },
-                { value: StdPublicKeys.Vault, label: 'Vault' },
-                { value: StdPublicKeys.Vesting, label: 'Vesting' },
+                {
+                  value: StdPublicKeys.SingleSig,
+                  label: 'SingleSig',
+                  disabled: isAthena,
+                },
+                {
+                  value: StdPublicKeys.MultiSig,
+                  label: 'MultiSig',
+                  disabled: isAthena,
+                },
+                {
+                  value: StdPublicKeys.Vault,
+                  label: 'Vault',
+                  disabled: isAthena,
+                },
+                {
+                  value: StdPublicKeys.Vesting,
+                  label: 'Vesting',
+                  disabled: isAthena,
+                },
+                {
+                  value: athenaSuffix(Athena.Wallet.TEMPLATE_PUBKEY_HEX),
+                  label: 'Athena.Wallet',
+                  disabled: !isAthena,
+                },
               ]}
               errors={errors}
               isSubmitted={isSubmitted}

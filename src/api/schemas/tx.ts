@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { Bech32Address } from '../../types/common';
 
 import { Bech32AddressSchema } from './address';
-import { Base64Schema } from './common';
+import { Base64Schema, HexStringSchema } from './common';
 import { BigIntStringSchema } from './strNumber';
 
 // Common stuff
@@ -21,11 +21,26 @@ export type Nonce = z.infer<typeof NonceSchema>;
 
 // Response objects
 
+export const TransactionTemplateMethodType = z.enum([
+  'TRANSACTION_TYPE_UNSPECIFIED',
+  'TRANSACTION_TYPE_SINGLE_SIG_SEND',
+  'TRANSACTION_TYPE_SINGLE_SIG_SPAWN',
+  'TRANSACTION_TYPE_SINGLE_SIG_SELFSPAWN',
+  'TRANSACTION_TYPE_MULTI_SIG_SEND',
+  'TRANSACTION_TYPE_MULTI_SIG_SPAWN',
+  'TRANSACTION_TYPE_MULTI_SIG_SELFSPAWN',
+  'TRANSACTION_TYPE_VESTING_SPAWN',
+  'TRANSACTION_TYPE_VAULT_SPAWN',
+  'TRANSACTION_TYPE_DRAIN_VAULT',
+  'TRANSACTION_TYPE_DEPLOY',
+]);
+
 export const TransactionSchema = z.object({
   id: TransactionIdSchema,
+  type: TransactionTemplateMethodType,
   principal: Bech32AddressSchema,
   template: Bech32AddressSchema,
-  method: z.number(),
+  method: z.union([z.number(), HexStringSchema]),
   nonce: NonceSchema,
   maxGas: BigIntStringSchema,
   gasPrice: BigIntStringSchema,

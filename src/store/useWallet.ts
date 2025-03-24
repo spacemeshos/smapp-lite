@@ -81,12 +81,14 @@ type WalletActions = {
     displayName: string,
     path: string,
     password: string,
+    isAthena: boolean,
     withSingleSig?: boolean
   ) => Promise<SafeKey>;
   importKeyPair: (
     displayName: string,
     secretKey: HexString,
     password: string,
+    isAthena: boolean,
     withSingleSig?: boolean
   ) => Promise<SafeKey>;
   renameKey: (idx: number, name: string, password: string) => Promise<SafeKey>;
@@ -99,6 +101,7 @@ type WalletActions = {
     displayName: string,
     templateAddress: StdTemplateKeys,
     spawnArguments: T,
+    isAthena: boolean,
     password: string
   ) => Promise<Account<T>>;
   editAccount: <T extends AnySpawnArguments>(
@@ -376,12 +379,14 @@ const useWallet = create<WalletState & WalletActions & WalletSelectors>(
       displayName,
       templateAddress,
       spawnArguments,
+      isAthena,
       password
     ) => {
       const acc = {
         displayName,
         templateAddress,
         spawnArguments,
+        isAthena,
       };
       const wallet = await get().loadWalletWithSecrets(password);
       // Preparing secret part of the wallet

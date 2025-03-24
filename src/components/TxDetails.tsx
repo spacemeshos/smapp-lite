@@ -228,7 +228,8 @@ function TxDetails({
                 />
                 <Row
                   label="Transaction type"
-                  value={`${tx.template.name}.${tx.template.methodName}`}
+                  // eslint-disable-next-line max-len
+                  value={`${tx.template.name}.${tx.template.methodName} (${tx.template.method})`}
                 />
                 {renderTxSpecificData(hrp, tx)}
               </Box>
