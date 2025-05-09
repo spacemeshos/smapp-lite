@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Form, useForm } from 'react-hook-form';
 
 import {
   Button,
+  Checkbox,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -18,7 +19,7 @@ import {
 
 import { fetchNetworkInfo } from '../api/requests/netinfo';
 import useNetworks from '../store/useNetworks';
-import { formatTimestamp } from '../utils/datetime';
+import { formatTimestamp, toISO, toMs } from '../utils/datetime';
 import { normalizeURL } from '../utils/url';
 
 import FormInput from './FormInput';
@@ -38,6 +39,7 @@ type FormValues = {
   explorer: string;
   layerDuration: string;
   layersPerEpoch: string;
+  isAthena?: boolean;
 };
 
 function EditOneNetworkDrawer({ idx, isOpen, onClose }: Props): JSX.Element {
@@ -51,8 +53,15 @@ function EditOneNetworkDrawer({ idx, isOpen, onClose }: Props): JSX.Element {
     reset,
     control,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitted },
   } = useForm<FormValues>();
+
+  const genesisTimeValue = watch('genesisTime');
+  const genesisTimeMs = useMemo(
+    () => toMs(genesisTimeValue),
+    [genesisTimeValue]
+  );
 
   const [apiError, setApiError] = useState('');
   const [apiLoading, setApiLoading] = useState(false);
@@ -71,6 +80,7 @@ function EditOneNetworkDrawer({ idx, isOpen, onClose }: Props): JSX.Element {
         genesisTime: formatTimestamp(network.genesisTime),
         layerDuration: String(network.layerDuration),
         layersPerEpoch: String(network.layersPerEpoch),
+        isAthena: network.isAthena,
       });
     }
   }, [network, onClose, reset]);
@@ -87,9 +97,10 @@ function EditOneNetworkDrawer({ idx, isOpen, onClose }: Props): JSX.Element {
       explorerUrl: data.explorer,
       hrp: data.hrp,
       genesisID: data.genesisID,
-      genesisTime: new Date(data.genesisTime).getTime(),
+      genesisTime: toMs(data.genesisTime),
       layerDuration: parseInt(data.layerDuration, 10),
       layersPerEpoch: parseInt(data.layersPerEpoch, 10),
+      isAthena: data.isAthena ?? false,
     });
 
     close();
@@ -136,10 +147,7 @@ function EditOneNetworkDrawer({ idx, isOpen, onClose }: Props): JSX.Element {
                     if (!info) {
                       throw new Error('Cannot fetch network info');
                     }
-                    const isoTime = new Date(info.genesisTime)
-                      .toISOString()
-                      .slice(0, 16);
-                    setValue('genesisTime', isoTime);
+                    setValue('genesisTime', toISO(info.genesisTime));
                     setValue('hrp', info.hrp);
                     setValue('genesisID', info.genesisId);
                     setValue('layerDuration', String(info.layerDuration));
@@ -217,7 +225,11 @@ function EditOneNetworkDrawer({ idx, isOpen, onClose }: Props): JSX.Element {
               inputProps={{ type: 'datetime-local' }}
               errors={errors}
               isSubmitted={isSubmitted}
-            />
+            >
+              <Text fontSize="xx-small" px={4} mt={0.5}>
+                UNIX Time: {Number.isNaN(genesisTimeMs) ? '???' : genesisTimeMs}
+              </Text>
+            </FormInput>
             <FormInput
               label="Layer Duration (sec)"
               register={register('layerDuration', {
@@ -236,6 +248,9 @@ function EditOneNetworkDrawer({ idx, isOpen, onClose }: Props): JSX.Element {
               errors={errors}
               isSubmitted={isSubmitted}
             />
+            <Checkbox size="lg" mt={2} pl={4} {...register('isAthena')}>
+              <Text fontSize="md">Running under Athena VM</Text>
+            </Checkbox>
           </DrawerBody>
 
           <DrawerFooter>

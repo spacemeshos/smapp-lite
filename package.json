@@ -36,7 +36,7 @@
     "@noble/ed25519": "^2.1.0",
     "@scure/bip39": "^1.2.2",
     "@spacemesh/ed25519-bip32": "^0.2.1",
-    "@spacemesh/sm-codec": "^0.8.0",
+    "@spacemesh/sm-codec": "0.9.0-athena.4",
     "@tabler/icons-react": "^3.1.0",
     "@tanstack/react-virtual": "^3.3.0",
     "@uidotdev/usehooks": "^2.4.1",

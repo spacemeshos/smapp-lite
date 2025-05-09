@@ -13,6 +13,7 @@ export const AccountDataSchema = z.object({
   address: Bech32AddressSchema,
   current: AccountStateSchema,
   projected: AccountStateSchema,
+  template: Bech32AddressSchema.or(z.literal('')),
 });
 
 export const BalanceResponseSchema = z.object({

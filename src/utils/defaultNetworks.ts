@@ -21,6 +21,17 @@ const DEFAULT_NETWORKS: Network[] = [
     layerDuration: 300,
     layersPerEpoch: 288,
   },
+  {
+    name: `Athena Devnet 13`,
+    jsonRPC: 'https://api-json-devnet-athena-13.spacemesh.network',
+    explorerUrl: 'https://explorer-devnet-athena.spacemesh.network',
+    hrp: 'atest',
+    genesisID: '9cb099842165b76e2a3338717af3059ac030100a',
+    genesisTime: 1736870400000,
+    layerDuration: 240,
+    layersPerEpoch: 30,
+    isAthena: true,
+  },
 ];
 
 export default DEFAULT_NETWORKS;

@@ -7,9 +7,7 @@ export const Bech32AddressSchema = z.custom<string>(
     if (typeof addr !== 'string') return false;
     try {
       const p = bech32.decode(addr);
-      if (!['sm', 'stest', 'standalone'].includes(p.prefix)) return false;
-      if (bech32.fromWords(p.words).length !== 24) return false;
-      return true;
+      return bech32.fromWords(p.words).length === 24;
     } catch (err) {
       return false;
     }

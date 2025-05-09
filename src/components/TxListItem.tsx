@@ -1,5 +1,5 @@
 import { Box, Card, CardBody, Flex, Icon, Text } from '@chakra-ui/react';
-import { StdMethods } from '@spacemesh/sm-codec';
+import { Athena, StdMethods } from '@spacemesh/sm-codec';
 import {
   IconArrowBigLeftLinesFilled,
   IconArrowBigRightLinesFilled,
@@ -7,6 +7,7 @@ import {
   IconArrowNarrowLeft,
   IconArrowNarrowRight,
   IconQuestionMark,
+  IconStackPush,
 } from '@tabler/icons-react';
 
 import { Bech32Address } from '../types/common';
@@ -30,8 +31,10 @@ function TxIcon({ tx, host }: { tx: Transaction; host: Bech32Address }) {
   const color = getStatusColor(tx.state);
   const IconComponent = (() => {
     switch (tx.template.method) {
+      case Athena.Wallet.METHODS_HEX.SPAWN:
       case StdMethods.Spawn:
         return IconArrowNarrowDown;
+      case Athena.Wallet.METHODS_HEX.SPEND:
       case StdMethods.Spend: {
         switch (getTxType(tx, host)) {
           case TxType.Received:
@@ -52,6 +55,8 @@ function TxIcon({ tx, host }: { tx: Transaction; host: Bech32Address }) {
             return IconArrowBigLeftLinesFilled;
         }
       }
+      case Athena.Wallet.METHODS_HEX.DEPLOY:
+        return IconStackPush;
       default:
         return IconQuestionMark;
     }

@@ -2,6 +2,7 @@ import { bech32 } from 'bech32';
 
 import { D } from '@mobily/ts-belt';
 import {
+  Athena,
   DrainArguments,
   MultiSigSpawnArguments,
   SingleSigSpawnArguments,
@@ -13,6 +14,7 @@ import {
 import { TransactionState } from '../api/schemas/tx';
 import { Bech32Address } from '../types/common';
 import {
+  ParsedDeployTransaction,
   ParsedSpawnTransaction,
   ParsedSpendTransaction,
   Transaction,
@@ -20,7 +22,7 @@ import {
 } from '../types/tx';
 
 import { fromHexString } from './hexString';
-import { MethodName, TemplateName } from './templates';
+import { TemplateName } from './templates';
 
 export enum TxType {
   Self,
@@ -31,7 +33,9 @@ export enum TxType {
 export const isSpawnTransaction = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tx: Transaction<any>
-): tx is ParsedSpawnTransaction => tx.template.methodName === MethodName.Spawn;
+): tx is ParsedSpawnTransaction =>
+  tx.template.method === StdMethods.Spawn ||
+  tx.template.method === Athena.Wallet.METHODS_HEX.SPAWN;
 
 export const isSingleSigSpawnTransaction = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -67,9 +71,18 @@ export const isSpendTransaction = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tx: Transaction<any>
 ): tx is ParsedSpendTransaction =>
-  tx.template.method === StdMethods.Spend &&
+  (tx.template.method === StdMethods.Spend ||
+    tx.template.method === Athena.Wallet.METHODS_HEX.SPEND) &&
   Object.hasOwn(tx.parsed, 'Destination') &&
   Object.hasOwn(tx.parsed, 'Amount');
+
+export const isDeployTransaction = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  tx: Transaction<any>
+): tx is ParsedDeployTransaction =>
+  tx.template.method === Athena.Wallet.METHODS_HEX.DEPLOY &&
+  Object.hasOwn(tx.parsed, 'Code') &&
+  Object.hasOwn(tx.parsed, 'Data');
 
 export const isDrainTransaction = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

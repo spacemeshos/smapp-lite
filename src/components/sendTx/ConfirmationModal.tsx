@@ -27,7 +27,7 @@ import {
   Spacer,
   Text,
 } from '@chakra-ui/react';
-import { StdPublicKeys } from '@spacemesh/sm-codec';
+import { Athena, StdPublicKeys } from '@spacemesh/sm-codec';
 import { MultiSigPart, SingleSig } from '@spacemesh/sm-codec/lib/codecs';
 import { IconArrowNarrowLeft, IconChevronDown } from '@tabler/icons-react';
 
@@ -37,6 +37,7 @@ import { getAbbreviatedHexString } from '../../utils/abbr';
 import { toHexString } from '../../utils/hexString';
 import { formatSmidge } from '../../utils/smh';
 import {
+  athenaSuffix,
   getMethodName,
   getTemplateNameByKey,
   MethodSelectors,
@@ -46,6 +47,7 @@ import FormKeySelect from '../FormKeySelect';
 import PreviewDataRow from '../PreviewDataRow';
 
 import {
+  AthenaWalletSpawnSchema,
   DrainSchema,
   FormValues,
   MultiSigSpawnSchema,
@@ -82,12 +84,35 @@ type ConfirmationModalProps = ConfirmationData & {
 
 const renderTemplateSpecificFields = (form: FormValues) => {
   switch (form.templateAddress) {
+    case athenaSuffix(Athena.Wallet.TEMPLATE_PUBKEY_HEX): {
+      if (form.payload.methodSelector === MethodSelectors.Spawn.toString()) {
+        const args = AthenaWalletSpawnSchema.parse(form.payload);
+        return <PreviewDataRow label="Public key" value={args.PublicKey} />;
+      }
+      if (form.payload.methodSelector === MethodSelectors.Spend.toString()) {
+        const args = SpendSchema.parse(form.payload);
+        return (
+          <>
+            <PreviewDataRow
+              label="Destination address"
+              value={args.Destination}
+            />
+            <PreviewDataRow label="Amount" value={formatSmidge(args.Amount)} />
+          </>
+        );
+      }
+      return (
+        <Text color="orange" fontSize="xs">
+          Unsupported method: {form.payload.methodSelector} for Athena Wallet.
+        </Text>
+      );
+    }
     case StdPublicKeys.SingleSig: {
-      if (form.payload.methodSelector === MethodSelectors.Spawn) {
+      if (form.payload.methodSelector === MethodSelectors.Spawn.toString()) {
         const args = SingleSigSpawnSchema.parse(form.payload);
         return <PreviewDataRow label="Public key" value={args.PublicKey} />;
       }
-      if (form.payload.methodSelector === MethodSelectors.Spend) {
+      if (form.payload.methodSelector === MethodSelectors.Spend.toString()) {
         const args = SpendSchema.parse(form.payload);
         return (
           <>
@@ -108,7 +133,7 @@ const renderTemplateSpecificFields = (form: FormValues) => {
     }
     case StdPublicKeys.MultiSig:
     case StdPublicKeys.Vesting: {
-      if (form.payload.methodSelector === MethodSelectors.Spawn) {
+      if (form.payload.methodSelector === MethodSelectors.Spawn.toString()) {
         const args = MultiSigSpawnSchema.parse(form.payload);
         return (
           <>
@@ -122,7 +147,7 @@ const renderTemplateSpecificFields = (form: FormValues) => {
           </>
         );
       }
-      if (form.payload.methodSelector === MethodSelectors.Spend) {
+      if (form.payload.methodSelector === MethodSelectors.Spend.toString()) {
         const args = SpendSchema.parse(form.payload);
         return (
           <>
@@ -136,7 +161,7 @@ const renderTemplateSpecificFields = (form: FormValues) => {
       }
       if (
         form.templateAddress === StdPublicKeys.Vesting &&
-        form.payload.methodSelector === MethodSelectors.Drain
+        form.payload.methodSelector === MethodSelectors.Drain.toString()
       ) {
         const args = DrainSchema.parse(form.payload);
         return (
@@ -158,7 +183,7 @@ const renderTemplateSpecificFields = (form: FormValues) => {
       );
     }
     case StdPublicKeys.Vault: {
-      if (form.payload.methodSelector === MethodSelectors.Spawn) {
+      if (form.payload.methodSelector === MethodSelectors.Spawn.toString()) {
         const args = VaultSpawnSchema.parse(form.payload);
         return (
           <>
@@ -182,7 +207,7 @@ const renderTemplateSpecificFields = (form: FormValues) => {
           </>
         );
       }
-      if (form.payload.methodSelector === MethodSelectors.Spend) {
+      if (form.payload.methodSelector === MethodSelectors.Spend.toString()) {
         const args = SpendSchema.parse(form.payload);
         return (
           <>

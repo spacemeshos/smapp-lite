@@ -19,3 +19,6 @@ export const useCurrentRPC = () =>
 
 export const useLayerDuration = () =>
   O.map(useCurrentNetwork(), (net) => net.layerDuration);
+
+export const useIsAthena = () =>
+  O.mapWithDefault(useCurrentNetwork(), false, (net) => net.isAthena ?? false);
